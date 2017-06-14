@@ -46,8 +46,10 @@ VizFeatureRenderer::VizFeatureRenderer(const ParamsMgr *pm, const DataStatus *da
 //
 //----------------------------------------------------------------------------
 VizFeatureRenderer::~VizFeatureRenderer() {
+#ifdef DEAD
     if (_textObjectsValid)
         invalidateCache();
+#endif
 }
 
 void VizFeatureRenderer::InitializeGL(ShaderMgr *shaderMgr) { m_shaderMgr = shaderMgr; }
