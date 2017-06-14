@@ -105,7 +105,7 @@ size_t GeometryWidget::getCurrentTimestep() {
     return ts;
 }
 
-void GeometryWidget::updateRangeLabels(vector<double> minExt, vector<double> maxExt) {
+void GeometryWidget::updateRangeLabels(std::vector<double> minExt, std::vector<double> maxExt) {
     QString xTitle = QString("X Coordinates         Min:") + QString::number(minExt[0]) +
                      QString("         Max:") + QString::number(maxExt[0]);
     xMinMaxGroupBox->setTitle(xTitle);
@@ -119,11 +119,11 @@ void GeometryWidget::updateRangeLabels(vector<double> minExt, vector<double> max
     zMinMaxGroupBox->setTitle(zTitle);
 }
 
-void GeometryWidget::GetVectorExtents(size_t ts, int level, vector<double> minFullExt,
-                                      vector<double> maxFullExt) {
+void GeometryWidget::GetVectorExtents(size_t ts, int level, std::vector<double> minFullExt,
+                                      std::vector<double> maxFullExt) {
 
-    vector<string> varNames = _rParams->GetFieldVariableNames();
-    vector<double> minVarExt, maxVarExt;
+    std::vector<string> varNames = _rParams->GetFieldVariableNames();
+    std::vector<double> minVarExt, maxVarExt;
 
     // Calculate the union of all field variable extents
     // by iterating over the variables one at a time, indexed by i
@@ -168,7 +168,7 @@ void GeometryWidget::updateVisCombo() {
 
     // Add new visualizer names, if any
     //
-    vector<string> visNames = _paramsMgr->GetVisualizerNames();
+    std::vector<string> visNames = _paramsMgr->GetVisualizerNames();
     for (int i = 0; i < visNames.size(); i++) {
         QString visName = QString::fromStdString(visNames[i]);
 
@@ -207,7 +207,7 @@ void GeometryWidget::updateRenTypeCombo() {
     // Now add new renderer names pertaining to our current visualizer
     // if they weren't in the comboBox already
     //
-    vector<string> typeNames = _paramsMgr->GetRenderParamsClassNames(visName);
+    std::vector<string> typeNames = _paramsMgr->GetRenderParamsClassNames(visName);
     for (int i = 0; i < typeNames.size(); i++) {
         QString typeName = QString::fromStdString(typeNames[i]);
         if (copyRenTypeCombo->findText(typeName) < 0) {
@@ -246,7 +246,7 @@ void GeometryWidget::updateRenNameCombo() {
     // Now add new renderer names pertaining to our current visualizer
     // if they weren't in the comboBox already
     //
-    vector<string> renNames = _paramsMgr->GetRenderParamInstances(visName, typeName);
+    std::vector<string> renNames = _paramsMgr->GetRenderParamInstances(visName, typeName);
     for (int i = 0; i < renNames.size(); i++) {
         QString renName = QString::fromStdString(renNames[i]);
         if (copyRenNameCombo->findText(renName) < 0) {
@@ -291,7 +291,7 @@ void GeometryWidget::copyRegion() {
     assert(copyParams);
 
     Box *copyBox = copyParams->GetBox();
-    vector<double> minExtents, maxExtents;
+    std::vector<double> minExtents, maxExtents;
     copyBox->GetExtents(minExtents, maxExtents);
 
     Box *myBox = _rParams->GetBox();
@@ -312,7 +312,7 @@ void GeometryWidget::Update(ParamsMgr *paramsMgr, DataMgr *dataMgr, RenderParams
     //
     size_t ts = getCurrentTimestep();
     int level = _rParams->GetRefinementLevel();
-    vector<double> minFullExt, maxFullExt;
+    std::vector<double> minFullExt, maxFullExt;
 
     if (_flags & VECTOR) {
         GetVectorExtents(ts, level, minFullExt, maxFullExt);
@@ -332,7 +332,7 @@ void GeometryWidget::Update(ParamsMgr *paramsMgr, DataMgr *dataMgr, RenderParams
     // Get current user selected extents
     //
     Box *box = _rParams->GetBox();
-    vector<double> minExt, maxExt;
+    std::vector<double> minExt, maxExt;
     box->GetExtents(minExt, maxExt);
 
     // Verify that the user extents comply with the domain extents
@@ -373,7 +373,7 @@ void GeometryWidget::setRange(double min, double max) {
     else
         dimension = 2;
 
-    vector<double> minExt, maxExt;
+    std::vector<double> minExt, maxExt;
     Box *box = _rParams->GetBox();
     box->GetExtents(minExt, maxExt);
 
