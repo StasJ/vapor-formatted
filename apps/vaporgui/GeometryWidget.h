@@ -3,7 +3,6 @@
 
 #include "GeometryWidgetGUI.h"
 #include "RangeCombos.h"
-#include "subeventrouter.h"
 
 namespace VAPoR {
 class RenderParams;
@@ -48,9 +47,9 @@ class GeometryWidget : public QWidget, public Ui_GeometryWidgetGUI {
   private:
     void connectWidgets();
     size_t getCurrentTimestep();
-    void updateRangeLabels(vector<double> minExt, vector<double> maxExt);
-    void GetVectorExtents(size_t ts, int level, vector<double> minFullExt,
-                          vector<double> maxFullExt);
+    void updateRangeLabels(std::vector<double> minExt, std::vector<double> maxExt);
+    void GetVectorExtents(size_t ts, int level, std::vector<double> minFullExt,
+                          std::vector<double> maxFullExt);
     void updateVisCombo();
 
     VAPoR::ParamsMgr *_paramsMgr;
