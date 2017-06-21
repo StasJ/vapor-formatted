@@ -476,6 +476,9 @@ string VariablesWidget::updateVarCombo(QComboBox *varCombo, const vector<string>
         varCombo->addItem(QString::fromStdString(s));
         if (s == currentVar) {
             currentIndex = i;
+            if (doZero) {
+                currentIndex++;
+            }
         }
     }
     if (currentIndex == -1) {
