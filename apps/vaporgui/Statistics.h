@@ -23,11 +23,11 @@
 #ifndef STATISTICS_H
 #define STATISTICS_H
 
-#include <RangeController.h>
-#include <errMsg.h>
+#include "RangeController.h"
+#include "ui_errMsg.h"
+#include "ui_statsWindow.h"
 #include <qdialog.h>
 #include <qwidget.h>
-#include <statsWindow.h>
 #include <vapor/DataMgr.h>
 #include <vapor/StructuredGrid.h>
 
