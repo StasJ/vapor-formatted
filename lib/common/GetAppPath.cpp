@@ -12,6 +12,7 @@
 #include <CoreFoundation/CFString.h>
 #include <CoreServices/CoreServices.h>
 #endif
+#include "vapor/CMakeConfig.h"
 #include "vapor/GetAppPath.h"
 #include <vapor/MyBase.h>
 #ifdef WIN32
