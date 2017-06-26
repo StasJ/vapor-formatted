@@ -1,10 +1,9 @@
 #ifndef BARBSUBTABS_H
 #define BARBSUBTABS_H
 
-#include "BarbAppearanceGUI.h"
-#include "BarbGeometryGUI.h"
-#include "BarbVariablesGUI.h"
-#include "vapor/BarbParams.h"
+#include "ui_BarbAppearanceGUI.h"
+#include "ui_BarbGeometryGUI.h"
+#include "ui_BarbVariablesGUI.h"
 
 namespace VAPoR {
 class ControlExec;

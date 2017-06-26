@@ -29,7 +29,7 @@
 #include <qmessagebox.h>
 #include <qrect.h>
 
-#include "../images/fileopen.xpm"
+#include "images/fileopen.xpm"
 #include <QFileDialog>
 #include <fstream>
 #include <iostream>

@@ -31,8 +31,8 @@
 #include <vector>
 //#include <Python.h>
 #include "RangeController.h"
-#include <errMsg.h>
-#include <plotWindow.h>
+#include "ui_errMsg.h"
+#include "ui_plotWindow.h"
 #include <vapor/DataMgr.h>
 
 using namespace std;

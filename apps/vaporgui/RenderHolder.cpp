@@ -20,8 +20,8 @@
 #include "MessageReporter.h"
 #include "RenderEventRouter.h"
 #include "VizSelectCombo.h"
-#include "newRendererDialog.h"
 #include "qdialog.h"
+#include "ui_newRendererDialog.h"
 #include <QStringList>
 #include <QTableWidget>
 #include <cassert>
