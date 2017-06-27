@@ -348,12 +348,12 @@ int DCWRF::GetDimLensAtLevel(string varname, int, std::vector<size_t> &dims_at_l
     dims_at_level.clear();
     bs_at_level.clear();
 
-    vector<size_t> dimlens;
-    bool ok = GetVarDimLens(varname, true, dimlens);
+    bool ok = GetVarDimLens(varname, true, dims_at_level);
     if (!ok) {
         SetErrMsg("Undefined variable name : %s", varname.c_str());
         return (-1);
     }
+    bs_at_level = dims_at_level;
 
     return (0);
 }
@@ -436,7 +436,8 @@ int DCWRF::ReadRegion(const vector<size_t> &min, const vector<size_t> &max, floa
 }
 
 int DCWRF::ReadRegionBlock(const vector<size_t> &min, const vector<size_t> &max, float *region) {
-    return (DCWRF::ReadRegion(min, max, region));
+    // return(DCWRF::ReadRegion(min, max, region));
+    return (DCWRF::Read(region));
 }
 
 int DCWRF::GetVar(string varname, float *data) {
