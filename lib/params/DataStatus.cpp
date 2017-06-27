@@ -631,7 +631,6 @@ int DataStatus::getGrids(size_t ts, const vector<string> &varnames,
             for (int j = 0; j < minExts.size(); j++) {
                 // shrink minExts/maxExts to requested extents
                 if (minExts[j] < minExtsReq[j]) {
-                    cout << "Shrink " << minExts[j] << " to " << minExtsReq[j] << endl;
                     minExts[j] = minExtsReq[j];
                 }
                 if (maxExts[j] > maxExtsReq[j])
@@ -639,7 +638,6 @@ int DataStatus::getGrids(size_t ts, const vector<string> &varnames,
             }
 
         } else { // 2nd and later variables
-            cout << "for some reason we have multiple vars!" << endl;
             int rc = dataMgr->GetVariableExtents(ts, varnames[i], *refLevel, tminExts, tmaxExts);
             if (rc < 0)
                 return rc;
@@ -661,7 +659,6 @@ int DataStatus::getGrids(size_t ts, const vector<string> &varnames,
         //
         for (int j = 0; j < minExts.size(); j++)
             if (maxExts[j] < minExts[j]) {
-                cout << "extents size " << minExts.size() << " " << maxExts.size() << endl;
                 MyBase::SetErrMsg("Variable extents invalid");
                 return -1;
             }
@@ -676,8 +673,6 @@ int DataStatus::getGrids(size_t ts, const vector<string> &varnames,
         tminExts = minExts;
         tmaxExts = maxExts;
 
-        cout << "gen rGrid " << tminExts[0] << endl;
-
         StructuredGrid *rGrid =
             dataMgr->GetVariable(ts, varnames[i], *refLevel, *lod, tminExts, tmaxExts, true);
 
@@ -690,8 +685,6 @@ int DataStatus::getGrids(size_t ts, const vector<string> &varnames,
             return -1;
         }
         grids[i] = rGrid;
-
-        cout << "grid dims: " << rGrid->GetDimensions()[0] << endl;
     }
 
 #ifdef DEAD
