@@ -41,7 +41,8 @@ namespace VAPoR {
 class RENDER_API TwoDDataRenderer : public TwoDRenderer {
 
   public:
-    TwoDDataRenderer(const ParamsMgr *pm, string winName, string instName, DataStatus *ds);
+    TwoDDataRenderer(const ParamsMgr *pm, string winName, string dataSetName, string instName,
+                     DataStatus *ds);
 
     virtual ~TwoDDataRenderer();
 
