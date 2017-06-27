@@ -40,9 +40,10 @@ using namespace Wasp;
 static RendererRegistrar<BarbRenderer> registrar(BarbRenderer::GetClassType(),
                                                  BarbParams::GetClassType());
 
-BarbRenderer::BarbRenderer(const ParamsMgr *pm, string winName, string instName, DataStatus *ds)
-    : Renderer(pm, winName, BarbParams::GetClassType(), BarbRenderer::GetClassType(), instName,
-               ds) {
+BarbRenderer::BarbRenderer(const ParamsMgr *pm, string winName, string dataSetName, string instName,
+                           DataStatus *ds)
+    : Renderer(pm, winName, dataSetName, BarbParams::GetClassType(), BarbRenderer::GetClassType(),
+               instName, ds) {
 
     _fieldVariables.clear();
     _vectorScaleFactor = 1.0;
@@ -76,7 +77,7 @@ int BarbRenderer::_paintGL() {
     int lod = bParams->GetCompressionLevel();
     vector<double> minExts, maxExts;
     // bParams->GetBox()->GetExtents(minExts, maxExts);
-    m_dataStatus->GetExtents(minExts, maxExts);
+    _dataStatus->GetExtents(minExts, maxExts);
 
     // Find box extents for ROI
     //
@@ -88,7 +89,7 @@ int BarbRenderer::_paintGL() {
 
     // Get grids for our vector variables
     //
-    int rc = m_dataStatus->getGrids(ts, varnames, minExts, maxExts, &refLevel, &lod, varData);
+    int rc = _dataStatus->getGrids(ts, varnames, minExts, maxExts, &refLevel, &lod, varData);
     if (rc < 0)
         return (rc);
 
@@ -99,7 +100,7 @@ int BarbRenderer::_paintGL() {
         vector<string> varnames;
         varnames.push_back(hname);
         int rc =
-            m_dataStatus->getGrids(ts, varnames, minExts, maxExts, &refLevel, &lod, &varData[3]);
+            _dataStatus->getGrids(ts, varnames, minExts, maxExts, &refLevel, &lod, &varData[3]);
         if (rc < 0)
             return (rc);
     }
@@ -111,7 +112,7 @@ int BarbRenderer::_paintGL() {
         vector<string> varnames;
         varnames.push_back(auxvars[0]);
         int rc =
-            m_dataStatus->getGrids(ts, varnames, minExts, maxExts, &refLevel, &lod, &varData[4]);
+            _dataStatus->getGrids(ts, varnames, minExts, maxExts, &refLevel, &lod, &varData[4]);
         if (rc < 0)
             return (rc);
     }
@@ -124,7 +125,7 @@ int BarbRenderer::_paintGL() {
     rc = performRendering(bParams, refLevel, vectorLengthScale, varData);
 
     // Release the locks on the data:
-    DataMgr *dataMgr = m_dataStatus->GetDataMgr();
+    DataMgr *dataMgr = _dataStatus->GetDataMgr();
     for (int k = 0; k < 5; k++) {
         if (varData[k])
             dataMgr->UnlockGrid(varData[k]);
@@ -283,7 +284,7 @@ int BarbRenderer::performRendering( // DataMgr* dataMgr,
     bParams->GetBox()->GetExtents(rMinExtents, rMaxExtents);
     // Convert to user coordinates:
     vector<double> minExts, maxExts;
-    m_dataStatus->GetExtents(minExts, maxExts);
+    _dataStatus->GetExtents(minExts, maxExts);
 
     const vector<long> rGrid = bParams->GetGrid();
     int rakeGrid[3];
@@ -295,7 +296,7 @@ int BarbRenderer::performRendering( // DataMgr* dataMgr,
     }
 
     string winName = GetVisualizer();
-    ViewpointParams *vpParams = m_pm->GetViewpointParams(winName);
+    ViewpointParams *vpParams = _paramsMgr->GetViewpointParams(winName);
     // Barb thickness is .001*LineThickness*viewDiameter.
     float thickness = bParams->GetLineThickness();
     // float rad =(float)( 0.001*vpParams->GetCurrentViewDiameter()*thickness);
@@ -349,7 +350,7 @@ void BarbRenderer::renderScottsGrid(int rakeGrid[3], double rakeExts[6],
                                     const RenderParams *params) {
 
     string winName = GetVisualizer();
-    ViewpointParams *vpParams = m_pm->GetViewpointParams(winName);
+    ViewpointParams *vpParams = _paramsMgr->GetViewpointParams(winName);
     vector<double> scales = vpParams->GetStretchFactors();
 
     StructuredGrid *heightVar = variableData[3];
@@ -407,7 +408,7 @@ void BarbRenderer::renderUnaligned(int rakeGrid[3], double rakeExts[6],
     float dirVec[3], endPoint[3], fltPnt[3];
 
     string winName = GetVisualizer();
-    ViewpointParams *vpParams = m_pm->GetViewpointParams(winName);
+    ViewpointParams *vpParams = _paramsMgr->GetViewpointParams(winName);
     vector<double> scales = vpParams->GetStretchFactors();
 
     BarbParams *bParams = (BarbParams *)params;
@@ -559,7 +560,7 @@ double BarbRenderer::_calcDefaultScale(const vector<string> &varnames, const Bar
     assert(varnames.size() <= 3);
     double maxvarvals[3] = {1.0, 1.0, 1.0};
 
-    DataMgr *dataMgr = m_dataStatus->GetDataMgr();
+    DataMgr *dataMgr = _dataStatus->GetDataMgr();
 
     vector<double> stretch = bParams->GetStretchFactors();
     for (int i = 0; i < varnames.size(); i++) {
@@ -579,7 +580,7 @@ double BarbRenderer::_calcDefaultScale(const vector<string> &varnames, const Bar
     for (int i = 0; i < 3; i++)
         maxvarvals[i] *= stretch[i];
 
-    const double *extents = m_dataStatus->getLocalExtents();
+    const double *extents = _dataStatus->getLocalExtents();
     double maxVecLength = (double)Max(extents[3] - extents[0], extents[4] - extents[1]) * 0.1;
 
     double maxVecVal = Max(maxvarvals[0], Max(maxvarvals[1], maxvarvals[2]));
