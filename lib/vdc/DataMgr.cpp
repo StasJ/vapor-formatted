@@ -5,6 +5,7 @@
 #include <map>
 #include <sstream>
 #include <stdio.h>
+#include <vapor/DCCF.h>
 #include <vapor/DCWRF.h>
 #include <vapor/DataMgr.h>
 #include <vapor/VDCNetCDF.h>
@@ -375,6 +376,8 @@ int DataMgr::Initialize(const vector<string> &files) {
         _dc = new VDCNetCDF(_nthreads);
     } else if (_format.compare("wrf") == 0) {
         _dc = new DCWRF();
+    } else if (_format.compare("cf") == 0) {
+        _dc = new DCCF();
     } else {
         SetErrMsg("Invalid data collection format : %s", _format.c_str());
         return (-1);
