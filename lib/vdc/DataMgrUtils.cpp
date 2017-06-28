@@ -175,6 +175,24 @@ int DataMgrUtils::GetGrids(DataMgr *dataMgr, size_t ts, const vector<string> &va
     return 0;
 }
 
+int DataMgrUtils::GetGrids(DataMgr *dataMgr, size_t ts, string varname,
+                           const vector<double> &minExtsReq, const vector<double> &maxExtsReq,
+                           bool useLowerAccuracy, int *refLevel, int *lod,
+                           StructuredGrid **gridptr) {
+    *gridptr = NULL;
+
+    vector<string> varnames;
+    varnames.push_back(varname);
+    vector<StructuredGrid *> grids;
+    int rc = GetGrids(dataMgr, ts, varnames, minExtsReq, maxExtsReq, useLowerAccuracy, refLevel,
+                      lod, grids);
+    if (rc < 0)
+        return (rc);
+
+    *gridptr = grids[0];
+    return (0);
+}
+
 int DataMgrUtils::GetGrids(DataMgr *dataMgr, size_t ts, const vector<string> &varnames,
                            bool useLowerAccuracy, int *refLevel, int *lod,
                            vector<StructuredGrid *> &grids) {
@@ -191,6 +209,21 @@ int DataMgrUtils::GetGrids(DataMgr *dataMgr, size_t ts, const vector<string> &va
 
     return (DataMgrUtils::GetGrids(dataMgr, ts, varnames, minExtsReq, maxExtsReq, useLowerAccuracy,
                                    refLevel, lod, grids));
+}
+
+int DataMgrUtils::GetGrids(DataMgr *dataMgr, size_t ts, string varname, bool useLowerAccuracy,
+                           int *refLevel, int *lod, StructuredGrid **gridptr) {
+    *gridptr = NULL;
+
+    vector<string> varnames;
+    varnames.push_back(varname);
+    vector<StructuredGrid *> grids;
+    int rc = GetGrids(dataMgr, ts, varnames, useLowerAccuracy, refLevel, lod, grids);
+    if (rc < 0)
+        return (rc);
+
+    *gridptr = grids[0];
+    return (0);
 }
 
 bool DataMgrUtils::GetAxes(const DataMgr *dataMgr, string varname, vector<int> &axes) {
@@ -232,7 +265,7 @@ bool DataMgrUtils::GetExtents(DataMgr *dataMgr, size_t timestep, string varname,
     return (true);
 }
 
-bool DataMgrUtils::GetExtents(DataMgr *dataMgr, size_t timestep, vector<string> &varnames,
+bool DataMgrUtils::GetExtents(DataMgr *dataMgr, size_t timestep, const vector<string> &varnames,
                               vector<double> &minExts, vector<double> &maxExts, vector<int> &axes) {
     minExts.clear();
     maxExts.clear();
@@ -363,5 +396,3 @@ double DataMgrUtils::getVoxelSize(size_t ts, string varname, int refLevel, int d
 }
 
 #endif
-}
-;

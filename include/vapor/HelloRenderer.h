@@ -36,7 +36,7 @@ class RENDER_API HelloRenderer : public Renderer {
 
   public:
     HelloRenderer(const ParamsMgr *pm, string winName, string dataSetName, string instName,
-                  DataStatus *ds);
+                  DataMgr *dataMgr);
 
     ~HelloRenderer();
 

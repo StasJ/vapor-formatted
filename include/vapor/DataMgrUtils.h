@@ -116,8 +116,15 @@ int GetGrids(DataMgr *dataMgr, size_t ts, const vector<string> &varnames,
              const vector<double> &minExtsReq, const vector<double> &maxExtsReq,
              bool useLowerAccuracy, int *refLevel, int *lod, std::vector<StructuredGrid *> &grids);
 
+int GetGrids(DataMgr *dataMgr, size_t ts, string varname, const vector<double> &minExtsReq,
+             const vector<double> &maxExtsReq, bool useLowerAccuracy, int *refLevel, int *lod,
+             StructuredGrid **gridptr);
+
 int GetGrids(DataMgr *dataMgr, size_t ts, const vector<string> &varnames, bool useLowerAccuracy,
              int *refLevel, int *lod, std::vector<StructuredGrid *> &grids);
+
+int GetGrids(DataMgr *dataMgr, size_t ts, string varname, bool useLowerAccuracy, int *refLevel,
+             int *lod, StructuredGrid **gridptr);
 
 //! Get the spatial coordinate axes for a variable
 //!
@@ -177,7 +184,7 @@ bool GetExtents(DataMgr *dataMgr, size_t timestep, string varname, vector<double
 //!
 //! \sa GetAxes()
 //
-bool GetExtents(DataMgr *dataMgr, size_t timestep, vector<string> &varnames,
+bool GetExtents(DataMgr *dataMgr, size_t timestep, const vector<string> &varnames,
                 vector<double> &minExts, vector<double> &maxExts, vector<int> &axes);
 
 #ifdef DEAD
@@ -213,4 +220,5 @@ void mapBoxToVox(Box *box, string varname, int refLevel, int lod, int timestep, 
 #endif
 
 };     // namespace DataMgrUtils
+};     // namespace VAPoR
 #endif // DATAMGRUTILS_H
