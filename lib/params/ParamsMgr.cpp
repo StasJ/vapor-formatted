@@ -674,6 +674,12 @@ void ParamsMgr::PMgrStateSave::Save(const XmlNode *node, string description) {
         return;
     }
 
+    // Set state change flags
+    //
+    for (int i = 0; i < _stateChangeFlags.size(); i++) {
+        *(_stateChangeFlags[i]) = true;
+    }
+
     if (!_groups.empty()) {
         return;
     }
