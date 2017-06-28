@@ -29,7 +29,6 @@ class BarbVariablesSubtab : public QWidget, public Ui_BarbVariablesGUI {
     void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
                 VAPoR::RenderParams *rParams) {
         _variablesWidget->Update(dataMgr, paramsMgr, rParams);
-        //_variablesWidget->Update(dataMgr, rParams);
     }
 };
 
@@ -64,6 +63,9 @@ class BarbGeometrySubtab : public QWidget, public Ui_BarbGeometryGUI {
         connect(_xDimSpinBox, SIGNAL(valueChanged(int)), this, SLOT(xDimChanged(int)));
         connect(_yDimSpinBox, SIGNAL(valueChanged(int)), this, SLOT(yDimChanged(int)));
         connect(_zDimSpinBox, SIGNAL(valueChanged(int)), this, SLOT(zDimChanged(int)));
+        connect(_lengthSpinBox, SIGNAL(valueChanged(double)), this, SLOT(lengthChanged(double)));
+        connect(_thicknessSpinBox, SIGNAL(valueChanged(double)), this,
+                SLOT(thicknessChanged(double)));
     }
 
     void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
@@ -104,6 +106,16 @@ class BarbGeometrySubtab : public QWidget, public Ui_BarbGeometryGUI {
         dims[1] = (int)longDims[1];
         dims[2] = i;
         bParams->SetGrid(dims);
+    }
+
+    void lengthChanged(double d) {
+        VAPoR::BarbParams *bParams = (VAPoR::BarbParams *)_rParams;
+        bParams->SetLengthScale(d);
+    }
+
+    void thicknessChanged(double d) {
+        VAPoR::BarbParams *bParams = (VAPoR::BarbParams *)_rParams;
+        bParams->SetLineThickness(d);
     }
 
   private:
