@@ -294,10 +294,7 @@ int DataStatus::maxLODPresent(string varname, size_t timestep) const {
     if (!dataMgr)
         return (0);
 
-    vector<size_t> ratios;
-    int rc = dataMgr->GetCRatios(varname, ratios);
-    if (rc != 0)
-        return -1;
+    vector<size_t> ratios = dataMgr->GetCRatios(varname);
     int i;
     for (i = 0; i < ratios.size(); i++) {
         if (!dataMgr->VariableExists(timestep, varname, 0, i))
@@ -633,8 +630,9 @@ int DataStatus::getGrids(size_t ts, const vector<string> &varnames,
 
             for (int j = 0; j < minExts.size(); j++) {
                 // shrink minExts/maxExts to requested extents
-                if (minExts[j] < minExtsReq[j])
+                if (minExts[j] < minExtsReq[j]) {
                     minExts[j] = minExtsReq[j];
+                }
                 if (maxExts[j] > maxExtsReq[j])
                     maxExts[j] = maxExtsReq[j];
             }
@@ -661,7 +659,6 @@ int DataStatus::getGrids(size_t ts, const vector<string> &varnames,
         //
         for (int j = 0; j < minExts.size(); j++)
             if (maxExts[j] < minExts[j]) {
-                cout << "extents size " << minExts.size() << " " << maxExts.size() << endl;
                 MyBase::SetErrMsg("Variable extents invalid");
                 return -1;
             }
@@ -675,6 +672,7 @@ int DataStatus::getGrids(size_t ts, const vector<string> &varnames,
 
         tminExts = minExts;
         tmaxExts = maxExts;
+
         StructuredGrid *rGrid =
             dataMgr->GetVariable(ts, varnames[i], *refLevel, *lod, tminExts, tmaxExts, true);
 
