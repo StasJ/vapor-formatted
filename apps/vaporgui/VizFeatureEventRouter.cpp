@@ -42,7 +42,6 @@
 #include "EventRouter.h"
 #include "VizFeatureEventRouter.h"
 #include "vapor/ControlExecutive.h"
-#include "vapor/DataStatus.h"
 
 using namespace VAPoR;
 
