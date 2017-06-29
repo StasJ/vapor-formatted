@@ -22,7 +22,6 @@
 #include "ColorbarSettings.h"
 #include "colorbarframe.h"
 #include "vapor/ColorbarPbase.h"
-#include "vapor/DataStatus.h"
 #include "vapor/RenderParams.h"
 #include <QFrame>
 #include <QString>

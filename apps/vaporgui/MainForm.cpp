@@ -862,6 +862,7 @@ void MainForm::loadData(QString fileName) {
     endAnimCapture();
 
     _vizWinMgr->viewAll();
+
     DataStatus *ds = _controlExec->getDataStatus();
     BoxSliderFrame::setDataStatus(ds);
 
@@ -936,6 +937,7 @@ void MainForm::importData(const string &modelType) {
     endAnimCapture();
 
     _vizWinMgr->viewAll();
+
     DataStatus *ds = _controlExec->getDataStatus();
     BoxSliderFrame::setDataStatus(ds);
 
