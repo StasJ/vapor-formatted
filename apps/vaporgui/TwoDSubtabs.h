@@ -40,10 +40,12 @@ class TwoDAppearanceSubtab : public QWidget, public Ui_TwoDAppearanceGUI {
         _TFWidget->setEventRouter(dynamic_cast<RenderEventRouter *>(parent));
     }
 
-    void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
+    void Update(VAPoR::DataStatus *dataStatus, VAPoR::ParamsMgr *paramsMgr,
                 VAPoR::RenderParams *rParams) {
-        _TFWidget->Update(paramsMgr, dataMgr, rParams);
-        _ColorBarFrame->Update(paramsMgr, dataMgr, rParams);
+        _TFWidget->Update(dataStatus, paramsMgr, rParams);
+
+        VAPoR::DataMgr *dataMgr = dataStatus->GetActiveDataMgr();
+        _ColorbarWidget->Update(dataMgr, paramsMgr, rParams);
     }
 };
 
