@@ -73,6 +73,8 @@ void TFWidget::setCMVar() {
     } else {
         _rParams->SetColorMapVariableName(var);
         _rParams->SetUseSingleColor(false);
+        if (!_rParams->GetMapperFunc(var))
+            _rParams->MakeMapperFunc(var);
     }
 }
 
@@ -216,20 +218,21 @@ void TFWidget::updateSliders() {
 }
 
 void TFWidget::updateMappingFrame() {
-    mappingFrame->Update(_rParams);
+    mappingFrame->Update(_dataMgr, _paramsMgr, _rParams);
     mappingFrame->fitToView();
-    // mappingFrame->updateHisto();
 }
 
-void TFWidget::Update(ParamsMgr *paramsMgr, DataMgr *dataMgr, RenderParams *rParams) {
+void TFWidget::Update(DataStatus *dataStatus, ParamsMgr *paramsMgr, RenderParams *rParams) {
 
     assert(paramsMgr);
-    assert(dataMgr);
+    assert(dataStatus);
     assert(rParams);
 
     _paramsMgr = paramsMgr;
-    _dataMgr = dataMgr;
+    _dataMgr = dataStatus->GetActiveDataMgr();
     _rParams = rParams;
+
+    mappingFrame->setDataStatus(dataStatus);
 
     updateAutoUpdateHistoCheckbox();
     updateMappingFrame();
@@ -318,7 +321,7 @@ size_t TFWidget::getCurrentTimestep(ParamsMgr *paramsMgr) {
 void TFWidget::updateHisto() {
     mappingFrame->fitToView();
     mappingFrame->updateMap();
-    mappingFrame->Update(_rParams);
+    mappingFrame->Update(_dataMgr, _paramsMgr, _rParams);
 }
 
 void TFWidget::autoUpdateHistoChecked(int state) {

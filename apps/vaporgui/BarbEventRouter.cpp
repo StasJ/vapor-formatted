@@ -3,7 +3,10 @@
 #pragma warning(disable : 4100)
 #endif
 
+#include "BarbEventRouter.h"
+#include "EventRouter.h"
 #include "MainForm.h"
+#include "VariablesWidget.h"
 #include "VizWin.h"
 #include "vapor/BarbParams.h"
 #include <QFileDialog>
@@ -14,10 +17,6 @@
 #include <vapor/TransferFunction.h>
 #include <vapor/glutil.h>
 #include <vector>
-//#include "vapor/BarbRenderer.h"
-#include "BarbEventRouter.h"
-#include "EventRouter.h"
-#include "VariablesWidget.h"
 
 using namespace VAPoR;
 
@@ -51,7 +50,10 @@ BarbEventRouter::BarbEventRouter(QWidget *parent, VizWinMgr *vizMgr, ControlExec
 BarbEventRouter::~BarbEventRouter() {
     if (_variables)
         delete _variables;
-    // if (_image) delete _image;
+#ifdef DEAD
+    if (_image)
+        delete _image;
+#endif
     if (_geometry)
         delete _geometry;
     if (_appearance)
@@ -79,9 +81,9 @@ void BarbEventRouter::geoCheckboxClicked(bool state) {}
 
 void BarbEventRouter::_updateTab() {
     // The variable tab updates itself:
-    _variables->Update(_controlExec->GetParamsMgr(), _controlExec->GetDataMgr(), GetActiveParams());
+    _variables->Update(_controlExec->GetDataMgr(), _controlExec->GetParamsMgr(), GetActiveParams());
 
-    _appearance->Update(_controlExec->GetParamsMgr(), _controlExec->GetDataMgr(),
+    _appearance->Update(_controlExec->getDataStatus(), _controlExec->GetParamsMgr(),
                         GetActiveParams());
 
     _geometry->Update(_controlExec->GetParamsMgr(), _controlExec->GetDataMgr(), GetActiveParams());
