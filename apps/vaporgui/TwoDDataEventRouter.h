@@ -58,6 +58,7 @@ class TwoDDataEventRouter : public QTabWidget, public RenderEventRouter {
 
   private slots:
 
+#ifdef DEAD
     //! Load a TF from file
     void twodLoadTF();
 
@@ -66,6 +67,7 @@ class TwoDDataEventRouter : public QTabWidget, public RenderEventRouter {
 
     //! Save the current TF to file
     void twodSaveTF();
+#endif
 
     //! respond when TF editing starts
     void startChangeMapFcn(QString);
