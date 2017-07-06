@@ -1061,6 +1061,12 @@ bool VDCNetCDF::VariableExists(size_t ts, string varname, int level, int lod) co
     return (true);
 }
 
+int VDCNetCDF::SetFill(int fillmode) {
+    int last;
+    int ret = ((NetCDFCpp *)_master)->SetFill(fillmode, last);
+    return ret;
+}
+
 int VDCNetCDF::_WriteMasterMeta() {
 
     int rc;
