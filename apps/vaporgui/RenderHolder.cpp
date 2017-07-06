@@ -35,7 +35,8 @@ using namespace VAPoR;
 
 namespace {
 const string DuplicateInStr = "Duplicate in:";
-};
+const string DataSetName = "DataSet1";
+}; // namespace
 
 RenderHolder::RenderHolder(QWidget *parent, ControlExec *ce)
     : QWidget(parent), Ui_RenderSelector() {
@@ -133,7 +134,7 @@ void RenderHolder::newRenderer() {
     renderInst = uniqueName(renderInst);
     qname = QString(renderInst.c_str());
 
-    int rc = _controlExec->ActivateRender(activeViz, renderClass, renderInst, false);
+    int rc = _controlExec->ActivateRender(activeViz, DataSetName, renderClass, renderInst, false);
     if (rc < 0) {
         MessageReporter::errorMsg("Can't create renderer class %s", renderClass.c_str());
         return;
@@ -164,10 +165,10 @@ void RenderHolder::deleteRenderer() {
     bool enabled;
     getRow(renderInst, renderClass, enabled);
 
-    int rc = _controlExec->ActivateRender(activeViz, renderClass, renderInst, false);
+    int rc = _controlExec->ActivateRender(activeViz, DataSetName, renderClass, renderInst, false);
     assert(rc == 0);
 
-    _controlExec->RemoveRenderer(activeViz, renderClass, renderInst);
+    _controlExec->RemoveRenderer(activeViz, DataSetName, renderClass, renderInst);
 
     // Make the renderer in the first row the active renderer
     //
@@ -199,7 +200,7 @@ void RenderHolder::changeChecked(int row, int col) {
     //
     p->SetActiveRenderer(activeViz, renderClass, renderInst);
 
-    int rc = _controlExec->ActivateRender(activeViz, renderClass, renderInst, enabled);
+    int rc = _controlExec->ActivateRender(activeViz, DataSetName, renderClass, renderInst, enabled);
     if (rc < 0) {
         MessageReporter::errorMsg("Can't create renderer class %s", renderClass.c_str());
         return;
@@ -288,14 +289,14 @@ void RenderHolder::copyInstanceTo(int item) {
     p->GetActiveRenderer(activeViz, activeRenderClass, activeRenderInst);
 
     RenderParams *rParams =
-        _controlExec->GetRenderParams(activeViz, activeRenderClass, activeRenderInst);
+        _controlExec->GetRenderParams(activeViz, DataSetName, activeRenderClass, activeRenderInst);
     assert(rParams);
 
     // figure out the name
     //
     string renderInst = uniqueName(activeRenderInst);
 
-    int rc = _controlExec->ActivateRender(dstVizName, rParams, renderInst, false);
+    int rc = _controlExec->ActivateRender(dstVizName, DataSetName, rParams, renderInst, false);
     if (rc < 0) {
         MessageReporter::errorMsg("Can't create renderer class %s", activeRenderClass.c_str());
         return;
@@ -454,7 +455,8 @@ void RenderHolder::Update() {
                 selectedRow = row;
             }
 
-            RenderParams *rParams = _controlExec->GetRenderParams(activeViz, className, renderInst);
+            RenderParams *rParams =
+                _controlExec->GetRenderParams(activeViz, DataSetName, className, renderInst);
             assert(rParams);
 
             setRow(row, renderInst, className, rParams->IsEnabled());

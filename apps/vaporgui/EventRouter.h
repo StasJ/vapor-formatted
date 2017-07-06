@@ -20,6 +20,7 @@
 
 #ifndef EVENTROUTER_H
 #define EVENTROUTER_H
+#include "AnimationParams.h"
 #include "GUIStateParams.h"
 #include "vapor/ControlExecutive.h"
 #include <QLineEdit>
@@ -232,12 +233,12 @@ class EventRouter {
     }
 
     size_t GetCurrentTimeStep() const {
-        GUIStateParams *sP = GetStateParams();
-        assert(sP);
+        AnimationParams *aParams;
+        aParams = (AnimationParams *)_controlExec->GetParamsMgr()->GetParams(
+            AnimationParams::GetClassType());
+        assert(aParams);
 
-        string vizName = sP->GetActiveVizName();
-        VAPoR::ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
-        return (paramsMgr->GetAnimationParams()->GetCurrentTimestep());
+        return (aParams->GetCurrentTimestep());
     }
 
     //! Return derived class type

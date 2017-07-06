@@ -19,6 +19,7 @@
 //		Intended to be used with boxframe.ui for event routers that embed a box slider control
 //
 #include "BoxSliderFrame.h"
+#include "AnimationParams.h"
 #include "MainForm.h"
 #include "vapor/ControlExecutive.h"
 #include "vapor/DataStatus.h"
@@ -329,7 +330,7 @@ void BoxSliderFrame::nudgeCenter(string varname, int val, int dir) {
 
     GUIStateParams *p = MainForm::getInstance()->GetStateParams();
     string activeViz = p->GetActiveVizName();
-    AnimationParams *animP = _controlExec->GetParamsMgr()->GetAnimationParams();
+    AnimationParams *animP = MainForm::getInstance()->GetAnimationParams();
 
     size_t timeStep = animP->GetCurrentTimestep();
 
@@ -415,7 +416,7 @@ void BoxSliderFrame::nudgeSize(int val, int dir) {
 
     GUIStateParams *p = MainForm::getInstance()->GetStateParams();
     string activeViz = p->GetActiveVizName();
-    AnimationParams *animP = _controlExec->GetParamsMgr()->GetAnimationParams();
+    AnimationParams *animP = MainForm::getInstance()->GetAnimationParams();
 
     size_t timeStep = animP->GetCurrentTimestep();
 

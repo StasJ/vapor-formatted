@@ -323,6 +323,18 @@ class PARAMS_API RenderParams : public ParamsBase {
         return GetValueDoubleVec(_stretchFactorsTag, defaultvec);
     }
 
+    //! Get the current data timestep
+    //! \retval ts current time step
+    //
+    size_t GetCurrentTimestep() const { return (size_t)GetValueLong(_currentTimestepTag, 0); }
+
+    //! Set the current data timestep being used
+    //! \param[in] ts current time step
+    //
+    void SetCurrentTimestep(size_t ts) {
+        SetValueLong(_currentTimestepTag, "Set timestep", (long)ts);
+    }
+
     //! method to set stretch factors
     //! Always sets them in the global instance.
     //! Also saves previous values
@@ -369,6 +381,7 @@ class PARAMS_API RenderParams : public ParamsBase {
     static const string _RefinementLevelTag;
     static const string _transferFunctionsTag;
     static const string _stretchFactorsTag;
+    static const string _currentTimestepTag;
 
     void _init();
     void _initBox();

@@ -32,7 +32,6 @@ class QDockWidget;
 #include <vapor/common.h>
 
 namespace VAPoR {
-class AnimationParams;
 class ViewpointParams;
 class RegionParams;
 } // namespace VAPoR

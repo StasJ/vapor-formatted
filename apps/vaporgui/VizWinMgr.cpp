@@ -32,7 +32,6 @@
 #include <qapplication.h>
 #include <sstream>
 #include <typeinfo>
-#include <vapor/AnimationParams.h>
 #include <vapor/ControlExecutive.h>
 #include <vapor/ParamsMgr.h>
 #include <vapor/ViewpointParams.h>
@@ -40,6 +39,7 @@
 #include <vapor/regionparams.h>
 
 #include "AnimationEventRouter.h"
+#include "AnimationParams.h"
 #include "AppSettingsEventRouter.h"
 #include "HelloEventRouter.h"
 #include "MainForm.h"
@@ -324,7 +324,7 @@ void VizWinMgr::setActiveViz(string vizName) {
         // Set the animation toolbar to the correct frame number:
         //
         ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
-        int currentTS = paramsMgr->GetAnimationParams()->GetCurrentTimestep();
+        int currentTS = _mainForm->GetAnimationParams()->GetCurrentTimestep();
 
         _tabManager->show();
         // Add to history if this is not during initial creation.
@@ -408,7 +408,7 @@ void VizWinMgr::viewAll() {
 
     DataStatus *dataStatus = _controlExec->getDataStatus();
     ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
-    size_t ts = paramsMgr->GetAnimationParams()->GetCurrentTimestep();
+    size_t ts = _mainForm->GetAnimationParams()->GetCurrentTimestep();
 
     vector<double> minExts, maxExts;
     dataStatus->GetActiveExtents(paramsMgr, ts, minExts, maxExts);
@@ -657,7 +657,7 @@ RenderEventRouter *VizWinMgr::GetRenderEventRouter(string winName, string render
     RenderEventRouter *er = dynamic_cast<RenderEventRouter *>(itr->second);
     assert(er);
 
-    er->SetActive(winName, instName);
+    er->SetActive(instName);
 
     return er;
 }
@@ -759,7 +759,7 @@ void VizWinMgr::ReinitRouters() {
 
     DataStatus *dataStatus = _controlExec->getDataStatus();
     ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
-    size_t ts = paramsMgr->GetAnimationParams()->GetCurrentTimestep();
+    size_t ts = _mainForm->GetAnimationParams()->GetCurrentTimestep();
 
     vector<double> minExts, maxExts;
     dataStatus->GetActiveExtents(paramsMgr, ts, minExts, maxExts);

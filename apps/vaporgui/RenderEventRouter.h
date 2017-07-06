@@ -125,20 +125,16 @@ class RenderEventRouter : public EventRouter {
   public:
     RenderEventRouter(VAPoR::ControlExec *ce, string paramsType) : EventRouter(ce, paramsType) {
 
-        m_currentHistogram = NULL;
-        m_winName = "";
-        m_instName = "";
+        _currentHistogram = NULL;
+        _instName = "";
     }
 
     virtual ~RenderEventRouter() {
-        if (m_currentHistogram)
-            delete m_currentHistogram;
+        if (_currentHistogram)
+            delete _currentHistogram;
     }
 
-    void SetActive(string winName, string instName) {
-        m_winName = winName;
-        m_instName = instName;
-    }
+    void SetActive(string instName) { _instName = instName; }
 
     virtual void hookUpTab() {}
 
@@ -301,10 +297,9 @@ class RenderEventRouter : public EventRouter {
     //! \param[in] p Params instance associated with the current active tab.
     virtual void _confirmText(){};
 
-    Histo *m_currentHistogram;
+    Histo *_currentHistogram;
 
   private:
-    string m_winName;
-    string m_instName;
+    string _instName;
 };
 #endif // RENDEREREVENTROUTER_H

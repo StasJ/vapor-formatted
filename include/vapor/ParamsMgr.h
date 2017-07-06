@@ -26,7 +26,6 @@
 #include <stack>
 #include <utility>
 
-#include <vapor/AnimationParams.h>
 #include <vapor/DataMgr.h>
 #include <vapor/ParamsBase.h>
 #include <vapor/RenderParams.h>
@@ -307,18 +306,10 @@ class PARAMS_API ParamsMgr : public MyBase {
     //! \sa CreateRenderParamsInstance()
     //! \sa RenParamsRegistrar, RenParamsFactory
     //
-    vector<string> GetRenderParamInstances(string winName, string classType) const;
+    vector<string> GetRenderParamInstances(string winName, string dataSetName,
+                                           string classType) const;
 
-    //! Obtain the AnimationParams that are applicable in a particular Visualizer
-    //! window.
-    //!
-    //! Return the AnimationParams instance
-    //!
-    //! \retval ptr AnimationParams instance that is applicable.
-    //
-    AnimationParams *GetAnimationParams() const {
-        return ((AnimationParams *)_otherParams->GetParams(AnimationParams::GetClassType()));
-    }
+    vector<string> GetRenderParamInstances(string winName, string classType) const;
 
     //! Obtain the ViewpointParams that are applicable in a particular Visualizer
     //! window.

@@ -55,7 +55,6 @@ int HelloRenderer::_initializeGL() { return (0); }
 int HelloRenderer::_paintGL() {
 
     HelloParams *rParams = (HelloParams *)GetActiveParams();
-    AnimationParams *myAnimationParams = GetAnimationParams();
 
     // Next we need to get a StructuredGrid for the data we are rendering.
     StructuredGrid *helloGrid;
@@ -85,7 +84,7 @@ int HelloRenderer::_paintGL() {
 
     // Finally, obtain the StructuredGrid of the data for the specified region, at requested
     // refinement and lod, using Renderer::getGrids()
-    size_t timestep = myAnimationParams->GetCurrentTimestep();
+    size_t timestep = rParams->GetCurrentTimestep();
 
     int rc = DataMgrUtils::GetGrids(_dataMgr, timestep, varname, regMin, regMax, true,
                                     &actualRefLevel, &lod, &helloGrid);

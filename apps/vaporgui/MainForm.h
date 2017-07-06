@@ -24,6 +24,7 @@
 #ifndef MAINFORM_H
 #define MAINFORM_H
 
+#include "AnimationParams.h"
 #include "AppSettingsParams.h"
 #include "GUIStateParams.h"
 #include "StartupParams.h"
@@ -125,6 +126,11 @@ class MainForm : public QMainWindow {
     StartupParams *GetStartupParams() const {
         assert(_paramsMgr != NULL);
         return ((StartupParams *)_paramsMgr->GetParams(StartupParams::GetClassType()));
+    }
+
+    AnimationParams *GetAnimationParams() const {
+        assert(_paramsMgr != NULL);
+        return ((AnimationParams *)_paramsMgr->GetParams(AnimationParams::GetClassType()));
     }
 
   protected:
