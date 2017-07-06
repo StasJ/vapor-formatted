@@ -344,6 +344,7 @@ void RenderEventRouter::updateTab() {
     EventRouter::updateTab();
 }
 
+#ifdef DEAD
 void RenderEventRouter::fileSaveTF() {
     RenderParams *rParams = GetActiveParams();
 
@@ -435,3 +436,4 @@ void RenderEventRouter::fileLoadTF(string varname, const char *startPath, bool s
     setEditorDirty(rParams);
 #endif
 }
+#endif

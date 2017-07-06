@@ -185,6 +185,7 @@ class RenderEventRouter : public EventRouter {
     virtual void UpdateMapBounds() {}
 #endif
 
+#ifdef DEAD
     //! Launch a dialog to save the current transfer function to file.
     //!
     //! \param[in] rParams RenderParams instance associated with the
@@ -211,6 +212,7 @@ class RenderEventRouter : public EventRouter {
     //! \param[in] savePath indicates whether or not the resulting path should
     //! be saved to user preferences.
     void fileLoadTF(string varname, const char *startPath, bool savePath);
+#endif
 
     //! Obtain the current valid histogram.  Optionally will construct a new
     //! one if needed.
