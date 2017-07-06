@@ -1,4 +1,5 @@
 #include "vapor/VDC_c.h"
+#include "vapor/MyBase.h"
 #include "vapor/VDC.h"
 #include "vapor/VDCNetCDF.h"
 #include <map>
@@ -13,9 +14,14 @@
         fprintf(stderr, "[%s:%i]%s", __FILE__, __LINE__, __func__);                                \
         fprintf(stderr, __VA_ARGS__);                                                              \
     }
+#define VDC_DEBUG_called() VDC_DEBUG_printff("()\n")
+#include <signal.h>
+#define VDC_DEBUG_break() raise(SIGINT)
 #else
 #define VDC_DEBUG_printf(...)
 #define VDC_DEBUG_printff(...)
+#define VDC_DEBUG_called()
+#define VDC_DEBUG_break()
 #endif
 
 using std::string;
@@ -31,7 +37,9 @@ int _XTypeToInt(const VDC::XType type);
 VDC::XType _IntToXType(int type);
 const char *_XTypeToString(const VDC::XType type);
 const char *_boolToStr(const int b);
+const char *_AxisToStr(const int a);
 
+vector<string> _strArrayToStringVector(const char **a, size_t count);
 string _stringVectorToString(const vector<string> v);
 
 // ########################
@@ -126,11 +134,18 @@ int VDCCoordVar_GetUniform(const VDCCoordVar *p) { return p->GetUniform(); }
 // #         VDC          #
 // ########################
 
-VDC *VDC_new() { return new VAPoR::VDCNetCDF(); }
+VDC *VDC_new() {
+    VDC_DEBUG_called();
+    return new VAPoR::VDCNetCDF();
+}
 
-void VDC_delete(VDC *p) { delete p; }
+void VDC_delete(VDC *p) {
+    VDC_DEBUG_called();
+    delete p;
+}
 
 int VDC_Initialize(VDC *p, const char *path, int mode) {
+    VDC_DEBUG_called();
     VDC::AccessMode am;
     if (mode == VDC_AccessMode_R)
         am = VDC::R;
@@ -140,43 +155,54 @@ int VDC_Initialize(VDC *p, const char *path, int mode) {
         am = VDC::A;
 
     VAPoR::VDCNetCDF *pnc = (VAPoR::VDCNetCDF *)p;
-    return pnc->Initialize(string(path), am, 0);
+    int ret = pnc->Initialize(string(path), am, 0);
+    pnc->SetFill(0x100); // Required to disable set_fill
+    return ret;
 }
 
 int VDC_GetDimension(const VDC *p, const char *dimname, VDCDimension *dimension) {
+    VDC_DEBUG_called();
     return p->GetDimension(string(dimname), *dimension);
 }
 
 void VDC_GetDimensionNames(const VDC *p, char ***names, int *count) {
+    VDC_DEBUG_called();
     _stringVectorToCStringArray(p->GetDimensionNames(), names, count);
 }
 
 int VDC_GetCoordVarInfo(const VDC *p, const char *varname, VDCCoordVar *var) {
+    VDC_DEBUG_called();
     return p->GetCoordVarInfo(string(varname), *var);
 }
 
 int VDC_GetDataVarInfo(const VDC *p, const char *varname, VDCDataVar *var) {
+    VDC_DEBUG_called();
     return p->GetDataVarInfo(string(varname), *var);
 }
 
 int VDC_GetBaseVarInfo(const VDC *p, const char *varname, VDCBaseVar *var) {
+    VDC_DEBUG_called();
     return p->GetBaseVarInfo(string(varname), *var);
 }
 
 void VDC_GetDataVarNames(const VDC *p, char ***names, int *count) {
+    VDC_DEBUG_called();
     _stringVectorToCStringArray(p->GetDataVarNames(), names, count);
 }
 
 void VDC_GetCoordVarNames(const VDC *p, char ***names, int *count) {
+    VDC_DEBUG_called();
     _stringVectorToCStringArray(p->GetCoordVarNames(), names, count);
 }
 
 int VDC_GetNumRefLevels(const VDC *p, const char *varname) {
+    VDC_DEBUG_called();
     return p->GetNumRefLevels(string(varname));
 }
 
 int VDC_GetAtt_long(const VDC *p, const char *varname, const char *attname, long **values,
                     int *count) {
+    VDC_DEBUG_called();
     vector<long> values_v;
     bool ret = p->GetAtt(string(varname), string(attname), values_v);
     if (ret)
@@ -187,6 +213,7 @@ int VDC_GetAtt_long(const VDC *p, const char *varname, const char *attname, long
 
 int VDC_GetAtt_double(const VDC *p, const char *varname, const char *attname, double **values,
                       int *count) {
+    VDC_DEBUG_called();
     vector<double> values_v;
     bool ret = p->GetAtt(string(varname), string(attname), values_v);
     if (ret)
@@ -196,6 +223,7 @@ int VDC_GetAtt_double(const VDC *p, const char *varname, const char *attname, do
 }
 
 int VDC_GetAtt_text(const VDC *p, const char *varname, const char *attname, char **text) {
+    VDC_DEBUG_called();
     string text_s;
     bool ret = p->GetAtt(string(varname), string(attname), text_s);
     if (ret)
@@ -205,6 +233,7 @@ int VDC_GetAtt_text(const VDC *p, const char *varname, const char *attname, char
 }
 
 int VDC_GetAtt_Count(const VDC *p, const char *varname, const char *attname, int *count) {
+    VDC_DEBUG_called();
     VDC::XType type = p->GetAttType(string(varname), string(attname));
     if (type < 0 || type == VDC::XType::INVALID)
         return 0;
@@ -224,22 +253,27 @@ int VDC_GetAtt_Count(const VDC *p, const char *varname, const char *attname, int
 }
 
 void VDC_GetAttNames(const VDC *p, const char *varname, char ***names, int *count) {
+    VDC_DEBUG_called();
     _stringVectorToCStringArray(p->GetAttNames(string(varname)), names, count);
 }
 
 int VDC_GetAttType(const VDC *p, const char *varname, const char *attname) {
+    VDC_DEBUG_called();
     return _XTypeToInt(p->GetAttType(string(varname), string(attname)));
 }
 
 int VDC_VariableExists(const VDC *p, size_t ts, const char *varname, int reflevel, int lod) {
+    VDC_DEBUG_called();
     return p->VariableExists(ts, string(varname), reflevel, lod);
 }
 
 int VDC_IsTimeVarying(const VDC *p, const char *varname) {
+    VDC_DEBUG_called();
     return p->IsTimeVarying(string(varname));
 }
 
 int VDC_GetCRatios(const VDC *p, const char *varname, size_t **ratios, int *count) {
+    VDC_DEBUG_called();
     VDCBaseVar v;
     bool ret = p->GetBaseVarInfo(string(varname), v);
     if (ret)
@@ -248,12 +282,14 @@ int VDC_GetCRatios(const VDC *p, const char *varname, size_t **ratios, int *coun
 }
 
 int VDC_GetCRatiosCount(const VDC *p, const char *varname) {
+    VDC_DEBUG_called();
     VDCBaseVar v;
     p->GetBaseVarInfo(string(varname), v);
     return v.GetCRatios().size();
 }
 
 int VDC_GetVarDimNames(const VDC *p, const char *varname, int spatial, char ***names, int *count) {
+    VDC_DEBUG_called();
     vector<string> names_v;
     bool ret = p->GetVarDimNames(string(varname), spatial, names_v);
     if (ret)
@@ -263,6 +299,7 @@ int VDC_GetVarDimNames(const VDC *p, const char *varname, int spatial, char ***n
 }
 
 int VDC_GetVarCoordVars(const VDC *p, const char *varname, int spatial, char ***names, int *count) {
+    VDC_DEBUG_called();
     vector<string> names_v;
     bool ret = p->GetVarCoordVars(string(varname), spatial, names_v);
     if (ret)
@@ -272,16 +309,27 @@ int VDC_GetVarCoordVars(const VDC *p, const char *varname, int spatial, char ***
 }
 
 int VDC_OpenVariableRead(VDC *p, size_t ts, const char *varname, int level, int lod) {
+    VDC_DEBUG_called();
     return p->OpenVariableRead(ts, string(varname), level, lod);
 }
 
-int VDC_CloseVariable(VDC *p) { return p->CloseVariable(); }
+int VDC_CloseVariable(VDC *p) {
+    VDC_DEBUG_called();
+    return p->CloseVariable();
+}
 
-int VDC_Read(VDC *p, float *region) { return p->Read(region); }
+int VDC_Read(VDC *p, float *region) {
+    VDC_DEBUG_called();
+    return p->Read(region);
+}
 
-int VDC_ReadSlice(VDC *p, float *slice) { return p->ReadSlice(slice); }
+int VDC_ReadSlice(VDC *p, float *slice) {
+    VDC_DEBUG_called();
+    return p->ReadSlice(slice);
+}
 
 int VDC_ReadRegion(VDC *p, const size_t *min, const size_t *max, const int dims, float *region) {
+    VDC_DEBUG_called();
     vector<size_t> min_v;
     vector<size_t> max_v;
     for (int i = 0; i < dims; i++) {
@@ -292,10 +340,12 @@ int VDC_ReadRegion(VDC *p, const size_t *min, const size_t *max, const int dims,
 }
 
 int VDC_GetVar(VDC *p, const char *varname, int level, int lod, float *data) {
+    VDC_DEBUG_called();
     return p->GetVar(string(varname), level, lod, data);
 }
 
 int VDC_GetVarAtTimeStep(VDC *p, size_t ts, const char *varname, int level, int lod, float *data) {
+    VDC_DEBUG_called();
     return p->GetVar(ts, string(varname), level, lod, data);
 }
 
@@ -304,12 +354,13 @@ int VDC_GetVarAtTimeStep(VDC *p, size_t ts, const char *varname, int level, int 
 // ########################
 
 int VDC_DefineDimension(VDC *p, const char *dimname, size_t length) {
+    VDC_DEBUG_called();
     return p->DefineDimension(string(dimname), length);
 }
 
 int VDC_DefineDataVar(VDC *p, const char *varname, const char **dimnames, size_t dimnamesCount,
-                      const char **coordvars, size_t coordvarsCount, const char *units, int xtype,
-                      int compressed) {
+                      const char **coordvars, size_t coordvarsCount, const char *units,
+                      VDC_XType xtype, int compressed) {
     VDC_DEBUG_printff("(%s, \"%s\", <dims>, %li, <coords>, %li, \"%s\", %s, %s)\n",
                       p ? "*p" : "NULL", varname, dimnamesCount, coordvarsCount, units,
                       _XTypeToString(_IntToXType(xtype)), _boolToStr(compressed));
@@ -317,6 +368,8 @@ int VDC_DefineDataVar(VDC *p, const char *varname, const char **dimnames, size_t
                       _stringVectorToString(p->GetDimensionNames()).c_str());
     VDC_DEBUG_printff(": Current coordvars = %s\n",
                       _stringVectorToString(p->GetCoordVarNames()).c_str());
+    VDC_DEBUG_printff(": Current datavars = %s\n",
+                      _stringVectorToString(p->GetDataVarNames()).c_str());
     vector<string> dimnames_v;
     vector<string> coordvars_v;
     for (int i = 0; i < dimnamesCount; i++)
@@ -330,11 +383,31 @@ int VDC_DefineDataVar(VDC *p, const char *varname, const char **dimnames, size_t
     int ret = p->DefineDataVar(string(varname), dimnames_v, coordvars_v, string(units),
                                _IntToXType(xtype), compressed);
     VDC_DEBUG_printff(": return (%i)\n", ret);
+    if (ret < 0)
+        VDC_DEBUG_printff(": Error message = \"%s\"\n", Wasp::MyBase::GetErrMsg());
     return ret;
 }
 
-int VDC_PutAtt(VDC *p, const char *varname, const char *attname, int xtype, const void *values,
-               size_t count) {
+int VDC_DefineCoordVar(VDC *p, const char *varname, const char **dimnames, size_t dimnamesCount,
+                       const char *time_dim_name, const char *units, int axis, VDC_XType xtype,
+                       int compressed) {
+    VDC_DEBUG_printff(
+        "(%s, \"%s\", %s, %li, \"%s\", \"%s\", %s, %s, %s)\n", p ? "*p" : "NULL", varname,
+        _stringVectorToString(_strArrayToStringVector(dimnames, dimnamesCount)).c_str(),
+        dimnamesCount, time_dim_name, units, _AxisToStr(axis), _XTypeToString(_IntToXType(xtype)),
+        _boolToStr(compressed));
+    vector<string> dimnames_v;
+    for (int i = 0; i < dimnamesCount; i++)
+        dimnames_v.push_back(string(dimnames[i]));
+    VDC_DEBUG_printff(": calling VDC::DefineCoordVar(\"%s\", %s, \"%s\", \"%s\", %s, %s, %s)\n",
+                      varname, _stringVectorToString(dimnames_v).c_str(), time_dim_name, units,
+                      _AxisToStr(axis), _XTypeToString(_IntToXType(xtype)), _boolToStr(compressed));
+    return p->DefineCoordVar(string(varname), dimnames_v, string(time_dim_name), string(units),
+                             axis, _IntToXType(xtype), compressed);
+}
+
+int VDC_PutAtt(VDC *p, const char *varname, const char *attname, VDC_XType xtype,
+               const void *values, size_t count) {
     VDC_DEBUG_printff("(%s, \"%s\", \"%s\", %s, <data>, %li)\n", p ? "*p" : "NULL", varname,
                       attname, _XTypeToString(_IntToXType(xtype)), count);
     switch (xtype) {
@@ -352,10 +425,40 @@ int VDC_PutAtt(VDC *p, const char *varname, const char *attname, int xtype, cons
     }
 }
 
-int VDC_PutAtt_double(VDC *p, const char *varname, const char *attname, int xtype,
+static string valueCArrayToString(const void *a, int l, VDC_XType type) {
+    string s("[");
+    char buffer[128];
+    for (int i = 0; i < l; i++) {
+        switch (type) {
+        case VDC_XType_FLOAT:
+            sprintf(buffer, "%g", ((float *)a)[i]);
+            break;
+        case VDC_XType_DOUBLE:
+            sprintf(buffer, "%g", ((double *)a)[i]);
+            break;
+        case VDC_XType_INT32:
+            sprintf(buffer, "%i", ((int *)a)[i]);
+            break;
+        case VDC_XType_INT64:
+            sprintf(buffer, "%li", ((long *)a)[i]);
+            break;
+        }
+        s += string(buffer);
+        if (i != l - 1)
+            s += ", ";
+    }
+    return s + string("]");
+}
+
+int VDC_PutAtt_double(VDC *p, const char *varname, const char *attname, VDC_XType xtype,
                       const double *values, size_t count) {
-    VDC_DEBUG_printff("(%s, \"%s\", \"%s\", %s, <data>, %li)\n", p ? "*p" : "NULL", varname,
-                      attname, _XTypeToString(_IntToXType(xtype)), count);
+    VDC_DEBUG_printff("(%s, \"%s\", \"%s\", %s, %s, %li)\n", p ? "*p" : "NULL", varname, attname,
+                      _XTypeToString(_IntToXType(xtype)),
+                      valueCArrayToString(values, count, xtype).c_str(), count);
+    if (!strcmp(attname, "_FillValue")) {
+        printf("Renaming\n");
+        attname = "_FillValue";
+    }
     vector<double> values_v;
     if (xtype == VDC_XType_FLOAT)
         for (int i = 0; i < count; i++)
@@ -367,10 +470,11 @@ int VDC_PutAtt_double(VDC *p, const char *varname, const char *attname, int xtyp
     return p->PutAtt(string(varname), string(attname), _IntToXType(xtype), values_v);
 }
 
-int VDC_PutAtt_long(VDC *p, const char *varname, const char *attname, int xtype, const long *values,
-                    size_t count) {
-    VDC_DEBUG_printff("(%s, \"%s\", \"%s\", %s, <data>, %li)\n", p ? "*p" : "NULL", varname,
-                      attname, _XTypeToString(_IntToXType(xtype)), count);
+int VDC_PutAtt_long(VDC *p, const char *varname, const char *attname, VDC_XType xtype,
+                    const long *values, size_t count) {
+    VDC_DEBUG_printff("(%s, \"%s\", \"%s\", %s, %s, %li)\n", p ? "*p" : "NULL", varname, attname,
+                      _XTypeToString(_IntToXType(xtype)),
+                      valueCArrayToString(values, count, xtype).c_str(), count);
     vector<long> values_v;
     if (xtype == VDC_XType_INT32)
         for (int i = 0; i < count; i++)
@@ -382,26 +486,36 @@ int VDC_PutAtt_long(VDC *p, const char *varname, const char *attname, int xtype,
     return p->PutAtt(string(varname), string(attname), _IntToXType(xtype), values_v);
 }
 
-int VDC_PutAtt_text(VDC *p, const char *varname, const char *attname, int xtype,
+int VDC_PutAtt_text(VDC *p, const char *varname, const char *attname, VDC_XType xtype,
                     const char *values) {
     VDC_DEBUG_printff("(%s, \"%s\", \"%s\", %s, \"%s\")\n", p ? "*p" : "NULL", varname, attname,
                       _XTypeToString(_IntToXType(xtype)), values);
     return p->PutAtt(string(varname), string(attname), _IntToXType(xtype), string(values));
 }
 
-int VDC_EndDefine(VDC *p) { return p->EndDefine(); }
+int VDC_EndDefine(VDC *p) {
+    VDC_DEBUG_printff("(%s)\n", p ? "*p" : "NULL");
+    return p->EndDefine();
+}
 
 int VDC_PutVar(VDC *p, const char *varname, int lod, const float *data) {
+    VDC_DEBUG_called();
     return p->PutVar(string(varname), lod, data);
 }
 
 int VDC_PutVarAtTimeStep(VDC *p, size_t ts, const char *varname, int lod, const float *data) {
+    VDC_DEBUG_printff("(%s, %li, \"%s\", %i, <data>)\n", p ? "*p" : "NULL", ts, varname, lod);
     return p->PutVar(ts, string(varname), lod, data);
 }
 
 // ########################
 // #       Utility        #
 // ########################
+
+const char *VDC_GetErrMsg() {
+    VDC_DEBUG_called();
+    return Wasp::MyBase::GetErrMsg();
+}
 
 void VDC_FreeStringArray(char ***str, int *count) {
     for (int i = 0; i < *count; i++)
@@ -542,6 +656,28 @@ const char *_boolToStr(const int b) {
         return "true";
     else
         return "false";
+}
+
+const char *_AxisToStr(const int a) {
+    switch (a) {
+    case 0:
+        return "X";
+    case 1:
+        return "Y";
+    case 2:
+        return "Z";
+    case 3:
+        return "T";
+    default:
+        return "INVALID AXIS";
+    }
+}
+
+vector<string> _strArrayToStringVector(const char **a, size_t count) {
+    vector<string> v;
+    for (int i = 0; i < count; i++)
+        v.push_back(string(a[i]));
+    return v;
 }
 
 string _stringVectorToString(const vector<string> v) {
