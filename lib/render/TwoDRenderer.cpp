@@ -10,7 +10,6 @@
 #include <cstdlib>
 #include <vapor/glutil.h> // Must be included first!!!
 
-#include <vapor/AnimationParams.h>
 #include <vapor/MyBase.h>
 #include <vapor/TwoDRenderer.h>
 #include <vapor/ViewpointParams.h>

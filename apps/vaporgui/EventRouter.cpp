@@ -22,7 +22,6 @@
 #pragma warning(disable : 4100)
 #endif
 #include "EventRouter.h"
-#include "MainForm.h"
 #include "qbuttongroup.h"
 #include <QFileDialog>
 #include <QObject>

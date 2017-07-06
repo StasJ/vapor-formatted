@@ -3,7 +3,6 @@
 #pragma warning(disable : 4100)
 #endif
 
-#include "MainForm.h"
 #include "VizWin.h"
 #include "vapor/BarbParams.h"
 #include <QFileDialog>

@@ -236,8 +236,6 @@ class RENDER_API Renderer : public RendererBase {
         return (_paramsMgr->GetRenderParams(_winName, _dataSetName, _paramsType, _instName));
     }
 
-    AnimationParams *GetAnimationParams() const { return (_paramsMgr->GetAnimationParams()); }
-
   protected:
     Renderer() {}
 

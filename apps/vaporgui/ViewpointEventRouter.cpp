@@ -29,7 +29,6 @@
 #include <qrect.h>
 #include <vapor/glutil.h> // Must be included first!!!
 
-#include "MainForm.h"
 #include "ViewpointEventRouter.h"
 #include "VizWinMgr.h"
 #include "vapor/ControlExecutive.h"
@@ -285,7 +284,7 @@ void ViewpointEventRouter::_updateTab() {
     string vizName = p->GetActiveVizName();
 
     ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
-    size_t ts = paramsMgr->GetAnimationParams()->GetCurrentTimestep();
+    size_t ts = GetCurrentTimeStep();
 
     latLonFrame->hide();
     // Always display the current values of the campos and rotcenter
