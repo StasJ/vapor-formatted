@@ -1600,6 +1600,7 @@ void MappingFrame::resize() {
 // Handle mouse press events
 //----------------------------------------------------------------------------
 void MappingFrame::mousePressEvent(QMouseEvent *event) {
+    _paramsMgr->BeginSaveStateGroup("MappingFrame mousePressEvent");
     select(event->x(), event->y(), event->modifiers());
 
     _lastx = xViewToWorld(event->x());
@@ -1669,7 +1670,7 @@ void MappingFrame::mouseReleaseEvent(QMouseEvent *event) {
         emit updateParams();
     }
 
-    cout << "MappingFrame mouseReleaseEvent" << endl;
+    _paramsMgr->EndSaveStateGroup();
 }
 
 //----------------------------------------------------------------------------
