@@ -354,7 +354,7 @@ float BarbRenderer::getHeightOffset(StructuredGrid *heightVar, float xCoord, flo
 
 void BarbRenderer::renderScottsGrid(int rakeGrid[3], double rakeExts[6],
                                     vector<StructuredGrid *> variableData, int timestep,
-                                    float vectorLengthScale, float rad, const BarbParams *bParams) {
+                                    float length, float rad, const BarbParams *bParams) {
 
     assert(variableData.size() == 5);
 
