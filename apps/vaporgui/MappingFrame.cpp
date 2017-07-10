@@ -98,7 +98,7 @@ MappingFrame::MappingFrame(QWidget *parent, const char *)
       _minX(-0.035), _maxX(1.035), _minY(-0.35), _maxY(1.3), _minValue(0.0), _maxValue(1.0),
       _colorbarHeight(16), _domainBarHeight(16), _domainLabelHeight(10),
       _domainHeight(_domainBarHeight + _domainLabelHeight + 3), _axisRegionHeight(20),
-      _opacityGap(4), _bottomGap(10), _rParams(NULL)
+      _opacityGap(4), _bottomGap(10), _dataMgr(NULL), _rParams(NULL)
 
 {
     initWidgets();
@@ -251,7 +251,8 @@ void MappingFrame::setVariableName(std::string name) {
 // Synchronize the frame with the underlying params
 //----------------------------------------------------------------------------
 // void MappingFrame::updateTab()
-void MappingFrame::Update(RenderParams *rParams) {
+void MappingFrame::Update(DataMgr *dataMgr, RenderParams *rParams) {
+    _dataMgr = dataMgr;
     _rParams = rParams;
 
     string varname = rParams->GetVariableName();
@@ -2317,9 +2318,9 @@ void MappingFrame::fitToData() {
         rParams->GetBox()->GetExtents(minExts, maxExts, ts);
 #endif
         rParams->GetBox()->GetExtents(minExts, maxExts);
-        StructuredGrid *rGrid = _controlExec->GetDataMgr()->GetVariable(
-            ts, rParams->GetVariableName(), rParams->GetRefinementLevel(),
-            rParams->GetCompressionLevel(), minExts, maxExts);
+        StructuredGrid *rGrid =
+            _dataMgr->GetVariable(ts, rParams->GetVariableName(), rParams->GetRefinementLevel(),
+                                  rParams->GetCompressionLevel(), minExts, maxExts);
         rGrid->GetRange(range);
         if (range[1] < range[0]) { // no data
             range[1] = 1.f;

@@ -144,7 +144,7 @@ class MappingFrame : public QGLWidget {
     //! that contains the MapperFunction being used.  This should be invoked in
     //! RenderEventRouter::updateTab()
     // void updateTab();
-    void Update(VAPoR::RenderParams *rParams = NULL);
+    void Update(VAPoR::DataMgr *dataMgr, VAPoR::RenderParams *rParams = NULL);
 
     //! Specify the variable associated with the MappingFrame.  Invoked in
     //! RenderEventRouter::setEditorDirty()
@@ -387,6 +387,7 @@ class MappingFrame : public QGLWidget {
     int _axisRegionHeight;
     const int _opacityGap;
     const int _bottomGap;
+    VAPoR::DataMgr *_dataMgr;
     VAPoR::RenderParams *_rParams;
 
     QStringList _axisTexts;
