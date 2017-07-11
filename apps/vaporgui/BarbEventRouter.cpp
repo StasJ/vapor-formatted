@@ -76,8 +76,6 @@ void BarbEventRouter::GetWebHelp(vector<pair<string, string>> &help) const {
                              "http://www.vapor.ucar.edu/docs/vapor-gui-help/BarbAppearance"));
 }
 
-void BarbEventRouter::geoCheckboxClicked(bool state) {}
-
 void BarbEventRouter::_updateTab() {
     // The variable tab updates itself:
     _variables->Update(GetActiveDataMgr(), _controlExec->GetParamsMgr(), GetActiveParams());
@@ -85,23 +83,4 @@ void BarbEventRouter::_updateTab() {
     _appearance->Update(GetActiveDataMgr(), _controlExec->GetParamsMgr(), GetActiveParams());
 
     _geometry->Update(_controlExec->GetParamsMgr(), GetActiveDataMgr(), GetActiveParams());
-}
-
-void BarbEventRouter::startChangeMapFcn(QString) {}
-
-void BarbEventRouter::endChangeMapFcn() {
-
-#ifdef DEAD
-    if (!_savedCommand)
-        return;
-
-    Command::CaptureEnd(_savedCommand, rParams);
-
-    _savedCommand = 0;
-#endif
-
-#ifdef DEAD
-    if (rParams->IsEnabled() && !rParams->UseSingleColor())
-        m_vizMgr->getActiveVizWin()->reallyUpdate();
-#endif
 }
