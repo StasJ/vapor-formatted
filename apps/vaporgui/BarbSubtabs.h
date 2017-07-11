@@ -26,7 +26,7 @@ class BarbVariablesSubtab : public QWidget, public Ui_BarbVariablesGUI {
             (VariablesWidget::DimFlags)(VariablesWidget::TWOD | VariablesWidget::THREED));
     }
 
-    void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
+    void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                 VAPoR::RenderParams *rParams) {
         _variablesWidget->Update(dataMgr, paramsMgr, rParams);
     }
@@ -39,14 +39,13 @@ class BarbAppearanceSubtab : public QWidget, public Ui_BarbAppearanceGUI {
   public:
     BarbAppearanceSubtab(QWidget *parent) {
         setupUi(this);
-        _TFWidget->setEventRouter(dynamic_cast<RenderEventRouter *>(parent));
         _TFWidget->Reinit((TFWidget::Flags)(TFWidget::COLORMAPPED));
     }
 
-    void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
+    void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                 VAPoR::RenderParams *rParams) {
-        _TFWidget->Update(paramsMgr, dataMgr, rParams);
-        _ColorBarFrame->Update(paramsMgr, dataMgr, rParams);
+        _TFWidget->Update(dataMgr, paramsMgr, rParams);
+        _ColorbarWidget->Update(dataMgr, paramsMgr, rParams);
     }
 };
 

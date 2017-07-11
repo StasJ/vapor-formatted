@@ -24,7 +24,7 @@ class TwoDVariablesSubtab : public QWidget, public Ui_TwoDVariablesGUI {
             VariablesWidget::TWOD);
     }
 
-    void Update(const VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
+    void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                 VAPoR::RenderParams *rParams) {
         _variablesWidget->Update(dataMgr, paramsMgr, rParams);
     }
@@ -37,13 +37,14 @@ class TwoDAppearanceSubtab : public QWidget, public Ui_TwoDAppearanceGUI {
   public:
     TwoDAppearanceSubtab(QWidget *parent) {
         setupUi(this);
-        _TFWidget->setEventRouter(dynamic_cast<RenderEventRouter *>(parent));
+        _TFWidget->Reinit((TFWidget::Flags)(0));
+        //_TFWidget->setEventRouter(dynamic_cast<RenderEventRouter*>(parent));
     }
 
-    void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
+    void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                 VAPoR::RenderParams *rParams) {
-        _TFWidget->Update(paramsMgr, dataMgr, rParams);
-        _ColorBarFrame->Update(paramsMgr, dataMgr, rParams);
+        _TFWidget->Update(dataMgr, paramsMgr, rParams);
+        _ColorbarWidget->Update(dataMgr, paramsMgr, rParams);
     }
 };
 
