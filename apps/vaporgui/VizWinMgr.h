@@ -26,7 +26,7 @@ class QMainWidget;
 class QTimer;
 class QDockWidget;
 
-#include "GUIStateParams.h"
+#include "vapor/GUIStateParams.h"
 #include <qobject.h>
 #include <vapor/ControlExecutive.h>
 #include <vapor/common.h>

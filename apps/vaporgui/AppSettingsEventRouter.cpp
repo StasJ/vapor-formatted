@@ -22,12 +22,12 @@
 // Annoying unreferenced formal parameter warning
 #pragma warning(disable : 4100 4996)
 #endif
-#include "AppSettingsParams.h"
 #include "GL/glew.h"
 #include "MessageReporter.h"
-#include "StartupParams.h"
 #include "images/fileopen.xpm"
 #include "qcolordialog.h"
+#include "vapor/AppSettingsParams.h"
+#include "vapor/StartupParams.h"
 #include <qdesktopwidget.h>
 #include <qlineedit.h>
 #include <qmessagebox.h>
