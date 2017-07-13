@@ -28,10 +28,10 @@
 #define VSNPRINTF vsnprintf
 #include <unistd.h>
 #endif
-#include "AppSettingsParams.h"
 #include "MainForm.h"
 #include "MessageReporter.h"
 #include "TabManager.h"
+#include "vapor/AppSettingsParams.h"
 #include <QPushButton>
 #include <qapplication.h>
 #include <qmessagebox.h>
