@@ -46,7 +46,7 @@ const string MapperFunction::_autoUpdateHistoTag = "autoUpdateHisto";
 //----------------------------------------------------------------------------
 
 MapperFunction::MapperFunction(ParamsBase::StateSave *ssave, const string &classname)
-    : ParamsBase(ssave, classname), _numEntries(256), _autoUpdateHisto(false) {
+    : ParamsBase(ssave, classname), _numEntries(256) {
 
     m_colorMap = NULL;
     m_opacityMaps = NULL;
@@ -77,11 +77,6 @@ MapperFunction::MapperFunction(ParamsBase::StateSave *ssave, XmlNode *node)
     m_colorMap = NULL;
     m_opacityMaps = NULL;
 
-    if (node->HasChild(_autoUpdateHistoTag)) {
-        _autoUpdateHisto = node->GetChild(_autoUpdateHistoTag);
-    } else {
-        _autoUpdateHisto = false;
-    }
     if (node->HasChild(ColorMap::GetClassType())) {
         m_colorMap = new ColorMap(ssave, node->GetChild(ColorMap::GetClassType()));
     } else {
@@ -107,8 +102,7 @@ MapperFunction::MapperFunction(ParamsBase::StateSave *ssave, XmlNode *node)
     }
 }
 
-MapperFunction::MapperFunction(const MapperFunction &rhs)
-    : ParamsBase(rhs), _numEntries(256), _autoUpdateHisto(false) {
+MapperFunction::MapperFunction(const MapperFunction &rhs) : ParamsBase(rhs), _numEntries(256) {
 
     m_colorMap = NULL;
     m_opacityMaps = NULL;
