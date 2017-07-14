@@ -16,7 +16,7 @@
 //
 //	Description:  Implementation of Histo class
 //
-#include "vapor/Histo.h"
+#include "Histo.h"
 #include <vapor/MyBase.h>
 using namespace VAPoR;
 using namespace Wasp;

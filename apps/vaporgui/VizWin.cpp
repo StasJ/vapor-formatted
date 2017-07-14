@@ -20,12 +20,12 @@
 #include "VizWin.h"
 #include "MainForm.h"
 #include "MessageReporter.h"
+#include "MouseModeParams.h"
 #include "TabManager.h"
+#include "TrackBall.h"
 #include "ViewpointEventRouter.h"
 #include "images/vapor-icon-32.xpm"
 #include "qdatetime.h"
-#include "vapor/MouseModeParams.h"
-#include "vapor/TrackBall.h"
 #include <QCloseEvent>
 #include <QFocusEvent>
 #include <QMouseEvent>

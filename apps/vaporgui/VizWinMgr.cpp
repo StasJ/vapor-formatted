@@ -43,14 +43,14 @@
 #include "AppSettingsEventRouter.h"
 #include "HelloEventRouter.h"
 #include "MainForm.h"
+#include "MouseModeParams.h"
 #include "StartupEventRouter.h"
+#include "TrackBall.h"
 #include "ViewpointEventRouter.h"
 #include "VizFeatureEventRouter.h"
 #include "VizWin.h"
 #include "VizWinMgr.h"
 #include "regioneventrouter.h"
-#include "vapor/MouseModeParams.h"
-#include "vapor/TrackBall.h"
 
 // Extension tabs also included (until we find a nicer way to separate extensions)
 #include "BarbEventRouter.h"

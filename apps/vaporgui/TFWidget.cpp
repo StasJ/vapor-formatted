@@ -21,10 +21,10 @@
 #include "MainForm.h"
 #include "MessageReporter.h"
 #include "RenderEventRouter.h"
+#include "StartupParams.h"
 #include "TwoDSubtabs.h"
 #include "vapor/GetAppPath.h"
 #include "vapor/RenderParams.h"
-#include "vapor/StartupParams.h"
 #include "vapor/TwoDDataParams.h"
 #include <QFileDialog>
 #include <qcolordialog.h>
