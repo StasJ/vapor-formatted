@@ -74,7 +74,7 @@
  *			  (default = 0.65)
  */
 
-#include "vapor/TrackBall.h"
+#include "TrackBall.h"
 #include <cmath>
 #include <vapor/glutil.h> // Must be included first!!!
 using namespace VAPoR;

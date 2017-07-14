@@ -32,7 +32,7 @@
 #include "../../apps/vaporgui/images/twoDData.xpm"
 #include "../../apps/vaporgui/images/twoDImage.xpm"
 #include "../../apps/vaporgui/images/wheel.xpm"
-#include "vapor/MouseModeParams.h"
+#include "MouseModeParams.h"
 
 const std::string MouseModeParams::_currentMouseModeTag = "CurrentMouseModeTag";
 
