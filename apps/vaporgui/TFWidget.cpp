@@ -27,6 +27,8 @@
 #include "vapor/RenderParams.h"
 #include "vapor/TwoDDataParams.h"
 #include <QFileDialog>
+#include <QFontDatabase>
+#include <QStringList>
 #include <qcolordialog.h>
 #include <qradiobutton.h>
 #include <qwidget.h>
@@ -37,6 +39,7 @@ using namespace VAPoR;
 string TFWidget::_nDimsTag = "ActiveDimension";
 
 TFWidget::TFWidget(QWidget *parent) : QWidget(parent), Ui_TFWidgetGUI() {
+
     setupUi(this);
 
     _myRGB[0] = _myRGB[1] = _myRGB[2] = .1;
