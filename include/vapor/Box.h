@@ -21,7 +21,6 @@
 #ifndef BOX_H
 #define BOX_H
 
-#include <vapor/DataStatus.h>
 #include <vapor/ParamsBase.h>
 
 namespace VAPoR {

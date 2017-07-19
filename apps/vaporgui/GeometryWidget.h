@@ -44,7 +44,6 @@ class GeometryWidget : public QWidget, public Ui_GeometryWidgetGUI {
 
   private:
     void connectWidgets();
-    size_t getCurrentTimestep();
     void updateRangeLabels(std::vector<double> minExt, std::vector<double> maxExt);
     void GetVectorExtents(size_t ts, int level, std::vector<double> &minFullExt,
                           std::vector<double> &maxFullExt);
@@ -66,6 +65,7 @@ class GeometryWidget : public QWidget, public Ui_GeometryWidgetGUI {
     Combo *_maxZCombo;
     RangeCombo *_zRangeCombo;
 
+    std::vector<std::string> _dataSetNames;
     std::map<std::string, std::string> _visNames;
     std::map<std::string, std::string> _renTypeNames;
 
