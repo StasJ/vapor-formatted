@@ -44,7 +44,6 @@
 #include "StartupEventRouter.h"
 #include "StartupParams.h"
 #include "vapor/ControlExecutive.h"
-#include "vapor/DataStatus.h"
 
 using namespace VAPoR;
 
@@ -313,7 +312,10 @@ void StartupEventRouter::copyLatestSession() {
 }
 void StartupEventRouter::copyLatestMetadata() {
     GUIStateParams *p = GetStateParams();
-    string latestPath = p->GetCurrentDataPath();
+
+    vector<string> paths, names;
+    p->GetOpenDataSets(paths, names);
+    string latestPath = paths.size() ? paths[paths.size() - 1] : ".";
 
     size_t pos = latestPath.find_last_of("\\/");
     if (pos != string::npos)
