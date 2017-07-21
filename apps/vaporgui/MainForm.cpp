@@ -39,6 +39,7 @@
 
 #include "AnimationEventRouter.h"
 #include "BannerGUI.h"
+#include "ErrorReporter.h"
 #include "MainForm.h"
 #include "MappingFrame.h"
 #include "MessageReporter.h"
@@ -239,7 +240,8 @@ MainForm::MainForm(vector<QString> files, QApplication *app, QWidget *parent, co
     // Load preferences at start, set preferences directory
     loadStartingPrefs();
     // Create the MessageReporter
-    MessageReporter::getInstance();
+    // MessageReporter::getInstance();
+    ErrorReporter::getInstance();
 
     setUpdatesEnabled(true);
     show();
