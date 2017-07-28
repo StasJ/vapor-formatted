@@ -6,6 +6,7 @@
 #include <sstream>
 #include <stdio.h>
 #include <vapor/DCCF.h>
+#include <vapor/DCMPAS.h>
 #include <vapor/DCWRF.h>
 #include <vapor/DataMgr.h>
 #include <vapor/VDCNetCDF.h>
@@ -378,6 +379,8 @@ int DataMgr::Initialize(const vector<string> &files) {
         _dc = new DCWRF();
     } else if (_format.compare("cf") == 0) {
         _dc = new DCCF();
+    } else if (_format.compare("mpas") == 0) {
+        _dc = new DCMPAS();
     } else {
         SetErrMsg("Invalid data collection format : %s", _format.c_str());
         return (-1);
