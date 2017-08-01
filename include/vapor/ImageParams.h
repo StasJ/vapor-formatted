@@ -34,13 +34,13 @@ class PARAMS_API ImageParams : public RenderParams {
     }
 
     //
-    // Get and set ignoreTransparence
+    // Get and set ignoreTransparency
     //
-    bool GetIgnoreTransparence() const {
-        return (0 != GetValueLong(_ignoreTransparenceTag, (long)false));
+    bool GetIgnoreTransparency() const {
+        return (0 != GetValueLong(_ignoreTransparencyTag, (long)false));
     }
-    void SetIgnoreTransparence(bool val) {
-        SetValueLong(_ignoreTransparenceTag, "if transparence is ignored", (long)val);
+    void SetIgnoreTransparency(bool val) {
+        SetValueLong(_ignoreTransparencyTag, "if transparence is ignored", (long)val);
     }
 
     //
@@ -60,7 +60,7 @@ class PARAMS_API ImageParams : public RenderParams {
   private:
     static const std::string _fileNameTag;
     static const std::string _isGeoTIFFTag;
-    static const std::string _ignoreTransparenceTag;
+    static const std::string _ignoreTransparencyTag;
     static const std::string _opacityTag;
 };
 } // namespace VAPoR
