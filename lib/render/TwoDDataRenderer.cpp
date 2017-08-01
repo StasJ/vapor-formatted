@@ -182,7 +182,7 @@ int TwoDDataRenderer::_paintGL() {
     return (rc);
 }
 
-const GLvoid *TwoDDataRenderer::_GetTexture(DataMgr *dataMgr, GLsizei &width, GLsizei &height,
+const GLvoid *TwoDDataRenderer::_getTexture(DataMgr *dataMgr, GLsizei &width, GLsizei &height,
                                             GLint &internalFormat, GLenum &format, GLenum &type,
                                             size_t &texelSize) {
     internalFormat = GL_RG32F;
@@ -201,7 +201,7 @@ const GLvoid *TwoDDataRenderer::_GetTexture(DataMgr *dataMgr, GLsizei &width, GL
     return (texture);
 }
 
-int TwoDDataRenderer::_GetMesh(DataMgr *dataMgr, GLfloat **verts, GLfloat **normals, GLsizei &width,
+int TwoDDataRenderer::_getMesh(DataMgr *dataMgr, GLfloat **verts, GLfloat **normals, GLsizei &width,
                                GLsizei &height) {
     width = 0;
     height = 0;
