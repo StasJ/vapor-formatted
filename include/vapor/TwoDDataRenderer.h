@@ -55,10 +55,10 @@ class RENDER_API TwoDDataRenderer : public TwoDRenderer {
 
     int _paintGL();
 
-    int _GetMesh(DataMgr *dataMgr, GLfloat **verts, GLfloat **normals, GLsizei &width,
+    int _getMesh(DataMgr *dataMgr, GLfloat **verts, GLfloat **normals, GLsizei &width,
                  GLsizei &height);
 
-    const GLvoid *_GetTexture(DataMgr *dataMgr, GLsizei &width, GLsizei &height,
+    const GLvoid *_getTexture(DataMgr *dataMgr, GLsizei &width, GLsizei &height,
                               GLint &internalFormat, GLenum &format, GLenum &type,
                               size_t &texelSize);
 
