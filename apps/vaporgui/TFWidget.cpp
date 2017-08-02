@@ -26,6 +26,7 @@
 #include "vapor/GetAppPath.h"
 #include "vapor/RenderParams.h"
 #include "vapor/TwoDDataParams.h"
+#include <GL/glew.h>
 #include <QFileDialog>
 #include <QFontDatabase>
 #include <QStringList>
