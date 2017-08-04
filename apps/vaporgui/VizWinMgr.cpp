@@ -54,6 +54,7 @@
 
 // Extension tabs also included (until we find a nicer way to separate extensions)
 #include "BarbEventRouter.h"
+#include "ImageEventRouter.h"
 #include "TwoDDataEventRouter.h"
 #ifdef DEAD
 #include "imageeventrouter.h"
@@ -151,6 +152,10 @@ void VizWinMgr::createAllDefaultTabs() {
 
     parent = TabManager::getInstance()->GetSubTabWidget(0);
     er = new BarbEventRouter(parent, this, _controlExec);
+    installTab(er->GetType(), 0, er);
+
+    parent = TabManager::getInstance()->GetSubTabWidget(0);
+    er = new ImageEventRouter(parent, _controlExec);
     installTab(er->GetType(), 0, er);
 
     // set up widgets in tabs:
