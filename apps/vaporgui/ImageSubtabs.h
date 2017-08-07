@@ -12,6 +12,9 @@ class ParamsMgr;
 class DataMgr;
 } // namespace VAPoR
 
+//
+// ImageVariablesSubtab class
+//
 class ImageVariablesSubtab : public QWidget, public Ui_ImageVariablesGUI {
 
     Q_OBJECT
@@ -28,6 +31,9 @@ class ImageVariablesSubtab : public QWidget, public Ui_ImageVariablesGUI {
     }
 };
 
+//
+// ImageAppearanceSubtab class
+//
 class ImageAppearanceSubtab : public QWidget, public Ui_ImageAppearanceGUI {
 
     Q_OBJECT
@@ -35,16 +41,19 @@ class ImageAppearanceSubtab : public QWidget, public Ui_ImageAppearanceGUI {
   public:
     ImageAppearanceSubtab(QWidget *parent) {
         setupUi(this);
-        //_TFWidget->Reinit((TFWidget::Flags)(0));
+        connect(GeoreferenceCheckbox, SIGNAL(clicked()), this, SLOT(GeoreferenceClicked()));
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
-                VAPoR::RenderParams *rParams) {
-        //_TFWidget->Update(dataMgr, paramsMgr, rParams);
-        //_ColorbarWidget->Update(dataMgr, paramsMgr, rParams);
-    }
+                VAPoR::RenderParams *rParams) {}
+
+  private slots:
+    void GeoreferenceClicked() { std::cout << "I'm clicked" << std::endl; }
 };
 
+//
+// ImageGeometrySubtab class
+//
 class ImageGeometrySubtab : public QWidget, public Ui_ImageGeometryGUI {
 
     Q_OBJECT
