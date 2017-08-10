@@ -75,7 +75,7 @@ class VizFeatureEventRouter : public QWidget, public Ui_vizFeaturesTab, public E
     void setZTicOrient(int);
     void setLatLonAnnot(bool);
     void setUseAxisArrows(bool);
-    void timeAnnotationChanged(int);
+    void timeAnnotationChanged();
     void timeLLXChanged();
     void timeLLYChanged();
     void timeSizeChanged();
@@ -91,6 +91,9 @@ class VizFeatureEventRouter : public QWidget, public Ui_vizFeaturesTab, public E
 
     void drawTimeStamp();
     void drawTimeStep(string text = "");
+
+    AnimationParams *_ap;
+    bool _animConnected;
 };
 
 #endif // VIZFEATUREEVENTROUTER_H
