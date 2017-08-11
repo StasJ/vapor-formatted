@@ -461,6 +461,10 @@ class VDF_API DataMgr : public Wasp::MyBase {
     //
     bool GetNumDimensions(string varname, size_t &ndim) const;
 
+    //! \copydoc DC:GetVarTopologyDim()
+    //!
+    size_t GetVarTopologyDim(string varname) const;
+
     //! Clear the memory cache
     //!
     //! This method clears the internal memory cache of all entries
@@ -743,27 +747,26 @@ class VDF_API DataMgr : public Wasp::MyBase {
 
     int _get_default_projection(string &projection);
 
-    VAPoR::RegularGrid *
-    _make_grid_regular(const VAPoR::DC::DataVar &var, const std::vector<size_t> &min,
-                       const std::vector<size_t> &max, const std::vector<size_t> &dims,
-                       const std::vector<float *> &blkvec, const std::vector<size_t> &bs,
-                       const std::vector<size_t> &bmin, const std::vector<size_t> &bmax) const;
+    VAPoR::RegularGrid *_make_grid_regular(const std::vector<size_t> &dims,
+                                           const std::vector<float *> &blkvec,
+                                           const std::vector<size_t> &bs,
+                                           const std::vector<size_t> &bmin,
+                                           const std::vector<size_t> &bmax) const;
 
-    VAPoR::LayeredGrid *
-    _make_grid_layered(const VAPoR::DC::DataVar &var, const std::vector<size_t> &min,
-                       const std::vector<size_t> &max, const std::vector<size_t> &dims,
-                       const std::vector<float *> &blkvec, const std::vector<size_t> &bs,
-                       const std::vector<size_t> &bmin, const std::vector<size_t> &bmax) const;
+    VAPoR::LayeredGrid *_make_grid_layered(const std::vector<size_t> &dims,
+                                           const std::vector<float *> &blkvec,
+                                           const std::vector<size_t> &bs,
+                                           const std::vector<size_t> &bmin,
+                                           const std::vector<size_t> &bmax) const;
 
     VAPoR::CurvilinearGrid *
-    _make_grid_curvilinear(const VAPoR::DC::DataVar &var, const vector<DC::CoordVar> &cvarsinfo,
-                           const std::vector<size_t> &min, const std::vector<size_t> &max,
+    _make_grid_curvilinear(int level, int lod, const vector<DC::CoordVar> &cvarsinfo,
                            const std::vector<size_t> &dims, const std::vector<float *> &blkvec,
                            const std::vector<size_t> &bs, const std::vector<size_t> &bmin,
                            const std::vector<size_t> &bmax);
 
-    VAPoR::StructuredGrid *_make_grid(const VAPoR::DC::DataVar &var, const std::vector<size_t> &min,
-                                      const std::vector<size_t> &max,
+    VAPoR::StructuredGrid *_make_grid(int level, int lod, const VAPoR::DC::DataVar &var,
+                                      const std::vector<size_t> &roi_dims,
                                       const std::vector<size_t> &dims,
                                       const std::vector<float *> &blkvec,
                                       const std::vector<std::vector<size_t>> &bsvec,
@@ -776,9 +779,10 @@ class VDF_API DataMgr : public Wasp::MyBase {
 
     int _setupCoordVecs(size_t ts, string varname, int level, int lod, const vector<size_t> &min,
                         const vector<size_t> &max, vector<string> &varnames,
-                        vector<vector<size_t>> &dimsvec, vector<vector<size_t>> &dims_at_levelvec,
-                        vector<vector<size_t>> &bsvec, vector<vector<size_t>> &bs_at_levelvec,
-                        vector<vector<size_t>> &bminvec, vector<vector<size_t>> &bmaxvec) const;
+                        vector<size_t> &roi_dims, vector<vector<size_t>> &dimsvec,
+                        vector<vector<size_t>> &dims_at_levelvec, vector<vector<size_t>> &bsvec,
+                        vector<vector<size_t>> &bs_at_levelvec, vector<vector<size_t>> &bminvec,
+                        vector<vector<size_t>> &bmaxvec) const;
 
     VAPoR::StructuredGrid *_getVariable(size_t ts, string varname, int level, int lod, bool lock,
                                         bool dataless);
@@ -821,8 +825,9 @@ class VDF_API DataMgr : public Wasp::MyBase {
     int _level_correction(string varname, int &level) const;
     int _lod_correction(string varname, int &lod) const;
 
-    void _getKDSubtree2D(const vector<DC::CoordVar> &cvarsinfo, const RegularGrid &xrg,
-                         const RegularGrid &yrg, KDTreeRGSubset &kdsubtree);
+    const KDTreeRG *_getKDTree2D(int level, int lod, const vector<size_t> &bmin,
+                                 const vector<size_t> &bmax, const vector<DC::CoordVar> &cvarsinfo,
+                                 const RegularGrid &xrg, const RegularGrid &yrg);
 };
 
 }; // namespace VAPoR
