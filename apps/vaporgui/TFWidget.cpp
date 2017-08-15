@@ -18,8 +18,8 @@
 //	  a widget that is inserted in the "Appearance" tab of various Renderer GUIs
 //
 #include "TFWidget.h"
+#include "ErrorReporter.h"
 #include "MainForm.h"
-#include "MessageReporter.h"
 #include "RenderEventRouter.h"
 #include "StartupParams.h"
 #include "TwoDSubtabs.h"
@@ -155,10 +155,7 @@ void TFWidget::fileLoadTF(string varname, const char *startPath, bool savePath) 
 
     int rc = tf->LoadFromFile(s.toStdString());
     if (rc < 0) {
-        QString str("Error loading transfer function. /nFailed to convert "
-                    "input file: \n)");
-        str += s;
-        MessageReporter::errorMsg((const char *)str.toAscii());
+        MSG_ERR("Error loading transfer function");
     }
 }
 
@@ -188,9 +185,7 @@ void TFWidget::fileSaveTF() {
 
     int rc = tf->SaveToFile(s.toStdString());
     if (rc < 0) {
-        QString str("Failed to write output file: \n");
-        str += s;
-        MessageReporter::errorMsg((const char *)str.toAscii());
+        MSG_ERR("Failed to write output file");
         return;
     }
 }
