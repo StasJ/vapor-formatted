@@ -2,6 +2,7 @@
 #define IMAGEPARAMS_H
 
 #include <vapor/DataMgr.h>
+#include <vapor/GetAppPath.h>
 #include <vapor/RenderParams.h>
 
 namespace VAPoR {
@@ -22,7 +23,11 @@ class PARAMS_API ImageParams : public RenderParams {
         SetValueString(_fileNameTag, "Set image file path", file);
     }
     std::string GetImagePath() const {
-        return GetValueString(_fileNameTag, "File name not found!");
+        std::vector<std::string> paths;
+        paths.push_back("images/NaturalEarth.tms");
+        std::string defaultImage = Wasp::GetAppPath("VAPOR", "share", paths);
+
+        return GetValueString(_fileNameTag, defaultImage);
     }
 
     //
