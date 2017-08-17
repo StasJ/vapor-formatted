@@ -40,7 +40,7 @@
 #include <qslider.h>
 #include <qspinbox.h>
 
-#include "MessageReporter.h"
+#include "ErrorReporter.h"
 #include <qcombobox.h>
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -546,7 +546,8 @@ void RegionEventRouter::CopyBox() {
     string fromParamsTag = _boxMapping[copyBoxFromCombo->currentIndex()];
     string toParamsTag = _boxMapping[copyBoxToCombo->currentIndex()];
     if (toParamsTag == fromParamsTag) {
-        MessageReporter::errorMsg("Source and Target of extents copy cannot be the same");
+
+        MSG_ERR("Source and Target of extents copy cannot be the same");
         return;
     }
 
