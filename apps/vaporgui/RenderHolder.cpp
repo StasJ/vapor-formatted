@@ -17,7 +17,7 @@
 //	Description:	Implements the RenderHolder class
 
 #include "RenderHolder.h"
-#include "MessageReporter.h"
+#include "ErrorReporter.h"
 #include "RenderEventRouter.h"
 #include "VizSelectCombo.h"
 #include "newRendererDialog.h"
@@ -147,7 +147,7 @@ void RenderHolder::newRenderer() {
 
     int rc = _controlExec->ActivateRender(activeViz, dataSetName, renderClass, renderInst, false);
     if (rc < 0) {
-        MessageReporter::errorMsg("Can't create renderer class %s", renderClass.c_str());
+        MSG_ERR("Can't create renderer");
         return;
     }
 
@@ -213,7 +213,7 @@ void RenderHolder::changeChecked(int row, int col) {
 
     int rc = _controlExec->ActivateRender(activeViz, dataSetName, renderClass, renderInst, enabled);
     if (rc < 0) {
-        MessageReporter::errorMsg("Can't create renderer class %s", renderClass.c_str());
+        MSG_ERR("Can't create renderer");
         return;
     }
 }
@@ -312,7 +312,7 @@ void RenderHolder::copyInstanceTo(int item) {
 
     int rc = _controlExec->ActivateRender(dstVizName, dataSetName, rParams, renderInst, false);
     if (rc < 0) {
-        MessageReporter::errorMsg("Can't create renderer class %s", activeRenderClass.c_str());
+        MSG_ERR("Can't create renderer");
         return;
     }
 
