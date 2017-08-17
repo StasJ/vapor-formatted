@@ -192,6 +192,7 @@ MainForm::MainForm(vector<QString> files, QApplication *app, QWidget *parent, co
     myParams.push_back(StartupParams::GetClassType());
     myParams.push_back(AnimationParams::GetClassType());
     myParams.push_back(MiscParams::GetClassType());
+    myParams.push_back(StatisticsParams::GetClassType());
 
     // Create the Control executive before the VizWinMgr. Disable
     // state saving until completely initalized
@@ -533,6 +534,7 @@ void MainForm::createActions() {
     _plotAction = new QAction(this);
     _plotAction->setEnabled(false);
     _statsAction = new QAction(this);
+    _statsAction->setEnabled(false);
 
     // Then do the actions for the toolbars:
     // Create an exclusive action group for the mouse mode toolbar:
@@ -1616,6 +1618,8 @@ void MainForm::enableWidgets(bool onOff) {
     _windowSelector->setEnabled(onOff);
     _vizWinMgr->setEnabled(onOff);
     _tabMgr->setEnabled(onOff);
+    _statsAction->setEnabled(onOff);
+    _plotAction->setEnabled(onOff);
 
     AnimationEventRouter *aRouter =
         (AnimationEventRouter *)_vizWinMgr->GetEventRouter(AnimationEventRouter::GetClassType());
