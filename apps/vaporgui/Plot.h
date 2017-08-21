@@ -30,6 +30,7 @@
 #include <qdialog.h>
 #include <vector>
 //#include <Python.h>
+#include "PlotParams.h"
 #include "RangeController.h"
 #include <errMsg.h>
 #include <plotWindow.h>
