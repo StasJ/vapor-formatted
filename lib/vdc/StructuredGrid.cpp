@@ -407,7 +407,6 @@ StructuredGrid::ForwardIterator<T> &StructuredGrid::ForwardIterator<T>::operator
     size_t x = 0;
     size_t y = 0;
     size_t z = 0;
-    vector<double> pt;
     do {
 
         _xb++;
@@ -416,9 +415,8 @@ StructuredGrid::ForwardIterator<T> &StructuredGrid::ForwardIterator<T>::operator
         ++_coordItr;
 
         if (_xb < _bs[0] && _x < _dims[0]) {
-            pt = *_coordItr;
 
-            if (_pred(pt)) {
+            if (_pred(*_coordItr)) {
                 return (*this);
             }
 
@@ -460,9 +458,7 @@ StructuredGrid::ForwardIterator<T> &StructuredGrid::ForwardIterator<T>::operator
         float *blk = _rg->GetBlks()[zb * _bdims[0] * _bdims[1] + yb * _bdims[0] + xb];
         _itr = &blk[z * _bs[0] * _bs[1] + y * _bs[0] + x];
 
-        pt = *_coordItr;
-
-    } while (!_pred(pt));
+    } while (!_pred(*_coordItr));
 
     return (*this);
 }
