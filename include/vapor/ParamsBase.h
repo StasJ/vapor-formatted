@@ -265,7 +265,7 @@ class PARAMS_API ParamsFactory {
 //
 /////////////////////////////////////////////////////////////////////////
 
-template <class T> class PARAMS_API ParamsRegistrar {
+template <class T> class ParamsRegistrar {
   public:
     ParamsRegistrar(string classType) {
 
