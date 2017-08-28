@@ -30,7 +30,6 @@ namespace VAPoR {
 //! \date March 2016
 
 class RENDER_API TwoDRenderer : public Renderer {
-
   public:
     //! Constructor, must invoke Renderer constructor
     //! \param[in] Visualizer* pointer to the visualizer where this will draw
@@ -44,10 +43,10 @@ class RENDER_API TwoDRenderer : public Renderer {
     virtual ~TwoDRenderer();
 
   protected:
-    virtual int _GetMesh(DataMgr *dataMgr, GLfloat **verts, GLfloat **normals, GLsizei &width,
+    virtual int _getMesh(DataMgr *dataMgr, GLfloat **verts, GLfloat **normals, GLsizei &width,
                          GLsizei &height) = 0;
 
-    virtual const GLvoid *_GetTexture(DataMgr *dataMgr, GLsizei &width, GLsizei &height,
+    virtual const GLvoid *_getTexture(DataMgr *dataMgr, GLsizei &width, GLsizei &height,
                                       GLint &internalFormat, GLenum &format, GLenum &type,
                                       size_t &texelSize) = 0;
 

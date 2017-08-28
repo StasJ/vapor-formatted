@@ -1,22 +1,17 @@
 //************************************************************************
-
+//
 //		     Copyright (C)  2008										*
 //     University Corporation for Atmospheric Research					*
 //		     All Rights Reserved										*
 //																		*
 //************************************************************************/
 //
-//	File:		TwoDImagerRenderer.cpp
+//	File:		ImagerRenderer.cpp
 //
 //	Author:		John Clyne
 //			National Center for Atmospheric Research
 //			PO 3000, Boulder, Colorado
 //
-//	Date:		March 2016
-//
-//	Description:	Implementation of the twoDImageRenderer class
-//
-
 #include <vapor/glutil.h> // Must be included first!!!
 
 #include <fstream>
@@ -25,16 +20,15 @@
 #include <vapor/CFuncs.h>
 #include <vapor/GeoImageGeoTiff.h>
 #include <vapor/GeoImageTMS.h>
+#include <vapor/ImageParams.h>
+#include <vapor/ImageRenderer.h>
 #include <vapor/Proj4API.h>
-#include <vapor/TwoDImageParams.h>
-#include <vapor/TwoDImageRenderer.h>
 
 using namespace VAPoR;
 
 namespace {
-
-// Make mesh conformant. PCS coordinates may wrap around globe at
-// boundaries :-(
+//
+// Make mesh conformant. PCS coordinates may wrap around globe at boundaries :-(
 //
 void conform(GLfloat *verts, int nx, int ny) {
     assert(nx >= 2);
@@ -74,18 +68,23 @@ void conform(GLfloat *verts, int nx, int ny) {
         }
     }
 }
-
 }; // namespace
 
-TwoDImageRenderer::TwoDImageRenderer(Visualizer *v, RenderParams *rp, ShaderMgr *sm)
-    : TwoDRenderer(v, rp, sm) {
+//
+// Register class with object factory!!!
+//
+static RendererRegistrar<ImageRenderer> registrar(ImageRenderer::GetClassType(),
+                                                  ImageParams::GetClassType());
 
+ImageRenderer::ImageRenderer(const ParamsMgr *pm, string winName, string dataSetName,
+                             string instName, DataMgr *dataMgr)
+    : TwoDRenderer(pm, winName, dataSetName, ImageParams::GetClassType(),
+                   ImageRenderer::GetClassType(), instName, dataMgr) {
     _geoImage = NULL;
     _cacheImgFileName.clear();
     _twoDTex = NULL;
     _cacheTimes.clear();
     _pcsExtentsData.clear();
-
     for (int i = 0; i < 4; i++) {
         _pcsExtentsImg[i] = 0;
     }
@@ -103,15 +102,16 @@ TwoDImageRenderer::TwoDImageRenderer(Visualizer *v, RenderParams *rp, ShaderMgr 
     _vertsHeight = 0;
 }
 
-TwoDImageRenderer::~TwoDImageRenderer() {
-    if (_geoImage)
+ImageRenderer::~ImageRenderer() {
+    if (_geoImage) {
         delete _geoImage;
-    _geoImage = NULL;
+        _geoImage = NULL;
+    }
 }
 
-const GLvoid *TwoDImageRenderer::_GetTexture(DataMgr *dataMgr, GLsizei &width, GLsizei &height,
-                                             GLint &internalFormat, GLenum &format, GLenum &type,
-                                             size_t &texelSize) {
+const GLvoid *ImageRenderer::_getTexture(DataMgr *dataMgr, GLsizei &width, GLsizei &height,
+                                         GLint &internalFormat, GLenum &format, GLenum &type,
+                                         size_t &texelSize) {
     width = 0;
     height = 0;
     internalFormat = GL_RGBA;
@@ -119,7 +119,7 @@ const GLvoid *TwoDImageRenderer::_GetTexture(DataMgr *dataMgr, GLsizei &width, G
     type = GL_UNSIGNED_BYTE;
     texelSize = 4; // RGBA * sizeof(type)
 
-    TwoDImageParams *myParams = (TwoDImageParams *)getRenderParams();
+    ImageParams *myParams = (ImageParams *)GetActiveParams();
 
     if (myParams->GetIgnoreTransparency())
         internalFormat = GL_RGB;
@@ -133,8 +133,8 @@ const GLvoid *TwoDImageRenderer::_GetTexture(DataMgr *dataMgr, GLsizei &width, G
     return (texture);
 }
 
-int TwoDImageRenderer::_GetMesh(DataMgr *dataMgr, GLfloat **verts, GLfloat **normals,
-                                GLsizei &width, GLsizei &height) {
+int ImageRenderer::_getMesh(DataMgr *dataMgr, GLfloat **verts, GLfloat **normals, GLsizei &width,
+                            GLsizei &height) {
     width = 0;
     height = 0;
 
@@ -149,18 +149,13 @@ int TwoDImageRenderer::_GetMesh(DataMgr *dataMgr, GLfloat **verts, GLfloat **nor
     }
     _gridStateClear();
 
-    TwoDImageParams *myParams = (TwoDImageParams *)getRenderParams();
+    ImageParams *myParams = (ImageParams *)GetActiveParams();
+    size_t ts = myParams->GetCurrentTimestep();
 
     // Find box extents for ROI
     //
     vector<double> minBoxReq, maxBoxReq;
-    myParams->GetBox()->GetUserExtents(minBoxReq, maxBoxReq, ts);
-
-    // Get scene scaling factors
-    //
-    VizFeatureParams *vizfeature = _visualizer->getActiveVizFeatureParams();
-    vector<double> stretchFac = vizfeature->GetStretchFactors();
-    assert(stretchFac.size() == 3);
+    myParams->GetBox()->GetExtents(minBoxReq, maxBoxReq);
 
     int rc;
 
@@ -168,7 +163,7 @@ int TwoDImageRenderer::_GetMesh(DataMgr *dataMgr, GLfloat **verts, GLfloat **nor
     // data are geo-referenced
     //
     if (!myParams->GetHeightVariableName().empty() ||
-        (myParams->GetGeoreferenced() && !dataMgr->GetMapProjection().empty())) {
+        (myParams->GetIsGeoTIFF() && !dataMgr->GetMapProjection().empty())) {
 
         // Get the width and height of the image texture. These
         // will be used to set the width and height of the mesh.
@@ -190,10 +185,7 @@ int TwoDImageRenderer::_GetMesh(DataMgr *dataMgr, GLfloat **verts, GLfloat **nor
         return (-1);
     }
 
-    // Ugh. Rendering is done in "local", not absolute coordinates.
-    // Transform to local, and apply scaling factors
-    //
-    _transformToLocal(_vertsWidth, _vertsHeight, stretchFac);
+    //_transformToLocal(_vertsWidth, _vertsHeight, stretchFac);
 
     _gridStateSet();
 
@@ -212,13 +204,12 @@ int TwoDImageRenderer::_GetMesh(DataMgr *dataMgr, GLfloat **verts, GLfloat **nor
 // Sets _pcsExtentsImg, _pcsExtentsData,
 // _proj4StringImg, _texWidth, _texHeight
 //
-unsigned char *TwoDImageRenderer::_getTexture(DataMgr *dataMgr) {
+unsigned char *ImageRenderer::_getTexture(DataMgr *dataMgr) {
+    ImageParams *myParams = (ImageParams *)GetActiveParams();
 
-    TwoDImageParams *myParams = (TwoDImageParams *)getRenderParams();
+    int currentTimestep = myParams->GetCurrentTimestep();
 
-    int currentTimestep = GetCurrentTimestep();
-
-    string imgFileName = myParams->GetImageFileName();
+    string imgFileName = myParams->GetImagePath();
     vector<double> times = dataMgr->GetTimeCoordinates();
 
     // Initialize _geoImage if image file or user times have changed
@@ -242,7 +233,7 @@ unsigned char *TwoDImageRenderer::_getTexture(DataMgr *dataMgr) {
         // Get pro4 string for data if georeferencing is requested
         //
         string proj4StringData;
-        if (myParams->GetGeoreferenced()) {
+        if (myParams->GetIsGeoTIFF()) {
             proj4StringData = dataMgr->GetMapProjection();
         }
 
@@ -265,21 +256,23 @@ unsigned char *TwoDImageRenderer::_getTexture(DataMgr *dataMgr) {
     return (_twoDTex);
 }
 
-bool TwoDImageRenderer::_gridStateDirty() const {
-
-    TwoDImageParams *myParams = (TwoDImageParams *)getRenderParams();
+bool ImageRenderer::_gridStateDirty() const {
+    ImageParams *myParams = (ImageParams *)GetActiveParams();
 
     int refLevel = myParams->GetRefinementLevel();
     int lod = myParams->GetCompressionLevel();
     string hgtVar = myParams->GetHeightVariableName();
-    int ts = GetCurrentTimestep();
-    vector<double> boxExtents = myParams->GetBox()->GetLocalExtents();
+    int ts = myParams->GetCurrentTimestep();
+    vector<double> minExt, maxExt;
+    myParams->GetBox()->GetExtents(minExt, maxExt);
+    vector<double> boxExtents(minExt);
+    boxExtents.insert(boxExtents.end(), maxExt.begin(), maxExt.end());
 
     return (refLevel != _cacheRefLevel || lod != _cacheLod || hgtVar != _cacheHgtVar ||
             ts != _cacheTimestep || boxExtents != _cacheBoxExtents);
 }
 
-void TwoDImageRenderer::_gridStateClear() {
+void ImageRenderer::_gridStateClear() {
     _cacheRefLevel = 0;
     _cacheLod = 0;
     _cacheHgtVar.clear();
@@ -287,73 +280,76 @@ void TwoDImageRenderer::_gridStateClear() {
     _cacheBoxExtents.clear();
 }
 
-void TwoDImageRenderer::_gridStateSet() {
-    TwoDImageParams *myParams = (TwoDImageParams *)getRenderParams();
+void ImageRenderer::_gridStateSet() {
+    ImageParams *myParams = (ImageParams *)GetActiveParams();
     _cacheRefLevel = myParams->GetRefinementLevel();
     _cacheLod = myParams->GetCompressionLevel();
     _cacheHgtVar = myParams->GetHeightVariableName();
-    _cacheTimestep = GetCurrentTimestep();
-    _cacheBoxExtents = myParams->GetBox()->GetLocalExtents();
+    _cacheTimestep = myParams->GetCurrentTimestep();
+    vector<double> minExt, maxExt;
+    myParams->GetBox()->GetExtents(minExt, maxExt);
+    _cacheBoxExtents = minExt;
+    _cacheBoxExtents.insert(_cacheBoxExtents.end(), maxExt.begin(), maxExt.end());
 }
 
-bool TwoDImageRenderer::_imageStateDirty(const vector<double> &times) const {
-
-    TwoDImageParams *myParams = (TwoDImageParams *)getRenderParams();
-    string imgFileName = myParams->GetImageFileName();
+bool ImageRenderer::_imageStateDirty(const vector<double> &times) const {
+    ImageParams *myParams = (ImageParams *)GetActiveParams();
+    string imgFileName = myParams->GetImagePath();
 
     return (_cacheImgFileName != imgFileName || _cacheTimes != times);
 }
 
-void TwoDImageRenderer::_imageStateSet(const vector<double> &times) {
+void ImageRenderer::_imageStateSet(const vector<double> &times) {
+    ImageParams *myParams = (ImageParams *)GetActiveParams();
 
-    TwoDImageParams *myParams = (TwoDImageParams *)getRenderParams();
-
-    string imgFileName = myParams->GetImageFileName();
+    string imgFileName = myParams->GetImagePath();
 
     _cacheImgFileName = imgFileName;
     _cacheTimes = times;
 }
 
-void TwoDImageRenderer::_imageStateClear() {
+void ImageRenderer::_imageStateClear() {
     _cacheImgFileName.clear();
     _cacheTimes.clear();
 }
 
-bool TwoDImageRenderer::_texStateDirty(DataMgr *dataMgr) const {
+bool ImageRenderer::_texStateDirty(DataMgr *dataMgr) const {
+    ImageParams *myParams = (ImageParams *)GetActiveParams();
 
-    TwoDImageParams *myParams = (TwoDImageParams *)getRenderParams();
-
-    int georeferenced = (int)myParams->GetGeoreferenced();
-    int ts = GetCurrentTimestep();
-    vector<double> boxExtents = myParams->GetBox()->GetLocalExtents();
+    int georeferenced = (int)myParams->GetIsGeoTIFF();
+    int ts = myParams->GetCurrentTimestep();
+    vector<double> minExt, maxExt;
+    myParams->GetBox()->GetExtents(minExt, maxExt);
+    vector<double> boxExtents(minExt);
+    boxExtents.insert(boxExtents.end(), maxExt.begin(), maxExt.end());
 
     return (_cacheTimestepTex != ts || _cacheBoxExtentsTex != boxExtents ||
             _cacheGeoreferenced != georeferenced);
 }
 
-void TwoDImageRenderer::_texStateSet(DataMgr *dataMgr) {
+void ImageRenderer::_texStateSet(DataMgr *dataMgr) {
+    ImageParams *myParams = (ImageParams *)GetActiveParams();
+    int georeferenced = (int)myParams->GetIsGeoTIFF();
 
-    TwoDImageParams *myParams = (TwoDImageParams *)getRenderParams();
-    int georeferenced = (int)myParams->GetGeoreferenced();
-
-    _cacheTimestepTex = GetCurrentTimestep();
-    _cacheBoxExtentsTex = myParams->GetBox()->GetLocalExtents();
+    _cacheTimestepTex = myParams->GetCurrentTimestep();
     _cacheGeoreferenced = georeferenced;
+    vector<double> minExt, maxExt;
+    myParams->GetBox()->GetExtents(minExt, maxExt);
+    _cacheBoxExtentsTex = minExt;
+    _cacheBoxExtentsTex.insert(_cacheBoxExtentsTex.end(), maxExt.begin(), maxExt.end());
 }
 
-void TwoDImageRenderer::_texStateClear() {
+void ImageRenderer::_texStateClear() {
     _cacheTimestepTex = -1;
     _cacheBoxExtentsTex.clear();
     _cacheGeoreferenced = -1;
 }
 
-int TwoDImageRenderer::_reinit(string path, vector<double> times) {
-
+int ImageRenderer::_reinit(string path, vector<double> times) {
     // Two forms of georeferenced images are cachely supported.
     // If path is a directory then we have a TMS database. Otherwise,
     // path must point to a tiff file
     //
-
     bool tms_flag = false;
     if (path.rfind(".tms", path.size() - 4) != string::npos) {
         ifstream in;
@@ -410,11 +406,10 @@ int TwoDImageRenderer::_reinit(string path, vector<double> times) {
     return (0);
 }
 
-unsigned char *TwoDImageRenderer::_getImage(GeoImage *geoimage, size_t ts, string proj4StringData,
-                                            vector<double> pcsExtentsDataVec,
-                                            double pcsExtentsImg[4], double geoCornersImg[8],
-                                            string &proj4StringImg, GLsizei &width,
-                                            GLsizei &height) const {
+unsigned char *ImageRenderer::_getImage(GeoImage *geoimage, size_t ts, string proj4StringData,
+                                        vector<double> pcsExtentsDataVec, double pcsExtentsImg[4],
+                                        double geoCornersImg[8], string &proj4StringImg,
+                                        GLsizei &width, GLsizei &height) const {
     assert(geoimage);
     assert(pcsExtentsDataVec.size() >= 4);
 
@@ -456,15 +451,12 @@ unsigned char *TwoDImageRenderer::_getImage(GeoImage *geoimage, size_t ts, strin
     return (tex);
 }
 
-int TwoDImageRenderer::_getMeshDisplaced(DataMgr *dataMgr, GLsizei width, GLsizei height,
-                                         const vector<double> &minBox,
-                                         const vector<double> &maxBox) {
-
+int ImageRenderer::_getMeshDisplaced(DataMgr *dataMgr, GLsizei width, GLsizei height,
+                                     const vector<double> &minBox, const vector<double> &maxBox) {
     // Construct the displaced (terrain following) grid using
     // a map projection, if specified.
     //
-    TwoDImageParams *myParams = (TwoDImageParams *)getRenderParams();
-    VizFeatureParams *vizfeature = _visualizer->getActiveVizFeatureParams();
+    ImageParams *myParams = (ImageParams *)GetActiveParams();
 
     int refLevel = myParams->GetRefinementLevel();
     int lod = myParams->GetCompressionLevel();
@@ -474,13 +466,12 @@ int TwoDImageRenderer::_getMeshDisplaced(DataMgr *dataMgr, GLsizei width, GLsize
     StructuredGrid *hgtGrid = NULL;
     string hgtVar = myParams->GetHeightVariableName();
     if (!hgtVar.empty()) {
-        vector<string> vars;
-        vars.push_back(hgtVar);
-        int rc = getGrids(dataMgr, GetCurrentTimestep(), vars, &refLevel, &lod, &hgtGrid);
+        int rc = DataMgrUtils::GetGrids(dataMgr, myParams->GetCurrentTimestep(), hgtVar, false,
+                                        &refLevel, &lod, &hgtGrid);
 
         if (rc < 0) {
             MyBase::SetErrMsg("height data unavailable for 2D rendering at timestep %d",
-                              GetCurrentTimestep());
+                              myParams->GetCurrentTimestep());
             return (rc);
         }
     }
@@ -492,7 +483,7 @@ int TwoDImageRenderer::_getMeshDisplaced(DataMgr *dataMgr, GLsizei width, GLsize
     dummy = (float *)_sb_normals.Alloc(vertsSize * sizeof(*dummy));
 
     int rc;
-    if (myParams->GetGeoreferenced()) {
+    if (myParams->GetIsGeoTIFF()) {
         double defaultZ = minBox.size() > 2 ? minBox[2] : 0.0;
         rc = _getMeshDisplacedGeo(dataMgr, hgtGrid, width, height, defaultZ);
     } else {
@@ -509,9 +500,8 @@ int TwoDImageRenderer::_getMeshDisplaced(DataMgr *dataMgr, GLsizei width, GLsize
 
 // Compute verts  for displayed, geo-referenced image
 //
-int TwoDImageRenderer::_getMeshDisplacedGeo(DataMgr *dataMgr, StructuredGrid *hgtGrid,
-                                            GLsizei width, GLsizei height, double defaultZ) {
-
+int ImageRenderer::_getMeshDisplacedGeo(DataMgr *dataMgr, StructuredGrid *hgtGrid, GLsizei width,
+                                        GLsizei height, double defaultZ) {
     // Set up proj.4:
     //
     string proj4String = dataMgr->GetMapProjection();
@@ -583,11 +573,9 @@ int TwoDImageRenderer::_getMeshDisplacedGeo(DataMgr *dataMgr, StructuredGrid *hg
 
 // Compute verts  for displayed, non-georeferenced image
 //
-int TwoDImageRenderer::_getMeshDisplacedNoGeo(DataMgr *dataMgr, StructuredGrid *hgtGrid,
-                                              GLsizei width, GLsizei height,
-                                              const vector<double> &minExt,
-                                              const vector<double> &maxExt) {
-
+int ImageRenderer::_getMeshDisplacedNoGeo(DataMgr *dataMgr, StructuredGrid *hgtGrid, GLsizei width,
+                                          GLsizei height, const vector<double> &minExt,
+                                          const vector<double> &maxExt) {
     // Delta between pixels in image in Image PCS coordinates
     //
     double deltax = (maxExt[0] - minExt[0]) / (double)(width - 1);
@@ -629,13 +617,13 @@ int TwoDImageRenderer::_getMeshDisplacedNoGeo(DataMgr *dataMgr, StructuredGrid *
     return (0);
 }
 
-int TwoDImageRenderer::_getMeshPlane(const vector<double> &minBox, const vector<double> &maxBox) {
+int ImageRenderer::_getMeshPlane(const vector<double> &minBox, const vector<double> &maxBox) {
     // determine the corners of the textured plane.
     // If it's X-Y (orientation = 2)
     // If it's X-Z (orientation = 1)
     // If it's Y-Z (orientation = 0)
     //
-    TwoDImageParams *myParams = (TwoDImageParams *)getRenderParams();
+    ImageParams *myParams = (ImageParams *)GetActiveParams();
     int orient = myParams->GetOrientation();
 
     size_t vertsSize = 2 * 2 * 3;
@@ -668,16 +656,15 @@ int TwoDImageRenderer::_getMeshPlane(const vector<double> &minBox, const vector<
 
 // Get the selected horizontal ROI in PCS data coordinates
 //
-vector<double> TwoDImageRenderer::_getPCSExtentsData() const {
-
-    size_t ts = GetCurrentTimestep();
-    TwoDImageParams *myParams = (TwoDImageParams *)getRenderParams();
+vector<double> ImageRenderer::_getPCSExtentsData() const {
+    ImageParams *myParams = (ImageParams *)GetActiveParams();
+    size_t ts = myParams->GetCurrentTimestep();
 
     // Find box extents for ROI
     //
     vector<double> minBox;
     vector<double> maxBox;
-    myParams->GetBox()->GetUserExtents(minBox, maxBox, ts);
+    myParams->GetBox()->GetExtents(minBox, maxBox);
 
     vector<double> pcsExtentsData;
     pcsExtentsData.push_back(minBox[0]);
@@ -688,26 +675,26 @@ vector<double> TwoDImageRenderer::_getPCSExtentsData() const {
     return (pcsExtentsData);
 }
 
-void TwoDImageRenderer::_transformToLocal(size_t width, size_t height,
-                                          const vector<double> &scaleFac) const {
+#if 0
+void ImageRenderer::_transformToLocal(  size_t width, 
+                                        size_t height, 
+	                                      const vector <double> &scaleFac) const 
+{
+	size_t ts =  GetCurrentTimestep();
+  vector<double>minExts,maxExts;
 
-    size_t ts = GetCurrentTimestep();
-    vector<double> minExts, maxExts;
-#ifdef DEAD
-    _dataStatus->GetExtents(ts, minExts, maxExts);
-#endif
+	GLfloat *verts = (GLfloat *) _sb_verts.GetBuf();
 
-    GLfloat *verts = (GLfloat *)_sb_verts.GetBuf();
+	for (int j = 0; j<height; j++){
+	for (int i = 0; i<width; i++){
+			verts[j*width*3 + i*3] -= minExts[0];
+			verts[j*width*3 + i*3+1] -= minExts[1];
+			verts[j*width*3 + i*3+2] -= minExts[2];
 
-    for (int j = 0; j < height; j++) {
-        for (int i = 0; i < width; i++) {
-            verts[j * width * 3 + i * 3] -= minExts[0];
-            verts[j * width * 3 + i * 3 + 1] -= minExts[1];
-            verts[j * width * 3 + i * 3 + 2] -= minExts[2];
-
-            verts[j * width * 3 + i * 3] *= scaleFac[0];
-            verts[j * width * 3 + i * 3 + 1] *= scaleFac[1];
-            verts[j * width * 3 + i * 3 + 2] *= scaleFac[2];
-        }
-    }
+			verts[j*width*3 + i*3] *= scaleFac[0];
+			verts[j*width*3 + i*3+1] *= scaleFac[1];
+			verts[j*width*3 + i*3+2] *= scaleFac[2];
+	}
+	}
 }
+#endif
