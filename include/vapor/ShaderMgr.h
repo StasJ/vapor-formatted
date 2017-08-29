@@ -32,6 +32,7 @@ class RENDER_API ShaderMgr : public Wasp::MyBase {
     std::string GLVendor();
     std::string GLRenderer();
     std::string GLVersion();
+    void GLVersion(int &major, int &minor);
     std::string GLShaderVersion();
     std::string GLExtensions();
     bool SupportsExtension(std::string extension);
