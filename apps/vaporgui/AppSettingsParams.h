@@ -39,7 +39,7 @@
 //! AppSettingsParams class also has several methods that are useful in setting up data requests
 //! from the DataMgr.
 //!
-class PARAMS_API AppSettingsParams : public VAPoR::ParamsBase {
+class AppSettingsParams : public VAPoR::ParamsBase {
 
   public:
     AppSettingsParams(VAPoR::ParamsBase::StateSave *ssave);
