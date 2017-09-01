@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#define VDC_DEBUG
+// #define VDC_DEBUG
 #ifdef VDC_DEBUG
 #define VDC_DEBUG_printf(...) fprintf(stderr, __VA_ARGS__)
 #define VDC_DEBUG_printff(...)                                                                     \
