@@ -3,7 +3,7 @@
 
 #include "EventRouter.h"
 #include "RangeCombos.h"
-#include "TFWidgetGUI.h"
+#include "ui_TFWidgetGUI.h"
 
 namespace VAPoR {
 class ControlExec;

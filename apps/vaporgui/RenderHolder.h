@@ -5,7 +5,7 @@
 #include "qpushbutton.h"
 #include "qstackedwidget.h"
 #include "qtableview.h"
-#include "renderselector.h"
+#include "ui_renderselector.h"
 #include <qobject.h>
 #include <vapor/MyBase.h>
 
