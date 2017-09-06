@@ -57,8 +57,8 @@ int TwoDRenderer::_paintGL() {
 
     // Get the 2D texture
     //
-    _texture = _getTexture(_dataMgr, _texWidth, _texHeight, _texInternalFormat, _texFormat,
-                           _texType, _texelSize, _gridAligned);
+    _texture = GetTexture(_dataMgr, _texWidth, _texHeight, _texInternalFormat, _texFormat, _texType,
+                          _texelSize, _gridAligned);
     if (!_texture) {
         return (-1);
     }
@@ -68,8 +68,8 @@ int TwoDRenderer::_paintGL() {
     // Get the proxy geometry used to render the 2D surface (vertices and
     // normals)
     //
-    int rc = _getMesh(_dataMgr, &_verts, &_normals, _meshWidth, _meshHeight, &_indices, _nindices,
-                      _structuredMesh);
+    int rc = GetMesh(_dataMgr, &_verts, &_normals, _meshWidth, _meshHeight, &_indices, _nindices,
+                     _structuredMesh);
     if (rc < 0) {
         return (-1);
     }
@@ -157,7 +157,7 @@ void TwoDRenderer::_openGLInit() {
     glEnableClientState(GL_NORMAL_ARRAY);
 
     if (_gridAligned) {
-        GLuint attrindx = _getAttribIndex();
+        GLuint attrindx = GetAttribIndex();
         glEnableVertexAttribArray(attrindx);
     } else {
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -181,7 +181,7 @@ void TwoDRenderer::_openGLRestore() {
     glDisableClientState(GL_NORMAL_ARRAY);
 
     if (_gridAligned) {
-        GLuint attrindx = _getAttribIndex();
+        GLuint attrindx = GetAttribIndex();
         glDisableVertexAttribArray(attrindx);
     } else {
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -209,7 +209,7 @@ void TwoDRenderer::_renderMeshAligned() {
 
     _openGLInit();
 
-    GLuint attrindx = _getAttribIndex();
+    GLuint attrindx = GetAttribIndex();
 
     // Ugh. For aligned data the type must be GLfloat.
     //
@@ -243,7 +243,7 @@ void TwoDRenderer::_renderMeshAligned() {
     _openGLRestore();
 }
 
-void TwoDRenderer::_ComputeNormals(const GLfloat *verts, GLsizei w, GLsizei h, GLfloat *normals) {
+void TwoDRenderer::ComputeNormals(const GLfloat *verts, GLsizei w, GLsizei h, GLfloat *normals) {
     // Go over the grid of vertices, calculating normals
     // by looking at adjacent x,y,z coords.
     //
