@@ -40,7 +40,7 @@ size_t Wasp::LinearizeCoords(const vector<size_t> &coords, const vector<size_t> 
     return (offset);
 }
 
-size_t Wasp::LinearizeCoords(vector<size_t> coords, vector<size_t> dims) {
+size_t Wasp::LinearizeCoords(const vector<size_t> &coords, const vector<size_t> &dims) {
     assert(coords.size() == dims.size());
 
     vector<size_t> min, max;

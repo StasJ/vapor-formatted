@@ -60,7 +60,8 @@ class COMMON_API SmartBuf {
 //! \retval offset The offset from the first element of the array to the
 //! address specified by \p coords
 //
-COMMON_API size_t LinearizeCoords(std::vector<size_t> coords, std::vector<size_t> dims);
+COMMON_API size_t LinearizeCoords(const std::vector<size_t> &coords,
+                                  const std::vector<size_t> &dims);
 
 //! Linearize multi-dimensional coordinates
 //!
