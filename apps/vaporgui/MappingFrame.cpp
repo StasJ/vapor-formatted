@@ -33,6 +33,7 @@
 #include "Histo.h"
 #include "MappingFrame.h"
 #include "OpacityWidget.h"
+#include <vapor/ContourParams.h>
 #include <vapor/ControlExecutive.h>
 #include <vapor/DataMgrUtils.h>
 #include <vapor/MapperFunction.h>
@@ -312,14 +313,16 @@ void MappingFrame::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, RenderParams *
         //	   _isoVal = ((ParamsIso*)params)->GetIsoValue();
         //	   _isoSlider->setIsoValue(xDataToWorld(_isoVal));
     } else if (_isolineSlidersEnabled) {
+        cout << "HeHERE" << endl;
         // Synchronize sliders with isovalues
-#ifdef DEAD
-        vector<double> isovals = ((IsolineParams *)rParams)->GetIsovalues();
+        //#ifdef	DEAD
+        vector<double> isovals = ((ContourParams *)rParams)->GetIsovalues();
         setIsolineSliders(isovals);
         for (int i = 0; i < isovals.size(); i++) {
+            cout << "Isoval " << isovals[i] << endl;
             _isolineSliders[i]->setIsoValue(xDataToWorld((float)isovals[i]));
         }
-#endif
+        //#endif
     }
 
     _domainSlider->setDomain(xDataToWorld(getMinDomainBound()), xDataToWorld(getMaxDomainBound()));
