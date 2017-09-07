@@ -27,6 +27,7 @@
 #include "AnimationParams.h"
 #include "AppSettingsParams.h"
 #include "GUIStateParams.h"
+#include "MiscParams.h"
 #include "StartupParams.h"
 #include <QActionGroup>
 #include <QComboBox>
@@ -131,6 +132,11 @@ class MainForm : public QMainWindow {
     AnimationParams *GetAnimationParams() const {
         assert(_paramsMgr != NULL);
         return ((AnimationParams *)_paramsMgr->GetParams(AnimationParams::GetClassType()));
+    }
+
+    MiscParams *GetMiscParams() const {
+        assert(_paramsMgr != NULL);
+        return ((MiscParams *)_paramsMgr->GetParams(MiscParams::GetClassType()));
     }
 
   protected:

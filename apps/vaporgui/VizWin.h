@@ -21,6 +21,7 @@
 
 #include "VizWinMgr.h"
 #include "vapor/Visualizer.h"
+#include <GL/glew.h>
 #include <QGLWidget>
 #include <QWheelEvent>
 
