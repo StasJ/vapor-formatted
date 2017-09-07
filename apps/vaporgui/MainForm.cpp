@@ -152,7 +152,6 @@ bool make_dataset_name(const vector<string> &currentPaths, const vector<string> 
 //
 MainForm::MainForm(vector<QString> files, QApplication *app, QWidget *parent, const char *)
     : QMainWindow(parent) {
-
     QString fileName("");
     setAttribute(Qt::WA_DeleteOnClose);
     _mainForm = this;
@@ -192,6 +191,9 @@ MainForm::MainForm(vector<QString> files, QApplication *app, QWidget *parent, co
     myParams.push_back(AppSettingsParams::GetClassType());
     myParams.push_back(StartupParams::GetClassType());
     myParams.push_back(AnimationParams::GetClassType());
+    myParams.push_back(MiscParams::GetClassType());
+    myParams.push_back(StatisticsParams::GetClassType());
+    myParams.push_back(PlotParams::GetClassType());
 
     // Create the Control executive before the VizWinMgr. Disable
     // state saving until completely initalized
@@ -526,6 +528,7 @@ void MainForm::createActions() {
     _plotAction = new QAction(this);
     _plotAction->setEnabled(false);
     _statsAction = new QAction(this);
+    _statsAction->setEnabled(false);
 
     // Then do the actions for the toolbars:
     // Create an exclusive action group for the mouse mode toolbar:
@@ -1605,6 +1608,8 @@ void MainForm::enableWidgets(bool onOff) {
     _windowSelector->setEnabled(onOff);
     _vizWinMgr->setEnabled(onOff);
     _tabMgr->setEnabled(onOff);
+    _statsAction->setEnabled(onOff);
+    _plotAction->setEnabled(onOff);
 
     AnimationEventRouter *aRouter =
         (AnimationEventRouter *)_vizWinMgr->GetEventRouter(AnimationEventRouter::GetClassType());
@@ -1698,23 +1703,25 @@ void MainForm::launchSeedMe() {
 }
 
 void MainForm::launchStats() {
-#ifdef DEAD
     if (!_stats)
         _stats = new Statistics(this);
-    DataMgr *dataMgr = _controlExec->GetDataMgr();
-    if (dataMgr) {
-        _stats->initDataMgr(dataMgr);
-        _stats->showMe();
+    //	DataStatus* ds = _controlExec->getDataStatus();
+    //	string dm = ds->GetDataMgrNames()[0];
+    //	DataMgr *dataMgr = ds->GetDataMgr(dm);
+    //	if (dataMgr){
+    //      _stats->initDataMgr(dataMgr);
+    //        _stats->showMe();
+    //    }
+    if (_controlExec) {
+        _stats->initControlExec(_controlExec);
     }
     _stats->showMe();
-#endif
 }
+
 void MainForm::launchPlotUtility() {
-    //    DataMgr *dataMgr = Session::getInstance()->getDataMgr();
     if (!_plot)
         _plot = new Plot(this);
-
-    //    _plot->Initialize(dataMgr, _vizWinMgr);
+    _plot->Initialize(_controlExec, _vizWinMgr);
 }
 
 // Begin capturing animation images.
