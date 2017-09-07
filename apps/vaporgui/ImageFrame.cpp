@@ -19,7 +19,7 @@
 //		Principally involved in drawing and responding to mouse events.
 //
 #include "ImageFrame.h"
-
+#include <GL/glew.h>
 #include <QFrame>
 #include <qgl.h>
 #include <qlayout.h>

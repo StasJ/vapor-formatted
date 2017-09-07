@@ -33,6 +33,7 @@
 #include "Histo.h"
 #include "MappingFrame.h"
 #include "OpacityWidget.h"
+#include <vapor/ContourParams.h>
 #include <vapor/ControlExecutive.h>
 #include <vapor/DataMgrUtils.h>
 #include <vapor/MapperFunction.h>
@@ -313,13 +314,13 @@ void MappingFrame::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, RenderParams *
         //	   _isoSlider->setIsoValue(xDataToWorld(_isoVal));
     } else if (_isolineSlidersEnabled) {
         // Synchronize sliders with isovalues
-#ifdef DEAD
-        vector<double> isovals = ((IsolineParams *)rParams)->GetIsovalues();
+        //#ifdef	DEAD
+        vector<double> isovals = ((ContourParams *)rParams)->GetIsovalues();
         setIsolineSliders(isovals);
         for (int i = 0; i < isovals.size(); i++) {
             _isolineSliders[i]->setIsoValue(xDataToWorld((float)isovals[i]));
         }
-#endif
+        //#endif
     }
 
     _domainSlider->setDomain(xDataToWorld(getMinDomainBound()), xDataToWorld(getMaxDomainBound()));
@@ -1626,8 +1627,6 @@ void MappingFrame::mousePressEvent(QMouseEvent *event) {
     } else if (!_editMode && (_button == Qt::LeftButton)) {
         emit startChange("Mapping window zoom/pan");
     }
-
-    cout << "MappingFrame mousePressEvent" << endl;
 
     updateGL();
 }
