@@ -21,7 +21,7 @@
 #define VIEWPOINTEVENTROUTER_H
 
 #include "EventRouter.h"
-#include "vizTab.h"
+#include "ui_vizTab.h"
 #include <qobject.h>
 #include <vapor/MyBase.h>
 

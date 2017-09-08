@@ -21,7 +21,7 @@
 #define VIZFEATUREEVENTROUTER_H
 
 #include "EventRouter.h"
-#include "vizFeaturesTab.h"
+#include "ui_vizFeaturesTab.h"
 #include <qobject.h>
 #include <vapor/MyBase.h>
 
@@ -75,6 +75,11 @@ class VizFeatureEventRouter : public QWidget, public Ui_vizFeaturesTab, public E
     void setZTicOrient(int);
     void setLatLonAnnot(bool);
     void setUseAxisArrows(bool);
+    void timeAnnotationChanged();
+    void timeLLXChanged();
+    void timeLLYChanged();
+    void timeSizeChanged();
+    void timeColorChanged();
 
   private:
     VizFeatureEventRouter() {}
@@ -83,6 +88,12 @@ class VizFeatureEventRouter : public QWidget, public Ui_vizFeaturesTab, public E
 
     virtual void _confirmText();
     virtual void _updateTab();
+
+    void drawTimeStamp();
+    void drawTimeStep(string text = "");
+
+    AnimationParams *_ap;
+    bool _animConnected;
 };
 
 #endif // VIZFEATUREEVENTROUTER_H

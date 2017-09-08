@@ -1,8 +1,8 @@
 #ifndef REGIONSLIDERWIDGET_H
 #define REGIONSLIDERWIDGET_H
 
-#include "GeometryWidgetGUI.h"
 #include "RangeCombos.h"
+#include "ui_GeometryWidgetGUI.h"
 
 namespace VAPoR {
 class RenderParams;
