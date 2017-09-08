@@ -14,9 +14,9 @@
 #include <vapor/DataMgr.h>
 #include <vapor/DataMgrUtils.h>
 #include <vapor/GeoImage.h>
+#include <vapor/Grid.h>
 #include <vapor/RenderParams.h>
 #include <vapor/ShaderMgr.h>
-#include <vapor/StructuredGrid.h>
 #include <vapor/TwoDRenderer.h>
 #include <vapor/Visualizer.h>
 #include <vapor/utils.h>
@@ -99,14 +99,13 @@ class RENDER_API ImageRenderer : public TwoDRenderer {
                              double geoCornersImg[8], string &proj4StringImg, GLsizei &width,
                              GLsizei &height) const;
 
-    int _getMeshDisplacedGeo(DataMgr *dataMgr, StructuredGrid *hgtGrid, GLsizei width,
-                             GLsizei height, double defaultZ);
+    int _getMeshDisplacedGeo(DataMgr *dataMgr, Grid *hgtGrid, GLsizei width, GLsizei height,
+                             double defaultZ);
 
     // Compute _verts  for displayed, non-georeferenced image
     //
-    int _getMeshDisplacedNoGeo(DataMgr *dataMgr, StructuredGrid *hgtGrid, GLsizei width,
-                               GLsizei height, const vector<double> &minExt,
-                               const vector<double> &maxExt);
+    int _getMeshDisplacedNoGeo(DataMgr *dataMgr, Grid *hgtGrid, GLsizei width, GLsizei height,
+                               const vector<double> &minExt, const vector<double> &maxExt);
 
     int _getMeshDisplaced(DataMgr *dataMgr, GLsizei width, GLsizei height,
                           const vector<double> &minBox, const vector<double> &maxBox);

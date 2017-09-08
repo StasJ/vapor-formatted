@@ -48,7 +48,8 @@ class VDF_API LayeredGrid : public StructuredGrid {
                 const std::vector<float *> &blks, const std::vector<double> &minu,
                 const std::vector<double> &maxu, const RegularGrid &rg);
 
-    virtual ~LayeredGrid();
+    LayeredGrid() = default;
+    virtual ~LayeredGrid() = default;
 
     //! \copydoc RegularGrid::GetValue()
     //!
@@ -134,7 +135,7 @@ class VDF_API LayeredGrid : public StructuredGrid {
     //!
     const RegularGrid &GetZRG() const { return (_rg); };
 
-    class ConstCoordItrLayered : public StructuredGrid::ConstCoordItrAbstract {
+    class ConstCoordItrLayered : public Grid::ConstCoordItrAbstract {
       public:
         ConstCoordItrLayered(const LayeredGrid *rg, bool begin);
         ConstCoordItrLayered(const ConstCoordItrLayered &rhs);
@@ -143,7 +144,7 @@ class VDF_API LayeredGrid : public StructuredGrid {
         virtual ~ConstCoordItrLayered() {}
 
         virtual void next();
-        virtual const std::vector<double> &deref() const { return (_coords); }
+        virtual ConstCoordType &deref() const { return (_coords); }
         virtual const void *address() const { return this; };
 
         virtual bool equal(const void *rhs) const {
@@ -184,11 +185,9 @@ class VDF_API LayeredGrid : public StructuredGrid {
     void _layeredGrid(const std::vector<double> &minu, const std::vector<double> &maxu,
                       const RegularGrid &rg);
 
-    void _GetUserExtents(std::vector<double> &minu, std::vector<double> &maxu) const;
+    virtual float GetValueNearestNeighbor(const std::vector<double> &coords) const override;
 
-    float _GetValueNearestNeighbor(const std::vector<double> &coords) const override;
-
-    float _GetValueLinear(const std::vector<double> &coords) const override;
+    virtual float GetValueLinear(const std::vector<double> &coords) const override;
 
     //!
     //! Return the bilinear interpolation weights of a point given in user
