@@ -19,7 +19,7 @@
 //
 #ifndef BOXSLIDERFRAME_H
 #define BOXSLIDERFRAME_H
-#include "boxframe.h"
+#include "ui_boxframe.h"
 #include <QFrame>
 #include <cassert>
 #include <qwidget.h>

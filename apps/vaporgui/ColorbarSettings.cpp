@@ -20,7 +20,7 @@
 //		embed a colorbarframe
 //
 #include "ColorbarSettings.h"
-#include "colorbarframe.h"
+#include "ui_colorbarframe.h"
 #include "vapor/ColorbarPbase.h"
 #include "vapor/RenderParams.h"
 #include <QFrame>
