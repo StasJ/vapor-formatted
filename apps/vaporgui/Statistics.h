@@ -29,7 +29,7 @@
 #include <qwidget.h>
 #include <statsWindow.h>
 #include <vapor/DataMgr.h>
-#include <vapor/StructuredGrid.h>
+#include <vapor/Grid.h>
 
 //
 //! \class Statistics
@@ -209,8 +209,7 @@ class Statistics : public QDialog, public Ui_StatsWindow {
     MinMaxLabel *_spZMaxLabel;
 
     VAPoR::DataMgr *_dm;
-    //		RegularGrid* _rGrid;
-    VAPoR::StructuredGrid *_rGrid;
+    VAPoR::Grid *_rGrid;
     string _defaultVar;
     vector<string> _vars;
     vector<string> _vars3d;

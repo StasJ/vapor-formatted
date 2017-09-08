@@ -105,8 +105,7 @@ int DataMgrUtils::ConvertLonLatToPCS(const DataMgr *dataMgr, double coords[2], i
 
 int DataMgrUtils::GetGrids(DataMgr *dataMgr, size_t ts, const vector<string> &varnames,
                            const vector<double> &minExtsReq, const vector<double> &maxExtsReq,
-                           bool useLowerAccuracy, int *refLevel, int *lod,
-                           vector<StructuredGrid *> &grids) {
+                           bool useLowerAccuracy, int *refLevel, int *lod, vector<Grid *> &grids) {
     grids.clear();
     assert(minExtsReq.size() == maxExtsReq.size());
 
@@ -157,7 +156,7 @@ int DataMgrUtils::GetGrids(DataMgr *dataMgr, size_t ts, const vector<string> &va
         if (varnames[i].empty())
             continue;
 
-        StructuredGrid *rGrid =
+        Grid *rGrid =
             dataMgr->GetVariable(ts, varnames[i], *refLevel, *lod, minExtsReq, maxExtsReq, true);
 
         if (!rGrid) {
@@ -177,13 +176,12 @@ int DataMgrUtils::GetGrids(DataMgr *dataMgr, size_t ts, const vector<string> &va
 
 int DataMgrUtils::GetGrids(DataMgr *dataMgr, size_t ts, string varname,
                            const vector<double> &minExtsReq, const vector<double> &maxExtsReq,
-                           bool useLowerAccuracy, int *refLevel, int *lod,
-                           StructuredGrid **gridptr) {
+                           bool useLowerAccuracy, int *refLevel, int *lod, Grid **gridptr) {
     *gridptr = NULL;
 
     vector<string> varnames;
     varnames.push_back(varname);
-    vector<StructuredGrid *> grids;
+    vector<Grid *> grids;
     int rc = GetGrids(dataMgr, ts, varnames, minExtsReq, maxExtsReq, useLowerAccuracy, refLevel,
                       lod, grids);
     if (rc < 0)
@@ -194,8 +192,7 @@ int DataMgrUtils::GetGrids(DataMgr *dataMgr, size_t ts, string varname,
 }
 
 int DataMgrUtils::GetGrids(DataMgr *dataMgr, size_t ts, const vector<string> &varnames,
-                           bool useLowerAccuracy, int *refLevel, int *lod,
-                           vector<StructuredGrid *> &grids) {
+                           bool useLowerAccuracy, int *refLevel, int *lod, vector<Grid *> &grids) {
     grids.clear();
 
     vector<double> minExtsReq, maxExtsReq;
@@ -212,12 +209,12 @@ int DataMgrUtils::GetGrids(DataMgr *dataMgr, size_t ts, const vector<string> &va
 }
 
 int DataMgrUtils::GetGrids(DataMgr *dataMgr, size_t ts, string varname, bool useLowerAccuracy,
-                           int *refLevel, int *lod, StructuredGrid **gridptr) {
+                           int *refLevel, int *lod, Grid **gridptr) {
     *gridptr = NULL;
 
     vector<string> varnames;
     varnames.push_back(varname);
-    vector<StructuredGrid *> grids;
+    vector<Grid *> grids;
     int rc = GetGrids(dataMgr, ts, varnames, useLowerAccuracy, refLevel, lod, grids);
     if (rc < 0)
         return (rc);
@@ -337,7 +334,7 @@ void DataMgrUtils::mapBoxToVox(Box *box, string varname, int refLevel, int lod, 
         maxexts.push_back(userExts[i + 3]);
     }
     bool errEnabled = MyBase::EnableErrMsg(false);
-    StructuredGrid *rg = dataMgr->GetVariable(timestep, varname, refLevel, lod, minexts, maxexts);
+    Grid *rg = dataMgr->GetVariable(timestep, varname, refLevel, lod, minexts, maxexts);
     MyBase::EnableErrMsg(errEnabled);
 
     if (rg) {
@@ -361,7 +358,7 @@ double DataMgrUtils::getVoxelSize(size_t ts, string varname, int refLevel, int d
     // Obtain the variable at lowest refinement level, then convert to higher levels if needed
     // If dir is -1 get maximum side of voxel
     // If dir is -2 get minimum side of voxel
-    StructuredGrid *rGrid = dataMgr->GetVariable(ts, varname, 0, 0);
+    Grid *rGrid = dataMgr->GetVariable(ts, varname, 0, 0);
     if (refLevel == -1)
         refLevel = dataMgr->GetNumRefLevels(varname) - 1;
     size_t dims[3];
