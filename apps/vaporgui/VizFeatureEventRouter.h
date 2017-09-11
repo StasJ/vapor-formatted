@@ -21,7 +21,7 @@
 #define VIZFEATUREEVENTROUTER_H
 
 #include "EventRouter.h"
-#include "vizFeaturesTab.h"
+#include "ui_vizFeaturesTab.h"
 #include <qobject.h>
 #include <vapor/MyBase.h>
 

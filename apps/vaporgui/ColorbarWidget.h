@@ -19,9 +19,9 @@
 //
 #ifndef COLORBARWIDGET_H
 #define COLORBARWIDGET_H
-#include "ColorbarWidgetGUI.h"
 #include "RangeCombos.h"
 #include "RenderEventRouter.h"
+#include "ui_ColorbarWidgetGUI.h"
 #include <QFrame>
 #include <qwidget.h>
 #include <vapor/RenderParams.h>

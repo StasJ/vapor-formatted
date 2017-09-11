@@ -22,7 +22,7 @@
 
 #include "EventRouter.h"
 #include "TabManager.h"
-#include "regionTab.h"
+#include "ui_regionTab.h"
 #include <qobject.h>
 #include <vapor/MyBase.h>
 

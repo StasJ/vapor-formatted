@@ -1,10 +1,10 @@
 #ifndef IMAGESUBTABS_H
 #define IMAGESUBTABS_H
 
-#include "ImageAppearanceGUI.h"
-#include "ImageGeometryGUI.h"
-#include "ImageVariablesGUI.h"
 #include "RangeCombos.h"
+#include "ui_ImageAppearanceGUI.h"
+#include "ui_ImageGeometryGUI.h"
+#include "ui_ImageVariablesGUI.h"
 #include "vapor/GetAppPath.h"
 #include "vapor/ImageParams.h"
 #include <QFileDialog>

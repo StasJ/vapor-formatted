@@ -19,6 +19,15 @@
 
 /* GeoTIFF overrides */
 
+#ifdef WIN32
+#include "geotiff/cpl_serv.h"
+#include "geotiff/geo_keyp.h"
+#include "geotiff/geo_normalize.h"
+#include "geotiff/geo_tiffp.h"
+#include "geotiff/geotiff.h"
+#include "geotiff/xtiffio.h"
+#include "proj_api.h"
+#else
 #include "cpl_serv.h"
 #include "geo_keyp.h"
 #include "geo_normalize.h"
@@ -26,6 +35,8 @@
 #include "geotiff.h"
 #include "proj_api.h"
 #include "xtiffio.h"
+#endif
+
 #ifdef WIN32
 #include <float.h>
 #pragma warning(disable : 4996)

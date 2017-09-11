@@ -21,9 +21,13 @@
 #include <cassert>
 #include <cmath>
 #include <limits>
-#include <tiffio.h>
 #include <vapor/glutil.h> // Must be included first!!!
 #include <vector>
+#ifdef WIN32
+#include <tiff/tiffio.h>
+#else
+#include <tiffio.h>
+#endif
 
 #ifdef WIN32
 #pragma warning(disable : 4996)

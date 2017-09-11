@@ -23,7 +23,7 @@
 #pragma warning(disable : 4100 4996)
 #endif
 #include "GL/glew.h"
-#include "regionTab.h"
+#include "ui_regionTab.h"
 #include "vapor/regionparams.h"
 #include <QFileDialog>
 #include <QListWidgetItem>
