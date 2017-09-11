@@ -17,6 +17,7 @@
 //
 //	Description:	Implements the ErrorReporter class
 
+#include <errno.h>
 #include <execinfo.h>
 #include <signal.h>
 #include <stdio.h>

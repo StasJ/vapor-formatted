@@ -24,8 +24,8 @@
 #endif
 #include "GL/glew.h"
 #include "qcolordialog.h"
+#include "ui_vizFeaturesTab.h"
 #include "vapor/VizFeatureParams.h"
-#include "vizFeaturesTab.h"
 #include <qdesktopwidget.h>
 #include <qlineedit.h>
 #include <qmessagebox.h>

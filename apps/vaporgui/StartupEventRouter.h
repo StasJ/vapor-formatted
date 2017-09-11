@@ -21,7 +21,7 @@
 #define STARTUPEVENTROUTER_H
 
 #include "EventRouter.h"
-#include "startupTab.h"
+#include "ui_startupTab.h"
 #include <qobject.h>
 #include <vapor/MyBase.h>
 

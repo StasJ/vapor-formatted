@@ -26,12 +26,12 @@
 
 #include "PlotParams.h"
 #include "RangeController.h"
+#include "ui_errMsg.h"
+#include "ui_plotWindow.h"
 #include <Python.h>
 #include <QCheckBox>
 #include <QLineEdit>
 #include <QWidget>
-#include <errMsg.h>
-#include <plotWindow.h>
 #include <qdialog.h>
 #include <vapor/ControlExecutive.h>
 #include <vapor/DataMgr.h>

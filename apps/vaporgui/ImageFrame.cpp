@@ -18,6 +18,7 @@
 //		a frame in which various images can be displayed and mouse-picked.
 //		Principally involved in drawing and responding to mouse events.
 //
+#include "ImageFrame.h"
 #include <GL/glew.h>
 #include <QFrame>
 #include <qgl.h>
@@ -28,8 +29,6 @@
 #include <QMouseEvent>
 #include <QPaintEvent>
 #include <QResizeEvent>
-
-#include "ImageFrame.h"
 
 ImageFrame::ImageFrame(QWidget *parent, Qt::WFlags f) : QFrame(parent, f) {
 #ifdef CRAP

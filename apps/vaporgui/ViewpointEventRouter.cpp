@@ -31,9 +31,9 @@
 
 #include "ViewpointEventRouter.h"
 #include "VizWinMgr.h"
+#include "ui_vizTab.h"
 #include "vapor/ControlExecutive.h"
 #include "vapor/ViewpointParams.h"
-#include "vizTab.h"
 #include <fstream>
 #include <iostream>
 #include <qcombobox.h>

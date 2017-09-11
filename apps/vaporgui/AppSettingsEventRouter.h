@@ -21,7 +21,7 @@
 #define APPSETTINGSEVENTROUTER_H
 
 #include "EventRouter.h"
-#include "appSettingsTab.h"
+#include "ui_appSettingsTab.h"
 #include <qobject.h>
 #include <vapor/MyBase.h>
 

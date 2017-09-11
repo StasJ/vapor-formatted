@@ -22,7 +22,7 @@
 
 #include "EventRouter.h"
 #include "TabManager.h"
-#include "animationTab.h"
+#include "ui_animationTab.h"
 #include <vapor/MyBase.h>
 
 namespace VAPoR {
