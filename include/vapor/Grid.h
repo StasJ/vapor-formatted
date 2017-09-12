@@ -570,6 +570,8 @@ class VDF_API Grid {
     virtual ConstCoordItr ConstCoordBegin() const = 0;
     virtual ConstCoordItr ConstCoordEnd() const = 0;
 
+    // Node index iterator. Iterates over grid node indices
+    //
     typedef const std::vector<size_t> ConstIndexType;
     typedef Grid::PolyIterator<ConstIndexType> ConstNodeIterator;
     typedef Grid::AbstractIterator<ConstIndexType> ConstNodeIteratorAbstract;
@@ -578,6 +580,16 @@ class VDF_API Grid {
     virtual ConstNodeIterator ConstNodeBegin(const std::vector<double> &minu,
                                              const std::vector<double> &maxu) const = 0;
     virtual ConstNodeIterator ConstNodeEnd() const = 0;
+
+    // Cell index iterator. Iterates over grid cell indices
+    //
+    typedef Grid::PolyIterator<ConstIndexType> ConstCellIterator;
+    typedef Grid::AbstractIterator<ConstIndexType> ConstCellIteratorAbstract;
+
+    virtual ConstCellIterator ConstCellBegin() const = 0;
+    virtual ConstCellIterator ConstCellBegin(const std::vector<double> &minu,
+                                             const std::vector<double> &maxu) const = 0;
+    virtual ConstCellIterator ConstCellEnd() const = 0;
 
     //! A forward iterator for accessing the data elements of the
     //! structured grid.
