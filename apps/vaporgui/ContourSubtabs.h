@@ -103,7 +103,7 @@ class ContourAppearanceSubtab : public QWidget, public Ui_ContourAppearanceGUI {
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                 VAPoR::RenderParams *rParams) {
-        cout << "Update" << endl;
+        cout << "Update ME" << endl;
         _cParams = (VAPoR::ContourParams *)rParams;
         _dataMgr = dataMgr;
         _paramsMgr = paramsMgr;
@@ -227,7 +227,9 @@ class ContourAppearanceSubtab : public QWidget, public Ui_ContourAppearanceGUI {
     void SetLineThickness(double val) { _cParams->SetLineThickness(val); }
 
     void SetContourCount(int count) {
+        cout << "HELLO" << endl;
         bool locked = _cParams->GetLockToTF();
+        cout << "lock " << locked << endl;
         string varname = _cParams->GetVariableName();
 
         // If we're locked to the transfer function and our span exceeds
@@ -248,6 +250,7 @@ class ContourAppearanceSubtab : public QWidget, public Ui_ContourAppearanceGUI {
             //				_cParams->SetContourSpacing(spacing);
             //			}
             double spacing = (upper - lower) / (double)(count - 1);
+            cout << "i'm locked.  setting spacing " << spacing << endl;
             _cParams->SetContourSpacing(spacing);
         }
 
