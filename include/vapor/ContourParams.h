@@ -49,7 +49,6 @@ class PARAMS_API ContourParams : public RenderParams {
     int GetNumContours() const { return (int)GetValueDouble(_numContoursTag, 3.0); }
 
     void SetNumContours(int num) {
-        cout << "Internal params SetNumContours" << num << endl;
         SetValueDouble(_numContoursTag, "Number of contours", (double)num);
     }
 
