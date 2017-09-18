@@ -75,6 +75,7 @@ int TwoDRenderer::_paintGL() {
     }
 
     if (!_gridAligned) {
+        cout << "Aligned" << endl;
         assert(_structuredMesh);
 
         assert(_meshWidth >= 2);
@@ -89,6 +90,7 @@ int TwoDRenderer::_paintGL() {
         //
         _renderMeshUnAligned();
     } else {
+        cout << "Unaligned" << endl;
         assert(_meshWidth == _texWidth);
         assert(_meshHeight == _texHeight);
 
