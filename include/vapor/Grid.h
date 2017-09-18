@@ -2,6 +2,7 @@
 #define _Grid_
 
 #include <cassert>
+#include <memory>
 #include <ostream>
 #include <vapor/common.h>
 #include <vector>
