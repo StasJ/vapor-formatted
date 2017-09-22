@@ -1452,7 +1452,7 @@ void Statistics::initRegion() {
         float range[2];
 
         for (int ts = _minTS; ts <= _maxTS; ts++) {
-            StructuredGrid *rGrid = NULL;
+            Grid *rGrid = NULL;
             float mv;
 
             cout << "MinMax ";
@@ -1501,8 +1501,7 @@ void Statistics::initRegion() {
         return true;
     }
 
-    void Statistics::getSinglePointTSMean(double &tsMean, int &missing,
-                                          VAPoR::StructuredGrid *rGrid) {
+    void Statistics::getSinglePointTSMean(double &tsMean, int &missing, VAPoR::Grid *rGrid) {
         float val = rGrid->GetValue(_extents[0], _extents[1], _extents[2]);
         float mv = rGrid->GetMissingValue();
         if (val != mv) {
@@ -1521,7 +1520,7 @@ void Statistics::initRegion() {
     }
 
     void Statistics::getMultiPointTSMean(double &tsMean, int &missing, int &count,
-                                         VAPoR::StructuredGrid *rGrid) {
+                                         VAPoR::Grid *rGrid) {
         double c = 0.0;
         double sum = 0;
         float val = 0.0;
@@ -1590,7 +1589,7 @@ void Statistics::initRegion() {
             missing = 0;
             count = 0;
 
-            StructuredGrid *rGrid;
+            Grid *rGrid;
             rGrid = _dm->GetVariable(ts, varname, _refLevel, _cRatio, _uCoordMin, _uCoordMax);
 
             if (!rGrid) {
@@ -1635,7 +1634,7 @@ void Statistics::initRegion() {
     }
 
     void Statistics::getSinglePointTSStdDev(double &tsStdDev, int &globalCount, int &spMissing,
-                                            double mean, VAPoR::StructuredGrid *rGrid) {
+                                            double mean, VAPoR::Grid *rGrid) {
         float mv = rGrid->GetMissingValue();
         float val = rGrid->GetValue(_extents[0], _extents[1], _extents[2]);
         if (val != mv) {
@@ -1676,7 +1675,7 @@ void Statistics::initRegion() {
             deviations = 0;
             missing = 0;
 
-            StructuredGrid *rGrid;
+            Grid *rGrid;
             rGrid = _dm->GetVariable(ts, varname, _refLevel, _cRatio, _uCoordMin, _uCoordMax);
 
             // Invalid regular grid.  Use previous timesteps and return.
@@ -1788,7 +1787,6 @@ void Statistics::initRegion() {
             }
 
             else {
-                //			VAPoR::StructuredGrid::Iterator itr;
                 StructuredGrid::ForwardIterator<StructuredGrid> itr;
                 StructuredGrid::ForwardIterator<StructuredGrid> endItr;
                 endItr = _rGrid->end();
@@ -1865,8 +1863,8 @@ void Statistics::initRegion() {
 
             float val;
             mv = _rGrid->GetMissingValue();
-            //		VAPoR::StructuredGrid::Iterator itr;
-            StructuredGrid::ForwardIterator<StructuredGrid> itr;
+            Grid::ConstIterator itr;
+            // Grid::ForwardIterator itr;
             // If _regionSelection==2, we are querying a single point.
             // So here we just call GetValue at that point.
             //
@@ -1876,9 +1874,10 @@ void Statistics::initRegion() {
                     allValues.push_back(val);
                 }
             } else {
-                StructuredGrid::ForwardIterator<StructuredGrid> endItr;
-                endItr = _rGrid->end();
-                for (itr = _rGrid->begin(); itr != endItr; ++itr) {
+                // StructuredGrid::ForwardIterator<StructuredGrid> endItr;
+                Grid::ForwardIterator<const Grid> endItr;
+                endItr = _rGrid->cend();
+                for (itr = _rGrid->cbegin(); itr != endItr; ++itr) {
                     val = *itr;
 
                     if (val != mv)

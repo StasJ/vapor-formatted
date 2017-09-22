@@ -64,7 +64,7 @@ int BarbRenderer::_paintGL() {
     // Set up the variable data required, while determining data
     // extents to use in rendering
     //
-    vector<StructuredGrid *> varData;
+    vector<Grid *> varData;
 
     BarbParams *bParams = (BarbParams *)GetActiveParams();
     size_t ts = bParams->GetCurrentTimestep();
@@ -96,7 +96,7 @@ int BarbRenderer::_paintGL() {
     //
     string hname = bParams->GetHeightVariableName();
     if (!hname.empty()) {
-        StructuredGrid *sg = NULL;
+        Grid *sg = NULL;
         int rc = DataMgrUtils::GetGrids(_dataMgr, ts, hname, minExts, maxExts, true, &refLevel,
                                         &lod, &sg);
         if (rc < 0) {
@@ -114,7 +114,7 @@ int BarbRenderer::_paintGL() {
     // vector<string> auxvars = bParams->GetAuxVariableNames();
     string colorVar = bParams->GetColorMapVariableName();
     if (!(colorVar == "") && !bParams->UseSingleColor()) {
-        StructuredGrid *sg;
+        Grid *sg;
         int rc = DataMgrUtils::GetGrids(_dataMgr, ts, colorVar, minExts, maxExts, true, &refLevel,
                                         &lod, &sg);
         if (rc < 0) {
@@ -283,7 +283,7 @@ void BarbRenderer::drawBarb(const float startPoint[3], const float endPoint[3], 
 }
 
 int BarbRenderer::performRendering(const BarbParams *bParams, int actualRefLevel,
-                                   float vectorLengthScale, vector<StructuredGrid *> variableData) {
+                                   float vectorLengthScale, vector<Grid *> variableData) {
     assert(variableData.size() == 5);
 
     size_t timestep = bParams->GetCurrentTimestep();
@@ -338,8 +338,7 @@ int BarbRenderer::performRendering(const BarbParams *bParams, int actualRefLevel
     return 0;
 }
 
-float BarbRenderer::getHeightOffset(StructuredGrid *heightVar, float xCoord, float yCoord,
-                                    bool &missing) {
+float BarbRenderer::getHeightOffset(Grid *heightVar, float xCoord, float yCoord, bool &missing) {
     assert(heightVar);
     float missingVal = heightVar->GetMissingValue();
     float offset = heightVar->GetValue(xCoord, yCoord, 0.f);
@@ -350,9 +349,8 @@ float BarbRenderer::getHeightOffset(StructuredGrid *heightVar, float xCoord, flo
     return offset;
 }
 
-void BarbRenderer::renderGrid(int rakeGrid[3], double rakeExts[6],
-                              vector<StructuredGrid *> variableData, int timestep, float length,
-                              float rad, const BarbParams *bParams) {
+void BarbRenderer::renderGrid(int rakeGrid[3], double rakeExts[6], vector<Grid *> variableData,
+                              int timestep, float length, float rad, const BarbParams *bParams) {
 
     assert(variableData.size() == 5);
 
@@ -360,7 +358,7 @@ void BarbRenderer::renderGrid(int rakeGrid[3], double rakeExts[6],
     ViewpointParams *vpParams = _paramsMgr->GetViewpointParams(winName);
     vector<double> scales = vpParams->GetStretchFactors();
 
-    StructuredGrid *heightVar = variableData[3];
+    Grid *heightVar = variableData[3];
 
     float end[3];
     float xStride = (rakeExts[3] - rakeExts[0]) / ((float)rakeGrid[0] + 1);

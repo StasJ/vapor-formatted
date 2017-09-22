@@ -31,7 +31,7 @@
 
 #include <vapor/DataMgr.h>
 #include <vapor/GeoImage.h>
-#include <vapor/StructuredGrid.h>
+#include <vapor/Grid.h>
 #include <vapor/TwoDDataParams.h>
 #include <vapor/TwoDRenderer.h>
 #include <vapor/utils.h>
@@ -105,9 +105,9 @@ class RENDER_API TwoDDataRenderer : public TwoDRenderer {
 
     int _getMeshStructured(DataMgr *dataMgr, const StructuredGrid *g, double defaultZ);
 
-    int _getMeshUnStructured(DataMgr *dataMgr, const StructuredGrid *g, double defaultZ);
+    int _getMeshUnStructured(DataMgr *dataMgr, const Grid *g, double defaultZ);
 
-    int _getMeshUnStructuredHelper(DataMgr *dataMgr, const StructuredGrid *g, double defaultZ);
+    int _getMeshUnStructuredHelper(DataMgr *dataMgr, const Grid *g, double defaultZ);
 
     int _getMeshStructuredDisplaced(DataMgr *dataMgr, const StructuredGrid *g, double defaultZ);
 
