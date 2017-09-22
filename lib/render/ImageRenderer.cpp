@@ -479,7 +479,7 @@ int ImageRenderer::_getMeshDisplaced(DataMgr *dataMgr, GLsizei width, GLsizei he
 
     // Get the height variable if one specified
     //
-    StructuredGrid *hgtGrid = NULL;
+    Grid *hgtGrid = NULL;
     string hgtVar = myParams->GetHeightVariableName();
     if (!hgtVar.empty()) {
         int rc = DataMgrUtils::GetGrids(dataMgr, myParams->GetCurrentTimestep(), hgtVar, false,
@@ -517,7 +517,7 @@ int ImageRenderer::_getMeshDisplaced(DataMgr *dataMgr, GLsizei width, GLsizei he
 
 // Compute verts  for displayed, geo-referenced image
 //
-int ImageRenderer::_getMeshDisplacedGeo(DataMgr *dataMgr, StructuredGrid *hgtGrid, GLsizei width,
+int ImageRenderer::_getMeshDisplacedGeo(DataMgr *dataMgr, Grid *hgtGrid, GLsizei width,
                                         GLsizei height, double defaultZ) {
     // Set up proj.4:
     //
@@ -590,7 +590,7 @@ int ImageRenderer::_getMeshDisplacedGeo(DataMgr *dataMgr, StructuredGrid *hgtGri
 
 // Compute verts  for displayed, non-georeferenced image
 //
-int ImageRenderer::_getMeshDisplacedNoGeo(DataMgr *dataMgr, StructuredGrid *hgtGrid, GLsizei width,
+int ImageRenderer::_getMeshDisplacedNoGeo(DataMgr *dataMgr, Grid *hgtGrid, GLsizei width,
                                           GLsizei height, const vector<double> &minExt,
                                           const vector<double> &maxExt) {
     // Delta between pixels in image in Image PCS coordinates

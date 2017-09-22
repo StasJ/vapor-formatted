@@ -47,8 +47,6 @@ LayeredGrid::LayeredGrid(const vector<size_t> &dims, const vector<size_t> &bs,
     _layeredGrid(minu, maxu, rg);
 }
 
-LayeredGrid::~LayeredGrid() {}
-
 void LayeredGrid::GetUserExtents(vector<double> &minu, vector<double> &maxu) const {
     minu = _minu;
     maxu = _maxu;
@@ -169,7 +167,7 @@ void LayeredGrid::GetEnclosingRegion(const vector<double> &minu, const vector<do
     }
 }
 
-float LayeredGrid::_GetValueNearestNeighbor(const std::vector<double> &coords) const {
+float LayeredGrid::GetValueNearestNeighbor(const std::vector<double> &coords) const {
 
     // Get the indecies of the nearest grid point
     //
@@ -179,7 +177,7 @@ float LayeredGrid::_GetValueNearestNeighbor(const std::vector<double> &coords) c
     return (AccessIndex(indices));
 }
 
-float LayeredGrid::_GetValueLinear(const std::vector<double> &coords) const {
+float LayeredGrid::GetValueLinear(const std::vector<double> &coords) const {
     assert(coords.size() == 3);
 
     vector<size_t> dims = GetDimensions();
@@ -326,9 +324,9 @@ float LayeredGrid::GetValue(const std::vector<double> &coords) const {
     }
 
     if (interp_order == 0) {
-        return (_GetValueNearestNeighbor(clampedCoords));
+        return (GetValueNearestNeighbor(clampedCoords));
     } else if (interp_order == 1) {
-        return (_GetValueLinear(clampedCoords));
+        return (GetValueLinear(clampedCoords));
     }
 
     return _getValueQuadratic(clampedCoords);
