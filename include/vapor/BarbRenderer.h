@@ -19,8 +19,8 @@
 
 #include <vapor/BarbParams.h>
 #include <vapor/DataMgr.h>
+#include <vapor/Grid.h>
 #include <vapor/Renderer.h>
-#include <vapor/StructuredGrid.h>
 #include <vapor/utils.h>
 
 namespace VAPoR {
@@ -71,16 +71,16 @@ class RENDER_API BarbRenderer : public Renderer {
     //! \param[in] int actualRefLevel refinement level to be rendered.
     //! \param[in] float vectorScale Scale factor to be applied to barbs.
     //! \param[in] float barbRadius Radius of barbs in voxel diameters.
-    //! \param[in] StructuredGrid StructuredGrid used in rendering.
-    //! The first three are the vector field, StructuredGrid[3] is the Height variable,
-    //! StructuredGrid[4] is the color variable. \retval int zero if successful
+    //! \param[in] Grid Grid used in rendering.
+    //! The first three are the vector field, Grid[3] is the Height variable, Grid[4] is the color
+    //! variable. \retval int zero if successful
     int performRendering(const BarbParams *rParams, int actualRefLevel, float vectorScale,
-                         vector<StructuredGrid *> variableData);
+                         vector<Grid *> variableData);
 
-    float getHeightOffset(StructuredGrid *heightVar, float xCoord, float yCoord, bool &missing);
+    float getHeightOffset(Grid *heightVar, float xCoord, float yCoord, bool &missing);
 
-    void renderGrid(int rakeGrid[3], double rakeExts[6], vector<StructuredGrid *> variableData,
-                    int timestep, float vectorLengthScale, float rad, const BarbParams *params);
+    void renderGrid(int rakeGrid[3], double rakeExts[6], vector<Grid *> variableData, int timestep,
+                    float vectorLengthScale, float rad, const BarbParams *params);
 
     bool GetColorMapping(TransferFunction *tf, float val);
 
