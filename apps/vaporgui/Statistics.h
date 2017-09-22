@@ -32,7 +32,7 @@
 #include <qwidget.h>
 #include <vapor/ControlExecutive.h>
 #include <vapor/DataMgr.h>
-#include <vapor/StructuredGrid.h>
+#include <vapor/Grid.h>
 
 //
 //! \class Statistics
@@ -110,11 +110,10 @@ class Statistics : public QDialog, public Ui_StatsWindow {
     bool calcMean(string varname);
     bool calcMedian(string varname);
     bool calcStdDev(string varname);
-    void getSinglePointTSMean(double &tsMean, int &missing, VAPoR::StructuredGrid *rGrid);
-    void getMultiPointTSMean(double &tsMean, int &missing, int &count,
-                             VAPoR::StructuredGrid *rGrid);
+    void getSinglePointTSMean(double &tsMean, int &missing, VAPoR::Grid *rGrid);
+    void getMultiPointTSMean(double &tsMean, int &missing, int &count, VAPoR::Grid *rGrid);
     void getSinglePointTSStdDev(double &tsStdDev, int &globalCount, int &spMissing, double mean,
-                                VAPoR::StructuredGrid *rGrid);
+                                VAPoR::Grid *rGrid);
 
     struct _statistics {
         size_t row;
@@ -209,7 +208,7 @@ class Statistics : public QDialog, public Ui_StatsWindow {
     VAPoR::ControlExec *_controlExec;
     VAPoR::DataStatus *_dataStatus;
     VAPoR::DataMgr *_dm;
-    VAPoR::StructuredGrid *_rGrid;
+    VAPoR::Grid *_rGrid;
     string _defaultVar;
     vector<string> _vars;
     vector<string> _vars3d;

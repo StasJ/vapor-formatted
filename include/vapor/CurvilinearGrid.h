@@ -1,8 +1,8 @@
 #ifndef _CurvilinearGrid_
 #define _CurvilinearGrid_
+#include <vapor/Grid.h>
 #include <vapor/KDTreeRG.h>
 #include <vapor/RegularGrid.h>
-#include <vapor/StructuredGrid.h>
 #include <vapor/common.h>
 
 namespace VAPoR {
@@ -66,7 +66,8 @@ class VDF_API CurvilinearGrid : public StructuredGrid {
                     const RegularGrid &yrg, const std::vector<double> &zcoords,
                     const KDTreeRG *kdtree);
 
-    virtual ~CurvilinearGrid();
+    CurvilinearGrid() = default;
+    virtual ~CurvilinearGrid() = default;
 
     // \copydoc GetGrid::GetUserExtents()
     //
@@ -128,7 +129,7 @@ class VDF_API CurvilinearGrid : public StructuredGrid {
     //!
     const std::vector<double> &GetZCoords() const { return (_zcoords); };
 
-    class ConstCoordItrCG : public StructuredGrid::ConstCoordItrAbstract {
+    class ConstCoordItrCG : public Grid::ConstCoordItrAbstract {
       public:
         ConstCoordItrCG(const CurvilinearGrid *cg, bool begin);
         ConstCoordItrCG(const ConstCoordItrCG &rhs);
@@ -137,7 +138,7 @@ class VDF_API CurvilinearGrid : public StructuredGrid {
         virtual ~ConstCoordItrCG() {}
 
         virtual void next();
-        virtual const std::vector<double> &deref() const { return (_coords); }
+        virtual ConstCoordType &deref() const { return (_coords); }
         virtual const void *address() const { return this; };
 
         virtual bool equal(const void *rhs) const {
@@ -168,9 +169,9 @@ class VDF_API CurvilinearGrid : public StructuredGrid {
     }
 
   protected:
-    virtual float _GetValueNearestNeighbor(const std::vector<double> &coords) const override;
+    virtual float GetValueNearestNeighbor(const std::vector<double> &coords) const override;
 
-    virtual float _GetValueLinear(const std::vector<double> &coords) const override;
+    virtual float GetValueLinear(const std::vector<double> &coords) const override;
 
   private:
     std::vector<double> _zcoords;
