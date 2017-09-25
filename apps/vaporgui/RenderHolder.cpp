@@ -22,6 +22,7 @@
 #include "VizSelectCombo.h"
 #include "qdialog.h"
 #include "ui_newRendererDialog.h"
+#include <QCheckBox>
 #include <QStringList>
 #include <QTableWidget>
 #include <cassert>
@@ -191,6 +192,13 @@ void RenderHolder::deleteRenderer() {
     Update();
 }
 
+void RenderHolder::checkboxChanged(int state) {
+    cout << sender() << endl;
+    int row = tableWidget->currentRow();
+    int col = 3;
+    changeChecked(row, col);
+}
+
 // Respond to check/uncheck enabled checkbox
 //
 void RenderHolder::changeChecked(int row, int col) {
@@ -210,6 +218,8 @@ void RenderHolder::changeChecked(int row, int col) {
     // Save current instance to state
     //
     p->SetActiveRenderer(activeViz, renderClass, renderInst);
+
+    cout << "changeChecked " << row << " " << col << " " << enabled << endl;
 
     int rc = _controlExec->ActivateRender(activeViz, dataSetName, renderClass, renderInst, enabled);
     if (rc < 0) {
@@ -419,7 +429,7 @@ void RenderHolder::updateDupCombo() {
 }
 
 void RenderHolder::Update() {
-
+    cout << "       UPDATE???? " << endl;
     // Get active params from GUI state
     //
     GUIStateParams *p = getStateParams();
@@ -493,6 +503,10 @@ void RenderHolder::Update() {
     }
 
     updateDupCombo();
+
+    tableWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+    tableWidget->verticalHeader()->setResizeMode(QHeaderView::Stretch);
+    tableWidget->resizeRowsToContents();
 }
 
 void RenderHolder::getRow(int row, string &renderInst, string &renderClass, string &dataSetName,
@@ -513,8 +527,17 @@ void RenderHolder::getRow(int row, string &renderInst, string &renderClass, stri
     item = tableWidget->item(row, 2);
     dataSetName = item->text().toStdString();
 
-    item = tableWidget->item(row, 3);
-    enabled = item->checkState() == Qt::Checked;
+    // item = tableWidget->item(row,3);
+    // enabled = item->checkState() == Qt::Checked;
+    QWidget *widget = tableWidget->cellWidget(row, 3);
+    QCheckBox *checkbox = (QCheckBox *)widget->findChild<QCheckBox *>();
+    ; // tableWidget->cellWidget(row,3);
+    if (checkbox != NULL) {
+        enabled = checkbox->checkState() == Qt::Checked;
+    } else {
+        enabled = Qt::Unchecked;
+        cout << "checkbox null" << endl;
+    }
 }
 
 void RenderHolder::getRow(string &renderInst, string &renderClass, string &dataSetName,
@@ -534,22 +557,39 @@ void RenderHolder::setRow(int row, const string &renderInst, const string &rende
     }
 
     QTableWidgetItem *item = new QTableWidgetItem(renderInst.c_str());
+    item->setTextAlignment(Qt::AlignCenter);
     tableWidget->setItem(row, 0, item);
 
     item = new QTableWidgetItem(renderClass.c_str());
+    item->setTextAlignment(Qt::AlignCenter);
     tableWidget->setItem(row, 1, item);
 
     item = new QTableWidgetItem(dataSetName.c_str());
+    item->setTextAlignment(Qt::AlignCenter);
     tableWidget->setItem(row, 2, item);
 
-    item = new QTableWidgetItem(" ");
-    tableWidget->setItem(row, 3, item);
+    QWidget *pWidget = new QWidget();
+    QCheckBox *pCheckBox = new QCheckBox();
+    QHBoxLayout *pLayout = new QHBoxLayout(pWidget);
+    pLayout->addWidget(pCheckBox);
+    pLayout->setAlignment(Qt::AlignCenter);
+    pLayout->setContentsMargins(0, 0, 0, 0);
+    // pWidget->setLayout(pLayout);
+    tableWidget->setCellWidget(row, 3, pWidget);
+
+    // item = new QTableWidgetItem(" ");
+    // item->setTextAlignment(Qt::AlignCenter);
+    // tableWidget->setItem(row, 3, item);
 
     if (enabled) {
-        item->setCheckState(Qt::Checked);
+        pCheckBox->setCheckState(Qt::Checked);
+        // item->setCheckState(Qt::Checked);
     } else {
-        item->setCheckState(Qt::Unchecked);
+        pCheckBox->setCheckState(Qt::Unchecked);
+        // item->setCheckState(Qt::Unchecked);
     }
+
+    connect(pCheckBox, SIGNAL(stateChanged(int)), this, SLOT(checkboxChanged(int)));
 }
 
 void RenderHolder::setRow(const string &renderInst, const string &renderClass,

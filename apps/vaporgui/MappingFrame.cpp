@@ -303,7 +303,6 @@ void MappingFrame::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, RenderParams *
 
     MapperFunction *mapper;
     mapper = _rParams->GetMapperFunc(varname);
-    cout << "mapper var: " << varname << endl;
     if (!mapper) {
         mapper = _rParams->MakeMapperFunc(varname);
         assert(mapper);
@@ -312,7 +311,6 @@ void MappingFrame::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, RenderParams *
     setMapperFunction(mapper);
 
     vector<double> foo = _mapper->getMinMaxMapValue();
-    cout << "minMax " << foo[0] << " " << foo[1] << endl;
 
     deselectWidgets();
 
@@ -1988,7 +1986,6 @@ float MappingFrame::getOpacityData(float value) {
 //----------------------------------------------------------------------------
 Histo *MappingFrame::getHistogram() {
     bool mustGet = _rParams->IsEnabled();
-    cout << "mustGet? " << mustGet << endl;
     if (_histogram && !mustGet)
         return _histogram;
     if (!mustGet)
