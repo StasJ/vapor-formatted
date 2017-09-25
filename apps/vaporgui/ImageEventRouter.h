@@ -2,13 +2,13 @@
 #define IMAGEEVENTROUTER_H
 
 #include <GL/glew.h>
+#include <qobject.h>
+#include <vapor/ImageParams.h>
+#include <vapor/MyBase.h>
+// #include <vapor/ImageRenderer.h>
 #include <ImageSubtabs.h>
 #include <RenderEventRouter.h>
 #include <VariablesWidget.h>
-#include <qobject.h>
-#include <vapor/ImageParams.h>
-#include <vapor/ImageRenderer.h>
-#include <vapor/MyBase.h>
 
 QT_USE_NAMESPACE
 
@@ -25,7 +25,11 @@ class ImageEventRouter : public QTabWidget, public RenderEventRouter {
 
     void GetWebHelp(vector<pair<string, string>> &help) const;
 
-    static std::string GetClassType() { return (VAPoR::ImageRenderer::GetClassType()); }
+    static std::string GetClassType() {
+        // TODO
+        // return(VAPoR::ImageRenderer::GetClassType());
+        return "NULL";
+    }
     std::string GetType() const { return GetClassType(); }
 
   protected:
