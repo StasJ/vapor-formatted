@@ -15,7 +15,6 @@
 //
 //	Description:
 //
-#include <Python.h>
 #include <cstdlib>
 #include <vapor/GetAppPath.h>
 #include <vapor/MyPython.h>
