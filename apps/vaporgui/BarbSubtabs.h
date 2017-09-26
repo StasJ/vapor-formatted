@@ -39,7 +39,7 @@ class BarbAppearanceSubtab : public QWidget, public Ui_BarbAppearanceGUI {
   public:
     BarbAppearanceSubtab(QWidget *parent) {
         setupUi(this);
-        _TFWidget->Reinit((TFWidget::Flags)(TFWidget::COLORMAPPED));
+        _TFWidget->Reinit((TFWidget::Flags)(TFWidget::COLORVAR | TFWidget::PRIORITYCOLORVAR));
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
