@@ -227,7 +227,7 @@ RenderParams::~RenderParams() {
 }
 
 void RenderParams::SetEnabled(bool val) {
-
+    cout << "RenderParams set to " << val << endl << endl;
     SetValueLong(_EnabledTag, "enable/disable renderer", val);
 }
 
