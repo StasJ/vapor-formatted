@@ -44,11 +44,7 @@ class ContourEventRouter : public QTabWidget, public RenderEventRouter {
 
     // Get static string identifier for this router class
     //
-    static string GetClassType() {
-        // TODO
-        // return(VAPoR::ContourRenderer::GetClassType());
-        return "NULL";
-    }
+    static string GetClassType() { return (VAPoR::ContourRenderer::GetClassType()); }
 
     string GetType() const { return GetClassType(); }
 
