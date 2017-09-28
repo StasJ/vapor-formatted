@@ -47,6 +47,8 @@ class VDF_API RegularGrid : public StructuredGrid {
     RegularGrid() = default;
     virtual ~RegularGrid() = default;
 
+    virtual size_t GetNumCoordinates() const override;
+
     //! \copydoc Grid::GetUserExtents()
     //
     virtual void GetUserExtents(std::vector<double> &minu,

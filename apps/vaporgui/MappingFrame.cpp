@@ -161,10 +161,10 @@ void MappingFrame::RefreshHistogram() {
 
     grid->SetInterpolationOrder(0);
 
-    Grid::Iterator itr;
-
     float v;
-    for (itr = grid->begin(minExts, maxExts); itr != grid->end(); ++itr) {
+    Grid::Iterator itr;
+    Grid::Iterator enditr = grid->end();
+    for (itr = grid->begin(minExts, maxExts); itr != enditr; ++itr) {
         v = *itr;
         if (v == grid->GetMissingValue())
             continue;
