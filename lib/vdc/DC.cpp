@@ -31,16 +31,19 @@ DC::BaseVar::BaseVar(string name, string units, XType type, std::vector<size_t> 
 }
 
 void DC::Mesh::_Mesh(string name, std::vector<string> coord_vars, int max_nodes_per_face,
-                     Mesh::Type mtype) {
+                     int max_faces_per_node, Mesh::Type mtype) {
 
     _name.clear();
     _dim_names.clear();
     _coord_vars.clear();
     _max_nodes_per_face = 1;
+    _max_faces_per_node = 1;
     _node_dim_name.clear();
     _face_dim_name.clear();
     _layers_dim_name.clear();
     _face_node_var.clear();
+    _node_face_var.clear();
+    _node_face_var.clear();
     _face_edge_var.clear();
     _face_face_var.clear();
     _edge_dim_name.clear();
@@ -51,11 +54,12 @@ void DC::Mesh::_Mesh(string name, std::vector<string> coord_vars, int max_nodes_
     _name = name;
     _coord_vars = coord_vars;
     _max_nodes_per_face = max_nodes_per_face;
+    _max_faces_per_node = max_faces_per_node;
     _mtype = mtype;
 }
 
 DC::Mesh::Mesh(std::string name, std::vector<string> dim_names, std::vector<string> coord_vars) {
-    _Mesh(name, coord_vars, 4, STRUCTURED);
+    _Mesh(name, coord_vars, 4, 4, STRUCTURED);
 
     if (_name.empty()) {
         _name = join(dim_names, "x");
@@ -64,25 +68,29 @@ DC::Mesh::Mesh(std::string name, std::vector<string> dim_names, std::vector<stri
     _dim_names = dim_names;
 }
 
-DC::Mesh::Mesh(std::string name, size_t max_nodes_per_face, std::string node_dim_name,
-               std::string face_dim_name, std::vector<std::string> coord_vars,
-               std::string face_node_var) {
-    _Mesh(name, coord_vars, max_nodes_per_face, UNSTRUC_2D);
+DC::Mesh::Mesh(std::string name, size_t max_nodes_per_face, size_t max_faces_per_node,
+               std::string node_dim_name, std::string face_dim_name,
+               std::vector<std::string> coord_vars, std::string face_node_var,
+               std::string node_face_var) {
+    _Mesh(name, coord_vars, max_nodes_per_face, max_faces_per_node, UNSTRUC_2D);
 
     _node_dim_name = node_dim_name;
     _face_dim_name = face_dim_name;
     _face_node_var = face_node_var;
+    _node_face_var = node_face_var;
 }
 
-DC::Mesh::Mesh(std::string name, size_t max_nodes_per_face, std::string node_dim_name,
-               std::string face_dim_name, std::string layers_dim_name,
-               std::vector<std::string> coord_vars, std::string face_node_var) {
-    _Mesh(name, coord_vars, max_nodes_per_face, UNSTRUC_LAYERED);
+DC::Mesh::Mesh(std::string name, size_t max_nodes_per_face, size_t max_faces_per_node,
+               std::string node_dim_name, std::string face_dim_name, std::string layers_dim_name,
+               std::vector<std::string> coord_vars, std::string face_node_var,
+               std::string node_face_var) {
+    _Mesh(name, coord_vars, max_nodes_per_face, max_faces_per_node, UNSTRUC_LAYERED);
 
     _node_dim_name = node_dim_name;
     _face_dim_name = face_dim_name;
     _layers_dim_name = layers_dim_name;
     _face_node_var = face_node_var;
+    _node_face_var = node_face_var;
 }
 
 size_t DC::Mesh::GetTopologyDim() const { return (_coord_vars.size()); }
@@ -447,6 +455,36 @@ bool DC::GetVarCoordVars(string varname, bool spatial, std::vector<string> &coor
     return (true);
 }
 
+bool DC::GetVarConnVars(string varname, string &face_node_var, string &node_face_var,
+                        string &face_edge_var, string &face_face_var, string &edge_node_var,
+                        string &edge_face_var) const {
+    face_node_var.clear();
+    node_face_var.clear();
+    face_edge_var.clear();
+    face_face_var.clear();
+    edge_node_var.clear();
+    edge_face_var.clear();
+
+    DataVar dvar;
+    bool status = GetDataVarInfo(varname, dvar);
+    if (!status)
+        return (false);
+
+    Mesh m;
+    status = GetMesh(dvar.GetMeshName(), m);
+    if (!status)
+        return (false);
+
+    face_node_var = m.GetFaceNodeVar();
+    node_face_var = m.GetNodeFaceVar();
+    face_edge_var = m.GetFaceEdgeVar();
+    face_face_var = m.GetFaceFaceVar();
+    edge_node_var = m.GetEdgeNodeVar();
+    edge_face_var = m.GetEdgeFaceVar();
+
+    return (true);
+}
+
 bool DC::GetNumDimensions(string varname, size_t &ndim) const {
     ndim = 0;
 
@@ -519,10 +557,12 @@ std::ostream &operator<<(std::ostream &o, const DC::Mesh &m) {
     o << endl;
 
     o << "   MaxNodesPerFace: " << m._max_nodes_per_face << endl;
+    o << "   MaxFacesPerNode: " << m._max_faces_per_node << endl;
     o << "   NodeDimName: " << m._node_dim_name << endl;
     o << "   FaceDimName: " << m._face_dim_name << endl;
     o << "   LayersDimName: " << m._layers_dim_name << endl;
     o << "   FaceNodeVar: " << m._face_node_var << endl;
+    o << "   NodeFaceVar: " << m._node_face_var << endl;
     o << "   FaceEdgeVar: " << m._face_edge_var << endl;
     o << "   FaceFaceVar: " << m._face_face_var << endl;
     o << "   EdgeDimName: " << m._edge_dim_name << endl;
