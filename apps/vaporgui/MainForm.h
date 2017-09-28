@@ -198,6 +198,7 @@ class MainForm : public QMainWindow {
     QAction *_helpIndexAction;
     QAction *_helpAboutAction;
     QAction *_whatsThisAction;
+    QAction *_installCLIToolsAction;
 
     // Data menu
     QAction *_dataImportWRF_Action;
@@ -266,6 +267,7 @@ class MainForm : public QMainWindow {
     void endAnimCapture();
     void captureSingleJpeg();
     void launchSeedMe();
+    void installCLITools();
     void launchStats();
     void launchPlotUtility();
     void batchSetup();

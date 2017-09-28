@@ -2,12 +2,17 @@
 #ifndef _GeoImageTMS_h_
 #define _GeoImageTMS_h_
 
+#ifdef WIN32
+#include <geotiff/geotiff.h>
+#include <geotiff/xtiffio.h>
+#else
+#include <geotiff.h>
+#include <xtiffio.h>
+#endif
 #include "GeoImage.h"
 #include "GeoTileMercator.h"
-#include <geotiff.h>
 #include <vapor/MyBase.h>
 #include <vapor/UDUnitsClass.h>
-#include <xtiffio.h>
 
 namespace VAPoR {
 
