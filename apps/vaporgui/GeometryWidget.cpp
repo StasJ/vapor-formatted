@@ -143,11 +143,10 @@ void GeometryWidget::GetVectorExtents(size_t ts, int level, std::vector<double> 
         if (varNames[i] != "") {
             int rc = _dataMgr->GetVariableExtents(ts, varNames[i], level, minFullExt, maxFullExt);
             if (rc < 0) {
-                char bufr[50];
+                char bufr[256];
                 sprintf(bufr,
-                        "Error: DataMgr could "
-                        "not return valid values from GetVariableExtents()"
-                        " for variable %s",
+                        "Error: DataMgr could not return valid values from GetVariableExtents() "
+                        "for variable %s",
                         varNames[i].c_str());
                 MyBase::SetErrMsg(bufr);
             }
