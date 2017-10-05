@@ -1,26 +1,27 @@
 //************************************************************************
-//									*
-//		     Copyright (C)  2004				*
-//     University Corporation for Atmospheric Research			*
-//		     All Rights Reserved				*
-//									*
+//         *
+//       Copyright (C)  2004    *
+//     University Corporation for Atmospheric Research   *
+//       All Rights Reserved    *
+//         *
 //************************************************************************/
 //
-//	File:		ViewpointParams.h
+// File:  ViewpointParams.h
 //
-//	Author:		Alan Norton
-//			National Center for Atmospheric Research
-//			PO 3000, Boulder, Colorado
+// Author:  Alan Norton
+//   National Center for Atmospheric Research
+//   PO 3000, Boulder, Colorado
 //
-//	Date:		August 2004
+// Date:  August 2004
 //
-//	Description:	Defines the ViewpointParams class
-//		This class contains the parameters associated with viewpoint and lights
+// Description: Defines the ViewpointParams class
+//  This class contains the parameters associated with viewpoint and lights
 //
 #ifndef VIEWPOINTPARAMS_H
 #define VIEWPOINTPARAMS_H
 
 #include <vapor/ParamsBase.h>
+#include <vapor/Transform.h>
 #include <vapor/Viewpoint.h>
 
 namespace VAPoR {
@@ -189,11 +190,15 @@ class PARAMS_API ViewpointParams : public ParamsBase {
     }
 
     //! Method to get stretch factors
-    vector<double> GetStretchFactors() const;
+    vector<double> GetStretchFactors() const {
+        cout << "ViewpointParams::GetStretchFactors() getting called.  Fix this!" << endl;
+        return vector<double>(3, 1.0);
+        // Transform* t = (Transform*) _transforms->GetParams();
+    }
 
     //! method to set stretch factors
     //! \param[in] factors 3-vector of stretch factors
-    void SetStretchFactors(vector<double> factors);
+    // void SetStretchFactors(vector<double> factors);
 
     //! Obtain the home viewpoint
     //! \sa Viewpoint
@@ -255,6 +260,16 @@ class PARAMS_API ViewpointParams : public ParamsBase {
     void GetProjectionMatrix(double m[16]) const { getCurrentViewpoint()->GetProjectionMatrix(m); }
     void SetProjectionMatrix(const double m[16]) { getCurrentViewpoint()->SetProjectionMatrix(m); }
 
+    void AddDatasetTransform(string datasetName);
+
+    vector<double> GetScales(string datasetName);
+    vector<double> GetRotations(string datasetName);
+    vector<double> GetTranslations(string datasetName);
+
+    void SetScales(string datasetName, vector<double> scale);
+    void SetRotations(string datasetName, vector<double> rotation);
+    void SetTranslations(string datasetName, vector<double> translation);
+
 #ifdef DEAD
     //! Determine the current diameter of the visible scene.
     //! Calculated as 2*Dist*tan(theta*.5) where theta is the camera angle,
@@ -294,8 +309,10 @@ class PARAMS_API ViewpointParams : public ParamsBase {
 
   private:
     ParamsContainer *m_VPs;
+    ParamsContainer *_transforms;
 
     static const string _viewPointsTag;
+    static const string _transformsTag;
     static const string _currentViewTag;
     static const string _homeViewTag;
     static const string _lightDirectionsTag;
@@ -307,6 +324,8 @@ class PARAMS_API ViewpointParams : public ParamsBase {
     static const string m_windowSizeTag;
     static const string m_stretchFactorsTag;
     static const string m_fieldOfView;
+
+    vector<string> _datasetNames;
 
     // defaults:
     static double _defaultLightDirection[3][4];
