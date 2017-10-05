@@ -2,6 +2,7 @@
 #define _Grid_
 
 #include <cassert>
+#include <iostream>
 #include <memory>
 #include <ostream>
 #include <vapor/common.h>
@@ -444,8 +445,14 @@ class VDF_API Grid {
     //! which coordinate axes are periodic.
     //
     virtual void SetPeriodic(const std::vector<bool> &periodic) {
-        assert(periodic.size() == _topologyDimension);
-        _periodic = periodic;
+        _periodic.clear();
+        int i = 0;
+        for (; i < periodic.size() && i < GetNumCoordinates(); i++) {
+            _periodic.push_back(periodic[i]);
+        }
+        for (; i < GetNumCoordinates(); i++) {
+            _periodic.push_back(false);
+        }
     }
 
     //! Check for periodic boundaries
@@ -465,13 +472,15 @@ class VDF_API Grid {
     //!
     //! Return the smallest node ID. The default is zero
     //
-    virtual size_t GetNodeOffset() const { return (_nodeIDOffset); }
+    virtual long GetNodeOffset() const { return (_nodeIDOffset); }
+    void SetNodeOffset(long offset) { _nodeIDOffset = offset; }
 
     //! Get the linear offset to the cell IDs
     //!
     //! Return the smallest Cell ID. The default is zero
     //
-    virtual size_t GetCellOffset() const { return (_cellIDOffset); }
+    virtual long GetCellOffset() const { return (_cellIDOffset); }
+    void SetCellOffset(long offset) { _cellIDOffset = offset; }
 
     VDF_API friend std::ostream &operator<<(std::ostream &o, const Grid &g);
 
@@ -628,7 +637,6 @@ class VDF_API Grid {
 
         virtual bool equal(const void *rhs) const {
             const ConstNodeIteratorSG *itrptr = static_cast<const ConstNodeIteratorSG *>(rhs);
-
             return (_index == itrptr->_index);
         }
 
@@ -854,10 +862,6 @@ class VDF_API Grid {
 
     float *AccessIndex(const std::vector<float *> &blks, const std::vector<size_t> &indices) const;
 
-    void SetNodeOffset(size_t offset) { _nodeIDOffset = offset; }
-
-    void SetCellOffset(size_t offset) { _cellIDOffset = offset; }
-
   private:
     std::vector<size_t> _dims;  // dimensions of grid arrays
     std::vector<size_t> _bs;    // dimensions of each block
@@ -868,8 +872,8 @@ class VDF_API Grid {
     float _missingValue;
     bool _hasMissing;
     int _interpolationOrder; // Order of interpolation
-    size_t _nodeIDOffset;
-    size_t _cellIDOffset;
+    long _nodeIDOffset;
+    long _cellIDOffset;
 
     virtual void _getUserCoordinatesHelper(const std::vector<double> &coords, double &x, double &y,
                                            double &z) const;
