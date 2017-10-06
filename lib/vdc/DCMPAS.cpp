@@ -35,9 +35,9 @@ const string maxEdgesDimName = "maxEdges";
 const string maxEdges2DimName = "maxEdges2";
 const string vertexDegreeDimName = "vertexDegree";
 
-const vector<string> requiredDimNames = {timeDimName,     nVertLevelsDimName, nVertLevelsP1DimName,
-                                         nCellsDimName,   nVerticesDimName,   nEdgesDimName,
-                                         maxEdgesDimName, maxEdges2DimName,   vertexDegreeDimName};
+const vector<string> requiredDimNames = {timeDimName,      nVertLevelsDimName, nCellsDimName,
+                                         nVerticesDimName, nEdgesDimName,      maxEdgesDimName,
+                                         maxEdges2DimName, vertexDegreeDimName};
 
 // Horizontal coordinate variable names
 //
@@ -111,7 +111,9 @@ const string lonEdgeVarNameDerived = lonEdgeVarName + "X";
 const string latEdgeVarNameDerived = latEdgeVarName + "Y";
 const string zGridM1VarName = "zgridM1";
 
-const vector<string> requiredAttrNames = {coreNameAttr, onASphereAttr};
+const vector<string> requiredAttrNames = {
+    //		coreNameAttr,
+    onASphereAttr};
 
 // Product of elements in a vector
 //
@@ -570,7 +572,7 @@ void DCMPAS::_addMissingFlag(int *data) const {
     //
     for (size_t j = 0; j < nCells; j++) {
         for (int i = nEdgesOnCell[j]; i < nMaxEdges; i++) {
-            data[j + i * nMaxEdges] = -1;
+            data[j * nMaxEdges + i] = -1;
         }
     }
 }
@@ -869,33 +871,35 @@ int DCMPAS::_InitCoordvars(NetCDFCollection *ncdfc) {
     vector<bool> periodic(false);
     vector<string> dimnames;
 
-    // Vertical coordinate variables, native and derived
-    //
-    string units = "meters";
-    int axis = 2;
-    string name = zGridVarName;
-    dimnames = ncdfc->GetDimNames(name);
-    assert(dimnames.size() == 2);
+    if (_isAtmosphere(ncdfc)) {
+        // Vertical coordinate variables, native and derived
+        //
+        string units = "meters";
+        int axis = 2;
+        string name = zGridVarName;
+        dimnames = ncdfc->GetDimNames(name);
+        assert(dimnames.size() == 2);
 
-    _coordVarsMap[name] = CoordVar(name, units, DC::FLOAT, periodic, axis, false, dimnames,
-                                   vector<size_t>(), time_dim_name);
+        _coordVarsMap[name] = CoordVar(name, units, DC::FLOAT, periodic, axis, false, dimnames,
+                                       vector<size_t>(), time_dim_name);
 
-    units = "meters";
-    name = zGridM1VarName;
-    dimnames = ncdfc->GetDimNames(name);
-    assert(dimnames.size() == 2);
+        units = "meters";
+        name = zGridM1VarName;
+        dimnames = ncdfc->GetDimNames(name);
+        assert(dimnames.size() == 2);
 
-    _coordVarsMap[name] = CoordVar(name, units, DC::FLOAT, periodic, axis, false, dimnames,
-                                   vector<size_t>(), time_dim_name);
+        _coordVarsMap[name] = CoordVar(name, units, DC::FLOAT, periodic, axis, false, dimnames,
+                                       vector<size_t>(), time_dim_name);
+    }
 
     // Need a derived time coordinate variable. The native MPAS
     // time coordinate variable is a formatted ASCII string like
     // in WRF :-(
     //
 
-    units = "seconds";
-    axis = 3;
-    name = xTimeVarName + "T";
+    string units = "seconds";
+    int axis = 3;
+    string name = xTimeVarName + "T";
     dimnames.clear();
 
     _coordVarsMap[name] = CoordVar(name, units, DC::FLOAT, periodic, axis, false, dimnames,
@@ -1006,6 +1010,9 @@ int DCMPAS::_InitHorizontalCoordinatesDerived(NetCDFCollection *ncdfc) {
 }
 
 int DCMPAS::_InitVerticalCoordinatesDerived(NetCDFCollection *ncdfc) {
+    if (!_isAtmosphere(ncdfc))
+        return (0);
+
     string zGridVarStaggered = zGridVarName;
     string zGridVarDerived = zGridM1VarName;
     string zDimName = nVertLevelsP1DimName;
@@ -1188,10 +1195,13 @@ int DCMPAS::_InitMeshes(NetCDFCollection *ncdfc) {
         Mesh(mesh3DTriName, 3, dimension.GetLength(), nCellsDimName, nVerticesDimName,
              nVertLevelsDimName, coordvars, cellsOnVertexVarName, verticesOnCellVarName);
 
-    coordvars = {lonCellVarNameDerived, latCellVarNameDerived, zGridVarName};
-    _meshMap[mesh3DP1TriName] =
-        Mesh(mesh3DP1TriName, 3, dimension.GetLength(), nCellsDimName, nVerticesDimName,
-             nVertLevelsP1DimName, coordvars, cellsOnVertexVarName, verticesOnCellVarName);
+    if (_isAtmosphere(ncdfc)) {
+        coordvars = {lonCellVarNameDerived, latCellVarNameDerived, zGridVarName};
+
+        _meshMap[mesh3DP1TriName] =
+            Mesh(mesh3DP1TriName, 3, dimension.GetLength(), nCellsDimName, nVerticesDimName,
+                 nVertLevelsP1DimName, coordvars, cellsOnVertexVarName, verticesOnCellVarName);
+    }
 
     //
     // Primal meshes (hexagonal mesh)
@@ -1209,10 +1219,13 @@ int DCMPAS::_InitMeshes(NetCDFCollection *ncdfc) {
         Mesh(mesh3DCellName, dimension.GetLength(), 3, nVerticesDimName, nCellsDimName,
              nVertLevelsDimName, coordvars, verticesOnCellVarName, cellsOnVertexVarName);
 
-    coordvars = {lonVertexVarNameDerived, latVertexVarNameDerived, zGridVarName};
-    _meshMap[mesh3DP1CellName] =
-        Mesh(mesh3DP1CellName, dimension.GetLength(), 3, nVerticesDimName, nCellsDimName,
-             nVertLevelsP1DimName, coordvars, verticesOnCellVarName, cellsOnVertexVarName);
+    if (_isAtmosphere(ncdfc)) {
+        coordvars = {lonVertexVarNameDerived, latVertexVarNameDerived, zGridVarName};
+
+        _meshMap[mesh3DP1CellName] =
+            Mesh(mesh3DP1CellName, dimension.GetLength(), 3, nVerticesDimName, nCellsDimName,
+                 nVertLevelsP1DimName, coordvars, verticesOnCellVarName, cellsOnVertexVarName);
+    }
 
     return (0);
 }
@@ -1346,6 +1359,16 @@ vector<string> DCMPAS::_GetSpatialDimNames(NetCDFCollection *ncdfc, string varna
     vector<string> v = ncdfc->GetSpatialDimNames(varname);
     reverse(v.begin(), v.end());
     return (v);
+}
+
+// Atmosphere core configuration ?
+//
+bool DCMPAS::_isAtmosphere(NetCDFCollection *ncdfc) const {
+
+    string value;
+    ncdfc->GetAtt("", coreNameAttr, value);
+
+    return (value == "" || value == "atmosphere");
 }
 
 //////////////////////////////////////////////////////////////////////

@@ -232,6 +232,8 @@ class VDF_API DCMPAS : public VAPoR::DC {
 
     vector<string> _GetSpatialDimNames(NetCDFCollection *ncdfc, string varname) const;
 
+    bool _isAtmosphere(NetCDFCollection *ncdfc) const;
+
     int _read_nEdgesOnCell(size_t ts);
     void _addMissingFlag(int *data) const;
     int _readVarToSmartBuf(size_t ts, string varname, Wasp::SmartBuf &smartBuf);
