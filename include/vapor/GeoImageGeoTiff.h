@@ -2,11 +2,16 @@
 #ifndef _GeoImageGeoTiff_h_
 #define _GeoImageGeoTiff_h_
 
-#include "GeoImage.h"
+#ifdef WIN32
+#include <geotiff/geotiff.h>
+#include <geotiff/xtiffio.h>
+#else
 #include <geotiff.h>
+#include <xtiffio.h>
+#endif
+#include "GeoImage.h"
 #include <vapor/MyBase.h>
 #include <vapor/UDUnitsClass.h>
-#include <xtiffio.h>
 
 namespace VAPoR {
 

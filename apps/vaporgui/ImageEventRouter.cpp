@@ -2,14 +2,14 @@
 #pragma warning(disable : 4100)
 #endif
 
+#include <vapor/ImageParams.h>
+#include <vapor/glutil.h>
+// #include <vapor/ImageRenderer.h>
 #include <EventRouter.h>
 #include <ImageEventRouter.h>
 #include <QFileDialog>
 #include <qlineedit.h>
 #include <qscrollarea.h>
-#include <vapor/ImageParams.h>
-#include <vapor/ImageRenderer.h>
-#include <vapor/glutil.h>
 
 using namespace VAPoR;
 
