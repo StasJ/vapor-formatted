@@ -241,6 +241,8 @@ Plot::~Plot() {
         delete _plotImage;
 }
 
+void Plot::Update(VAPoR::PlotParams pParams) { _params = pParams; }
+
 void Plot::destroyControllers() {
     if (_spaceTimeRange)
         delete _spaceTimeRange;
