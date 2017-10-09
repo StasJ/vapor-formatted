@@ -67,6 +67,7 @@ class Statistics : public QDialog, public Ui_StatsWindow {
     int initDataMgr(VAPoR::DataMgr *dm);
     void showMe();
     int initialize();
+    void updateParams(VAPoR::StatisticsParams *sParams) { _params = sParams; }
 
   private slots:
     void restoreExtents();
