@@ -28,13 +28,13 @@
 #include "RangeController.h"
 #include "ui_errMsg.h"
 #include "ui_plotWindow.h"
-#include <Python.h>
 #include <QCheckBox>
 #include <QLineEdit>
 #include <QWidget>
 #include <qdialog.h>
 #include <vapor/ControlExecutive.h>
 #include <vapor/DataMgr.h>
+#include <vapor/MyPython.h>
 #include <vector>
 
 using namespace std;
