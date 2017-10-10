@@ -95,6 +95,8 @@ void Range::setUserMin(double v) {
     if ((_constant) && (_userMin != _userMax))
         setUserMax(v);
 
+    cout << "Range::setUserMin " << _constant << endl;
+
     notifyObservers();
 }
 
@@ -121,7 +123,8 @@ void Range::setUserMax(double v) {
 
 void Range::setConst(bool c) {
     _constant = c;
-    setUserMax(_userMin);
+    if (c)
+        setUserMax(_userMin);
 }
 
 Controller::Controller(Range *range, int type) : _range(range), _type(type) {
@@ -181,9 +184,11 @@ MinMaxSlider::MinMaxSlider(Range *range, QSlider *slider, int type) : Controller
     _slider->setValue(position);
 
     connect(_slider, SIGNAL(valueChanged(int)), this, SLOT(updateValue()));
+    // connect(_slider, SIGNAL(sliderReleased()), this, SLOT(updateValue()));
 }
 
 void MinMaxSlider::updateValue() {
+    cout << "MinMaxSlider::updateValue()" << endl;
     double val;
     int pos = _slider->value();
     if (pos == _increments)
@@ -252,6 +257,7 @@ SinglePointSlider::SinglePointSlider(Range *range, QSlider *slider, int defaultP
     _slider->setValue(position);
 
     connect(_slider, SIGNAL(valueChanged(int)), this, SLOT(updateValue()));
+    // connect(_slider, SIGNAL(sliderReleased(int)), this, SLOT(updateValue()));
 }
 
 void SinglePointSlider::notify() {
@@ -346,6 +352,7 @@ CenterSizeSlider::CenterSizeSlider(Range *range, QSlider *slider, int type)
     _slider->setValue(position);
 
     connect(_slider, SIGNAL(valueChanged(int)), this, SLOT(updateValue()));
+    // connect(_slider, SIGNAL(sliderReleased(int)), this, SLOT(updateValue()));
 }
 
 void CenterSizeSlider::updateValue() {
