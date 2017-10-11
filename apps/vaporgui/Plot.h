@@ -105,8 +105,8 @@ class Plot : public QDialog, public Ui_PlotWindow {
     void initSSCs();
     void initCRatios();
     void initRefinement();
-    void applyParams();
-    bool eventFilter(QObject *o, QEvent *e);
+    // void applyParams();
+    // bool eventFilter(QObject* o, QEvent* e);
     void enableZControllers(bool s);
     void destroyControllers();
     vector<string> getEnabledVars() const;
@@ -256,9 +256,11 @@ class Plot : public QDialog, public Ui_PlotWindow {
 
     bool _triggeredByFriend;
     bool _isInitialized;
+    string _spaceOrTime;
 
   public slots:
     void go();
+    void tabChanged(int);
     //	void getPointFromRenderer();
     void newVarAdded(int index);
     void removeVar(int);
@@ -267,6 +269,9 @@ class Plot : public QDialog, public Ui_PlotWindow {
     void cRatioChanged(int i);
     void constCheckboxChanged(int state);
     void reinitDataMgr();
+    void spaceRangeChanged();
+    void timeRangeChanged();
+    void timeTimesChanged();
 };
 
 #endif // PLOT_H

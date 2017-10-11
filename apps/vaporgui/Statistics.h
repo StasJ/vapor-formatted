@@ -115,6 +115,7 @@ class Statistics : public QDialog, public Ui_StatsWindow {
     void getMultiPointTSMean(double &tsMean, int &missing, int &count, VAPoR::Grid *rGrid);
     void getSinglePointTSStdDev(double &tsStdDev, int &globalCount, int &spMissing, double mean,
                                 VAPoR::Grid *rGrid);
+    void Update(VAPoR::StatisticsParams *sParams);
 
     struct _statistics {
         size_t row;
