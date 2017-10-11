@@ -104,8 +104,6 @@ ViewpointParams::ViewpointParams(ParamsBase::StateSave *ssave, XmlNode *node)
         _transforms = new ParamsContainer(ssave, _transformsTag);
         _transforms->SetParent(this);
     }
-
-    cout << "Constructor2 " << ((_transforms == NULL)) << endl;
 }
 
 ViewpointParams::ViewpointParams(const ViewpointParams &rhs) : ParamsBase(rhs) {
