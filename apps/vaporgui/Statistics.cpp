@@ -31,7 +31,6 @@
 #include <iostream>
 #include <sstream>
 #include <vapor/MyBase.h>
-//#include "regionparams.h"
 
 using namespace Wasp;
 using namespace VAPoR;
@@ -131,7 +130,7 @@ Statistics::Statistics(QWidget *parent) : QDialog(parent), Ui_StatsWindow() {
     setupUi(this);
     setWindowTitle("Statistics");
     adjustTables();
-    minXSlider->installEventFilter(this);
+    /*minXSlider->installEventFilter(this);
     minXEdit->installEventFilter(this);
     maxXSlider->installEventFilter(this);
     maxXEdit->installEventFilter(this);
@@ -143,9 +142,13 @@ Statistics::Statistics(QWidget *parent) : QDialog(parent), Ui_StatsWindow() {
     minZEdit->installEventFilter(this);
     maxZSlider->installEventFilter(this);
     maxZEdit->installEventFilter(this);
-    RegionTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    RegionTable->setSelectionMode( QAbstractItemView::ExtendedSelection );
     RegionTable->setMouseTracking(true);
-    RegionTable->viewport()->installEventFilter(this);
+    RegionTable->viewport()->installEventFilter(this);*/
+
+    label_2->hide();
+    regionSelectorCombo->hide();
+    copyActiveRegionButton->hide();
 }
 
 Statistics::~Statistics() {
@@ -160,113 +163,57 @@ Statistics::~Statistics() {
         delete _yRange;
     if (_zRange)
         delete _zRange;
-
-#ifdef DEAD
-    if (_zRange)
-        delete _zRange;
-    if (_zMinSlider)
-        delete _zMinSlider;
-    if (_zMaxSlider)
-        delete _zMaxSlider;
-    if (_zMinLineEdit)
-        delete _zMinLineEdit;
-    if (_zMaxLineEdit)
-        delete _zMaxLineEdit;
-    if (_zCenterSlider)
-        delete _zCenterSlider;
-    if (_zCenterLineEdit)
-        delete _zCenterLineEdit;
-    if (_zSizeSlider)
-        delete _zSizeSlider;
-    if (_zSizeLineEdit)
-        delete _zSizeLineEdit;
-    if (_zSinglePointSlider)
-        delete _zSinglePointSlider;
-    if (_zSinglePointLineEdit)
-        delete _zSinglePointLineEdit;
-
-    if (_yRange)
-        delete _yRange;
-    if (_yMinSlider)
-        delete _yMinSlider;
-    if (_yMaxSlider)
-        delete _yMaxSlider;
-    if (_yMinLineEdit)
-        delete _yMinLineEdit;
-    if (_yMaxLineEdit)
-        delete _yMaxLineEdit;
-    if (_yCenterSlider)
-        delete _yCenterSlider;
-    if (_yCenterLineEdit)
-        delete _yCenterLineEdit;
-    if (_ySizeSlider)
-        delete _ySizeSlider;
-    if (_ySizeLineEdit)
-        delete _ySizeLineEdit;
-    if (_ySinglePointSlider)
-        delete _ySinglePointSlider;
-    if (_ySinglePointLineEdit)
-        delete _ySinglePointLineEdit;
-    if (_xRange)
-        delete _xRange;
-
-    if (_xMinSlider)
-        delete _xMinSlider;
-    if (_xMaxSlider)
-        delete _xMaxSlider;
-    if (_xMinLineEdit)
-        delete _xMinLineEdit;
-    if (_xMaxLineEdit)
-        delete _xMaxLineEdit;
-    if (_xCenterSlider)
-        delete _xCenterSlider;
-    if (_xCenterLineEdit)
-        delete _xCenterLineEdit;
-    if (_xSizeSlider)
-        delete _xSizeSlider;
-    if (_xSizeLineEdit)
-        delete _xSizeLineEdit;
-    if (_xSinglePointSlider)
-        delete _xSinglePointSlider;
-    if (_xSinglePointLineEdit)
-        delete _xSinglePointLineEdit;
-#endif
 }
 
-bool Statistics::eventFilter(QObject *o, QEvent *e) {
-
-    string objName = string(o->metaObject()->className());
-    if (objName == "QSlider") {
-        if (e->type() == QEvent::MouseButtonRelease) {
-            if (_autoUpdate)
-                update();
-            else
-                makeItRed();
-        }
-    }
-    if ((objName == "QTableWidget") || (objName == "QLineEdit")) {
-        if (e->type() == QEvent::KeyRelease) {
-            QKeyEvent *ke = dynamic_cast<QKeyEvent *>(e);
-            if ((ke->key() == Qt::Key_Return) || (ke->key() == Qt::Key_Enter)) {
-                if (_autoUpdate)
-                    update();
-                else
-                    makeItRed();
-            }
-        }
-    }
+void Statistics::Update(VAPoR::StatisticsParams *sParams) {
+    cout << "stats update" << endl;
+    _params = sParams;
 
     vector<double> minExts, maxExts;
-    minExts.push_back(_xRange->getUserMin());
-    minExts.push_back(_yRange->getUserMin());
-    minExts.push_back(_zRange->getUserMin());
-    maxExts.push_back(_xRange->getUserMax());
-    maxExts.push_back(_yRange->getUserMax());
-    maxExts.push_back(_zRange->getUserMax());
-    _params->SetMinExtents(minExts);
-    _params->SetMaxExtents(maxExts);
+    minExts = _params->GetMinExtents();
+    maxExts = _params->GetMaxExtents();
 
-    return QObject::eventFilter(o, e);
+    _xRange->blockSignals(true);
+    _yRange->blockSignals(true);
+    _zRange->blockSignals(true);
+    _xRange->setUserMin(minExts[0]);
+    _yRange->setUserMin(minExts[1]);
+    _zRange->setUserMin(minExts[2]);
+    _xRange->setUserMax(maxExts[0]);
+    _yRange->setUserMax(maxExts[1]);
+    _zRange->setUserMax(maxExts[2]);
+    _xRange->blockSignals(false);
+    _yRange->blockSignals(false);
+    _zRange->blockSignals(false);
+
+    _minTS = _params->GetMinTS();
+    MinTimestepSpinbox->blockSignals(true);
+    MinTimestepSpinbox->setValue(_minTS);
+    MinTimestepSpinbox->blockSignals(false);
+    _maxTS = _params->GetMaxTS();
+    MaxTimestepSpinbox->blockSignals(true);
+    MaxTimestepSpinbox->setValue(_maxTS);
+    MaxTimestepSpinbox->blockSignals(false);
+
+    _cRatio = _params->GetCRatio();
+    CRatioCombo->blockSignals(true);
+    CRatioCombo->setCurrentIndex(_cRatio);
+    CRatioCombo->blockSignals(false);
+    _refLevel = _params->GetRefinement();
+    RefCombo->blockSignals(true);
+    RefCombo->setCurrentIndex(_refLevel);
+    RefCombo->blockSignals(false);
+
+    _autoUpdate = _params->GetAutoUpdate();
+    UpdateCheckbox->blockSignals(true);
+    if (!_autoUpdate)
+        UpdateCheckbox->setCheckState(Qt::Unchecked);
+    else
+        UpdateCheckbox->setCheckState(Qt::Checked);
+    UpdateCheckbox->blockSignals(false);
+
+    updateStatisticSelection();
+    updateVariables();
 }
 
 int Statistics::initDataMgr(DataMgr *dm) {
@@ -388,6 +335,10 @@ void Statistics::addStatistic(int index) {
     if (index == 0)
         return;
     string statName = addStatCombo->currentText().toStdString();
+    // string statName = addStatCombo->itemText(index).toStdString();
+
+    ParamsMgr *pMgr = _controlExec->GetParamsMgr();
+    pMgr->BeginSaveStateGroup("Add statistic in stats tool");
 
     if (statName == "Min") {
         _MIN = 0x01;
@@ -410,10 +361,16 @@ void Statistics::addStatistic(int index) {
         _params->SetStdDevStat(true);
     }
 
+    pMgr->EndSaveStateGroup();
+
+    cout << "added stat" << endl;
+
+    refreshTable();
     VariablesTable->resizeColumnsToContents();
     addStatCombo->setCurrentIndex(0);
 
-    update();
+    if (_autoUpdate)
+        updateStats();
 }
 
 void Statistics::removeStatistic(int index) {
@@ -445,7 +402,8 @@ void Statistics::removeStatistic(int index) {
     VariablesTable->resizeColumnsToContents();
     removeStatCombo->setCurrentIndex(0);
 
-    update();
+    if (_autoUpdate)
+        updateStats();
 }
 
 void Statistics::errReport(string msg) const {
@@ -681,6 +639,10 @@ void Statistics::initRangeControllers() {
     _zRange->addObserver(_zMinCell);
     _zRange->addObserver(_zMaxCell);
 
+    connect(_xRange, SIGNAL(valueChanged()), this, SLOT(regionSlidersChanged()));
+    connect(_yRange, SIGNAL(valueChanged()), this, SLOT(regionSlidersChanged()));
+    connect(_zRange, SIGNAL(valueChanged()), this, SLOT(regionSlidersChanged()));
+
     _slidersInitialized = true;
 }
 
@@ -701,33 +663,32 @@ void Statistics::initCRatios() {
 
 void Statistics::initRefinement() {
     _refLevel = _params->GetRefinement();
-    if (_refLevel == -1) {
-        _refLevel = _dm->GetNumRefLevels(_defaultVar);
-    }
+    _refLevels = _dm->GetNumRefLevels(_defaultVar);
 
-    for (int i = 0; i <= _refLevel; i++) {
+    for (int i = 0; i <= _refLevels; i++) {
         RefCombo->addItem(QString::number(i));
     }
     RefCombo->setCurrentIndex(_refLevel);
 }
 
 void Statistics::copyActiveRegion() {
-    /*	RegionParams* rParams = VizWinMgr::getActiveRegionParams();
-        AnimationParams* aParams = VizWinMgr::getActiveAnimationParams();
-        int currentTS = aParams->GetCurrentTimestep();
-        double min[3],max[3];
-        for (int i = 0; i< 3; i++){
-            min[i] = rParams->getLocalRegionMin(i,currentTS) + _fullExtents[i];
-            max[i] = rParams->getLocalRegionMax(i,currentTS) + _fullExtents[i];
-        }
+#ifdef DEAD
+    RegionParams *rParams = VizWinMgr::getActiveRegionParams();
+    AnimationParams *aParams = VizWinMgr::getActiveAnimationParams();
+    int currentTS = aParams->GetCurrentTimestep();
+    double min[3], max[3];
+    for (int i = 0; i < 3; i++) {
+        min[i] = rParams->getLocalRegionMin(i, currentTS) + _fullExtents[i];
+        max[i] = rParams->getLocalRegionMax(i, currentTS) + _fullExtents[i];
+    }
 
-        _xRange->setUserMin(min[0]);
-        _xRange->setUserMax(max[0]);
-        _yRange->setUserMin(min[1]);
-        _yRange->setUserMax(max[1]);
-        _zRange->setUserMin(min[2]);
-        _zRange->setUserMax(max[2]);
-    */
+    _xRange->setUserMin(min[0]);
+    _xRange->setUserMax(max[0]);
+    _yRange->setUserMin(min[1]);
+    _yRange->setUserMax(max[1]);
+    _zRange->setUserMin(min[2]);
+    _zRange->setUserMax(max[2]);
+#endif
 }
 
 // In Vapor 2.x, the function call:
@@ -846,7 +807,7 @@ void Statistics::initRegion() {
         if (_slidersInitialized)
             updateSliders();
         if (_autoUpdate)
-            update();
+            updateStats();
         else
             (makeItRed());
     }
@@ -1005,7 +966,7 @@ void Statistics::initRegion() {
         _params->SetMaxTS(_maxTS);
 
         if (_autoUpdate)
-            update();
+            updateStats();
         else
             (makeItRed());
     }
@@ -1029,7 +990,7 @@ void Statistics::initRegion() {
 
         initRegion();
         if (_autoUpdate)
-            update();
+            updateStats();
         else
             (makeItRed());
     }
@@ -1043,7 +1004,7 @@ void Statistics::initRegion() {
         _params->SetAutoUpdate(_autoUpdate);
 
         if (_autoUpdate)
-            update();
+            updateStats();
         else
             (makeItRed());
     }
@@ -1052,7 +1013,7 @@ void Statistics::initRegion() {
         _refLevel = index;
         _params->SetRefinement(_refLevel);
         if (_autoUpdate)
-            update();
+            updateStats();
         else
             (makeItRed());
     }
@@ -1061,12 +1022,13 @@ void Statistics::initRegion() {
         _cRatio = index;
         _params->SetCRatio(_cRatio);
         if (_autoUpdate)
-            update();
+            updateStats();
         else
             (makeItRed());
     }
 
     void Statistics::refreshTable() {
+        cout << "refershing table" << endl;
         VariablesTable->clear();
         VariablesTable->setRowCount(0);
         VariablesTable->setColumnCount(0);
@@ -1076,14 +1038,7 @@ void Statistics::initRegion() {
         generateTableColumns();
     }
 
-    void Statistics::Update(VAPoR::StatisticsParams * sParams) {
-        initVariables();
-        initRefinement();
-        initCRatios();
-        initTimes();
-    }
-
-    void Statistics::update() {
+    void Statistics::updateStats() {
 
         if (!_regionInitialized)
             return;
@@ -1151,7 +1106,7 @@ void Statistics::initRegion() {
     }
 
 #ifdef DEAD
-    void Statistics::update() {
+    void Statistics::updateStats() {
 
         refreshTable();
 
@@ -1328,9 +1283,12 @@ void Statistics::initRegion() {
     }
 
     void Statistics::varRemoved(int index) {
+        cout << endl << "REMOVING INDEX: " << index << endl << endl;
         if (index == 0)
             return;
-        string varName = RemoveVarCombo->currentText().toStdString();
+        // string varName = RemoveVarCombo->currentText().toStdString();
+        string varName = RemoveVarCombo->itemText(index).toStdString();
+        cout << "Removing :" << varName << ": " << index << endl;
         _stats.erase(varName);
 
         vector<string> varNames = _params->GetVarNames();
@@ -1339,7 +1297,95 @@ void Statistics::initRegion() {
 
         RemoveVarCombo->setCurrentIndex(0);
         RemoveVarCombo->removeItem(index);
-        update();
+
+        for (int i = 0; i < VariablesTable->rowCount(); i++) {
+            QString s = VariablesTable->verticalHeaderItem(i)->text();
+            if (varName == s.toStdString()) {
+                VariablesTable->removeRow(i);
+                break;
+            }
+        }
+
+        if (_autoUpdate)
+            updateStats();
+    }
+
+    void Statistics::updateVariables() {
+        // Clear and regenerate the variable table,
+        // and its associated combo boxes
+        //
+        vector<string> vars = _params->GetVarNames();
+
+        // Add variables from params that were not present
+        // in the current state
+        //
+        vector<string> addUs;
+        for (int i = 0; i < vars.size(); i++) {
+            string varname = vars[i];
+            bool found = false;
+            // If we can't find the params variable in _stats,
+            // push it to the addUs vector to add once outside
+            // the loop.  Don't modify _stats while looping through it.
+            //
+            for (const auto &myPair : _stats) {
+                if (varname == myPair.first)
+                    found = true;
+            }
+            if (!found)
+                addUs.push_back(varname);
+        }
+        for (int i = 0; i < addUs.size(); i++) {
+            int index = NewVarCombo->findText(QString::fromStdString(addUs[i]));
+            newVarAdded(index);
+        }
+
+        // Remove variables in _stats that do not exist in the
+        // current params database
+        //
+        vector<string> removeUs;
+        for (const auto &myPair : _stats) {
+            string varname = myPair.first;
+            if (std::find(vars.begin(), vars.end(), varname) == vars.end()) {
+                // Store varname for removal later.  Don't tamper
+                // with iterator while looping through it.
+                //
+                removeUs.push_back(varname);
+            }
+        }
+        for (int i = 0; i < removeUs.size(); i++) {
+            string varname = removeUs[i];
+            int index = RemoveVarCombo->findText(QString::fromStdString(varname));
+            varRemoved(index);
+        }
+    }
+
+    void Statistics::updateStatisticSelection() {
+        if (_params->GetMinStat())
+            _MIN = 0x01;
+        else
+            _MIN = 0x00;
+        if (_params->GetMaxStat())
+            _MAX = 0x02;
+        else
+            _MAX = 0x00;
+        if (_params->GetMeanStat())
+            _MEAN = 0x04;
+        else
+            _MEAN = 0x00;
+        if (_params->GetMedianStat())
+            _MEDIAN = 0x10;
+        else
+            _MEDIAN = 0x00;
+        if (_params->GetStdDevStat())
+            _SIGMA = 0x08;
+        else
+            _SIGMA = 0x00;
+
+        refreshTable();
+        for (const auto &myPairs : _stats) {
+            string var = myPairs.first;
+            addCalculationToTable(var);
+        }
     }
 
     void Statistics::newVarAdded(int index) {
@@ -1348,12 +1394,16 @@ void Statistics::initRegion() {
         // string varName = NewVarCombo->currentText().toStdString();
         string varName = NewVarCombo->itemText(index).toStdString();
 
+        // Return if we already have the designated variable
+        //
         typedef std::map<string, _statistics>::iterator it_type;
         for (it_type it = _stats.begin(); it != _stats.end(); it++) {
             if (it->first == varName)
                 return;
         }
 
+        // Add variable to parameter database
+        //
         vector<string> varNames = _params->GetVarNames();
         varNames.push_back(varName);
         _params->SetVarNames(varNames);
@@ -1382,7 +1432,7 @@ void Statistics::initRegion() {
         VariablesTable->resizeRowsToContents();
 
         if (_autoUpdate) {
-            update();
+            updateStats();
         } else
             (makeItRed());
     }
@@ -1399,6 +1449,21 @@ void Statistics::initRegion() {
         _extents[3] = _xRange->getUserMax();
         _extents[4] = _yRange->getUserMax();
         _extents[5] = _zRange->getUserMax();
+
+        vector<double> minExts(3, 0.);
+        vector<double> maxExts(3, 0.);
+        minExts[0] = _extents[0];
+        minExts[1] = _extents[1];
+        minExts[2] = _extents[2];
+        maxExts[0] = _extents[3];
+        maxExts[1] = _extents[4];
+        maxExts[2] = _extents[5];
+
+        ParamsMgr *pMgr = _controlExec->GetParamsMgr();
+        pMgr->BeginSaveStateGroup("Statistics range change");
+        _params->SetMinExtents(minExts);
+        _params->SetMaxExtents(maxExts);
+        pMgr->EndSaveStateGroup();
 
         if (_regionSelection == 0) {
             copyActiveRegionButton->setEnabled(true);
@@ -1462,14 +1527,13 @@ void Statistics::initRegion() {
             Grid *rGrid = NULL;
             float mv;
 
-            cout << "MinMax ";
+            /*cout << "MinMax ";
             cout << _uCoordMin[0] << " ";
             cout << _uCoordMin[1] << " ";
             cout << _uCoordMin[2] << " ";
             cout << _uCoordMax[0] << " ";
             cout << _uCoordMax[1] << " ";
-            cout << _uCoordMax[2] << " " << endl;
-            ;
+            cout << _uCoordMax[2] << " " << endl;*/
 
             if (_regionSelection == 2) {
                 rGrid = _dm->GetVariable(ts, varname, _refLevel, _cRatio, _uCoordMin, _uCoordMax);
@@ -1541,14 +1605,13 @@ void Statistics::initRegion() {
             _uCoordMax = _extents[5];
         */
 
-        cout << _uCoordMin[0] << " ";
+        /*cout << _uCoordMin[0] << " ";
         cout << _uCoordMin[1] << " ";
         cout << _uCoordMin[2] << " ";
         cout << _uCoordMax[0] << " ";
         cout << _uCoordMax[1] << " ";
-        cout << _uCoordMax[2] << " " << endl;
-        ;
-        cout << mv << endl;
+        cout << _uCoordMax[2] << " " << endl;;
+        cout << mv << endl;*/
 
         VAPoR::StructuredGrid::Iterator itr;
         VAPoR::StructuredGrid::Iterator endItr;
@@ -1568,8 +1631,8 @@ void Statistics::initRegion() {
 
         count -= missing;
 
-        cout << count << endl;
-        cout << missing << endl;
+        // cout << count << endl;
+        // cout << missing << endl;
 
         assert(count >= 0);
         if (count == 0)
