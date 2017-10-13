@@ -325,7 +325,6 @@ void ViewpointParams::SetCurrentViewpoint(Viewpoint *newVP) {
 
 void ViewpointParams::setHomeViewpoint(Viewpoint *newVP) { m_VPs->Insert(newVP, _homeViewTag); }
 
-#ifdef DEAD
 vector<double> ViewpointParams::GetStretchFactors() const {
     vector<double> defaultvec(3, 1.);
     vector<double> val = GetValueDoubleVec(m_stretchFactorsTag, defaultvec);
@@ -338,6 +337,7 @@ vector<double> ViewpointParams::GetStretchFactors() const {
     return (val);
 }
 
+#ifdef DEAD
 void ViewpointParams::SetStretchFactors(vector<double> val) {
     vector<double> defaultv(3, 1.);
     if (val.size() != defaultv.size())
