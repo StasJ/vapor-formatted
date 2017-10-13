@@ -22,6 +22,7 @@
 #pragma warning(disable : 4100)
 #endif
 
+#include <algorithm>
 #include <iostream>
 
 #include <vapor/ViewpointParams.h>
