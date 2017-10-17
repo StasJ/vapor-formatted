@@ -34,6 +34,7 @@
 #include <QIcon>
 #include <QLabel>
 #include <QPaintEvent>
+#include <QWidgetAction>
 #include <cassert>
 #include <qmainwindow.h>
 #include <qstring.h>
@@ -147,6 +148,8 @@ class MainForm : public QMainWindow {
     bool eventFilter(QObject *obj, QEvent *event);
 
   private:
+    QWidgetAction *createTextSeparator(const QString &text);
+
     class ParamsChangeEvent : public QEvent {
       public:
         ParamsChangeEvent() : QEvent(ParamsChangeEvent::type()) {}
