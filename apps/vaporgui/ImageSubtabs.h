@@ -69,7 +69,7 @@ class ImageAppearanceSubtab : public QWidget, public Ui_ImageAppearanceGUI {
         setupUi(this);
         _opacityCombo = new Combo(OpacityEdit, OpacitySlider);
 
-        connect(GeoTIFFCheckbox, SIGNAL(clicked()), this, SLOT(GeoTIFFClicked()));
+        connect(GeoRefCheckbox, SIGNAL(clicked()), this, SLOT(GeoRefClicked()));
         connect(IgnoreTransparencyCheckbox, SIGNAL(clicked()), this,
                 SLOT(IgnoreTransparencyClicked()));
         connect(_opacityCombo, SIGNAL(valueChanged(double)), this, SLOT(OpacityChanged()));
@@ -80,8 +80,8 @@ class ImageAppearanceSubtab : public QWidget, public Ui_ImageAppearanceGUI {
                 VAPoR::RenderParams *rParams) {
         _rParams = (ImageParams *)rParams;
 
-        bool state = _rParams->GetIsGeoTIFF();
-        GeoTIFFCheckbox->setChecked(state);
+        bool state = _rParams->GetIsGeoRef();
+        GeoRefCheckbox->setChecked(state);
         state = _rParams->GetIgnoreTransparency();
         IgnoreTransparencyCheckbox->setChecked(state);
 
@@ -100,7 +100,7 @@ class ImageAppearanceSubtab : public QWidget, public Ui_ImageAppearanceGUI {
     }
 
   private slots:
-    void GeoTIFFClicked() { _rParams->SetIsGeoTIFF(GeoTIFFCheckbox->isChecked()); }
+    void GeoRefClicked() { _rParams->SetIsGeoRef(GeoRefCheckbox->isChecked()); }
 
     void IgnoreTransparencyClicked() {
         _rParams->SetIgnoreTransparency(IgnoreTransparencyCheckbox->isChecked());
