@@ -34,6 +34,7 @@
 #include <vapor/ControlExecutive.h>
 #include <vapor/Viewpoint.h>
 #include <vapor/ViewpointParams.h>
+#include <vapor/debug.h>
 #include <vapor/glutil.h> // Must be included first!!!
 
 using namespace VAPoR;
@@ -61,6 +62,7 @@ VizWin::VizWin(MainForm *parent, const QString &name, VizWinMgr *myMgr, QRect *l
     _buttonNum = 0;
 
     setMouseTracking(false); // Only track mouse when button clicked/held
+    dLog("W=%i\t H=%i", width(), height());
 }
 /*
  *  Destroys the object and frees any allocated resources
@@ -259,6 +261,11 @@ void VizWin::initializeGL() {
         MSG_ERR("Failure to initialize Visualizer");
     }
     printOpenGLErrorMsg("GLVizWindowInitializeEvent");
+
+    ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
+    ViewpointParams *vParams = paramsMgr->GetViewpointParams(_winName);
+
+    vParams->SetWindowSize(width(), height());
 }
 
 void VizWin::mousePressEventNavigate(QMouseEvent *e) {
