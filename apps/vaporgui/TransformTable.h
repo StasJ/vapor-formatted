@@ -2,16 +2,15 @@
 #define TRANSFORMTABLE_H
 
 #include "ui_TransformTableGUI.h"
+#include "vapor/ControlExecutive.h"
 #include "vapor/MyBase.h"
 #include <QObject>
 
 QT_USE_NAMESPACE
 
 namespace VAPoR {
-class RenderParams;
-class ParamsMgr;
-class DataMgr;
-} // namespace VAPoR
+class Transform;
+}
 
 class RenderEventRouter;
 
@@ -28,30 +27,34 @@ class TransformTable : public QWidget, public Ui_TransformTableGUI {
     Q_OBJECT
 
   public:
-    TransformTable(QWidget *parent) {
-        setupUi(this);
-        scaleTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        translationTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        rotationTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    TransformTable(QWidget *parent);
 
-        scaleTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-        rotationTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-        translationTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-    };
+    virtual ~TransformTable(){};
 
-    void Reinit(){};
-
-    virtual ~TransformTable() {}
-
-    virtual void Update(const VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
-                        VAPoR::RenderParams *rParams){};
+    virtual void Update(const std::map<string, VAPoR::Transform *> &transforms);
+    virtual void Update(VAPoR::Transform *transform) {
+        map<string, VAPoR::Transform *> tMap;
+        tMap[""] = transform;
+        Update(tMap);
+    }
 
   protected slots:
+    void scaleChanged(int row, int col);
+    void rotationChanged(int row, int col);
+    void translationChanged(int row, int col);
 
   private:
-    const VAPoR::DataMgr *_dataMgr;
-    VAPoR::ParamsMgr *_paramsMgr;
-    VAPoR::RenderParams *_rParams;
+    map<string, VAPoR::Transform *> _transforms;
+
+    void updateTransformTable(QTableWidget *table, string target, vector<double> values, int row);
+
+    void updateScales();
+    void updateTranslations();
+    void updateRotations();
+
+    void setScales(string dataset, vector<double> s);
+    void setTranslations(string dataset, vector<double> t);
+    void setRotations(string dataset, vector<double> r);
 };
 
 #endif // TRANSFORMTABLE_H

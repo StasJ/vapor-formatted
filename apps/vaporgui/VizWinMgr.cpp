@@ -514,7 +514,6 @@ void VizWinMgr::Restart() {
     for (int i = 0; i < vizNames.size(); i++) {
         attachVisualizer(vizNames[i]);
     }
-
     m_initialized = true;
 }
 
