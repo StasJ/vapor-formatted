@@ -84,10 +84,12 @@ class ViewpointEventRouter : public QWidget, public Ui_VizTab, public EventRoute
     void updateTransformTable(QTableWidget *t, string dataSet, vector<double> values, int row);
     void updateRotations();
     void updateTranslations();
+    void updateCameraChanged();
 
     VAPoR::ParamsBase *GetActiveParams() const;
 
   private slots:
+    void setCameraChanged();
 
     void viewpointReturnPressed();
     void setVtabTextChanged(const QString &qs);
