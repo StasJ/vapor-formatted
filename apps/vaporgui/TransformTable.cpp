@@ -51,6 +51,8 @@ void TransformTable::Update(VAPoR::RenderParams *rParams) {
     assert(_flags && RENDERER);
     _rParams = rParams;
 
+    cout << "Updating TransformTable for renderer" << endl;
+
     updateRendererScales();
     updateRendererTranslations();
     updateRendererRotations();
