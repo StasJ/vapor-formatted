@@ -71,7 +71,6 @@ void TransformTable::updateTransformTable(QTableWidget *table, string target, ve
                                           int row) {
 
     table->blockSignals(true);
-    table->clearContents();
 
     QTableWidgetItem *item;
 
