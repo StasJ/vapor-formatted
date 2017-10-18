@@ -142,7 +142,7 @@ void DefineMaskVars(const DCCF &dccf, VDCNetCDF &vdc) {
         if (rc < 0)
             exit(1);
 
-        rc = vdc.DefineDataVar(maskvar, dimnames, dimnames, "", DC::INT8, true);
+        rc = vdc.DefineDataVar(maskvar, dimnames, dimnames, "", DC::INT8, compress);
 
         if (rc < 0) {
             exit(1);
