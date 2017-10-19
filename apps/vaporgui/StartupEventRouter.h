@@ -62,7 +62,11 @@ class StartupEventRouter : public QWidget, public Ui_startupTab, public EventRou
 
   private slots:
 
-    void setStartupTextChanged(const QString &qs);
+    void saveStartup();
+    void setStartupChanged();
+    void setDirChanged();
+
+    void setStartupTextChanged(const QString &qs) {}
     void startupReturnPressed();
     void chooseSessionPath();
     void chooseMetadataPath();
@@ -79,12 +83,15 @@ class StartupEventRouter : public QWidget, public Ui_startupTab, public EventRou
     void changeTextureSize(bool val);
     void winLockChanged(bool val);
     void setAutoStretch(bool val);
-    void apply();
     void restoreDefaults();
     void tabChanged(int topIndex, int subIndex);
 
   private:
     StartupEventRouter() {}
+
+    void updateStartupChanged();
+    void updateDirChanged();
+    string choosePathHelper(string current, string help);
 
     void invalidateText();
     virtual void _confirmText();
@@ -93,6 +100,9 @@ class StartupEventRouter : public QWidget, public Ui_startupTab, public EventRou
 
     bool _settingsChanged;
     StartupParams *_savedStartupParams;
+    string _startupPath;
+
+    void loadDefaultsFromStartupFile();
 };
 
 #endif // STARTUPEVENTROUTER_H
