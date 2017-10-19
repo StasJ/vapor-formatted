@@ -170,7 +170,7 @@ int ImageRenderer::GetMesh(DataMgr *dataMgr, GLfloat **verts, GLfloat **normals,
     // data are geo-referenced
     //
     if (!myParams->GetHeightVariableName().empty() ||
-        (myParams->GetIsGeoTIFF() && !dataMgr->GetMapProjection().empty())) {
+        (myParams->GetIsGeoRef() && !dataMgr->GetMapProjection().empty())) {
 
         // Get the width and height of the image texture. These
         // will be used to set the width and height of the mesh.
@@ -249,7 +249,7 @@ unsigned char *ImageRenderer::_getTexture(DataMgr *dataMgr) {
         // Get pro4 string for data if georeferencing is requested
         //
         string proj4StringData;
-        if (myParams->GetIsGeoTIFF()) {
+        if (myParams->GetIsGeoRef()) {
             proj4StringData = dataMgr->GetMapProjection();
         }
 
@@ -332,7 +332,7 @@ void ImageRenderer::_imageStateClear() {
 bool ImageRenderer::_texStateDirty(DataMgr *dataMgr) const {
     ImageParams *myParams = (ImageParams *)GetActiveParams();
 
-    int georeferenced = (int)myParams->GetIsGeoTIFF();
+    int georeferenced = (int)myParams->GetIsGeoRef();
     int ts = myParams->GetCurrentTimestep();
     vector<double> minExt, maxExt;
     myParams->GetBox()->GetExtents(minExt, maxExt);
@@ -345,7 +345,7 @@ bool ImageRenderer::_texStateDirty(DataMgr *dataMgr) const {
 
 void ImageRenderer::_texStateSet(DataMgr *dataMgr) {
     ImageParams *myParams = (ImageParams *)GetActiveParams();
-    int georeferenced = (int)myParams->GetIsGeoTIFF();
+    int georeferenced = (int)myParams->GetIsGeoRef();
 
     _cacheTimestepTex = myParams->GetCurrentTimestep();
     _cacheGeoreferenced = georeferenced;
@@ -500,7 +500,7 @@ int ImageRenderer::_getMeshDisplaced(DataMgr *dataMgr, GLsizei width, GLsizei he
     _sb_indices.Alloc(2 * width * sizeof(GLuint));
 
     int rc;
-    if (myParams->GetIsGeoTIFF()) {
+    if (myParams->GetIsGeoRef()) {
         double defaultZ = minBox.size() > 2 ? minBox[2] : 0.0;
         rc = _getMeshDisplacedGeo(dataMgr, hgtGrid, width, height, defaultZ);
     } else {
