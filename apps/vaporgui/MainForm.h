@@ -34,6 +34,7 @@
 #include <QIcon>
 #include <QLabel>
 #include <QPaintEvent>
+#include <QWidgetAction>
 #include <cassert>
 #include <qmainwindow.h>
 #include <qstring.h>
@@ -147,6 +148,8 @@ class MainForm : public QMainWindow {
     bool eventFilter(QObject *obj, QEvent *event);
 
   private:
+    QWidgetAction *createTextSeparator(const QString &text);
+
     class ParamsChangeEvent : public QEvent {
       public:
         ParamsChangeEvent() : QEvent(ParamsChangeEvent::type()) {}
@@ -166,6 +169,8 @@ class MainForm : public QMainWindow {
     };
 
     void _stateChangeCB();
+    bool _stateChangeFlag;
+    bool _firstSession;
 
     // Set the various widgets in the main window consistent with latest
     // params settings:
@@ -199,7 +204,7 @@ class MainForm : public QMainWindow {
     QMenuBar *_main_Menubar;
     QMenu *_File;
     QMenu *_Edit;
-    QMenu *_Data;
+    QMenu *_Tools;
     QMenu *_captureMenu;
     QMenu *_helpMenu;
     QToolBar *_modeToolBar;
@@ -210,6 +215,12 @@ class MainForm : public QMainWindow {
     QMenu *_webPreferencesHelpMenu;
     QMenu *_webPythonHelpMenu;
     QMenu *_webVisualizationHelpMenu;
+
+    // Submenus under the File menu:
+    QMenu *_dataMenu;
+    QMenu *_closeVDCMenu;
+    QMenu *_importMenu;
+    QMenu *_sessionMenu;
 
     // File menu:
     QAction *_fileOpenAction;
