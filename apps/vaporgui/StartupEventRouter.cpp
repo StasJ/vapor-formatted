@@ -60,6 +60,7 @@ StartupEventRouter::StartupEventRouter(QWidget *parent, ControlExec *ce)
     flowPathButton->setIcon(QIcon(*fileopenIcon));
     pythonPathButton->setIcon(QIcon(*fileopenIcon));
     setSettingsChanged(false);
+    _settingsChanged = false; // this is a quick hack
     _savedStartupParams = 0;
     _textChangedFlag = false;
 }
