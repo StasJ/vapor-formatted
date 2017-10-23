@@ -34,6 +34,7 @@
 #include <vapor/ControlExecutive.h>
 #include <vapor/Viewpoint.h>
 #include <vapor/ViewpointParams.h>
+#include <vapor/debug.h>
 #include <vapor/glutil.h> // Must be included first!!!
 
 using namespace VAPoR;
@@ -259,6 +260,11 @@ void VizWin::initializeGL() {
         MSG_ERR("Failure to initialize Visualizer");
     }
     printOpenGLErrorMsg("GLVizWindowInitializeEvent");
+
+    ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
+    ViewpointParams *vParams = paramsMgr->GetViewpointParams(_winName);
+
+    vParams->SetWindowSize(width(), height());
 }
 
 void VizWin::mousePressEventNavigate(QMouseEvent *e) {
@@ -616,9 +622,17 @@ void VizWin::setFocus() {
 }
 
 void VizWin::paintGL() {
+    static bool firstRun = true;
 
     if (!FrameBufferReady()) {
         return;
+    }
+
+    if (firstRun) {
+        ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
+        ViewpointParams *vParams = paramsMgr->GetViewpointParams(_winName);
+        vParams->SetWindowSize(width(), height());
+        firstRun = false;
     }
 
     glClearColor(0., 0., 0., 1.);
