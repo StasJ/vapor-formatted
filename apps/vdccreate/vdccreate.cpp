@@ -49,7 +49,7 @@ OptionParser::OptDescRec_T set_opts[] = {
     {"nthreads", 1, "0",
      "Specify number of execution threads "
      "0 => use number of cores"},
-    {"vars3d", 1, "var1",
+    {"vars3d", 1, "",
      "Colon delimited list of 3D variable names (compressed) "
      "to be included in "
      "the VDC"},
