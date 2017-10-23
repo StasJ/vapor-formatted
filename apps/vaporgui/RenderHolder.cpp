@@ -125,7 +125,8 @@ void RenderHolder::newRenderer() {
         return;
     int selection = rDialog.rendererCombo->currentIndex();
     string renderClass = renderClasses[selection];
-#endif
+
+#else
 
     int helloIdx = 9999; // cannot have this many renderers...
     for (int i = 0; i < renderClasses.size(); i++) {
@@ -136,11 +137,11 @@ void RenderHolder::newRenderer() {
     }
     if (nDialog.exec() != QDialog::Accepted)
         return;
-
     int selection = rDialog.rendererCombo->currentIndex();
     if (selection >= helloIdx)
         selection++;
     string renderClass = renderClasses[selection];
+#endif
 
     selection = rDialog.dataMgrCombo->currentIndex();
     string dataSetName = dataSetNames[selection];
