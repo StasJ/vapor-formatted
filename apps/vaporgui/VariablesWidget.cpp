@@ -268,7 +268,6 @@ void VariablesWidget::getCmpFactors(string varname, vector<float> &lodCF, vector
 }
 
 void VariablesWidget::updateFidelity(RenderParams *rParams) {
-
     string varname;
     if (_dspFlags & SCALAR) {
         varname = rParams->GetVariableName();
