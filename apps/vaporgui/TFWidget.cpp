@@ -21,9 +21,7 @@
 #include "ErrorReporter.h"
 #include "MainForm.h"
 #include "RenderEventRouter.h"
-#include "StartupParams.h"
 #include "TwoDSubtabs.h"
-#include "vapor/GetAppPath.h"
 #include "vapor/RenderParams.h"
 #include "vapor/TwoDDataParams.h"
 #include <GL/glew.h>
@@ -516,19 +514,6 @@ void TFWidget::loadTF() {
     fileLoadTF(varname, p->GetCurrentTFPath().c_str(), true);
 
     Update(_dataMgr, _paramsMgr, _rParams);
-}
-
-void TFWidget::loadInstalledTF(string varname) {
-    // Get the path from the environment:
-    vector<string> paths;
-    paths.push_back("palettes");
-    string palettes = GetAppPath("VAPOR", "share", paths);
-
-    QString installPath = palettes.c_str();
-    fileLoadTF(varname, (const char *)installPath.toAscii(), false);
-
-    Update(_dataMgr, _paramsMgr, _rParams);
-    updateHisto();
 }
 
 #ifdef DEAD
