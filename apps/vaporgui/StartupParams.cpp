@@ -23,14 +23,19 @@
 #pragma warning(disable : 4100)
 #endif
 
+#include <QDir>
+#include <fstream>
 #include <iostream>
+#include <ostream>
+#include <vapor/GetAppPath.h>
 #include <vector>
 
 #include "StartupParams.h"
 
 using namespace VAPoR;
+using namespace Wasp;
 
-const string StartupParams::m_classType = "StartupParams";
+const string StartupParams::_classType = "StartupParams";
 
 const string StartupParams::_shortName = "Startup";
 const string StartupParams::_cacheMBTag = "CacheMBs";
@@ -55,7 +60,21 @@ const string StartupParams::_numExecutionThreads = "NumExecutionThreads";
 //
 static ParamsRegistrar<StartupParams> registrar(StartupParams::GetClassType());
 
-StartupParams::StartupParams(ParamsBase::StateSave *ssave) : ParamsBase(ssave, m_classType) {
+namespace {
+string StartupFile = ".vapor3_startup";
+}
+
+StartupParams::StartupParams(ParamsBase::StateSave *ssave) : ParamsBase(ssave, _classType) {
+
+    _startupPath = QDir::homePath().toStdString();
+    _startupPath += QDir::separator().toAscii();
+    _startupPath += StartupFile;
+
+    // Try to get startup params from .startup file
+    //
+    bool ok = _loadFromStartupFile();
+    if (ok)
+        return;
 
     _init();
 }
@@ -67,28 +86,89 @@ StartupParams::StartupParams(ParamsBase::StateSave *ssave, XmlNode *node)
     //
     if (node->GetTag() != StartupParams::GetClassType()) {
         node->SetTag(StartupParams::GetClassType());
+
+        // Try to get startup params from .startup file
+        //
+        bool ok = _loadFromStartupFile();
+        if (ok)
+            return;
+
         _init();
     }
 }
 
+void StartupParams::Reinit() { _init(); }
+
 StartupParams::~StartupParams() {}
+
+bool StartupParams::_loadFromStartupFile() {
+
+    XmlNode *node = GetNode();
+    assert(node != NULL);
+
+    bool enabled = MyBase::GetEnableErrMsg();
+    MyBase::EnableErrMsg(false);
+
+    XmlParser xmlparser;
+    int rc = xmlparser.LoadFromFile(node, _startupPath);
+    bool status = rc >= 0;
+
+    MyBase::EnableErrMsg(enabled);
+
+    return (status);
+}
+
+int StartupParams::SaveStartup() const {
+
+    ofstream fileout;
+    string s;
+
+    fileout.open(_startupPath.c_str());
+    if (!fileout) {
+        MyBase::SetErrMsg("Unable to open output startup file \"_startupPath.c_str()\" : %M");
+        return (-1);
+    }
+
+    const XmlNode *node = GetNode();
+    XmlNode::streamOut(fileout, *node);
+    if (fileout.bad()) {
+        MyBase::SetErrMsg("Unable to write output startup file \"_startupPath.c_str()\" : %M");
+        return (-1);
+    }
+
+    fileout.close();
+    return (0);
+}
 
 // Reset startup settings to initial state
 void StartupParams::_init() {
+
     SetAutoStretch(false);
     SetCacheMB(2000);
     SetTextureSize(0);
     SetTexSizeEnable(false);
     SetWinSizeLock(false);
     SetWinSize(1028, 1024);
-    SetSessionDir(string("."));
-    SetMetadataDir(string("."));
-    SetImageDir(string("."));
-    SetFlowDir(string("."));
-    SetTFDir(string("."));
-    SetPythonDir(string("."));
+
+    SetSessionDir(string("~"));
+    SetMetadataDir(string("~"));
+    SetImageDir(string("~"));
+    SetFlowDir(string("~"));
+
     SetFidelityDefault3D(4., 4.);
     SetFidelityDefault2D(2., 2.);
+
+    vector<string> ppaths = {"palettes"};
+    string palettes = GetAppPath("VAPOR", "share", ppaths);
+    SetTFDir(string(palettes));
+
+    vector<string> ipaths = {"images"};
+    string images = GetAppPath("VAPOR", "share", ipaths);
+    SetImageDir(string(images));
+
+    vector<string> pypaths = {"python"};
+    string python = GetAppPath("VAPOR", "share", pypaths);
+    SetPythonDir(string(python));
 }
 
 void StartupParams::SetWinSize(size_t width, size_t height) {
@@ -115,14 +195,3 @@ void StartupParams::GetWinSize(size_t &width, size_t &height) const {
     width = val[0];
     height = val[1];
 }
-
-#ifdef DEAD
-void StartupParams::CopyPathsToSession() {
-    PathParams::SetCurrentDataPath(GetMetadataDir());
-    PathParams::SetCurrentImagePath(GetImageDir());
-    PathParams::SetCurrentSessionPath(GetSessionDir());
-    PathParams::SetCurrentFlowPath(GetFlowDir());
-    PathParams::SetCurrentPythonPath(GetPythonDir());
-    PathParams::SetCurrentTFPath(GetTFDir());
-}
-#endif
