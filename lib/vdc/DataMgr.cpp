@@ -2188,6 +2188,12 @@ int DataMgr::_get_time_coordinates(vector<double> &timecoords) {
         }
         delete[] buf;
     }
+
+    // No time coordinates present
+    //
+    if (timecoords.empty()) {
+        timecoords.push_back(0.0);
+    }
     return (0);
 }
 
