@@ -23,7 +23,9 @@ class ContourVariablesSubtab : public QWidget, public Ui_ContourVariablesGUI {
         setupUi(this);
         _variablesWidget->Reinit(
             (VariablesWidget::DisplayFlags)(VariablesWidget::SCALAR | VariablesWidget::HGT),
-            (VariablesWidget::DimFlags)(VariablesWidget::THREED | VariablesWidget::TWOD));
+            (VariablesWidget::DimFlags)
+            //(VariablesWidget::THREED | VariablesWidget::TWOD));
+            (VariablesWidget::TWOD));
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -45,7 +47,7 @@ class ContourAppearanceSubtab : public QWidget, public Ui_ContourAppearanceGUI {
 
   private:
     void SetIsovalues();
-    double GetContourMinOrMax(bool minOrMax);
+    double GetContourMinOrMax(string minOrMax);
 
     VAPoR::ContourParams *_cParams;
     VAPoR::DataMgr *_dataMgr;
