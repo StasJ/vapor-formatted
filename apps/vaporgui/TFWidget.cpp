@@ -240,6 +240,8 @@ void TFWidget::fileSaveTF() {
     }
 
     string varname = _rParams->GetVariableName();
+    if (varname.empty())
+        return;
 
     TransferFunction *tf = _rParams->GetTransferFunc(varname);
     if (!tf) {
@@ -256,6 +258,8 @@ void TFWidget::fileSaveTF() {
 
 void TFWidget::getRange(float range[2], float values[2]) {
 
+    range[0] = range[1] = 0.0;
+    values[0] = values[1] = 0.0;
     string varName;
     if (_flags & COLORVAR) {
         varName = _rParams->GetColorMapVariableName();
@@ -265,6 +269,8 @@ void TFWidget::getRange(float range[2], float values[2]) {
     } else {
         varName = _rParams->GetVariableName();
     }
+    if (varName.empty())
+        return;
 
     size_t ts = _rParams->GetCurrentTimestep();
     int ref = _rParams->GetRefinementLevel();
@@ -452,6 +458,9 @@ void TFWidget::setRange(double min, double max) {
     } else {
         varName = _rParams->GetVariableName();
     }
+    if (varName.empty())
+        return;
+
     MapperFunction *tf = _rParams->GetMapperFunc(varName);
 
     tf->setMinMapValue(min);
@@ -485,6 +494,9 @@ void TFWidget::colorInterpChanged(int index) {
     } else {
         varName = _rParams->GetVariableName();
     }
+    if (varName.empty())
+        return;
+
     MapperFunction *tf = _rParams->GetMapperFunc(varName);
 
     if (index == 0) {
@@ -504,6 +516,8 @@ void TFWidget::loadTF() {
     } else {
         varname = _rParams->GetVariableName();
     }
+    if (varname.empty())
+        return;
 
     // Ignore TF's in session, for now.
 
