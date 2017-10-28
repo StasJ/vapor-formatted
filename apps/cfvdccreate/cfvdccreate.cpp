@@ -177,23 +177,23 @@ int main(int argc, char **argv) {
     ProgName = Basename(argv[0]);
 
     if (op.AppendOptions(set_opts) < 0) {
-        exit(1);
+        return (1);
     }
 
     if (op.ParseOptions(&argc, argv, get_options) < 0) {
-        exit(1);
+        return (1);
     }
 
     if (argc < 3) {
         cerr << "Usage: " << ProgName << " cf_files... master.nc" << endl;
         op.PrintOptionHelp(stderr, 80, false);
-        exit(1);
+        return (1);
     }
 
     if (opt.help) {
         cerr << "Usage: " << ProgName << " cf_files... master.nc" << endl;
         op.PrintOptionHelp(stderr, 80, false);
-        exit(0);
+        return (0);
     }
 
     argc--;
@@ -209,18 +209,18 @@ int main(int argc, char **argv) {
         MyBase::SetErrMsg("Data directory exists and -force option not used. "
                           "Remove directory %s or use -force",
                           vdc.GetDataDir(master).c_str());
-        exit(1);
+        return (1);
     }
 
     size_t chunksize = 1024 * 1024 * 4;
     int rc = vdc.Initialize(master, VDC::W, chunksize);
     if (rc < 0)
-        exit(1);
+        return (1);
 
     DCCF dccf;
     rc = dccf.Initialize(cffiles);
     if (rc < 0) {
-        exit(1);
+        return (1);
     }
 
     vector<string> dimnames = dccf.GetDimensionNames();
@@ -229,7 +229,7 @@ int main(int argc, char **argv) {
         dccf.GetDimension(dimnames[i], dim);
         rc = vdc.DefineDimension(dim.GetName(), dim.GetLength());
         if (rc < 0) {
-            exit(1);
+            return (1);
         }
     }
 
@@ -259,10 +259,9 @@ int main(int argc, char **argv) {
 
         rc = vdc.SetCompressionBlock(mybs, opt.wname, cratios);
         if (rc < 0)
-            exit(1);
+            return (1);
 
         for (int i = 0; i < coordnames.size(); i++) {
-            cout << d << " " << coordnames[i] << endl;
             DC::CoordVar cvar;
             dccf.GetCoordVarInfo(coordnames[i], cvar);
 
@@ -282,7 +281,7 @@ int main(int argc, char **argv) {
             }
 
             if (rc < 0) {
-                exit(1);
+                return (1);
             }
         }
     }
@@ -324,9 +323,13 @@ int main(int argc, char **argv) {
 
         rc = vdc.SetCompressionBlock(mybs, mywname, cratios);
         if (rc < 0)
-            exit(1);
+            return (1);
 
         for (int i = 0; i < datanames.size(); i++) {
+
+            if (datanames[i] == "ABSORB") {
+                cout << "ABSORB.....\n";
+            }
             DC::DataVar dvar;
             dccf.GetDataVarInfo(datanames[i], dvar);
 
@@ -348,14 +351,14 @@ int main(int argc, char **argv) {
                 assert(ok);
 
                 string maskvar_name;
-                maskvar(dimnames, maskvar_name);
+                maskvar(sdimnames, maskvar_name);
 
                 rc = vdc.DefineDataVar(dvar.GetName(), dimnames, coordvars, dvar.GetUnits(),
                                        dvar.GetXType(), dvar.GetMissingValue(), maskvar_name);
             }
 
             if (rc < 0) {
-                exit(1);
+                return (1);
             }
         }
     }
@@ -363,8 +366,8 @@ int main(int argc, char **argv) {
     rc = vdc.EndDefine();
     if (rc < 0) {
         MyBase::SetErrMsg("Failed to write VDC master file : %s", master.c_str());
-        exit(1);
+        return (1);
     }
 
-    exit(0);
+    return (0);
 }
