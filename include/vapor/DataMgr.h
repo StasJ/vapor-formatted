@@ -789,6 +789,8 @@ class VDF_API DataMgr : public Wasp::MyBase {
     enum GridType { UNDEFINED = 0, REGULAR, LAYERED, CURVILINEAR, UNSTRUC_2D, UNSTRUC_LAYERED };
     GridType _get_grid_type(const DC::DataVar &var, const vector<DC::CoordVar> &cvarsinfo) const;
 
+    GridType _get_grid_type(string varname) const;
+
     int _find_bounding_grid(size_t ts, string varname, int level, int lod, std::vector<double> min,
                             std::vector<double> max, std::vector<size_t> &min_ui,
                             std::vector<size_t> &max_ui);
