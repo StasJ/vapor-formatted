@@ -210,7 +210,7 @@ int CopyVar(DC &dc, VDC &vdc, size_t ts, string varname, int lod) {
     if (dc.IsTimeVarying(varname)) {
         dimlens.pop_back();
     }
-    assert(dimlens.size() > 0 && dimlens.size() < 4);
+    assert(dimlens.size() < 4);
 
     // Call appropriate copy method based on number of spatial dimensions
     //
@@ -226,6 +226,7 @@ int main(int argc, char **argv) {
     OptionParser op;
 
     MyBase::SetErrMsgFilePtr(stderr);
+
     //
     // Parse command line arguments
     //
