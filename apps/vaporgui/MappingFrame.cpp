@@ -301,6 +301,9 @@ void MappingFrame::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, RenderParams *
         varname = _rParams->GetVariableName();
     }
 
+    if (varname.empty())
+        return;
+
     MapperFunction *mapper;
     mapper = _rParams->GetMapperFunc(varname);
     if (!mapper) {
@@ -309,8 +312,6 @@ void MappingFrame::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, RenderParams *
     }
 
     setMapperFunction(mapper);
-
-    vector<double> foo = _mapper->getMinMaxMapValue();
 
     deselectWidgets();
 

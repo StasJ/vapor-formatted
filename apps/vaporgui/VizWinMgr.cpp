@@ -142,9 +142,11 @@ void VizWinMgr::createAllDefaultTabs() {
     er = new TwoDDataEventRouter(parent, _controlExec);
     installTab(er->GetType(), 0, er);
 
+#ifndef HELLO_RENDERER
     parent = TabManager::getInstance()->GetSubTabWidget(0);
     er = new HelloEventRouter(parent, _controlExec);
     installTab(er->GetType(), 0, er);
+#endif
 
     parent = TabManager::getInstance()->GetSubTabWidget(0);
     er = new BarbEventRouter(parent, this, _controlExec);
@@ -500,7 +502,8 @@ void VizWinMgr::Restart() {
     for (int i = 0; i < vizNames.size(); i++) {
         attachVisualizer(vizNames[i]);
     }
-    m_initialized = true;
+
+    ReinitRouters();
 }
 
 void VizWinMgr::removeVisualizer(string vizName) {
@@ -509,6 +512,10 @@ void VizWinMgr::removeVisualizer(string vizName) {
 }
 
 void VizWinMgr::ReinitRouters() {
+    m_initialized = false;
+
+    if (_controlExec->GetDataNames().size() == 0)
+        return;
 
     DataStatus *dataStatus = _controlExec->getDataStatus();
     ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
