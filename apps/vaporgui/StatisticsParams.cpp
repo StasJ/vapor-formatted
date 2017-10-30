@@ -55,7 +55,7 @@ StatisticsParams::~StatisticsParams() {
     MyBase::SetDiagMsg("StatisticsParams::~StatisticsParams() this=%p", this);
 }
 
-bool StatisticsParams::GetAutoUpdate() { return (GetValueLong(_autoUpdateTag, (long)true)); }
+bool StatisticsParams::GetAutoUpdate() { return (GetValueLong(_autoUpdateTag, (long)false)); }
 
 void StatisticsParams::SetAutoUpdate(bool val) {
     SetValueLong(_autoUpdateTag, "if we want stats auto-update", (long)val);
@@ -91,13 +91,13 @@ void StatisticsParams::SetMeanEnabled(bool state) {
     SetValueLong(_meanEnabledTag, "Mean statistic calculation", (long)state);
 }
 
-bool StatisticsParams::GetMedianEnabled() { return GetValueLong(_medianEnabledTag, (long)true); }
+bool StatisticsParams::GetMedianEnabled() { return GetValueLong(_medianEnabledTag, (long)false); }
 
 void StatisticsParams::SetMedianEnabled(bool state) {
     SetValueLong(_medianEnabledTag, "Median statistic calculation", (long)state);
 }
 
-bool StatisticsParams::GetStdDevEnabled() { return GetValueLong(_stdDevEnabledTag, (long)true); }
+bool StatisticsParams::GetStdDevEnabled() { return GetValueLong(_stdDevEnabledTag, (long)false); }
 
 void StatisticsParams::SetStdDevEnabled(bool state) {
     SetValueLong(_stdDevEnabledTag, "Standard deviation statistic calculation", (long)state);
