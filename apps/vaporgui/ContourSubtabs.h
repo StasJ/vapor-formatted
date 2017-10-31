@@ -46,8 +46,9 @@ class ContourAppearanceSubtab : public QWidget, public Ui_ContourAppearanceGUI {
     void Initialize(VAPoR::ContourParams *cParams);
 
   private:
-    void SetIsovalues();
     double GetContourMinOrMax(string minOrMax);
+    void enableSliders();
+    void disableSliders();
 
     VAPoR::ContourParams *_cParams;
     VAPoR::DataMgr *_dataMgr;
@@ -58,6 +59,7 @@ class ContourAppearanceSubtab : public QWidget, public Ui_ContourAppearanceGUI {
     Combo *_spacingCombo;
 
   private slots:
+    void SetContourValues();
     void MappingChanged() { cout << "mapping changed!" << endl; }
 
     void EndTFChange();
