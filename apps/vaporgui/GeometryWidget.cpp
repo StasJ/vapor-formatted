@@ -129,9 +129,13 @@ void GeometryWidget::updateRangeLabels(std::vector<double> minExt, std::vector<d
                      QString("         Max:") + QString::number(maxExt[1]);
     yMinMaxGroupBox->setTitle(yTitle);
 
-    QString zTitle = QString("Z Coordinates         Min:") + QString::number(minExt[2]) +
-                     QString("         Max:") + QString::number(maxExt[2]);
-    zMinMaxGroupBox->setTitle(zTitle);
+    if (minExt.size() < 3) {
+        zMinMaxGroupBox->setTitle(QString("You shouldn't see this"));
+    } else {
+        QString zTitle = QString("Z Coordinates         Min:") + QString::number(minExt[2]) +
+                         QString("         Max:") + QString::number(maxExt[2]);
+        zMinMaxGroupBox->setTitle(zTitle);
+    }
 }
 
 void GeometryWidget::updateCopyCombo() {
