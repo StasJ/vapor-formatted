@@ -63,7 +63,7 @@ class Statistics : public QDialog, public Ui_StatsWindow {
     class ValidStats {
       public:
         bool AddVariable(std::string);
-        // bool removeVariable( std::string );
+        bool RemoveVariable(std::string);
         size_t GetVariableCount();
 
         bool Add3MStats(std::string, const double *); // Min, Max, Mean
@@ -96,6 +96,7 @@ class Statistics : public QDialog, public Ui_StatsWindow {
 
   private slots:
     void _newVarChanged(int);
+    void _removeVarChanged(int);
     /*
     void restoreExtents();
     void minTSChanged();
