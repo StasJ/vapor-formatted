@@ -104,6 +104,11 @@ class GUIStateParams : public VAPoR::ParamsBase {
 
     MouseModeParams *GetMouseModeParams() const;
 
+    //! method sets and gets the active data set name in Statistics
+    //!
+    std::string GetStatsDatasetName() const;
+    void SetStatsDatasetName(std::string name);
+
     // Get static string identifier for this params class
     //
     static string GetClassType() { return ("GUIStateParams"); }
@@ -137,6 +142,7 @@ class GUIStateParams : public VAPoR::ParamsBase {
     static const string m_pythonPathTag;
     static const string m_flowPathTag;
     static const string m_tfPathTag;
+    static const string m_statsDatasetNameTag;
 
     MouseModeParams *m_mouseModeParams;
 
