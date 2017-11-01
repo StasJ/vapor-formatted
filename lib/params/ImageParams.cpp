@@ -19,7 +19,7 @@ ImageParams::ImageParams(DataMgr *dataManager, ParamsBase::StateSave *stateSave)
 }
 
 ImageParams::ImageParams(DataMgr *dataManager, ParamsBase::StateSave *stateSave, XmlNode *node)
-    : RenderParams(dataManager, stateSave, ImageParams::GetClassType(), 2) {
+    : RenderParams(dataManager, stateSave, node, 2) {
     SetDiagMsg("ImageParams::ImageParams() this=%p", this);
     if (node->GetTag() != ImageParams::GetClassType()) {
         node->SetTag(ImageParams::GetClassType());

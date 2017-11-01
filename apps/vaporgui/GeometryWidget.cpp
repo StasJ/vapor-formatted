@@ -19,6 +19,7 @@
 //
 #include "GeometryWidget.h"
 #include "MainForm.h"
+#include "vapor/DataMgrUtils.h"
 #include "vapor/RenderParams.h"
 #include <QFileDialog>
 #include <qwidget.h>
@@ -128,52 +129,12 @@ void GeometryWidget::updateRangeLabels(std::vector<double> minExt, std::vector<d
                      QString("         Max:") + QString::number(maxExt[1]);
     yMinMaxGroupBox->setTitle(yTitle);
 
-    QString zTitle = QString("Z Coordinates         Min:") + QString::number(minExt[2]) +
-                     QString("         Max:") + QString::number(maxExt[2]);
-    zMinMaxGroupBox->setTitle(zTitle);
-}
-
-void GeometryWidget::GetVectorExtents(size_t ts, int level, std::vector<double> &minFullExt,
-                                      std::vector<double> &maxFullExt) {
-
-    std::vector<string> varNames = _rParams->GetFieldVariableNames();
-    std::vector<double> minVarExt, maxVarExt;
-
-    // Calculate the union of all field variable extents
-    // by iterating over the variables one at a time, indexed by i
-    //
-    for (int i = 0; i < varNames.size(); i++) {
-        if (varNames[i] != "") {
-            int rc = _dataMgr->GetVariableExtents(ts, varNames[i], level, minFullExt, maxFullExt);
-            if (rc < 0) {
-                MyBase::SetErrMsg("Error: DataMgr could not return valid values"
-                                  " from GetVariableExtents() for variable %s",
-                                  varNames[i].c_str());
-            }
-
-            // If we are on the extents of the first
-            // variable, just apply those extents as
-            // our initial condition...
-            //
-            if (i == 0) {
-                minVarExt = minFullExt;
-                maxVarExt = maxFullExt;
-            } else {
-                for (int j = 0; j < 3; j++) {
-                    // ...Otherwise run our comparisons
-                    //
-                    if (minVarExt[j] < minFullExt[j]) {
-                        minFullExt[j] = minVarExt[j];
-                    }
-                    if (maxVarExt[j] > maxFullExt[j]) {
-                        maxFullExt[j] = maxVarExt[j];
-                    }
-                }
-            }
-        } else {
-            minFullExt.push_back(0.0f);
-            maxFullExt.push_back(0.0f);
-        }
+    if (minExt.size() < 3) {
+        zMinMaxGroupBox->setTitle(QString("You shouldn't see this"));
+    } else {
+        QString zTitle = QString("Z Coordinates         Min:") + QString::number(minExt[2]) +
+                         QString("         Max:") + QString::number(maxExt[2]);
+        zMinMaxGroupBox->setTitle(zTitle);
     }
 }
 
@@ -275,7 +236,8 @@ void GeometryWidget::Update(ParamsMgr *paramsMgr, DataMgr *dataMgr, RenderParams
         if (varNames.empty())
             return;
 
-        GetVectorExtents(ts, level, minFullExt, maxFullExt);
+        vector<int> axes;
+        DataMgrUtils::GetExtents(_dataMgr, ts, varNames, minFullExt, maxFullExt, axes);
     } else {
         string varName = _rParams->GetVariableName();
         if (varName.empty())
