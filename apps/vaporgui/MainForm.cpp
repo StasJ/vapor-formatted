@@ -26,6 +26,7 @@
 #ifdef WIN32
 #pragma warning(disable : 4251 4100)
 #endif
+#include <QDesktopWidget>
 #include <cassert>
 #include <fstream>
 #include <functional>
@@ -163,6 +164,15 @@ MainForm::MainForm(vector<QString> files, QApplication *app, QWidget *parent, co
     _capturingAnimationVizName = "";
     _interactiveRefinementSpin = 0;
     _modeStatusWidget = 0;
+
+    // For vertical screens, reverse aspect ratio for window size
+    QSize screenSize = QDesktopWidget().availableGeometry().size();
+    printf("Size(%i, %i)\n", screenSize.width(), screenSize.height());
+    if (screenSize.width() < screenSize.height())
+        resize(screenSize.width() * .7,
+               screenSize.width() * .7 * screenSize.width() / (float)screenSize.height());
+    else
+        resize(screenSize.width() * .7, screenSize.height() * .7);
 
     setWindowIcon(QPixmap(vapor_icon___));
 
