@@ -13,7 +13,7 @@
 #include <qlineedit.h>
 #include <qscrollarea.h>
 #include <string>
-#include <vapor/TransferFunction.h>
+#include <vapor/MapperFunction.h>
 #include <vapor/glutil.h>
 #include <vector>
 
