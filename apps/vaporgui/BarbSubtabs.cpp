@@ -39,6 +39,11 @@ BarbGeometrySubtab::BarbGeometrySubtab(QWidget *parent) {
     _geometryWidget->Reinit(
         (GeometryWidget::Flags)((GeometryWidget::VECTOR) | (GeometryWidget::TWOD)));
     //((GeometryWidget::VECTOR) | (GeometryWidget::THREED)));
+}
+
+BarbAppearanceSubtab::BarbAppearanceSubtab(QWidget *parent) {
+    setupUi(this);
+    _TFWidget->Reinit((TFWidget::Flags)(TFWidget::COLORVAR | TFWidget::PRIORITYCOLORVAR));
 
     _xDimCombo = new Combo(xDimEdit, xDimSlider, true);
     _yDimCombo = new Combo(yDimEdit, yDimSlider, true);
@@ -53,10 +58,18 @@ BarbGeometrySubtab::BarbGeometrySubtab(QWidget *parent) {
     connect(_thicknessCombo, SIGNAL(valueChanged(double)), this, SLOT(thicknessChanged(double)));
 }
 
-void BarbGeometrySubtab::Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
-                                VAPoR::RenderParams *bParams) {
-    _bParams = (VAPoR::BarbParams *)bParams;
+/*void BarbGeometrySubtab::Update(VAPoR::ParamsMgr* paramsMgr,
+                            VAPoR::DataMgr* dataMgr,
+                            VAPoR::RenderParams* bParams) {
+    _bParams = (VAPoR::BarbParams*)bParams;
     _geometryWidget->Update(paramsMgr, dataMgr, bParams);
+}*/
+
+void BarbAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
+                                  VAPoR::RenderParams *bParams) {
+    _bParams = (VAPoR::BarbParams *)bParams;
+    _TFWidget->Update(dataMgr, paramsMgr, bParams);
+    _ColorbarWidget->Update(dataMgr, paramsMgr, bParams);
 
     vector<long> grid = _bParams->GetGrid();
     _xDimCombo->Update(1, 50, grid[0]);
@@ -69,10 +82,10 @@ void BarbGeometrySubtab::Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dat
     double thickness = _bParams->GetLineThickness();
     _thicknessCombo->Update(.1, 1.5, thickness);
 
-    _transformTable->Update(bParams->GetTransform());
+    //_transformTable->Update(bParams->GetTransform());
 }
 
-void BarbGeometrySubtab::xDimChanged(int i) {
+void BarbAppearanceSubtab::xDimChanged(int i) {
     vector<long> longDims = _bParams->GetGrid();
     int dims[3];
 
@@ -82,7 +95,7 @@ void BarbGeometrySubtab::xDimChanged(int i) {
     _bParams->SetGrid(dims);
 }
 
-void BarbGeometrySubtab::yDimChanged(int i) {
+void BarbAppearanceSubtab::yDimChanged(int i) {
     vector<long> longDims = _bParams->GetGrid();
     int dims[3];
 
@@ -92,7 +105,7 @@ void BarbGeometrySubtab::yDimChanged(int i) {
     _bParams->SetGrid(dims);
 }
 
-void BarbGeometrySubtab::zDimChanged(int i) {
+void BarbAppearanceSubtab::zDimChanged(int i) {
     vector<long> longDims = _bParams->GetGrid();
     int dims[3];
 
@@ -102,9 +115,9 @@ void BarbGeometrySubtab::zDimChanged(int i) {
     _bParams->SetGrid(dims);
 }
 
-void BarbGeometrySubtab::lengthChanged(double d) { _bParams->SetLengthScale(d); }
+void BarbAppearanceSubtab::lengthChanged(double d) { _bParams->SetLengthScale(d); }
 
-void BarbGeometrySubtab::thicknessChanged(double d) { _bParams->SetLineThickness(d); }
+void BarbAppearanceSubtab::thicknessChanged(double d) { _bParams->SetLineThickness(d); }
 
 void BarbAppearanceSubtab::Initialize(VAPoR::BarbParams *bParams) {
     float rgb[] = {1.f, 1.f, 1.f};
