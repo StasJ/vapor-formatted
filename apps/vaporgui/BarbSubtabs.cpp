@@ -1,5 +1,6 @@
 #include "BarbSubtabs.h"
 #include "vapor/BarbParams.h"
+#include <cmath>
 
 void BarbVariablesSubtab::pushVarStartingWithLetter(vector<string> searchVars,
                                                     vector<string> &returnVars, char letter) {
@@ -65,8 +66,43 @@ BarbAppearanceSubtab::BarbAppearanceSubtab(QWidget *parent) {
     _geometryWidget->Update(paramsMgr, dataMgr, bParams);
 }*/
 
+double BarbAppearanceSubtab::CalculateDomainLength(int ts) {
+    VAPoR::StructuredGrid *grid;
+
+    double domainLength = 0;
+
+    // Is this a legitimite way to acquire animation params?
+    //
+    int level = _bParams->GetRefinementLevel();
+    int lod = _bParams->GetCompressionLevel();
+    vector<string> fieldVars = _bParams->GetFieldVariableNames();
+    for (int i = 0; i < 3; i++) {
+        string varName = fieldVars[i];
+        if ((varName) == "") {
+            continue;
+        }
+
+        // grid = _dataMgr->GetVariable(ts, varName, level, lod);
+        vector<double> minExt, maxExt;
+        // grid->GetUserExtents(minExt, maxExt);
+        _dataMgr->GetVariableExtents(ts, varName, level, minExt, maxExt);
+
+        // If we're dealing with 2D vars, skip the Z element
+        //
+        if (i == 3 && minExt.size() < 2)
+            continue;
+        else {
+            double length = maxExt[i] - minExt[i];
+            domainLength += length * length;
+        }
+    }
+    domainLength = sqrt(domainLength);
+    return domainLength;
+}
+
 void BarbAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                                   VAPoR::RenderParams *bParams) {
+    _dataMgr = dataMgr;
     _bParams = (VAPoR::BarbParams *)bParams;
     _TFWidget->Update(dataMgr, paramsMgr, bParams);
     _ColorbarWidget->Update(dataMgr, paramsMgr, bParams);
@@ -76,11 +112,17 @@ void BarbAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *par
     _yDimCombo->Update(1, 50, grid[1]);
     _zDimCombo->Update(1, 50, grid[2]);
 
+    vector<double> minExt, maxExt;
     double length = _bParams->GetLengthScale();
-    _lengthCombo->Update(.1, 4, length);
+    //_lengthCombo->Update(.1, 4000000, length);
+    AnimationParams *ap = (AnimationParams *)paramsMgr->GetParams("AnimationParams");
+    int ts = ap->GetCurrentTimestep();
+    float domainLength = CalculateDomainLength(ts);
+    _lengthCombo->Update(0, domainLength / 50.f, length);
 
     double thickness = _bParams->GetLineThickness();
-    _thicknessCombo->Update(.1, 1.5, thickness);
+    //_thicknessCombo->Update(.1, 1.5, thickness);
+    _thicknessCombo->Update(.1, domainLength / 250000.f, thickness);
 
     //_transformTable->Update(bParams->GetTransform());
 }
