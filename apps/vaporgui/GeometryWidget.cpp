@@ -302,6 +302,7 @@ void GeometryWidget::setRange(double min, double max) {
     //
     minExt[dimension] = min;
     maxExt[dimension] = max;
-
     box->SetExtents(minExt, maxExt);
+
+    emit valueChanged();
 }

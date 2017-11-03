@@ -37,6 +37,9 @@ class GeometryWidget : public QWidget, public Ui_GeometryWidgetGUI {
     bool isContainer() const { return true; }
     void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr, VAPoR::RenderParams *rParams);
 
+  signals:
+    void valueChanged();
+
   private slots:
     void setRange(double min, double max);
     void copyRegion();
