@@ -79,7 +79,9 @@ void BarbEventRouter::GetWebHelp(vector<pair<string, string>> &help) const {
 void BarbEventRouter::_initializeTab() {
     _updateTab();
     BarbParams *rParams = (BarbParams *)GetActiveParams();
+    DataMgr *dataMgr = GetActiveDataMgr();
 
+    _variables->Initialize(rParams, dataMgr);
     _appearance->Initialize(rParams);
 }
 
