@@ -30,6 +30,7 @@
 #include <vapor/DataStatus.h>
 #include <vapor/ParamsMgr.h>
 #include <vapor/Proj4API.h>
+#include <vapor/UDUnitsClass.h>
 
 using namespace VAPoR;
 using namespace Wasp;
@@ -61,6 +62,7 @@ DataStatus::DataStatus(size_t cacheSize, int nThreads) {
 
     _dataMgrs.clear();
     _timeCoords.clear();
+    _timeCoordsFormatted.clear();
     _timeMap.clear();
 
     reset_time();
@@ -341,6 +343,26 @@ int find_nearest(const vector<double> &timeCoords, double time) {
 }
 }; // namespace
 
+void DataStatus::reset_time_helper() {
+    _timeCoordsFormatted = vector<string>(_timeCoords.size(), "");
+
+    UDUnits udunits;
+    int rc = udunits.Initialize();
+    if (rc < 0)
+        return;
+
+    char buf[80];
+
+    for (int i = 0; i < _timeCoords.size(); i++) {
+        int year, month, day, hour, minute, second;
+
+        udunits.DecodeTime(_timeCoords[i], &year, &month, &day, &hour, &minute, &second);
+        sprintf(buf, "%4.4d-%2.2d-%2.2d_%2.2d:%2.2d:%2.2d", year, month, day, hour, minute, second);
+
+        _timeCoordsFormatted[i] = string(buf);
+    }
+}
+
 void DataStatus::reset_time() {
     _timeCoords.clear();
     _timeMap.clear();
@@ -373,6 +395,8 @@ void DataStatus::reset_time() {
         }
         _timeMap[dataSetName] = timeSteps;
     }
+
+    reset_time_helper();
 }
 
 DataStatus::~DataStatus() {}
