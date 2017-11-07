@@ -218,6 +218,7 @@ int ControlExec::ActivateRender(string winName, string dataSetName, string rende
     assert(rp);
 
     rp->SetEnabled(on);
+    v->moveRendererToFront(ren);
 
     _paramsMgr->EndSaveStateGroup();
 
