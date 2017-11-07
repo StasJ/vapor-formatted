@@ -2,11 +2,16 @@
 #include <cmath>
 #include <cstdarg>
 #include <cstdio>
-#include <geo_normalize.h>
-#include <geotiff.h>
 #include <iostream>
 #include <sstream>
 #include <sys/stat.h>
+#ifdef WIN32
+#include <geotiff/geo_normalize.h>
+#include <geotiff/geotiff.h>
+#else
+#include <geo_normalize.h>
+#include <geotiff.h>
+#endif
 
 #include <vapor/GeoImageTMS.h>
 #include <vapor/GeoTileMercator.h>
