@@ -205,6 +205,31 @@ int ContourRenderer::_initializeGL() {
     return 0;
 }
 
+bool ContourRenderer::pointWithinBounds(double x, double y, double z, vector<double> varMin,
+                                        vector<double> varMax) {
+    return true;
+
+    bool withinBounds = true;
+
+    if (x < varMin[0])
+        withinBounds = false;
+    if (y < varMin[1])
+        withinBounds = false;
+    if (x > varMax[0])
+        withinBounds = false;
+    if (y > varMax[1])
+        withinBounds = false;
+
+    if (varMax.size() > 2) {
+        if (z < varMin[2])
+            withinBounds = false;
+        if (z > varMax[2])
+            withinBounds = false;
+    }
+
+    return withinBounds;
+}
+
 int ContourRenderer::buildLineCache(DataMgr *dataMgr) {
 
     ContourParams *cParams = (ContourParams *)GetActiveParams();
@@ -243,6 +268,7 @@ int ContourRenderer::buildLineCache(DataMgr *dataMgr) {
     vector<double> minu, maxu;
     varGrid->GetUserExtents(minu, maxu);
 
+    double mv = varGrid->GetMissingValue();
     float z = boxMin.size() == 3 ? (boxMax[2] + boxMin[2]) / 2.0 : 0.0;
     for (int j = 0; j < _sampleSize; j++) {
         double y = j * jIncrement + boxMin[1];
@@ -251,12 +277,13 @@ int ContourRenderer::buildLineCache(DataMgr *dataMgr) {
 
             double x = i * iIncrement + boxMin[0];
 
-            double val = varGrid->GetValue(x, y, z);
-            dataVals[i + j * _sampleSize] = val;
+            if (pointWithinBounds(x, y, z, varMin, varMax)) {
+                double val = varGrid->GetValue(x, y, z);
+                dataVals[i + j * _sampleSize] = val;
+            } else
+                dataVals[i + j * _sampleSize] = mv;
         }
     }
-
-    float mv = varGrid->GetMissingValue();
 
     // Unlock the StructuredGrid
     //
@@ -999,6 +1026,12 @@ void ContourRenderer::deleteCacheKey(int timestep) {
             delete it->second;
         cacheKeys.erase(it);
     }
+}
+
+int ContourRenderer::GetCurrentTimestep() {
+    ContourParams *cParams = (ContourParams *)GetActiveParams();
+    int ts = cParams->GetCurrentTimestep();
+    return ts;
 }
 
 /*
