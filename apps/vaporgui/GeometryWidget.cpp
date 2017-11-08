@@ -71,7 +71,10 @@ GeometryWidget::GeometryWidget(QWidget *parent) : QWidget(parent), Ui_GeometryWi
     xMinMaxGroupBox->setFont(myFont);
 }
 
-bool GeometryWidget::SetUseAuxVariables(bool val) { _useAuxVariables = val; }
+bool GeometryWidget::SetUseAuxVariables(bool val) {
+    _useAuxVariables = val;
+    return val;
+}
 
 void GeometryWidget::Reinit(Flags flags) {
     _flags = flags;
