@@ -376,23 +376,14 @@ void RenderParams::SetFieldVariableNames(vector<string> varnames) {
 }
 
 vector<string> RenderParams::GetAuxVariableNames() const {
-    /* sam changed its behavior.
-     * no other places use this function though.
-    vector <string> defaultv(1, "");
-    vector <string> varnames;
-    varnames = GetValueStringVec(_auxVariableNamesTag, defaultv);
+    std::vector<std::string> varnames = GetValueStringVec(_auxVariableNamesTag);
     varnames = string_replace(varnames, "NULL", "");
-    return(varnames);
-     */
-    return GetValueStringVec(_auxVariableNamesTag);
+    return (varnames);
 }
 
-void RenderParams::SetAuxVariableNames(vector<string> varnames) {
-    /* sam changed its behavior.
-     * no other places use this function though.
+void RenderParams::SetAuxVariableNames(std::vector<std::string> varnames) {
     varnames = string_replace(varnames, "0", "NULL");
     varnames = string_replace(varnames, "", "NULL");
-     */
     SetValueStringVec(_auxVariableNamesTag, "Specify auxiliary varnames", varnames);
 }
 
