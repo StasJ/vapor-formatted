@@ -158,7 +158,6 @@ MainForm::MainForm(vector<QString> files, QApplication *app, QWidget *parent, co
     _stats = NULL;
     _plot = NULL;
     _stateChangeFlag = false;
-    _firstSession = true;
 
     createActions();
     createMenus();
@@ -739,9 +738,7 @@ void MainForm::sessionOpenHelper(string fileName) {
 // Open session file
 //
 void MainForm::sessionOpen(QString qfileName) {
-    if (_firstSession) {
-        _firstSession = false;
-    } else if (_stateChangeFlag) {
+    if (_stateChangeFlag) {
         QMessageBox msgBox;
         msgBox.setWindowTitle("Are you sure?");
         msgBox.setText("The current session settings are not saved. Do you want to continue? \nYou "
@@ -1159,9 +1156,7 @@ vector<string> MainForm::myGetOpenFileNames(string prompt, string dir, string fi
 }
 
 void MainForm::sessionNew() {
-    if (_firstSession) {
-        _firstSession = false;
-    } else if (_stateChangeFlag) {
+    if (_stateChangeFlag) {
         QMessageBox msgBox;
         msgBox.setWindowTitle("Are you sure?");
         msgBox.setText("The current session settings are not saved. Do you want to continue? \nYou "
