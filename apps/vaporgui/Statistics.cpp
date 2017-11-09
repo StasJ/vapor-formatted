@@ -220,13 +220,13 @@ bool Statistics::Update() {
     // Update timesteps
     MinTimestepSpinbox->blockSignals(true);
     MinTimestepSpinbox->setMinimum(0);
-    MinTimestepSpinbox->setMaximum(currentDmgr->GetNumTimeSteps(availVars[0]) - 1);
+    MinTimestepSpinbox->setMaximum(currentDmgr->GetNumTimeSteps() - 1);
     MinTimestepSpinbox->setValue(statsParams->GetCurrentMinTS());
     MinTimestepSpinbox->blockSignals(false);
 
     MaxTimestepSpinbox->blockSignals(true);
     MaxTimestepSpinbox->setMinimum(0);
-    MaxTimestepSpinbox->setMaximum(currentDmgr->GetNumTimeSteps(availVars[0]) - 1);
+    MaxTimestepSpinbox->setMaximum(currentDmgr->GetNumTimeSteps() - 1);
     MaxTimestepSpinbox->setValue(statsParams->GetCurrentMaxTS());
     MaxTimestepSpinbox->blockSignals(false);
 
@@ -272,6 +272,7 @@ void Statistics::_updateStatsTable() {
     std::vector<std::string> enabledVars = statsParams->GetAuxVariableNames();
     assert(enabledVars.size() == _validStats.GetVariableCount());
     VariablesTable->setRowCount(enabledVars.size());
+    int numberOfDigits = 3;
     for (int row = 0; row < enabledVars.size(); row++) {
         double m3[3], median, stddev;
         long count;
@@ -291,8 +292,8 @@ void Statistics::_updateStatsTable() {
         int column = 2;
         if (statsParams->GetMinEnabled()) {
             if (!std::isnan(m3[0])) {
-                VariablesTable->setItem(row, column,
-                                        new QTableWidgetItem(QString::number(m3[0], 'g', 3)));
+                VariablesTable->setItem(
+                    row, column, new QTableWidgetItem(QString::number(m3[0], 'g', numberOfDigits)));
             } else {
                 VariablesTable->setItem(row, column,
                                         new QTableWidgetItem(QString::fromAscii("??")));
@@ -302,8 +303,8 @@ void Statistics::_updateStatsTable() {
         }
         if (statsParams->GetMaxEnabled()) {
             if (!std::isnan(m3[1]))
-                VariablesTable->setItem(row, column,
-                                        new QTableWidgetItem(QString::number(m3[1], 'g', 3)));
+                VariablesTable->setItem(
+                    row, column, new QTableWidgetItem(QString::number(m3[1], 'g', numberOfDigits)));
             else {
                 VariablesTable->setItem(row, column,
                                         new QTableWidgetItem(QString::fromAscii("??")));
@@ -313,8 +314,8 @@ void Statistics::_updateStatsTable() {
         }
         if (statsParams->GetMeanEnabled()) {
             if (!std::isnan(m3[2]))
-                VariablesTable->setItem(row, column,
-                                        new QTableWidgetItem(QString::number(m3[2], 'g', 3)));
+                VariablesTable->setItem(
+                    row, column, new QTableWidgetItem(QString::number(m3[2], 'g', numberOfDigits)));
             else {
                 VariablesTable->setItem(row, column,
                                         new QTableWidgetItem(QString::fromAscii("??")));
@@ -324,8 +325,9 @@ void Statistics::_updateStatsTable() {
         }
         if (statsParams->GetMedianEnabled()) {
             if (!std::isnan(median))
-                VariablesTable->setItem(row, column,
-                                        new QTableWidgetItem(QString::number(median, 'g', 3)));
+                VariablesTable->setItem(
+                    row, column,
+                    new QTableWidgetItem(QString::number(median, 'g', numberOfDigits)));
             else {
                 VariablesTable->setItem(row, column,
                                         new QTableWidgetItem(QString::fromAscii("??")));
@@ -335,8 +337,9 @@ void Statistics::_updateStatsTable() {
         }
         if (statsParams->GetStdDevEnabled()) {
             if (!std::isnan(stddev))
-                VariablesTable->setItem(row, column,
-                                        new QTableWidgetItem(QString::number(stddev, 'g', 3)));
+                VariablesTable->setItem(
+                    row, column,
+                    new QTableWidgetItem(QString::number(stddev, 'g', numberOfDigits)));
             else {
                 VariablesTable->setItem(row, column,
                                         new QTableWidgetItem(QString::fromAscii("??")));
@@ -346,8 +349,10 @@ void Statistics::_updateStatsTable() {
         }
     }
     for (int r = 0; r < VariablesTable->rowCount(); r++)
-        for (int c = 0; c < VariablesTable->columnCount(); c++)
-            VariablesTable->item(r, c)->setFlags(Qt::NoItemFlags);
+        for (int c = 0; c < VariablesTable->columnCount(); c++) {
+            QTableWidgetItem *item = VariablesTable->item(r, c);
+            item->setFlags(Qt::NoItemFlags);
+        }
 
     VariablesTable->update();
     VariablesTable->repaint();
