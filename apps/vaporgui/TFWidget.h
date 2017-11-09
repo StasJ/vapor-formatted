@@ -24,7 +24,14 @@ class TFWidget : public QWidget, public Ui_TFWidgetGUI {
     //! HGT : RenderParams::GetHeightVariableName()
     //! COLOR : RenderParams::GetColorMapVariableNames()
     //!
-    enum Flags { COLORVAR = (1u << 0), PRIORITYCOLORVAR = (1u << 1), CONSTCOLOR = (1u << 2) };
+    enum Flags {
+        SECONDARY_COLORVAR = (1u << 0),
+        CONSTCOLOR = (1u << 1),
+
+        // PRIORITY_COLORVAR just moves the color mapped variable
+        // settings up higher in the gui for better visibility
+        PRIORITY_COLORVAR = (1u << 2)
+    };
 
     TFWidget(QWidget *parent = 0);
 
@@ -67,6 +74,9 @@ class TFWidget : public QWidget, public Ui_TFWidgetGUI {
     void forwardTFChange();
 
   private:
+    void collapseAutoUpdateHistoCheckbox();
+    string getVariableName();
+    void configureConstColorWidgets(string var);
     void connectWidgets();
     void updateSliders();
     void updateAutoUpdateHistoCheckbox();
