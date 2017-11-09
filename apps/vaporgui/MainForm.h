@@ -181,8 +181,13 @@ class MainForm : public QMainWindow {
     void update();
     virtual void undoRedoHelper(bool undo);
     std::vector<string> myGetOpenFileNames(string prompt, string dir, string filter, bool multi);
-    void loadDataHelper(std::vector<string> files, string prompt, string filter, string format,
-                        bool multi);
+
+    void closeDataHelper(string dataSetName);
+
+    void openDataHelper(const std::vector<string> &files, string dataSetName, string format);
+
+    void loadDataHelper(const std::vector<string> &files, string prompt, string filter,
+                        string format, bool multi);
     void createActions();
     void createMenus();
     void hookupSignals();
@@ -194,6 +199,8 @@ class MainForm : public QMainWindow {
     void enableWidgets(bool onOff);
 
     void enableAnimationWidgets(bool onOff);
+
+    string _recentPath;
 
     // following are accessed during undo/redo
     QAction *_navigationAction;
