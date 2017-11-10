@@ -299,8 +299,7 @@ void MappingFrame::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, RenderParams *
     if (varname == "") {
         varname = _rParams->GetVariableName();
     }
-
-    if (varname.empty())
+    if (varname.empty() || varname == "Constant")
         return;
 
     MapperFunction *mapper;
