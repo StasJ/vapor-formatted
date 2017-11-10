@@ -183,7 +183,7 @@ class MainForm : public QMainWindow {
 
     void closeDataHelper(string dataSetName);
 
-    void openDataHelper(const std::vector<string> &files, string dataSetName, string format);
+    bool openDataHelper(const std::vector<string> &files, string dataSetName, string format);
 
     void loadDataHelper(const std::vector<string> &files, string prompt, string filter,
                         string format, bool multi);
