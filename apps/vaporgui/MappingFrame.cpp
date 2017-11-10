@@ -1391,6 +1391,7 @@ void MappingFrame::select(int hits, GLuint *selectionBuffer, Qt::KeyboardModifie
     } else if ((int)selectionBuffer[hitOffset + 3] >
                (int)ISO_WIDGET) // must have selected one of the isoline widgets
     {
+        return;
         deselectWidgets();
         int selectedIndex = (int)selectionBuffer[hitOffset + 3] - (int)ISO_WIDGET - 1;
         _lastSelected = _isolineSliders[selectedIndex];
