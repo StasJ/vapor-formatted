@@ -65,9 +65,15 @@ class VariablesWidget : public QWidget, public Ui_VariablesWidgetGUI {
         THREED = (1u << 1),
     };
 
+    enum ColorFlags {
+        CONST = (1u << 0),
+        PRIMARY = (1u << 1),
+        COLORVAR = (1u << 2),
+    };
+
     VariablesWidget(QWidget *parent);
 
-    void Reinit(DisplayFlags dspFlags, DimFlags dimFlags);
+    void Reinit(DisplayFlags dspFlags, DimFlags dimFlags, ColorFlags colorFlags);
 
     virtual ~VariablesWidget() {}
 
@@ -121,12 +127,25 @@ class VariablesWidget : public QWidget, public Ui_VariablesWidgetGUI {
     //! Respond to choosing the variable dimension
     void setVariableDims(int);
 
+    //! Respond to color-map variable changed
+    void setColorMapping(const QString &);
+
+    //! Respond to single-color picker change
+    void setSingleColor();
+
   private:
     const VAPoR::DataMgr *_dataMgr;
     VAPoR::ParamsMgr *_paramsMgr;
     VAPoR::RenderParams *_rParams;
 
     void setVectorVarName(const QString &name, int component);
+    void configureDefaultColoring();
+    void configureColorMappingToVariable(string var);
+    void configureConstantColor(string var);
+    void configureColorWidgets(string selection);
+    void updateColorVarCombo();
+    void collapseColorVarSettings();
+    void collapseConstColorSettings();
 
     // Get the compression rates as a fraction for both the LOD and
     // Refinment parameters. Also format these factors into a displayable
@@ -161,6 +180,7 @@ class VariablesWidget : public QWidget, public Ui_VariablesWidgetGUI {
 
     DisplayFlags _dspFlags;
     DimFlags _dimFlags;
+    ColorFlags _colorFlags;
 
     static string _nDimsTag;
 
