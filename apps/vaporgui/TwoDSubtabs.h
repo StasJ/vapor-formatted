@@ -21,7 +21,8 @@ class TwoDVariablesSubtab : public QWidget, public Ui_TwoDVariablesGUI {
         setupUi(this);
         _variablesWidget->Reinit(
             (VariablesWidget::DisplayFlags)(VariablesWidget::SCALAR | VariablesWidget::HGT),
-            VariablesWidget::TWOD);
+            (VariablesWidget::DimFlags)(VariablesWidget::TWOD),
+            (VariablesWidget::ColorFlags)(VariablesWidget::PRIMARY));
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
