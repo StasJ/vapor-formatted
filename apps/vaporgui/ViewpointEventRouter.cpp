@@ -285,7 +285,6 @@ void ViewpointEventRouter::updateLightChanged() {
 void ViewpointEventRouter::updateTab() { _updateTab(); }
 
 void ViewpointEventRouter::updateTransforms() {
-
     map<string, Transform *> transformMap;
 
     // build a list of transforms for each data set
@@ -300,7 +299,25 @@ void ViewpointEventRouter::updateTransforms() {
         vector<string> names = vParams->GetTransformNames();
 
         for (int j = 0; j < names.size(); j++) {
-            transformMap[names[j]] = vParams->GetTransform(names[j]);
+            Transform *t = vParams->GetTransform(names[j]);
+
+            if (!t->IsOriginInitialized()) {
+                size_t ts = GetCurrentTimeStep();
+                vector<double> minExts;
+                vector<double> maxExts;
+                vector<double> origin;
+                DataStatus *dataStatus = _controlExec->getDataStatus();
+
+                dataStatus->GetActiveExtents(paramsMgr, winNames[i], names[j], ts, minExts,
+                                             maxExts);
+                origin.resize(minExts.size());
+                for (int k = 0; k < minExts.size(); k++)
+                    origin[k] = minExts[k] + (maxExts[k] - minExts[k]) * 0.5;
+
+                t->SetOrigin(origin);
+            }
+
+            transformMap[names[j]] = t;
         }
     }
 
