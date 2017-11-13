@@ -183,7 +183,8 @@ class MainForm : public QMainWindow {
 
     void closeDataHelper(string dataSetName);
 
-    bool openDataHelper(const std::vector<string> &files, string dataSetName, string format);
+    bool openDataHelper(string dataSetName, string format, const vector<string> &files,
+                        const vector<string> &options = vector<string>());
 
     void loadDataHelper(const std::vector<string> &files, string prompt, string filter,
                         string format, bool multi);
@@ -352,5 +353,7 @@ class MainForm : public QMainWindow {
 
     //! Move camera in or out to make current region visible
     void viewRegion();
+
+    void setProj4String();
 };
 #endif // MAINFORM_H
