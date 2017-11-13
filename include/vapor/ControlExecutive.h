@@ -276,7 +276,8 @@ class RENDER_API ControlExec : public MyBase {
     //! DataStatus methods into
     //! the DataMgr class, rather than keeping them separate.
     //
-    int OpenData(vector<string> files, string dataSetName, string type = "vdc");
+    int OpenData(const std::vector<string> &files, const std::vector<string> &options,
+                 string dataSetName, string type = "vdc");
 
     //! Unloads the specified data set
     //!
