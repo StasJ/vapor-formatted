@@ -44,11 +44,11 @@
 #include "ErrorReporter.h"
 #include "MainForm.h"
 #include "MappingFrame.h"
+#include "NavigationEventRouter.h"
 #include "Plot.h"
 #include "SeedMe.h"
 #include "Statistics.h"
 #include "TabManager.h"
-#include "ViewpointEventRouter.h"
 #include "VizFeatureEventRouter.h"
 #include "VizSelectCombo.h"
 #include "VizWin.h"
@@ -435,10 +435,10 @@ void MainForm::hookupSignals() {
             SLOT(setWindowActive(const QString &)));
     connect(_windowSelector, SIGNAL(newWin()), _vizWinMgr, SLOT(LaunchVisualizer()));
 
-    // Slots on the ViewpointEventRouter
+    // Slots on the NavigationEventRouter
     //
-    ViewpointEventRouter *vpRouter =
-        (ViewpointEventRouter *)_vizWinMgr->GetEventRouter(ViewpointEventRouter::GetClassType());
+    NavigationEventRouter *vpRouter =
+        (NavigationEventRouter *)_vizWinMgr->GetEventRouter(NavigationEventRouter::GetClassType());
 
     connect(vpRouter, SIGNAL(Proj4StringChanged()), this, SLOT(setProj4String()));
 }
@@ -1707,24 +1707,24 @@ void MainForm::setActiveEventRouter(string type) {
 }
 
 void MainForm::goHome() {
-    ViewpointEventRouter *vRouter =
-        (ViewpointEventRouter *)_vizWinMgr->GetEventRouter(ViewpointEventRouter::GetClassType());
+    NavigationEventRouter *vRouter =
+        (NavigationEventRouter *)_vizWinMgr->GetEventRouter(NavigationEventRouter::GetClassType());
     assert(vRouter);
 
     vRouter->UseHomeViewpoint();
 }
 
 void MainForm::viewAll() {
-    ViewpointEventRouter *vRouter =
-        (ViewpointEventRouter *)_vizWinMgr->GetEventRouter(ViewpointEventRouter::GetClassType());
+    NavigationEventRouter *vRouter =
+        (NavigationEventRouter *)_vizWinMgr->GetEventRouter(NavigationEventRouter::GetClassType());
     assert(vRouter);
 
     vRouter->ViewAll();
 }
 
 void MainForm::setHome() {
-    ViewpointEventRouter *vRouter =
-        (ViewpointEventRouter *)_vizWinMgr->GetEventRouter(ViewpointEventRouter::GetClassType());
+    NavigationEventRouter *vRouter =
+        (NavigationEventRouter *)_vizWinMgr->GetEventRouter(NavigationEventRouter::GetClassType());
     assert(vRouter);
 
     vRouter->SetHomeViewpoint();
@@ -1734,16 +1734,16 @@ void MainForm::alignView(int axis) {
     if (axis < 1)
         return;
 
-    ViewpointEventRouter *vRouter =
-        (ViewpointEventRouter *)_vizWinMgr->GetEventRouter(ViewpointEventRouter::GetClassType());
+    NavigationEventRouter *vRouter =
+        (NavigationEventRouter *)_vizWinMgr->GetEventRouter(NavigationEventRouter::GetClassType());
     assert(vRouter);
 
     vRouter->AlignView(axis);
 }
 
 void MainForm::viewRegion() {
-    ViewpointEventRouter *vRouter =
-        (ViewpointEventRouter *)_vizWinMgr->GetEventRouter(ViewpointEventRouter::GetClassType());
+    NavigationEventRouter *vRouter =
+        (NavigationEventRouter *)_vizWinMgr->GetEventRouter(NavigationEventRouter::GetClassType());
     assert(vRouter);
 
     vRouter->CenterSubRegion();
