@@ -93,7 +93,7 @@ DC::Mesh::Mesh(std::string name, size_t max_nodes_per_face, size_t max_faces_per
     _node_face_var = node_face_var;
 }
 
-size_t DC::Mesh::GetTopologyDim() const { return (_coord_vars.size()); }
+size_t DC::Mesh::GetTopologyDim() const { return (_dim_names.size()); }
 
 vector<string> DC::GetDataVarNames(int ndim, bool spatial) const {
     vector<string> names, allnames;
@@ -114,13 +114,13 @@ vector<string> DC::GetDataVarNames(int ndim, bool spatial) const {
         if (!ok)
             continue;
 
-        size_t nsdim = mesh.GetTopologyDim();
+        size_t d = mesh.GetTopologyDim();
 
         if (!spatial && IsTimeVarying(allnames[i])) {
-            ndim--;
+            d++;
         }
 
-        if (nsdim == ndim) {
+        if (d == ndim) {
             names.push_back(allnames[i]);
         }
     }
@@ -139,15 +139,15 @@ vector<string> DC::GetCoordVarNames(int ndim, bool spatial) const {
             continue;
 
         vector<string> dim_names = cvar.GetDimNames();
-        size_t myndim = dim_names.size();
+        size_t d = dim_names.size();
 
         // if not spatial add time dimension if it exists.
         //
         if (!spatial && !cvar.GetTimeDimName().empty()) {
-            myndim++;
+            d++;
         }
 
-        if (myndim == ndim) {
+        if (d == ndim) {
             names.push_back(allnames[i]);
         }
     }
