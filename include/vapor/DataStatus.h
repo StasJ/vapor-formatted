@@ -160,6 +160,7 @@ class PARAMS_API DataStatus {
     void SetCacheSize(size_t sizeMB) { _cacheSize = sizeMB; }
 
     string GetMapProjection(string dataSetName) const;
+    string GetMapProjectionDefault(string dataSetName) const;
 
     //! Determine the minimum time step for which there is any data.
     //! \retval size_t value of smallest time step
