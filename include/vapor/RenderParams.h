@@ -245,7 +245,7 @@ class PARAMS_API RenderParams : public ParamsBase {
 
     //! Indicate if a single (constant) color is being used
     //! \return true if constant single color is used
-    bool UseSingleColor() const { return (0 != GetValueLong(_useSingleColorTag, (int)true)); }
+    bool UseSingleColor() const { return (0 != GetValueLong(_useSingleColorTag, (int)false)); }
 
     //! Specify the variable being used for color mapping
     //! \param[in] string varName. If any \p varName is "0" it

@@ -141,7 +141,7 @@ MappingFrame::~MappingFrame() {
 
 void MappingFrame::RefreshHistogram() {
     string var = _rParams->GetColorMapVariableName();
-    if (var == "") {
+    if (var == "" || var == "Constant") {
         var = _rParams->GetVariableName();
     }
     size_t ts = _rParams->GetCurrentTimestep();
@@ -165,9 +165,6 @@ void MappingFrame::RefreshHistogram() {
         MSG_ERR("Couldn't get data for Histogram");
         return;
     }
-
-    // cout << "Fudging box Z maximum!  Fix Grid!!" << endl;
-    // maxExts[2] = 5.f;
 
     float v;
     Grid::Iterator itr;
@@ -296,7 +293,7 @@ void MappingFrame::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, RenderParams *
     _paramsMgr = paramsMgr;
 
     string varname = _rParams->GetColorMapVariableName();
-    if (varname == "") {
+    if (varname == "" || varname == "Constant") {
         varname = _rParams->GetVariableName();
     }
 
@@ -1392,6 +1389,7 @@ void MappingFrame::select(int hits, GLuint *selectionBuffer, Qt::KeyboardModifie
                (int)ISO_WIDGET) // must have selected one of the isoline widgets
     {
         deselectWidgets();
+        return;
         int selectedIndex = (int)selectionBuffer[hitOffset + 3] - (int)ISO_WIDGET - 1;
         _lastSelected = _isolineSliders[selectedIndex];
         _lastSelectedIndex = selectedIndex;
@@ -1941,7 +1939,7 @@ float MappingFrame::getOpacityData(float value) {
 //----------------------------------------------------------------------------
 Histo *MappingFrame::getHistogram() {
     string varname = _rParams->GetColorMapVariableName();
-    if (varname == "") {
+    if (varname == "" | varname == "Constant") {
         varname = _rParams->GetVariableName();
     }
     //	string varname = _rParams->GetVariableName();
