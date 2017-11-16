@@ -20,7 +20,7 @@
 #include "TabManager.h"
 #include "RenderEventRouter.h"
 #include "RenderHolder.h"
-#include "ui_vizTab.h"
+#include "ui_NavigationTab.h"
 #include <QScrollArea>
 #include <algorithm>
 #include <qtabwidget.h>
