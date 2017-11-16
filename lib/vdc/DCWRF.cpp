@@ -41,7 +41,9 @@ DCWRF::DCWRF() {
 
     _ovr_fd = -1;
     _ovr_varname.clear();
-    _projString.clear();
+    _proj4String.clear();
+    _proj4StringOption.clear();
+    _proj4StringDefault.clear();
 
     _derivedX = NULL;
     _derivedY = NULL;
@@ -93,7 +95,13 @@ DCWRF::~DCWRF() {
         delete _ncdfc;
 }
 
-int DCWRF::Initialize(const vector<string> &files) {
+int DCWRF::Initialize(const vector<string> &files, const std::vector<string> &options) {
+    _proj4StringOption.clear();
+    if (options.size() >= 2) {
+        if (options[0] == "-proj4") {
+            _proj4StringOption = options[1];
+        }
+    }
 
     NetCDFCollection *ncdfc = new NetCDFCollection();
 
@@ -137,7 +145,7 @@ int DCWRF::Initialize(const vector<string> &files) {
     }
 
     // Set up map projection transforms
-    // Initializes members: _projString, _proj4API, _mapProj
+    // Initializes members: _proj4String, _proj4API, _mapProj
     //
     rc = _InitProjection(ncdfc, _radius);
     if (rc < 0) {
@@ -365,10 +373,10 @@ string DCWRF::GetMapProjection(string varname) const {
     if (itr == _dataVarsMap.end())
         return ("");
 
-    return (_projString);
+    return (_proj4String);
 }
 
-string DCWRF::GetMapProjection() const { return (_projString); }
+string DCWRF::GetMapProjection() const { return (_proj4String); }
 
 int DCWRF::OpenVariableRead(size_t ts, string varname) {
     DCWRF::CloseVariable();
@@ -826,7 +834,7 @@ int DCWRF::_GetProj4String(NetCDFCollection *ncdfc, float radius, int map_proj,
 // Set up map projection stuff
 //
 int DCWRF::_InitProjection(NetCDFCollection *ncdfc, float radius) {
-    _projString.clear();
+    _proj4String.clear();
     _mapProj = 0;
 
     vector<long> ivalues;
@@ -837,17 +845,23 @@ int DCWRF::_InitProjection(NetCDFCollection *ncdfc, float radius) {
     }
     _mapProj = ivalues[0];
 
-    int rc = _GetProj4String(ncdfc, radius, _mapProj, _projString);
+    int rc = _GetProj4String(ncdfc, radius, _mapProj, _proj4StringDefault);
     if (rc < 0)
         return (rc);
+
+    _proj4String = _proj4StringDefault;
+
+    if (!_proj4StringOption.empty()) {
+        _proj4String = _proj4StringOption;
+    }
 
     //
     // Set up projection transforms to/from geographic and cartographic
     // coordinates
     //
-    rc = _proj4API.Initialize("", _projString);
+    rc = _proj4API.Initialize("", _proj4String);
     if (rc < 0) {
-        SetErrMsg("Proj4API::Initalize(, %s)", _projString.c_str());
+        SetErrMsg("Proj4API::Initalize(, %s)", _proj4String.c_str());
         return (-1);
     }
 
