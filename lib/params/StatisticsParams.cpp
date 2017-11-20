@@ -16,12 +16,12 @@
 //
 //  Description:    Implements the StatisticsParams class.
 //
-#include <StatisticsParams.h>
 #include <cassert>
 #include <cstring>
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <vapor/StatisticsParams.h>
 
 using namespace VAPoR;
 
