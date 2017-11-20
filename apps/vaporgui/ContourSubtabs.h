@@ -23,8 +23,7 @@ class ContourVariablesSubtab : public QWidget, public Ui_ContourVariablesGUI {
         setupUi(this);
         _variablesWidget->Reinit(
             (VariablesWidget::DisplayFlags)(VariablesWidget::SCALAR | VariablesWidget::HGT),
-            (VariablesWidget::DimFlags)(VariablesWidget::TWOD),
-            (VariablesWidget::ColorFlags)(VariablesWidget::CONST | VariablesWidget::PRIMARY));
+            (VariablesWidget::DimFlags)(VariablesWidget::TWOD), (VariablesWidget::ColorFlags)(0));
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
