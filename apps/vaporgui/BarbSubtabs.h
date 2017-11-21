@@ -20,11 +20,11 @@ class BarbVariablesSubtab : public QWidget, public Ui_BarbVariablesGUI {
   public:
     BarbVariablesSubtab(QWidget *parent) {
         setupUi(this);
-        _variablesWidget->Reinit(
-            (VariablesWidget::DisplayFlags)(VariablesWidget::VECTOR | VariablesWidget::HGT |
-                                            VariablesWidget::COLOR),
-            (VariablesWidget::DimFlags)(VariablesWidget::TWOD),
-            (VariablesWidget::ColorFlags)(VariablesWidget::CONST | VariablesWidget::COLORVAR));
+        _variablesWidget->Reinit((VariablesWidget::DisplayFlags)(VariablesWidget::VECTOR |
+                                                                 VariablesWidget::HGT |
+                                                                 VariablesWidget::COLOR),
+                                 (VariablesWidget::DimFlags)(VariablesWidget::TWOD),
+                                 (VariablesWidget::ColorFlags)(VariablesWidget::COLORVAR));
         //(VariablesWidget::DimFlags)(VariablesWidget::THREED));
     }
 
@@ -43,19 +43,9 @@ class BarbAppearanceSubtab : public QWidget, public Ui_BarbAppearanceGUI {
     Q_OBJECT
 
   public:
-    BarbAppearanceSubtab(QWidget *parent); //{
-                                           //		setupUi(this);
-                                           //		_TFWidget->Reinit((TFWidget::Flags)
-                                           //			(TFWidget::COLORVAR | TFWidget::PRIORITYCOLORVAR));
-                                           //	}
+    BarbAppearanceSubtab(QWidget *parent);
 
-    void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
-                VAPoR::RenderParams *rParams); // {
-                                               //		_TFWidget->Update(dataMgr, paramsMgr, rParams);
-    //		_ColorbarWidget->Update(dataMgr, paramsMgr, rParams);
-    //	}
-
-    void Initialize(VAPoR::BarbParams *rParams);
+    void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
 
   private slots:
     void xDimChanged(int i);
@@ -70,6 +60,7 @@ class BarbAppearanceSubtab : public QWidget, public Ui_BarbAppearanceGUI {
 
     VAPoR::BarbParams *_bParams;
     VAPoR::DataMgr *_dataMgr;
+    VAPoR::ParamsMgr *_paramsMgr;
     Combo *_xDimCombo;
     Combo *_yDimCombo;
     Combo *_zDimCombo;
@@ -91,20 +82,8 @@ class BarbGeometrySubtab : public QWidget, public Ui_BarbGeometryGUI {
         _transformTable->Update(rParams->GetTransform());
     }
 
-    /*private slots:
-        void xDimChanged(int i);
-        void yDimChanged(int i);
-        void zDimChanged(int i);
-        void lengthChanged(double d);
-        void thicknessChanged(double d);
-    */
   private:
     VAPoR::BarbParams *_bParams;
-    // Combo* _xDimCombo;
-    // Combo* _yDimCombo;
-    // Combo* _zDimCombo;
-    // Combo* _lengthCombo;
-    // Combo* _thicknessCombo;
 };
 
 #endif // BARBSUBTABS_H
