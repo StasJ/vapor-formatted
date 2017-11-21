@@ -27,12 +27,12 @@
 #include "ui_errMsg.h"
 #include "ui_statsWindow.h"
 #include <RangeCombos.h>
-#include <StatisticsParams.h>
 #include <qdialog.h>
 #include <qwidget.h>
 #include <vapor/ControlExecutive.h>
 #include <vapor/DataMgr.h>
 #include <vapor/Grid.h>
+#include <vapor/StatisticsParams.h>
 
 namespace VAPoR {
 class ParamsMgr;
@@ -81,6 +81,15 @@ class Statistics : public QDialog, public Ui_StatsWindow {
         bool InvalidAll(); // keep existing variables, but set values to nan
         bool Clear();      // clear all variables and values.
 
+        // keeps the current parameters, and make them public.
+        std::string currentDataSourceName;
+        std::vector<float> currentExtentMin, currentExtentMax;
+        int currentTimeStep[2], currentLOD, currentRefLev;
+
+        bool HaveSameParams(const VAPoR::StatisticsParams *rhs) const;
+        bool UpdateMyParams(const VAPoR::StatisticsParams *rhs);
+        bool SetCurrentExtents(std::vector<double> &min, std::vector<double> &max);
+
       private:
         std::vector<std::string> _variables;
         std::vector<double> _values[5]; // 0: min
@@ -89,9 +98,10 @@ class Statistics : public QDialog, public Ui_StatsWindow {
                                         // 3: median
                                         // 4: stddev
         std::vector<long> _count;       // number of samples
-        int _getVarIdx(std::string &);  // -1: not exist
-                                        // >=0: a valid index
-    };                                  // finish class ValidStats
+
+        int _getVarIdx(std::string &); // -1: not exist
+                                       // >=0: a valid index
+    };                                 // finish class ValidStats
 
     bool Connect(); // connect slots
 
