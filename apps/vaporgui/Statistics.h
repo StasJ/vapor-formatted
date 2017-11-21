@@ -27,12 +27,12 @@
 #include "ui_errMsg.h"
 #include "ui_statsWindow.h"
 #include <RangeCombos.h>
+#include <StatisticsParams.h>
 #include <qdialog.h>
 #include <qwidget.h>
 #include <vapor/ControlExecutive.h>
 #include <vapor/DataMgr.h>
 #include <vapor/Grid.h>
-#include <vapor/StatisticsParams.h>
 
 namespace VAPoR {
 class ParamsMgr;
