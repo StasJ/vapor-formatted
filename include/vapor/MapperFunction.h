@@ -60,8 +60,9 @@ class PARAMS_API MapperFunction : public ParamsBase {
 
     //! Load a transfer function from a file,
     //! \param[in] path Path of input file
+    //! \param[in] defaultDataBounds if data bounds not provided in TF file this will be used
     //
-    int LoadFromFile(string path);
+    int LoadFromFile(string path, vector<double> defaultDataBounds);
 
     // Get static string identifier for this params class
     //
