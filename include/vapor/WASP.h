@@ -2,7 +2,6 @@
 #ifndef _WASP_H_
 #define _WASP_H_
 
-#include <cstdint>
 #include <iostream>
 #include <map>
 #include <netcdf.h>
