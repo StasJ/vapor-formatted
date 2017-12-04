@@ -1,6 +1,7 @@
 //
 // $Id$
 //
+#include "vapor/CMakeConfig.h"
 #include <cassert>
 #include <cctype>
 #include <iostream>
@@ -68,6 +69,11 @@ string get_path_from_bundle(const string &app) {
     return (path);
 }
 #endif
+
+bool pathExists(const string path) {
+    struct STAT64 statbuf;
+    return STAT64(path.c_str(), &statbuf) >= 0;
+}
 
 std::string Wasp::GetAppPath(const string &app, const string &resource, const vector<string> &paths,
                              bool forwardSeparator) {
@@ -152,6 +158,17 @@ std::string Wasp::GetAppPath(const string &app, const string &resource, const ve
     }
 #endif
 
+    if (!pathExists(path))
+        path = "";
+
+    if (path.empty()) {
+        if (resource.compare("share") == 0) {
+            path.append(SOURCE_DIR);
+            path.append(separator);
+            path.append("share");
+        }
+    }
+
     if (path.empty()) {
         MyBase::SetDiagMsg("GetAppPath() return : empty (path empty)");
         return (path);
@@ -170,8 +187,7 @@ std::string Wasp::GetAppPath(const string &app, const string &resource, const ve
         path.append(paths[i]);
     }
 
-    struct STAT64 statbuf;
-    if (STAT64(path.c_str(), &statbuf) < 0) {
+    if (!pathExists(path)) {
         MyBase::SetDiagMsg("GetAppPath() return : empty (path does not exist)");
         return ("");
     }
