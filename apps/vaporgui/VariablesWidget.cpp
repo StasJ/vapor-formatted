@@ -93,6 +93,8 @@ void VariablesWidget::Reinit(DisplayFlags dspFlags, DimFlags dimFlags, ColorFlag
     if (_colorFlags ^ COLORVAR) {
         collapseColorVarSettings();
     }
+
+    variableSelectionWidget->adjustSize();
 }
 
 void VariablesWidget::collapseColorVarSettings() {
