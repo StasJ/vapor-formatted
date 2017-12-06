@@ -89,6 +89,8 @@ void GeometryWidget::Reinit(Flags flags) {
     } else if (_flags & THREED) {
         zMinMaxGroupBox->show();
     }
+    stackedSliderWidget->adjustSize();
+    minMaxTab->adjustSize();
 }
 
 GeometryWidget::~GeometryWidget() {
