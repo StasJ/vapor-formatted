@@ -44,9 +44,9 @@ class ContourAppearanceSubtab : public QWidget, public Ui_ContourAppearanceGUI {
     void Initialize(VAPoR::ContourParams *cParams);
 
   private:
-    double GetContourMinOrMax(string minOrMax);
-    void enableSliders();
-    void disableSliders();
+    void GetContourBounds(double &min, double &max);
+    void enableSpacingWidgets();
+    void disableSpacingWidgets();
 
     VAPoR::ContourParams *_cParams;
     VAPoR::DataMgr *_dataMgr;
@@ -56,6 +56,12 @@ class ContourAppearanceSubtab : public QWidget, public Ui_ContourAppearanceGUI {
     Combo *_cMinCombo;
     Combo *_spacingCombo;
 
+    int _numContours;
+    double _spacing;
+    double _contourMin;
+    double _contourMax;
+    double _lineWidth;
+
   private slots:
     void SetContourValues();
 
@@ -63,13 +69,13 @@ class ContourAppearanceSubtab : public QWidget, public Ui_ContourAppearanceGUI {
 
     void SetLineThickness(double val) { _cParams->SetLineThickness(val); }
 
-    void SetContourCount(int count);
+    void SetNumContours(int count);
 
     void SetContourMinimum(double min);
 
     void SetContourSpacing(double spacing);
 
-    void LockToTFChecked(bool checked);
+    void ContourBoundsChanged(int index);
 };
 
 class ContourGeometrySubtab : public QWidget, public Ui_ContourGeometryGUI {
