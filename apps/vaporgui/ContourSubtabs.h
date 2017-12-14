@@ -71,7 +71,7 @@ class ContourAppearanceSubtab : public QWidget, public Ui_ContourAppearanceGUI {
 
     void SetLineThickness(double val) { _cParams->SetLineThickness(val); }
 
-    void SetNumContours(int count);
+    void SetContourCount(int count);
 
     void SetContourMinimum(double min);
 
