@@ -58,8 +58,6 @@ class PARAMS_API ContourParams : public RenderParams {
         return false;
     }
 
-    int GetContourCount();
-
     //! Determine line thickness in voxels
     //! \retval double line thickness
     double GetLineThickness() const { return (GetValueDouble(_thicknessScaleTag, 1.0)); }
@@ -68,9 +66,13 @@ class PARAMS_API ContourParams : public RenderParams {
         SetValueDouble(_thicknessScaleTag, "Contour thickness", val);
     }
 
+    int GetContourCount();
+
     double GetContourMin();
 
     double GetContourSpacing();
+
+    double GetContourMax();
 
     void SetContourSpacing(double val);
 
