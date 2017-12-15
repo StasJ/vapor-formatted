@@ -146,13 +146,14 @@ class VDF_API LayeredGrid : public StructuredGrid {
         virtual ~ConstCoordItrLayered() {}
 
         virtual void next();
+        virtual void next(const long &offset);
         virtual ConstCoordType &deref() const { return (_coords); }
         virtual const void *address() const { return this; };
 
         virtual bool equal(const void *rhs) const {
             const ConstCoordItrLayered *itrptr = static_cast<const ConstCoordItrLayered *>(rhs);
 
-            return (_x == itrptr->_x && _y == itrptr->_y && _z == itrptr->_z);
+            return (_index == itrptr->_index);
         }
 
         virtual std::unique_ptr<ConstCoordItrAbstract> clone() const {
@@ -160,7 +161,7 @@ class VDF_API LayeredGrid : public StructuredGrid {
         };
 
       private:
-        size_t _x, _y, _z;
+        std::vector<size_t> _index;
         std::vector<size_t> _dims;
         std::vector<double> _minu;
         std::vector<double> _delta;

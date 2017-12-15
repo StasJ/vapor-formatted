@@ -1,6 +1,7 @@
 //
 // $Id$
 //
+#include "vapor/CMakeConfig.h"
 #include <cassert>
 #include <cctype>
 #include <iostream>
@@ -12,7 +13,6 @@
 #include <CoreFoundation/CFString.h>
 #include <CoreServices/CoreServices.h>
 #endif
-#include "vapor/CMakeConfig.h"
 #include "vapor/GetAppPath.h"
 #include <vapor/MyBase.h>
 #ifdef WIN32
@@ -60,9 +60,6 @@ string get_path_from_bundle(const string &app) {
     componentStr[range.length] = 0;
     string s = componentStr;
 
-    if (s.find(BINDIR) != string::npos)
-        return "";
-
     // Spaces are returned as %20. Quick fix below
     size_t start;
     while ((start = s.find("%20")) != std::string::npos)
@@ -72,6 +69,11 @@ string get_path_from_bundle(const string &app) {
     return (path);
 }
 #endif
+
+bool pathExists(const string path) {
+    struct STAT64 statbuf;
+    return STAT64(path.c_str(), &statbuf) >= 0;
+}
 
 std::string Wasp::GetAppPath(const string &app, const string &resource, const vector<string> &paths,
                              bool forwardSeparator) {
@@ -155,23 +157,17 @@ std::string Wasp::GetAppPath(const string &app, const string &resource, const ve
         }
     }
 #endif
-    // #ifndef WIN32 //For both Linux and Mac:
+
+    if (!pathExists(path))
+        path = "";
+
     if (path.empty()) {
-        if (resource.compare("lib") == 0) {
-            path.append(DSO_DIR);
-        } else if (resource.compare("bin") == 0) {
-            path.append(BINDIR);
-        } else if (resource.compare("share") == 0) {
-            path.append(ABS_TOP);
+        if (resource.compare("share") == 0) {
+            path.append(SOURCE_DIR);
             path.append(separator);
             path.append("share");
-        } else if (resource.compare("plugins") == 0) {
-            path.append(QTDIR);
-            path.append(separator);
-            path.append("plugins");
         }
     }
-    // #endif
 
     if (path.empty()) {
         MyBase::SetDiagMsg("GetAppPath() return : empty (path empty)");
@@ -191,8 +187,7 @@ std::string Wasp::GetAppPath(const string &app, const string &resource, const ve
         path.append(paths[i]);
     }
 
-    struct STAT64 statbuf;
-    if (STAT64(path.c_str(), &statbuf) < 0) {
+    if (!pathExists(path)) {
         MyBase::SetDiagMsg("GetAppPath() return : empty (path does not exist)");
         return ("");
     }

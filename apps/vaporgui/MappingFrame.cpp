@@ -98,7 +98,7 @@ MappingFrame::MappingFrame(QWidget *parent)
       _minX(-0.035), _maxX(1.035), _minY(-0.35), _maxY(1.3), _minValue(0.0), _maxValue(1.0),
       _colorbarHeight(16), _domainBarHeight(16), _domainLabelHeight(10),
       _domainHeight(_domainBarHeight + _domainLabelHeight + 3), _axisRegionHeight(20),
-      _opacityGap(4), _bottomGap(10), _dataMgr(NULL), _rParams(NULL) {
+      _opacityGap(4), _bottomGap(10), _dataMgr(NULL), _rParams(NULL), _mousePressFlag(false) {
     initWidgets();
     initConnections();
     setMouseTracking(true);
@@ -140,10 +140,9 @@ MappingFrame::~MappingFrame() {
 }
 
 void MappingFrame::RefreshHistogram() {
-    string var = _rParams->GetColorMapVariableName();
-    if (var == "" || var == "Constant") {
-        var = _rParams->GetVariableName();
-    }
+    string var;
+    var = _rParams->GetColorMapVariableName();
+
     size_t ts = _rParams->GetCurrentTimestep();
 
     float minRange = _rParams->GetMapperFunc(var)->getMinMapValue();
@@ -292,10 +291,8 @@ void MappingFrame::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, RenderParams *
     _rParams = rParams;
     _paramsMgr = paramsMgr;
 
-    string varname = _rParams->GetColorMapVariableName();
-    if (varname == "" || varname == "Constant") {
-        varname = _rParams->GetVariableName();
-    }
+    string varname;
+    varname = _rParams->GetColorMapVariableName();
 
     if (varname.empty())
         return;
@@ -839,6 +836,7 @@ void MappingFrame::paintGL() {
     // select points
     //
 
+    _variableName = _rParams->GetColorMapVariableName();
     if (_variableName != "") {
         // allow for 4 pixels per character in name:
         int wx = (width() - _variableName.size() * 8) / 2;
@@ -1558,7 +1556,6 @@ void MappingFrame::resize() {
 // Handle mouse press events
 //----------------------------------------------------------------------------
 void MappingFrame::mousePressEvent(QMouseEvent *event) {
-    _paramsMgr->BeginSaveStateGroup("MappingFrame mousePressEvent");
     select(event->x(), event->y(), event->modifiers());
 
     _lastx = xViewToWorld(event->x());
@@ -1571,6 +1568,8 @@ void MappingFrame::mousePressEvent(QMouseEvent *event) {
     _button = event->buttons();
 
     if (_editMode && (_button == Qt::LeftButton || _button == Qt::MidButton)) {
+        _paramsMgr->BeginSaveStateGroup("Transfer Function Editor edit");
+        _mousePressFlag = true;
         if (_lastSelected) {
             if (_lastSelected != _domainSlider) {
                 if (_lastSelected == _colorbarWidget) {
@@ -1588,9 +1587,10 @@ void MappingFrame::mousePressEvent(QMouseEvent *event) {
                 emit startChange("Domain slider move");
         }
 
-    } else if (!_editMode && (_button == Qt::LeftButton)) {
-        emit startChange("Mapping window zoom/pan");
-    }
+    } else if (!_editMode && (_button == Qt::LeftButton))
+        _paramsMgr->BeginSaveStateGroup("Transfer Function Editor edit");
+    _mousePressFlag = true;
+    { emit startChange("Mapping window zoom/pan"); }
 
     updateGL();
 }
@@ -1626,7 +1626,10 @@ void MappingFrame::mouseReleaseEvent(QMouseEvent *event) {
         emit updateParams();
     }
 
-    _paramsMgr->EndSaveStateGroup();
+    if (_mousePressFlag) {
+        _paramsMgr->EndSaveStateGroup();
+        _mousePressFlag = false;
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -1697,6 +1700,7 @@ void MappingFrame::contextMenuEvent(QContextMenuEvent * /*event*/) {
     if (_mapper == NULL) {
         return;
     }
+    _paramsMgr->BeginSaveStateGroup("Transfer Function Editor edit");
 
     OpacityWidget *opacWidget = dynamic_cast<OpacityWidget *>(_lastSelected);
 
@@ -1783,6 +1787,7 @@ void MappingFrame::contextMenuEvent(QContextMenuEvent * /*event*/) {
     }
 
     _contextMenu->exec(_contextPoint);
+    _paramsMgr->EndSaveStateGroup();
 }
 
 //----------------------------------------------------------------------------
@@ -1938,11 +1943,8 @@ float MappingFrame::getOpacityData(float value) {
 // Return the histogram
 //----------------------------------------------------------------------------
 Histo *MappingFrame::getHistogram() {
-    string varname = _rParams->GetColorMapVariableName();
-    if (varname == "" | varname == "Constant") {
-        varname = _rParams->GetVariableName();
-    }
-    //	string varname = _rParams->GetVariableName();
+    string varname;
+    varname = _rParams->GetColorMapVariableName();
 
     MapperFunction *mapFunc = _rParams->GetMapperFunc(varname);
     assert(mapFunc);
