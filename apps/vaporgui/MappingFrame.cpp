@@ -88,10 +88,11 @@ MappingFrame::MappingFrame(QWidget *parent)
       _opacityMappingEnabled(false), _colorMappingEnabled(false), _isoSliderEnabled(false),
       _isolineSlidersEnabled(false), _lastSelectedIndex(-1), navigateButton(NULL),
       _editButton(NULL), _variableName(""), _domainSlider(new DomainWidget(this)),
-      _isoSlider(new IsoSlider(this)), _colorbarWidget(new GLColorbarWidget(this, NULL)),
-      _lastSelected(NULL), _texid(0), _texture(NULL), _updateTexture(true), _histogramScale(LINEAR),
-      _contextMenu(NULL), _addOpacityWidgetSubMenu(NULL), _histogramScalingSubMenu(NULL),
-      _compTypeSubMenu(NULL), _widgetEnabledSubMenu(NULL), _deleteOpacityWidgetAction(NULL),
+      _contourRangeSlider(new ContourRangeSlider(this)), _isoSlider(new IsoSlider(this)),
+      _colorbarWidget(new GLColorbarWidget(this, NULL)), _lastSelected(NULL), _texid(0),
+      _texture(NULL), _updateTexture(true), _histogramScale(LINEAR), _contextMenu(NULL),
+      _addOpacityWidgetSubMenu(NULL), _histogramScalingSubMenu(NULL), _compTypeSubMenu(NULL),
+      _widgetEnabledSubMenu(NULL), _deleteOpacityWidgetAction(NULL),
       _addColorControlPointAction(NULL), _addOpacityControlPointAction(NULL),
       _deleteControlPointAction(NULL), _lastx(0), _lasty(0), _editMode(true), _clickedPos(0, 0),
       _minValueStart(0.0), _maxValueStart(1.0), _isoVal(0.0), _button(Qt::LeftButton),
@@ -119,6 +120,9 @@ MappingFrame::~MappingFrame() {
 
     delete _domainSlider;
     _domainSlider = NULL;
+
+    delete _contourRangeSlider;
+    _contourRangeSlider = NULL;
 
     delete _colorbarWidget;
     _colorbarWidget = NULL;
@@ -316,11 +320,20 @@ void MappingFrame::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, RenderParams *
         // Synchronize sliders with isovalues
         vector<double> isovals = ((ContourParams *)rParams)->GetContourValues(varname);
         setIsolineSliders(isovals);
+
+        int size = isovals.size();
+        double start = xDataToWorld(isovals[0]);
+        double end = xDataToWorld(isovals[size - 1]);
+        setContourRangeSliderExtents(start, end);
     }
 
     _domainSlider->setDomain(xDataToWorld(getMinDomainBound()), xDataToWorld(getMaxDomainBound()));
 
     _updateTexture = true;
+}
+
+void MappingFrame::setContourRangeSliderExtents(double start, double end) {
+    _contourRangeSlider->setDomain(start, end);
 }
 
 //----------------------------------------------------------------------------
@@ -1047,6 +1060,7 @@ int MappingFrame::drawDomainSlider() {
     glPushName(DOMAIN_WIDGET);
 
     int rc = _domainSlider->paintGL();
+    rc = _contourRangeSlider->paintGL();
 
     glPopName();
     return rc;
@@ -1524,6 +1538,7 @@ void MappingFrame::resize() {
     float domainWidth = unitPerPixel * _domainBarHeight;
 
     _domainSlider->setGeometry(_minX, _maxX, _maxY - domainWidth, _maxY);
+    _contourRangeSlider->setGeometry(_minX, _maxX, _maxY - domainWidth - .1, _maxY - .1);
 
     float bGap = unitPerPixel * _bottomGap;
 
