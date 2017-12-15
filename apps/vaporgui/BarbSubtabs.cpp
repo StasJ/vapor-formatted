@@ -45,7 +45,7 @@ BarbGeometrySubtab::BarbGeometrySubtab(QWidget *parent) {
 BarbAppearanceSubtab::BarbAppearanceSubtab(QWidget *parent) {
     setupUi(this);
     _TFWidget->Reinit(
-        (TFWidget::Flags)(TFWidget::SECONDARY_COLORVAR | TFWidget::PRIORITY_COLORVAR));
+        (TFWidget::Flags)(TFWidget::COLORVAR | TFWidget::PRIORITY_COLORVAR | TFWidget::CONSTANT));
 
     hideZDimWidgets();
 
@@ -74,13 +74,6 @@ void BarbAppearanceSubtab::hideZDimWidgets() {
     adjustSize();
 }
 
-/*void BarbGeometrySubtab::Update(VAPoR::ParamsMgr* paramsMgr,
-                            VAPoR::DataMgr* dataMgr,
-                            VAPoR::RenderParams* bParams) {
-    _bParams = (VAPoR::BarbParams*)bParams;
-    _geometryWidget->Update(paramsMgr, dataMgr, bParams);
-}*/
-
 double BarbAppearanceSubtab::CalculateDomainLength(int ts) {
     VAPoR::StructuredGrid *grid;
 
@@ -97,9 +90,7 @@ double BarbAppearanceSubtab::CalculateDomainLength(int ts) {
             continue;
         }
 
-        // grid = _dataMgr->GetVariable(ts, varName, level, lod);
         vector<double> minExt, maxExt;
-        // grid->GetUserExtents(minExt, maxExt);
         _dataMgr->GetVariableExtents(ts, varName, level, minExt, maxExt);
 
         // If we're dealing with 2D vars, skip the Z element
@@ -119,6 +110,7 @@ void BarbAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *par
                                   VAPoR::RenderParams *bParams) {
     _dataMgr = dataMgr;
     _bParams = (VAPoR::BarbParams *)bParams;
+    _paramsMgr = paramsMgr;
     _TFWidget->Update(dataMgr, paramsMgr, bParams);
     _ColorbarWidget->Update(dataMgr, paramsMgr, bParams);
 
@@ -138,8 +130,6 @@ void BarbAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *par
     double thickness = _bParams->GetLineThickness();
     //_thicknessCombo->Update(.1, 1.5, thickness);
     _thicknessCombo->Update(.1, domainLength / 250000.f, thickness);
-
-    //_transformTable->Update(bParams->GetTransform());
 }
 
 void BarbAppearanceSubtab::xDimChanged(int i) {
@@ -175,9 +165,3 @@ void BarbAppearanceSubtab::zDimChanged(int i) {
 void BarbAppearanceSubtab::lengthChanged(double d) { _bParams->SetLengthScale(d); }
 
 void BarbAppearanceSubtab::thicknessChanged(double d) { _bParams->SetLineThickness(d); }
-
-void BarbAppearanceSubtab::Initialize(VAPoR::BarbParams *bParams) {
-    float rgb[] = {1.f, 1.f, 1.f};
-    bParams->SetConstantColor(rgb);
-    bParams->SetColorMapVariableName("Constant");
-}
