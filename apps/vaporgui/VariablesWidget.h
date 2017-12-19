@@ -1,6 +1,7 @@
 #ifndef VARIABLESWIDGET_H
 #define VARIABLESWIDGET_H
 
+#include "VaporTable.h"
 #include "ui_VariablesWidgetGUI.h"
 #include "vapor/MyBase.h"
 #include <QObject>
@@ -85,6 +86,8 @@ class VariablesWidget : public QWidget, public Ui_VariablesWidgetGUI {
     string getNDimsTag() { return _nDimsTag; }
 
   protected slots:
+    void printTableContents();
+
     //! Connected to the image file text editor
     void setNumRefinements(int num);
 
@@ -168,6 +171,8 @@ class VariablesWidget : public QWidget, public Ui_VariablesWidgetGUI {
     void updateVariableCombos(VAPoR::RenderParams *params);
 
     void updateDims(VAPoR::RenderParams *rParams);
+
+    VaporTable *_vaporTable;
 
     QButtonGroup *_fidelityButtons;
 
