@@ -35,9 +35,12 @@ VariablesWidget::VariablesWidget(QWidget *parent) : QWidget(parent), Ui_Variable
 
     setupUi(this);
 
+    testTable->setFocusPolicy(Qt::ClickFocus);
+    testTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    testTable->setSelectionMode(QAbstractItemView::SingleSelection);
     _vaporTable = new VaporTable(testTable, 0, 1);
     _vaporTable->Reinit((VaporTable::ValidatorFlags)(VaporTable::STRING),
-                        (VaporTable::MutabilityFlags)(VaporTable::MUTABLE));
+                        (VaporTable::MutabilityFlags)(VaporTable::IMMUTABLE));
 
     connect(_vaporTable, SIGNAL(valueChanged()), this, SLOT(printTableContents()));
 

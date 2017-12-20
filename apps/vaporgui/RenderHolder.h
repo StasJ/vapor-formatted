@@ -2,6 +2,7 @@
 #define RENDERHOLDER_H
 
 #include "EventRouter.h"
+#include "VaporTable.h"
 #include "qpushbutton.h"
 #include "qstackedwidget.h"
 #include "qtableview.h"
@@ -93,6 +94,8 @@ class RenderHolder : public QWidget, public Ui_RenderSelector {
 
   private:
     VAPoR::ControlExec *_controlExec;
+
+    VaporTable *_vaporTable;
 
     void getRow(int row, string &renderInst, string &renderClass, string &dataSetName) const;
 
