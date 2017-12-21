@@ -5,7 +5,7 @@
 #include "qpushbutton.h"
 #include "qstackedwidget.h"
 #include "qtableview.h"
-#include "ui_NewerRendererDialog.h"
+#include "ui_NewRendererDialog.h"
 #include "ui_renderselector.h"
 #include <qobject.h>
 #include <vapor/MyBase.h>
@@ -17,12 +17,12 @@ class ControlExec;
 class ParamsMgr;
 } // namespace VAPoR
 
-class MyDialog : public QDialog, public Ui_NewerRendererDialog {
+class NewRendererDialog : public QDialog, public Ui_NewRendererDialog {
 
     Q_OBJECT
 
   public:
-    MyDialog(QWidget *parent, VAPoR::ControlExec *ce);
+    NewRendererDialog(QWidget *parent, VAPoR::ControlExec *ce);
 
     std::string getSelectedRenderer() { return _selectedRenderer; }
 
@@ -123,7 +123,7 @@ class RenderHolder : public QWidget, public Ui_RenderSelector {
 
   private:
     VAPoR::ControlExec *_controlExec;
-    MyDialog *_myDialog;
+    NewRendererDialog *_newRendererDialog;
 
     void getRow(int row, string &renderInst, string &renderClass, string &dataSetName) const;
 
