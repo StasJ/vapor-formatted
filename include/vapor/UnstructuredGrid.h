@@ -162,8 +162,8 @@ class VDF_API UnstructuredGrid : public Grid {
     void SetBoundaryID(size_t v) { _boundaryID = v; }
 
     virtual void ClampCoord(std::vector<double> &coords) const override {
-        assert(coords.size() >= GetNumCoordinates());
-        while (coords.size() > GetNumCoordinates()) {
+        assert(coords.size() >= GetGeometryDim());
+        while (coords.size() > GetGeometryDim()) {
             coords.pop_back();
         }
     }
