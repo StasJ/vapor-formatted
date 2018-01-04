@@ -180,9 +180,7 @@ RenderHolder::RenderHolder(QWidget *parent, ControlExec *ce)
     : QWidget(parent), Ui_RenderSelector() {
     setupUi(this);
     _controlExec = ce;
-
     _newRendererDialog = new NewRendererDialog(this, ce);
-
     _vaporTable = new VaporTable(tableWidget, false, true);
 
     connect(_vaporTable, SIGNAL(cellClicked(int, int)), this,
@@ -212,26 +210,21 @@ int RenderHolder::AddWidget(QWidget *wid, const char *name, string tag) {
     return rc;
 }
 
-//
-// Slots:
-//
-void RenderHolder::showNewRendererDialog() {
-    ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
-    vector<string> dataSetNames = paramsMgr->GetDataMgrNames();
-
-    vector<string> renderClasses = _controlExec->GetAllRenderClasses();
-
-    // Launch a dialog to select a renderer type, visualizer, name
-    // Then insert a horizontal line with text and checkbox.
-    // The new line becomes selected.
-
+void RenderHolder::initializeNewRendererDialog(vector<string> datasetNames) {
     // Set up the list of data set names in the dialog:
     //
     _newRendererDialog->dataMgrCombo->clear();
-    for (int i = 0; i < dataSetNames.size(); i++) {
-        _newRendererDialog->dataMgrCombo->addItem(QString::fromStdString(dataSetNames[i]));
+    for (int i = 0; i < datasetNames.size(); i++) {
+        _newRendererDialog->dataMgrCombo->addItem(QString::fromStdString(datasetNames[i]));
     }
+}
 
+void RenderHolder::showNewRendererDialog() {
+    ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
+    vector<string> dataSetNames = paramsMgr->GetDataMgrNames();
+    vector<string> renderClasses = _controlExec->GetAllRenderClasses();
+
+    initializeNewRendererDialog(dataSetNames);
     if (_newRendererDialog->exec() != QDialog::Accepted) {
         return;
     }
@@ -397,13 +390,12 @@ void RenderHolder::changeRendererName(int row, int col) {
 
     string text = _vaporTable->GetValue(row, col);
     string uniqueText = uniqueName(text);
-    if (text == rP->GetRendererName())
-        return;
+    // if (text == rP->GetRendererName()) return;
 
-    if (uniqueText != text)
-        item->setText(QString(uniqueText.c_str()));
+    // if (uniqueText != text) item->setText(QString(uniqueText.c_str()));
 
-    rP->SetRendererName(uniqueText);
+    cout << "rP->SetRendererName(uniqueText)????" << endl;
+    //	rP->SetRendererName(uniqueText);
 }
 
 void RenderHolder::tableValueChanged(int row, int col) {
@@ -679,7 +671,7 @@ void RenderHolder::Update() {
 
     for (int i = 0; i < tableValues.size(); i++)
         cout << tableValues[i] << " ";
-    cout << endl << endl;
+    cout << "." << endl << endl;
 
     _vaporTable->Update(numRows, 4, tableValues, rowHeader, colHeader);
     highlightActiveRow(selectedRow);
