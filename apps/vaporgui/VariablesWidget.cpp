@@ -45,7 +45,7 @@ VariablesWidget::VariablesWidget(QWidget *parent) : QWidget(parent), Ui_Variable
                         (VaporTable::MutabilityFlags)(VaporTable::IMMUTABLE));
 
     connect(_vaporTable, SIGNAL(cellClicked(int, int)), this, SLOT(printTableContents(int, int)));
-    connect(_vaporTable, SIGNAL(valueChanged(int, int)), this, SLOT(printTableContents(int, int)));
+    connect(_vaporTable, SIGNAL(valueChanged(int, int)), this, SLOT(printTableContents2(int, int)));
 
     connect(varnameCombo, SIGNAL(activated(const QString &)), this,
             SLOT(setVarName(const QString &)));
@@ -78,6 +78,10 @@ VariablesWidget::VariablesWidget(QWidget *parent) : QWidget(parent), Ui_Variable
 #endif
 }
 
+void VariablesWidget::printTableContents2(int row, int col) {
+    cout << "value changed " << row << " " << col << endl;
+}
+
 void VariablesWidget::printTableContents(int row, int col) {
     cout << "changed r/c " << row << " " << col << endl;
     // testTable->selectRow(row);
@@ -88,7 +92,6 @@ void VariablesWidget::printTableContents(int row, int col) {
             QLineEdit *le = qobject_cast<QLineEdit *>(cell);
             // QCheckBox *cb = qobject_cast<QCheckBox *>(cell);
             if (le) {
-                cout << "LineEdit" << endl;
                 if (i == row)
                     le->setStyleSheet("QLineEdit { background: rgb(0, 255, 255); "
                                       "selection-background-color: rgb(233, 99, 0); }");
@@ -96,7 +99,6 @@ void VariablesWidget::printTableContents(int row, int col) {
                     le->setStyleSheet("QLineEdit { background: rgb(255,255,255); "
                                       "selection-background-color: rgb(233, 99, 0); }");
             } else {
-                cout << "Checkbox" << endl;
                 if (i == row)
                     cell->setStyleSheet("QWidget { background: rgb(0, 255, 255); "
                                         "selection-background-color: rgb(233, 99, 0); }");
