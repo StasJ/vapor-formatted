@@ -176,8 +176,7 @@ void NewRendererDialog::uncheckAllButtons() {
     twoDDataButton->blockSignals(false);
 }
 
-RenderHolder::RenderHolder(QWidget *parent, ControlExec *ce)
-    : QWidget(parent), Ui_RenderSelector() {
+RenderHolder::RenderHolder(QWidget *parent, ControlExec *ce) : QWidget(parent), Ui_LeftPanel() {
     setupUi(this);
     _controlExec = ce;
     _newRendererDialog = new NewRendererDialog(this, ce);
