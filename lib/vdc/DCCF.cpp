@@ -61,7 +61,7 @@ DCCF::~DCCF() {
     _derivedVars.clear();
 }
 
-int DCCF::Initialize(const vector<string> &paths, const std::vector<string> &options) {
+int DCCF::initialize(const vector<string> &paths, const std::vector<string> &options) {
     _proj4StringOption.clear();
     if (options.size() >= 2) {
         if (options[0] == "-proj4") {
@@ -143,7 +143,7 @@ int DCCF::Initialize(const vector<string> &paths, const std::vector<string> &opt
     return (0);
 }
 
-bool DCCF::GetDimension(string dimname, DC::Dimension &dimension) const {
+bool DCCF::getDimension(string dimname, DC::Dimension &dimension) const {
     map<string, DC::Dimension>::const_iterator itr;
 
     itr = _dimsMap.find(dimname);
@@ -154,7 +154,7 @@ bool DCCF::GetDimension(string dimname, DC::Dimension &dimension) const {
     return (true);
 }
 
-std::vector<string> DCCF::GetDimensionNames() const {
+std::vector<string> DCCF::getDimensionNames() const {
     map<string, DC::Dimension>::const_iterator itr;
 
     vector<string> names;
@@ -166,7 +166,7 @@ std::vector<string> DCCF::GetDimensionNames() const {
     return (names);
 }
 
-vector<string> DCCF::GetMeshNames() const {
+vector<string> DCCF::getMeshNames() const {
     vector<string> mesh_names;
     std::map<string, Mesh>::const_iterator itr = _meshMap.begin();
     for (; itr != _meshMap.end(); ++itr) {
@@ -175,7 +175,7 @@ vector<string> DCCF::GetMeshNames() const {
     return (mesh_names);
 }
 
-bool DCCF::GetMesh(string mesh_name, DC::Mesh &mesh) const {
+bool DCCF::getMesh(string mesh_name, DC::Mesh &mesh) const {
 
     map<string, Mesh>::const_iterator itr = _meshMap.find(mesh_name);
     if (itr == _meshMap.end())
@@ -185,7 +185,7 @@ bool DCCF::GetMesh(string mesh_name, DC::Mesh &mesh) const {
     return (true);
 }
 
-bool DCCF::GetCoordVarInfo(string varname, DC::CoordVar &cvar) const {
+bool DCCF::getCoordVarInfo(string varname, DC::CoordVar &cvar) const {
 
     map<string, DC::CoordVar>::const_iterator itr;
 
@@ -198,7 +198,7 @@ bool DCCF::GetCoordVarInfo(string varname, DC::CoordVar &cvar) const {
     return (true);
 }
 
-bool DCCF::GetDataVarInfo(string varname, DC::DataVar &datavar) const {
+bool DCCF::getDataVarInfo(string varname, DC::DataVar &datavar) const {
 
     map<string, DC::DataVar>::const_iterator itr;
 
@@ -211,7 +211,7 @@ bool DCCF::GetDataVarInfo(string varname, DC::DataVar &datavar) const {
     return (true);
 }
 
-bool DCCF::GetBaseVarInfo(string varname, DC::BaseVar &var) const {
+bool DCCF::getBaseVarInfo(string varname, DC::BaseVar &var) const {
     map<string, DC::CoordVar>::const_iterator itr;
 
     itr = _coordVarsMap.find(varname);
@@ -229,7 +229,7 @@ bool DCCF::GetBaseVarInfo(string varname, DC::BaseVar &var) const {
     return (false);
 }
 
-std::vector<string> DCCF::GetDataVarNames() const {
+std::vector<string> DCCF::getDataVarNames() const {
     map<string, DC::DataVar>::const_iterator itr;
 
     vector<string> names;
@@ -239,7 +239,7 @@ std::vector<string> DCCF::GetDataVarNames() const {
     return (names);
 }
 
-std::vector<string> DCCF::GetCoordVarNames() const {
+std::vector<string> DCCF::getCoordVarNames() const {
     map<string, DC::CoordVar>::const_iterator itr;
 
     vector<string> names;
@@ -249,29 +249,29 @@ std::vector<string> DCCF::GetCoordVarNames() const {
     return (names);
 }
 
-bool DCCF::GetAtt(string varname, string attname, vector<double> &values) const {
+bool DCCF::getAtt(string varname, string attname, vector<double> &values) const {
     values.clear();
     return (false);
 }
 
-bool DCCF::GetAtt(string varname, string attname, vector<long> &values) const {
+bool DCCF::getAtt(string varname, string attname, vector<long> &values) const {
     values.clear();
     return (false);
 }
 
-bool DCCF::GetAtt(string varname, string attname, string &values) const {
+bool DCCF::getAtt(string varname, string attname, string &values) const {
     values.clear();
     return (false);
 }
 
-std::vector<string> DCCF::GetAttNames(string varname) const {
+std::vector<string> DCCF::getAttNames(string varname) const {
     vector<string> names;
     return (names);
 }
 
-DC::XType DCCF::GetAttType(string varname, string attname) const { return (DC::FLOAT); }
+DC::XType DCCF::getAttType(string varname, string attname) const { return (DC::FLOAT); }
 
-int DCCF::GetDimLensAtLevel(string varname, int, std::vector<size_t> &dims_at_level,
+int DCCF::getDimLensAtLevel(string varname, int, std::vector<size_t> &dims_at_level,
                             std::vector<size_t> &bs_at_level) const {
     dims_at_level.clear();
     bs_at_level.clear();
@@ -286,7 +286,7 @@ int DCCF::GetDimLensAtLevel(string varname, int, std::vector<size_t> &dims_at_le
     return (0);
 }
 
-string DCCF::GetMapProjection(string varname) const {
+string DCCF::getMapProjection(string varname) const {
 
     // See if the named variable alread has a projection string defined .
     // If so, use it.
@@ -302,16 +302,16 @@ string DCCF::GetMapProjection(string varname) const {
     return (_proj4String);
 }
 
-string DCCF::GetMapProjection() const { return (_proj4String); }
+string DCCF::getMapProjection() const { return (_proj4String); }
 
-int DCCF::OpenVariableRead(size_t ts, string varname) {
+int DCCF::openVariableRead(size_t ts, string varname) {
     DCCF::CloseVariable();
 
     _ovr_fd = _ncdfc->OpenRead(ts, varname);
     return (_ovr_fd);
 }
 
-int DCCF::CloseVariable() {
+int DCCF::closeVariable() {
     if (_ovr_fd < 0)
         return (0);
     int rc = _ncdfc->Close(_ovr_fd);
@@ -319,11 +319,12 @@ int DCCF::CloseVariable() {
     return (rc);
 }
 
-int DCCF::Read(float *data) { return (_ncdfc->Read(data, _ovr_fd)); }
+int DCCF::read(float *data) { return (_ncdfc->Read(data, _ovr_fd)); }
 
-int DCCF::ReadSlice(float *slice) { return (_ncdfc->ReadSlice(slice, _ovr_fd)); }
+int DCCF::readSlice(float *slice) { return (_ncdfc->ReadSlice(slice, _ovr_fd)); }
 
-int DCCF::ReadRegion(const vector<size_t> &min, const vector<size_t> &max, float *region) {
+template <class T>
+int DCCF::_readRegionTemplate(const vector<size_t> &min, const vector<size_t> &max, T *region) {
     vector<size_t> ncdf_start = min;
     reverse(ncdf_start.begin(), ncdf_start.end());
 
@@ -338,72 +339,12 @@ int DCCF::ReadRegion(const vector<size_t> &min, const vector<size_t> &max, float
     return (_ncdfc->Read(ncdf_start, ncdf_count, region, _ovr_fd));
 }
 
-int DCCF::ReadRegionBlock(const vector<size_t> &min, const vector<size_t> &max, float *region) {
+int DCCF::readRegionBlock(const vector<size_t> &min, const vector<size_t> &max, float *region) {
     // return(DCCF::ReadRegion(min, max, region));
     return (DCCF::Read(region));
 }
 
-int DCCF::GetVar(string varname, float *data) {
-
-    vector<size_t> dimlens;
-    bool ok = GetVarDimLens(varname, true, dimlens);
-    if (!ok) {
-        SetErrMsg("Undefined variable name : %s", varname.c_str());
-        return (-1);
-    }
-
-    int nts = 1; // num time steps
-    bool time_varying = IsTimeVarying(varname);
-    if (time_varying) {
-        nts = GetNumTimeSteps(varname);
-    }
-
-    // Number of grid points for variable
-    //
-    size_t sz = 1;
-    for (int i = 0; i < dimlens.size(); i++) {
-        sz *= dimlens[i];
-    }
-
-    //
-    // Read one time step at a time
-    //
-    float *ptr = data;
-    for (int ts = 0; ts < nts; ts++) {
-        int rc = DCCF::OpenVariableRead(ts, varname);
-        if (rc < 0)
-            return (-1);
-
-        rc = DCCF::Read(ptr);
-        if (rc < 0)
-            return (-1);
-
-        rc = DCCF::CloseVariable();
-        if (rc < 0)
-            return (-1);
-
-        ptr += sz; // Advance buffer past current time step
-    }
-    return (0);
-}
-
-int DCCF::GetVar(size_t ts, string varname, float *data) {
-    int rc = DCCF::OpenVariableRead(ts, varname);
-    if (rc < 0)
-        return (-1);
-
-    rc = DCCF::Read(data);
-    if (rc < 0)
-        return (-1);
-
-    rc = DCCF::CloseVariable();
-    if (rc < 0)
-        return (-1);
-
-    return (0);
-}
-
-bool DCCF::VariableExists(size_t ts, string varname, int, int) const {
+bool DCCF::variableExists(size_t ts, string varname, int, int) const {
     return (_ncdfc->VariableExists(ts, varname));
 }
 
