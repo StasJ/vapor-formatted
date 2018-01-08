@@ -49,6 +49,7 @@ class OpacityWidget;
 class GLColorbarWidget;
 class Histo;
 class DomainWidget;
+class ContourRangeSlider;
 class IsoSlider;
 class GLWidget;
 class RenderEventRouter;
@@ -182,6 +183,7 @@ class MappingFrame : public QGLWidget {
     bool colorMapping() const { return _colorMappingEnabled; }
     bool opacityMapping() const { return _opacityMappingEnabled; }
     bool isoSliderEnabled() const { return _isoSliderEnabled; }
+    bool contourRangeSlider() const { return _contourRangeSliderEnabled; }
     bool isolineSlidersEnabled() const { return _isolineSlidersEnabled; }
     void setIsoValue(float val) { _isoVal = val; }
     QString tipText(const QPoint &pos, bool isIso = false);
@@ -298,6 +300,7 @@ class MappingFrame : public QGLWidget {
     bool _opacityMappingEnabled;
     bool _colorMappingEnabled;
     bool _isoSliderEnabled;
+    bool _contourRangeSliderEnabled;
     bool _isolineSlidersEnabled;
     vector<IsoSlider *> _isolineSliders;
     int _lastSelectedIndex;
@@ -308,6 +311,7 @@ class MappingFrame : public QGLWidget {
 
     std::map<int, OpacityWidget *> _opacityWidgets;
     DomainWidget *_domainSlider;
+    ContourRangeSlider *_contourRangeSlider;
     IsoSlider *_isoSlider;
     GLColorbarWidget *_colorbarWidget;
     GLWidget *_lastSelected;
