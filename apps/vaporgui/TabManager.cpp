@@ -22,6 +22,7 @@
 #include "RenderHolder.h"
 #include "ui_NavigationTab.h"
 #include <QScrollArea>
+#include <QSizePolicy>
 #include <algorithm>
 #include <qtabwidget.h>
 #include <qwidget.h>

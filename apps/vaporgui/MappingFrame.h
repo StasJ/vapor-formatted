@@ -28,6 +28,7 @@
 
 #include <qgl.h>
 
+#include "GUIStateParams.h"
 #include "vapor/Visualizer.h"
 #include <QContextMenuEvent>
 #include <QMouseEvent>
@@ -49,6 +50,7 @@ class OpacityWidget;
 class GLColorbarWidget;
 class Histo;
 class DomainWidget;
+class ContourRangeSlider;
 class IsoSlider;
 class GLWidget;
 class RenderEventRouter;
@@ -89,7 +91,7 @@ class MappingFrame : public QGLWidget {
     MappingFrame(QWidget *parent);
     virtual ~MappingFrame();
 
-    void RefreshHistogram();
+    void RefreshHistogram(bool force = false);
 
     //! Enable or disable the color mapping in the Transfer Function.
     //! Should be specified in the RenderEventRouter constructor
@@ -151,6 +153,8 @@ class MappingFrame : public QGLWidget {
     }
     // static void SetControlExec(VAPoR::ControlExec* ce){_controlExec = ce;}
 
+    void updateMapperFunction(VAPoR::MapperFunction *mapper);
+
   signals:
 
     //! Signal that is invoked when user starts to modify the transfer function.
@@ -177,11 +181,12 @@ class MappingFrame : public QGLWidget {
     void updateMap();
 
   private:
-    void updateMapperFunction(VAPoR::MapperFunction *mapper);
+    // void updateMapperFunction(VAPoR::MapperFunction *mapper);
 
     bool colorMapping() const { return _colorMappingEnabled; }
     bool opacityMapping() const { return _opacityMappingEnabled; }
     bool isoSliderEnabled() const { return _isoSliderEnabled; }
+    bool contourRangeSlider() const { return _contourRangeSliderEnabled; }
     bool isolineSlidersEnabled() const { return _isolineSlidersEnabled; }
     void setIsoValue(float val) { _isoVal = val; }
     QString tipText(const QPoint &pos, bool isIso = false);
@@ -189,6 +194,10 @@ class MappingFrame : public QGLWidget {
     float xVariable(const QPoint &pos);
     float yVariable(const QPoint &pos);
     bool canBind();
+    bool skipRefreshHistogram() const;
+    void updateHistogram();
+    string getActiveRendererName() const;
+    void populateHistogram();
 
   protected slots:
     void setEditMode(bool);
@@ -294,10 +303,12 @@ class MappingFrame : public QGLWidget {
     QTabWidget *_myTabWidget;
     VAPoR::MapperFunction *_mapper;
     Histo *_histogram;
+    map<string, Histo *> _histogramMap;
 
     bool _opacityMappingEnabled;
     bool _colorMappingEnabled;
     bool _isoSliderEnabled;
+    bool _contourRangeSliderEnabled;
     bool _isolineSlidersEnabled;
     vector<IsoSlider *> _isolineSliders;
     int _lastSelectedIndex;
@@ -308,6 +319,7 @@ class MappingFrame : public QGLWidget {
 
     std::map<int, OpacityWidget *> _opacityWidgets;
     DomainWidget *_domainSlider;
+    ContourRangeSlider *_contourRangeSlider;
     IsoSlider *_isoSlider;
     GLColorbarWidget *_colorbarWidget;
     GLWidget *_lastSelected;
