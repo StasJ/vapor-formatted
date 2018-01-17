@@ -2,10 +2,13 @@
 #define RENDERHOLDER_H
 
 #include "EventRouter.h"
+#include "VaporTable.h"
 #include "qpushbutton.h"
 #include "qstackedwidget.h"
 #include "qtableview.h"
-#include "ui_renderselector.h"
+#include "ui_LeftPanel.h"
+#include "ui_NewRendererDialog.h"
+#include <QMessageBox>
 #include <qobject.h>
 #include <vapor/MyBase.h>
 
@@ -15,6 +18,42 @@ namespace VAPoR {
 class ControlExec;
 class ParamsMgr;
 } // namespace VAPoR
+
+class NewRendererDialog : public QDialog, public Ui_NewRendererDialog {
+
+    Q_OBJECT
+
+  public:
+    NewRendererDialog(QWidget *parent, VAPoR::ControlExec *ce);
+
+    std::string getSelectedRenderer() { return _selectedRenderer; }
+    QMessageBox *msgBox;
+    void mouseDoubleClickEvent(QMouseEvent *event) {
+        msgBox = new QMessageBox();
+        msgBox->setWindowTitle("Hello");
+        msgBox->setText("You Double Clicked Mouse Button");
+        msgBox->show();
+    };
+
+  private slots:
+    void barbChecked(bool state);
+    void contourChecked(bool state);
+    void imageChecked(bool state);
+    void twoDDataChecked(bool state);
+
+  private:
+    void setUpImage(std::string imageName, QLabel *label);
+    void uncheckAllButtons();
+    void initializeImages();
+    void initializeDataSources(VAPoR::ControlExec *ce);
+
+    static const std::string barbDescription;
+    static const std::string contourDescription;
+    static const std::string imageDescription;
+    static const std::string twoDDataDescription;
+
+    std::string _selectedRenderer;
+};
 
 class CBWidget : public QWidget, public QTableWidgetItem {
   public:
@@ -33,7 +72,7 @@ class CBWidget : public QWidget, public QTableWidgetItem {
 //! QStackedWidget that displays the various parameters associated
 //! with the selected renderer.
 //!
-class RenderHolder : public QWidget, public Ui_RenderSelector {
+class RenderHolder : public QWidget, public Ui_LeftPanel {
 
     Q_OBJECT
 
@@ -73,6 +112,8 @@ class RenderHolder : public QWidget, public Ui_RenderSelector {
     }
 
     void updateDupCombo();
+    void makeRendererTableHeaders(vector<string> &table);
+    void initializeNewRendererDialog(vector<string> datasetNames);
 
     // Convert name to a unique name (among renderer names)
     std::string uniqueName(std::string name);
@@ -80,12 +121,10 @@ class RenderHolder : public QWidget, public Ui_RenderSelector {
   private slots:
     void showNewRendererDialog();
     void deleteRenderer();
-    // void changeChecked(int i, int j);
     void itemTextChange(QTableWidgetItem *);
-    // void itemChangeHack(QTableWidgetItem*);
-    void selectInstance();
     void copyInstanceTo(int);
-    void checkboxChanged(int);
+    void activeRendererChanged(int row, int col);
+    void tableValueChanged(int row, int col);
 
   signals:
     void newRendererSignal(string vizName, string renderClass, string renderInst);
@@ -93,19 +132,21 @@ class RenderHolder : public QWidget, public Ui_RenderSelector {
 
   private:
     VAPoR::ControlExec *_controlExec;
+    NewRendererDialog *_newRendererDialog;
+
+    VaporTable *_vaporTable;
+    int _currentRow;
 
     void getRow(int row, string &renderInst, string &renderClass, string &dataSetName) const;
 
-    void setNameCell(string renderInst, int row);
-    void setTypeCell(string renderClass, int row);
-    void setDataSetCell(string dataSetName, int row);
-    void setCheckboxCell(int row, bool enabled);
-
-    void setRow(int row, const string &renderInst, const string &renderClass,
-                const string &dataSetName, bool enabled);
-
-    void setRow(const string &renderInst, const string &renderClass, const string &dataSetName,
-                bool enabled);
+    void makeConnections();
+    void clearStackedWidget();
+    void initializeSplitter();
+    string getActiveRendererClass();
+    string getActiveRendererInst();
+    void highlightActiveRow(int row);
+    void changeRendererName(int row, int col);
+    VAPoR::RenderParams *getRenderParamsFromCell(int row, int col);
 
 #endif // DOXYGEN_SKIP_THIS
 };
