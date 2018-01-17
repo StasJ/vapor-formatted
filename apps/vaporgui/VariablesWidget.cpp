@@ -21,7 +21,9 @@
 #include "vapor/DataMgr.h"
 #include "vapor/ParamsMgr.h"
 #include "vapor/RenderParams.h"
+#include <QCheckBox>
 #include <QFileDialog>
+#include <QLineEdit>
 #include <qcolordialog.h>
 #include <qradiobutton.h>
 #include <qwidget.h>
