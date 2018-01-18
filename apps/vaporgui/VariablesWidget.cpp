@@ -21,7 +21,9 @@
 #include "vapor/DataMgr.h"
 #include "vapor/ParamsMgr.h"
 #include "vapor/RenderParams.h"
+#include <QCheckBox>
 #include <QFileDialog>
+#include <QLineEdit>
 #include <qcolordialog.h>
 #include <qradiobutton.h>
 #include <qwidget.h>
@@ -78,14 +80,18 @@ void VariablesWidget::Reinit(DisplayFlags dspFlags, DimFlags dimFlags, ColorFlag
         dimensionFrame->hide();
     }
 
-    // if (!(_colorFlags & COLORVAR)) {
     if (_colorFlags ^ COLORVAR) {
         collapseColorVarSettings();
     }
 
     variableSelectionWidget->adjustSize();
 
-    _fidelityWidget->Reinit((FidelityWidget::DisplayFlags)dspFlags);
+    FidelityWidget::DisplayFlags fdf;
+    if (_dimFlags & VariablesWidget::SCALAR)
+        fdf = (FidelityWidget::DisplayFlags)(fdf | FidelityWidget::SCALAR);
+    if (_dimFlags & VariablesWidget::VECTOR)
+        fdf = (FidelityWidget::DisplayFlags)(fdf | FidelityWidget::VECTOR);
+    _fidelityWidget->Reinit(fdf);
 }
 
 void VariablesWidget::collapseColorVarSettings() {
