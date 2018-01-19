@@ -21,6 +21,8 @@
 #define VIZFEATUREEVENTROUTER_H
 
 #include "EventRouter.h"
+#include "RangeCombos.h"
+#include "VaporTable.h"
 #include "ui_vizFeaturesTab.h"
 #include <qobject.h>
 #include <vapor/MyBase.h>
@@ -60,6 +62,16 @@ class VizFeatureEventRouter : public QWidget, public Ui_vizFeaturesTab, public E
     string GetType() const { return GetClassType(); }
 
   protected slots:
+    void setAxisAnnotation(bool);
+    void setLatLonAnnotation(bool);
+    void setAxisTextSize(int);
+    void setAxisDigits(int);
+    void setAxisTicWidth(double);
+    void setAxisColor();
+    void axisAnnotationTableChanged();
+    void setXTicOrientation(int);
+    void setYTicOrientation(int);
+    void setZTicOrientation(int);
 
     void setVizFeatureTextChanged(const QString &qs);
     void vizfeatureReturnPressed();
@@ -68,20 +80,26 @@ class VizFeatureEventRouter : public QWidget, public Ui_vizFeaturesTab, public E
     void setBackgroundColor();
     void setUseRegionFrame();
     void setUseDomainFrame();
-    void setAxisAnnotation();
-    void setAxisColor();
+    void setAxisAnnotation2();
     void setTimeColor();
-    void setXTicOrient(int);
-    void setYTicOrient(int);
-    void setZTicOrient(int);
     void setLatLonAnnot(bool);
     void setUseAxisArrows();
     void timeAnnotationChanged();
     void timeLLXChanged();
     void timeLLYChanged();
     void timeSizeChanged();
+    void setXTicOrient(int);
+    void setYTicOrient(int);
+    void setZTicOrient(int);
 
   private:
+    Combo *_textSizeCombo;
+    Combo *_digitsCombo;
+    Combo *_ticWidthCombo;
+    VaporTable *_annotationVaporTable;
+
+    void connectAnnotationWidgets();
+
     VizFeatureEventRouter() {}
 
     void setColorHelper(QWidget *w, vector<double> &rgb);
@@ -93,6 +111,7 @@ class VizFeatureEventRouter : public QWidget, public Ui_vizFeaturesTab, public E
     void updateBackgroundColor();
     void updateAxisColor();
     void updateTimeColor();
+    void updateAxisAnnotations();
 
     void invalidateText();
 
