@@ -98,6 +98,8 @@ class VizFeatureEventRouter : public QWidget, public Ui_vizFeaturesTab, public E
     Combo *_ticWidthCombo;
     VaporTable *_annotationVaporTable;
 
+    vector<double> getTableRow(int row);
+
     void connectAnnotationWidgets();
 
     VizFeatureEventRouter() {}
@@ -112,8 +114,18 @@ class VizFeatureEventRouter : public QWidget, public Ui_vizFeaturesTab, public E
     void updateAxisColor();
     void updateTimeColor();
     void updateAxisAnnotations();
+    void updateAnnotationCheckbox();
+    void updateLatLonCheckbox();
+    void updateAnnotationTable();
+    void updateTicOrientationCombos();
+    void updateOldGui();
 
     void invalidateText();
+
+    void getActiveExtents(vector<double> &minExts, vector<double> &maxExts);
+    void initializeAnnotations();
+    void initializeAnnotationExtents();
+    void initializeTicSizes();
 
     virtual void _confirmText();
     virtual void _updateTab();
@@ -124,6 +136,7 @@ class VizFeatureEventRouter : public QWidget, public Ui_vizFeaturesTab, public E
 
     AnimationParams *_ap;
     bool _animConnected;
+    bool _annotationsInitialized;
 };
 
 #endif // VIZFEATUREEVENTROUTER_H
