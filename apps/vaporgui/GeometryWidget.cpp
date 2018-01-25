@@ -300,17 +300,20 @@ void GeometryWidget::copyRegion() {
     }
 }
 
+/*
 void GeometryWidget::updateDimFlags() {
-    int ndim = _rParams->GetValueLong(_nDimsTag, 3);
-    assert(ndim == 2 || ndim == 3);
-    if (ndim == 2) {
+    int ndim = _rParams->GetValueLong(_nDimsTag,3);
+    assert(ndim==2 || ndim==3);
+    if (ndim==2) {
         _dimFlags = (DimFlags)(_dimFlags | TWOD);
         _dimFlags = (DimFlags)(_dimFlags & ~(THREED));
-    } else {
+    }
+    else {
         _dimFlags = (DimFlags)(_dimFlags | THREED);
         _dimFlags = (DimFlags)(_dimFlags & ~(TWOD));
     }
 }
+*/
 
 bool GeometryWidget::getAuxiliaryExtents(std::vector<double> &minFullExts,
                                          std::vector<double> &maxFullExts) {
@@ -404,8 +407,6 @@ void GeometryWidget::Update(ParamsMgr *paramsMgr, DataMgr *dataMgr, RenderParams
     _paramsMgr = paramsMgr;
     _dataMgr = dataMgr;
     _rParams = rParams;
-
-    updateDimFlags();
 
     // Get current domain extents
     //
