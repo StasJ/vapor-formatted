@@ -174,7 +174,7 @@ void VizFeatureParams::SetAxisFontSize(int size) {
     SetValueDouble(_axisFontSizeTag, "Axis annotation font size", size);
 }
 
-int VizFeatureParams::GetAxisFontSize() { return (int)GetValueDouble(_axisFontSizeTag, 10); }
+int VizFeatureParams::GetAxisFontSize() { return (int)GetValueDouble(_axisFontSizeTag, 24); }
 
 void VizFeatureParams::SetNumTics(vector<double> val) {
     assert(val.size() == 3);

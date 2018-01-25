@@ -105,7 +105,7 @@ class RENDER_API VizFeatureRenderer : public MyBase {
     //
     void drawAxisTics();
     void drawAxisTics2();
-    void renderText(double llx, double lly);
+    void renderText(double text, double llx, double lly);
 
     // Draw Axis arrows
     //
