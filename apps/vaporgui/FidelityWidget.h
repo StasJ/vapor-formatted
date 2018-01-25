@@ -70,12 +70,7 @@ class FidelityWidget : public QWidget, public Ui_FidelityWidgetGUI {
 
     void uncheckFidelity();
 
-    void setupFidelity(VAPoR::RenderParams *dParams
-#ifdef DEAD
-                       ,
-                       bool useDefault
-#endif
-    );
+    void setupFidelity(VAPoR::RenderParams *dParams);
 
     //! Set the fidelity gui elements based on values in a RenderParams
     void updateFidelity();

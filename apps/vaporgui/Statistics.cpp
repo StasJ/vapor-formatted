@@ -21,7 +21,6 @@
 #endif
 #include "Statistics.h"
 #include "GUIStateParams.h"
-#include "vapor/glutil.h" // Must be included first!!!
 
 #include <QFileDialog>
 #include <QMouseEvent>
