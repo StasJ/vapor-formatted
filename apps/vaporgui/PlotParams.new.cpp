@@ -18,7 +18,6 @@
 //
 #include <PlotParams.h>
 #include <cassert>
-#include <cstring>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -42,9 +41,8 @@ PlotParams::PlotParams(DataMgr *dmgr, ParamsBase::StateSave *ssave, XmlNode *nod
     : RenderParams(dmgr, ssave, node) {
     // If node isn't tagged correctly we correct the tag and reinitialize from scratch;
     //
-    if (node->GetTag() != PlotParams::GetClassType()) {
+    if (node->GetTag() != PlotParams::GetClassType())
         node->SetTag(PlotParams::GetClassType());
-    }
 }
 
 PlotParams::~PlotParams() { MyBase::SetDiagMsg("PlotParams::~PlotParams() this=%p", this); }
