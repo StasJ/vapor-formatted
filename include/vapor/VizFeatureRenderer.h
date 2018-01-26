@@ -22,6 +22,7 @@
 
 #include <vapor/Grid.h>
 #include <vapor/Renderer.h>
+#include <vapor/Transform.h>
 #include <vapor/textRenderer.h>
 
 namespace VAPoR {
@@ -104,8 +105,9 @@ class RENDER_API VizFeatureRenderer : public MyBase {
     // Draw the axis lines, while building text labels.
     //
     void drawAxisTics();
-    void drawAxisTics2();
-    void renderText(double text, double llx, double lly);
+    void applyTransform(Transform *t);
+    void renderText(double text, double llx, double lly, double llz = 0.f);
+    Transform *getCurrentTransform();
 
     // Draw Axis arrows
     //
