@@ -20,6 +20,7 @@
 #ifndef VIZFEATURERENDERER_H
 #define VIZFEATURERENDERER_H
 
+#include <vapor/DataMgrUtils.h>
 #include <vapor/Grid.h>
 #include <vapor/Renderer.h>
 #include <vapor/Transform.h>
@@ -108,6 +109,7 @@ class RENDER_API VizFeatureRenderer : public MyBase {
     void applyTransform(Transform *t);
     void renderText(double text, double llx, double lly, double llz = 0.f);
     Transform *getCurrentTransform();
+    void convertPointToLonLat(double &xCoord, double &yCoord);
 
     // Draw Axis arrows
     //
