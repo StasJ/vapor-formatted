@@ -136,7 +136,6 @@ class VizFeatureEventRouter : public QWidget, public Ui_vizFeaturesTab, public E
 
     AnimationParams *_ap;
     bool _animConnected;
-    bool _annotationsInitialized;
 };
 
 #endif // VIZFEATUREEVENTROUTER_H
