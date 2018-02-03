@@ -36,3 +36,10 @@ void QRange::_maxChanged(double value) {
 
     emit RangeChanged();
 }
+
+void QRange::SetMainLabel(const QString &label) { _ui->mainLabel->setText(label); }
+
+void QRange::SetDecimals(int dec) {
+    _ui->minSliderEdit->SetDecimals(dec);
+    _ui->maxSliderEdit->SetDecimals(dec);
+}
