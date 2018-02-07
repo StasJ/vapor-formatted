@@ -1,6 +1,7 @@
 #include "QSliderEdit.h"
 #include "ui_QSliderEdit.h"
 
+#include <cassert>
 #include <cmath>
 #include <iostream>
 
@@ -36,16 +37,19 @@ void QSliderEdit::SetExtents(double min, double max) {
 }
 
 void QSliderEdit::_mySlider_valueChanged(int value) {
-    double dval = (double)value;
-    if (dval > _validator->top())
-        dval = _validator->top();
-    else if (dval < _validator->bottom())
-        dval = _validator->bottom();
     _ui->myLineEdit->blockSignals(true);
-    if (_decimals > 0)
+    if (_decimals > 0) {
+        double dval = (double)value;
+        if (dval > _validator->top())
+            dval = _validator->top();
+        else if (dval < _validator->bottom())
+            dval = _validator->bottom();
         _ui->myLineEdit->setText(QString::number(dval, 'g', _decimals));
-    else
-        _ui->myLineEdit->setText(QString::number((long int)dval, 10));
+    } else {
+        assert((double)value >= _validator->bottom());
+        assert((double)value <= _validator->top());
+        _ui->myLineEdit->setText(QString::number(value, 10));
+    }
     _ui->myLineEdit->blockSignals(false);
 }
 
