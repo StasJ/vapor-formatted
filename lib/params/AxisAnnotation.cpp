@@ -212,9 +212,9 @@ bool AxisAnnotation::GetLatLonAxesEnabled() const {
     return (0 != GetValueLong(_latLonAxesTag, (long)false));
 }
 
-string AxisAnnotation::GetAxisDataMgr() const { return GetValueString(_dataMgrTag, ""); }
+string AxisAnnotation::GetDataMgrName() const { return GetValueString(_dataMgrTag, ""); }
 
-void AxisAnnotation::SetAxisDataMgr(string dataMgr) {
+void AxisAnnotation::SetDataMgrName(string dataMgr) {
     string msg = "Set DataManager currently associated "
                  "with the axis annotations";
     SetValueString(_dataMgrTag, msg, dataMgr);
