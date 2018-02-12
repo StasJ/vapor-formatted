@@ -22,6 +22,7 @@
 #include "RenderHolder.h"
 #include "ui_NavigationTab.h"
 #include <QScrollArea>
+#include <QSizePolicy>
 #include <algorithm>
 #include <qtabwidget.h>
 #include <qwidget.h>
@@ -55,7 +56,7 @@ TabManager::TabManager(QWidget *parent, ControlExec *ce) : QTabWidget(parent) {
 
     connect(_renderHolder, SIGNAL(activeChanged(string, string, string)), this,
             SLOT(setActive(string, string, string)));
-    connect(_renderHolder, SIGNAL(newRenderer(string, string, string)), this,
+    connect(_renderHolder, SIGNAL(newRendererSignal(string, string, string)), this,
             SLOT(newRenderer(string, string, string)));
 
     show();
@@ -159,7 +160,7 @@ void TabManager::InstallWidgets() {
     for (int topTab = 1; topTab < 3; topTab++) {
         // for (int j = 0; j< _widgets[topTab].size(); j++){
 
-        // Ugh.  I'm eliminating the for loop and setting the tabs
+        // I'm eliminating the for loop and setting the tabs
         // explicitly, in order to have the 'VizFeatures' tab appear
         // as the default.
         // -Scott
@@ -339,8 +340,6 @@ void TabManager::newRenderer(string activeViz, string renderClass, string render
 
     er->SetActive(renderInst);
 
-    // Ugh. Why isn't RenderEvenRouter base class a QWidget?
-    //
     QWidget *w = dynamic_cast<QWidget *>(er);
     assert(w);
     w->setEnabled(true);
