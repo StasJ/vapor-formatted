@@ -58,7 +58,8 @@ class RENDER_API VizFeatureRenderer : public MyBase {
     //! Render the overlay features
     void OverlayPaint(size_t ts);
 
-    void AddText(string text, int x, int y, int size, float color[3], int type = 0);
+    void AddText(string text, int x, int y, int size, float color[3], float bgColor[3],
+                 int type = 0);
 
     void DrawText();
 

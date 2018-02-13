@@ -83,6 +83,7 @@ class VizFeatureEventRouter : public QWidget, public Ui_vizFeaturesTab, public E
     void setUseRegionFrame();
     void setUseDomainFrame();
     void setTimeColor();
+    void setTimeBGColor();
     void setLatLonAnnot(bool);
     void setUseAxisArrows();
     void timeAnnotationChanged();

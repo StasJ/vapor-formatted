@@ -214,8 +214,9 @@ class RENDER_API Visualizer : public MyBase {
 
     //! Draw a text banner at x, y coordinates
     //
-    void DrawText(string text, int x, int y, int size, float color[3], int type = 0) {
-        m_vizFeatures->AddText(text, x, y, size, color, type);
+    void DrawText(string text, int x, int y, int size, float color[3], float bgColor[3],
+                  int type = 0) {
+        m_vizFeatures->AddText(text, x, y, size, color, bgColor, type);
     }
 
     void ClearText() { m_vizFeatures->ClearText(); }

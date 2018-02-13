@@ -75,11 +75,6 @@ void VizFeatureRenderer::drawDomainFrame(size_t ts) const {
     vector<double> minExts, maxExts;
     m_dataStatus->GetActiveExtents(m_paramsMgr, m_winName, ts, minExts, maxExts);
 
-#ifdef DEAD
-    vector<double> stretchFac = vfParams->GetStretchFactors();
-
-#endif
-
     int i;
     int numLines[3];
     double fullSize[3], modMin[3], modMax[3];
@@ -129,8 +124,8 @@ void VizFeatureRenderer::drawDomainFrame(size_t ts) const {
             glVertex3f(xCrd, modMax[1], zCrd);
         }
     }
-    // Do the lines in each y-plane
 
+    // Do the lines in each y-plane
     for (y = 0; y <= numLines[1]; y++) {
         float yCrd = modMin[1] + ((float)y / (float)numLines[1]) * fullSize[1];
         // Draw lines in x direction for each z
@@ -179,6 +174,7 @@ void VizFeatureRenderer::DrawText() {
 }
 
 void VizFeatureRenderer::DrawText(vector<billboard> billboards) {
+    cout << "DRAWING TEXT?!?" << endl;
     double txtColor[] = {1.f, 1.f, 1.f, 1.f};
     double bgColor[] = {0.f, 0.f, 0.f, 0.f};
     double coords[] = {67.5f, 31.6f, 0.f};
@@ -203,7 +199,8 @@ void VizFeatureRenderer::DrawText(vector<billboard> billboards) {
     }
 }
 
-void VizFeatureRenderer::AddText(string text, int x, int y, int size, float color[3], int type) {
+void VizFeatureRenderer::AddText(string text, int x, int y, int size, float color[3],
+                                 float bgColor[3], int type) {
     //_billboards.clear();  // Temporary hack.  We eventually need separate
     // billboard groups for time annotations, axis
     // labels, etc.  Grouping them all in the same
@@ -226,6 +223,7 @@ void VizFeatureRenderer::AddText(string text, int x, int y, int size, float colo
     } else if (type == 2) {
         _axisAnnot.push_back(myBoard);
     }
+    cout << "AddText" << endl;
 }
 
 void VizFeatureRenderer::ClearText(int type) {
