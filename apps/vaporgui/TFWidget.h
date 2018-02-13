@@ -69,6 +69,7 @@ class TFWidget : public QWidget, public Ui_TFWidgetGUI {
     void opacitySliderChanged(int value);
     void setSingleColor();
     void setUsingSingleColor(int checkState);
+    void setUseWhitespace(int state);
 
   private:
     void collapseConstColorWidgets();
