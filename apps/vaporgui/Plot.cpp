@@ -221,6 +221,13 @@ void Plot::_newVarChanged(int index) {
     timeTabSinglePoint->SetDimensionality(axes.size());
     spaceTabP1->SetDimensionality(axes.size());
     spaceTabP2->SetDimensionality(axes.size());
+
+    spaceTabP1->SetExtents(min, max);
+    spaceTabP2->SetExtents(min, max);
+    spaceTabP1->SetValue(min);
+    spaceTabP2->SetValue(max);
+    timeTabSinglePoint->SetExtents(min, max);
+    timeTabSinglePoint->SetValue(min);
 }
 
 void Plot::_removeVarChanged(int index) {
@@ -252,6 +259,13 @@ void Plot::_removeVarChanged(int index) {
         timeTabSinglePoint->SetDimensionality(axes.size());
         spaceTabP1->SetDimensionality(axes.size());
         spaceTabP2->SetDimensionality(axes.size());
+
+        spaceTabP1->SetExtents(min, max);
+        spaceTabP2->SetExtents(min, max);
+        spaceTabP1->SetValue(min);
+        spaceTabP2->SetValue(max);
+        timeTabSinglePoint->SetExtents(min, max);
+        timeTabSinglePoint->SetValue(min);
     }
 }
 
@@ -355,11 +369,11 @@ void Plot::_setWidgetExtents() {
     std::vector<double> minFullExtents, maxFullExtents;
     std::vector<int> axes;
     VAPoR::DataMgrUtils::GetExtents(dataMgr, 0, availVars3D, minFullExtents, maxFullExtents, axes);
-    timeTabSinglePoint->SetExtents(minFullExtents, maxFullExtents);
     spaceTabP1->SetExtents(minFullExtents, maxFullExtents);
     spaceTabP2->SetExtents(minFullExtents, maxFullExtents);
     spaceTabP1->SetValue(minFullExtents);
     spaceTabP2->SetValue(maxFullExtents);
+    timeTabSinglePoint->SetExtents(minFullExtents, maxFullExtents);
     timeTabSinglePoint->SetValue(minFullExtents);
 
     // Set temporal extents
