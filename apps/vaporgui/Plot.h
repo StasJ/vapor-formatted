@@ -71,7 +71,8 @@ class Plot : public QDialog, public Ui_PlotWindow {
     VAPoR::DataMgr *_getCurrentDataMgr() const;
 
     void _setWidgetExtents();
-    void _invokePython(QString &, std::vector<std::string> &, std::vector<std::vector<float>> &);
+    void _invokePython(const QString &, const std::vector<std::string> &,
+                       const std::vector<std::vector<float>> &, const std::vector<float> &);
 };
 
 #endif // PLOT_H
