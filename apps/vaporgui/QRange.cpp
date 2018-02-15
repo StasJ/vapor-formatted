@@ -16,6 +16,8 @@ QRange::~QRange() { delete _ui; }
 void QRange::SetExtents(double min, double max) {
     _ui->minSliderEdit->SetExtents(min, max);
     _ui->maxSliderEdit->SetExtents(min, max);
+    _ui->minSliderEdit->SetValue(min);
+    _ui->maxSliderEdit->SetValue(max);
 }
 
 void QRange::GetRange(std::vector<double> &range) {
