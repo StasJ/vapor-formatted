@@ -114,6 +114,15 @@ class PARAMS_API ColorbarPbase : public ParamsBase {
     //! Get the background color
     //! as an rgb triple
     //! \retval rgb color
+    vector<double> GetTextColor() const;
+
+    //! Set the background color as an rgb triple
+    //! \param[in] color = (r,g,b)
+    void SetTextColor(vector<double> color);
+
+    //! Get the background color
+    //! as an rgb triple
+    //! \retval rgb color
     vector<double> GetBackgroundColor() const;
 
     //! Set the background color as an rgb triple
@@ -130,6 +139,7 @@ class PARAMS_API ColorbarPbase : public ParamsBase {
 
   private:
     static const string _colorbarBackColorTag;
+    static const string _colorbarTextColorTag;
     static const string _colorbarSizeTag;
     static const string _colorbarPositionTag;
     static const string _colorbarFontSizeTag;

@@ -94,8 +94,8 @@ void VizFeatureEventRouter::connectAnnotationWidgets() {
     connect(_textSizeCombo, SIGNAL(valueChanged(int)), this, SLOT(setAxisTextSize(int)));
     connect(_digitsCombo, SIGNAL(valueChanged(int)), this, SLOT(setAxisDigits(int)));
     connect(_ticWidthCombo, SIGNAL(valueChanged(double)), this, SLOT(setAxisTicWidth(double)));
-    connect(colorSelectButton, SIGNAL(pressed()), this, SLOT(setAxisColor()));
-    connect(bgSelectButton, SIGNAL(pressed()), this, SLOT(setAxisBackgroundColor()));
+    connect(axisColorButton, SIGNAL(pressed()), this, SLOT(setAxisColor()));
+    connect(axisBackgroundColorButton, SIGNAL(pressed()), this, SLOT(setAxisBackgroundColor()));
     connect(_annotationVaporTable, SIGNAL(returnPressed()), this,
             SLOT(axisAnnotationTableChanged()));
     connect(xTicOrientationCombo, SIGNAL(activated(int)), this, SLOT(setXTicOrientation(int)));
