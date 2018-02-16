@@ -20,8 +20,10 @@
 #ifndef VIZFEATURERENDERER_H
 #define VIZFEATURERENDERER_H
 
+#include <vapor/DataMgrUtils.h>
 #include <vapor/Grid.h>
 #include <vapor/Renderer.h>
+#include <vapor/Transform.h>
 #include <vapor/textRenderer.h>
 
 namespace VAPoR {
@@ -87,14 +89,22 @@ class RENDER_API VizFeatureRenderer : public MyBase {
     const DataStatus *m_dataStatus;
     string m_winName;
     ShaderMgr *m_shaderMgr;
+    int _currentTimestep;
     bool _textObjectsValid;
     TextObject *_textObject;
     string _fontFile;
 
+    void _drawAxes(std::vector<double> min, std::vector<double> max, std::vector<double> origin,
+                   std::vector<double> color, double width);
+    void _drawTic(double startPosn[], double endPosn[], double width, std::vector<double> color);
+
     //! Render the domain fram
     void drawDomainFrame(size_t ts) const;
 
-    void getDomainExtents(vector<double> &minExts, vector<double> &maxExts) const;
+    std::vector<double> getDomainExtents(string dmName = "") const;
+    AxisAnnotation *getCurrentAxisAnnotation();
+    string getCurrentDataMgrName() const;
+    void scaleNormalizedCoordinatesToWorld(std::vector<double> &coords, string dataMgrName);
 
 #ifdef DEAD
     //! Render the region frame
@@ -103,7 +113,13 @@ class RENDER_API VizFeatureRenderer : public MyBase {
 
     // Draw the axis lines, while building text labels.
     //
-    void drawAxisTics();
+    void drawAxisTics(AxisAnnotation *aa = NULL);
+    void applyTransform(Transform *t);
+    void renderText(double text, double coords[], AxisAnnotation *aa = NULL);
+    Transform *getTransform(string dataMgr = "");
+    void convertPointToLon(double &xCoord, string dataMgr = "");
+    void convertPointToLat(double &yCoord, string dataMgr = "");
+    void convertPointToLonLat(double &xCoord, double &yCoord, string dataMgr = "");
 
     // Draw Axis arrows
     //

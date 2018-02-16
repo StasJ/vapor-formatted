@@ -1064,7 +1064,7 @@ void MainForm::loadDataHelper(const vector<string> &files, string prompt, string
         }
     }
 
-    DataStatus *ds = _controlExec->getDataStatus();
+    DataStatus *ds = _controlExec->GetDataStatus();
     BoxSliderFrame::setDataStatus(ds);
 
     _tabMgr->Update();
@@ -1766,7 +1766,7 @@ void MainForm::setProj4String() {
 
     string proj4String = p->GetProjectionString();
 
-    DataStatus *ds = _controlExec->getDataStatus();
+    DataStatus *ds = _controlExec->GetDataStatus();
 
     // Close and re-open any data set that doesn't have a matching
     // proj4 string
