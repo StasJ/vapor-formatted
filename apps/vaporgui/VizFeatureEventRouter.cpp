@@ -30,7 +30,7 @@
 #include <vapor/VizFeatureParams.h>
 
 #include "qcolordialog.h"
-#include "ui_vizFeaturesTab.h"
+#include "ui_AnnotationsGUI.h"
 
 #include <qlabel.h>
 
@@ -66,7 +66,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
 } // namespace
 
 VizFeatureEventRouter::VizFeatureEventRouter(QWidget *parent, ControlExec *ce)
-    : QWidget(parent), Ui_vizFeaturesTab(), EventRouter(ce, VizFeatureParams::GetClassType()) {
+    : QWidget(parent), Ui_AnnotationsGUI(), EventRouter(ce, VizFeatureParams::GetClassType()) {
 
     setupUi(this);
 
