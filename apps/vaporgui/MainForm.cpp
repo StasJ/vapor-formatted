@@ -40,6 +40,7 @@
 #include <vapor/glutil.h> // Must be included first!!!
 
 #include "AnimationEventRouter.h"
+#include "AnnotationsEventRouter.h"
 #include "BannerGUI.h"
 #include "ErrorReporter.h"
 #include "MainForm.h"
@@ -49,7 +50,6 @@
 #include "SeedMe.h"
 #include "Statistics.h"
 #include "TabManager.h"
-#include "VizFeatureEventRouter.h"
 #include "VizSelectCombo.h"
 #include "VizWin.h"
 #include "regioneventrouter.h"
