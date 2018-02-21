@@ -46,6 +46,7 @@
 #include "MainForm.h"
 #include "MouseModeParams.h"
 #include "NavigationEventRouter.h"
+#include "SettingsEventRouter.h"
 #include "StartupEventRouter.h"
 #include "TrackBall.h"
 #include "VizWin.h"
@@ -145,6 +146,8 @@ void VizWinMgr::createAllDefaultTabs() {
     er = new StartupEventRouter(SettingsTab, _controlExec);
     installTab(er->GetType(), 2, er);
 
+    er = new SettingsEventRouter(SettingsTab, _controlExec);
+    installTab(er->GetType(), 2, er);
     //	er = new AppSettingsEventRouter(SettingsTab, _controlExec);
     //	installTab(er->GetType(), 2, er);
 
