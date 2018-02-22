@@ -771,17 +771,15 @@ class VDF_API DataMgr : public Wasp::MyBase {
 
     VAPoR::LayeredGrid *_make_grid_layered(const std::vector<size_t> &dims,
                                            const std::vector<float *> &blkvec,
-                                           const std::vector<vector<size_t>> &bs,
-                                           const std::vector<vector<size_t>> &bmin,
-                                           const std::vector<vector<size_t>> &bmax) const;
+                                           const std::vector<size_t> &bs,
+                                           const std::vector<size_t> &bmin,
+                                           const std::vector<size_t> &bmax) const;
 
-    VAPoR::CurvilinearGrid *_make_grid_curvilinear(size_t ts, int level, int lod,
-                                                   const vector<DC::CoordVar> &cvarsinfo,
-                                                   const std::vector<size_t> &dims,
-                                                   const std::vector<float *> &blkvec,
-                                                   const std::vector<vector<size_t>> &bs,
-                                                   const std::vector<vector<size_t>> &bmin,
-                                                   const std::vector<vector<size_t>> &bmax);
+    VAPoR::CurvilinearGrid *
+    _make_grid_curvilinear(size_t ts, int level, int lod, const vector<DC::CoordVar> &cvarsinfo,
+                           const std::vector<size_t> &dims, const std::vector<float *> &blkvec,
+                           const std::vector<size_t> &bs, const std::vector<size_t> &bmin,
+                           const std::vector<size_t> &bmax);
 
     void _ugrid_setup(const DC::DataVar &var, std::vector<size_t> &vertexDims,
                       std::vector<size_t> &faceDims, std::vector<size_t> &edgeDims,
@@ -792,11 +790,10 @@ class VDF_API DataMgr : public Wasp::MyBase {
     UnstructuredGrid2D *
     _make_grid_unstructured2d(size_t ts, int level, int lod, const DC::DataVar &dvarinfo,
                               const vector<DC::CoordVar> &cvarsinfo, const vector<size_t> &dims,
-                              const vector<float *> &blkvec, const vector<vector<size_t>> &bs,
-                              const vector<vector<size_t>> &bmin,
-                              const vector<vector<size_t>> &bmax, const vector<int *> &conn_blkvec,
-                              const vector<size_t> &conn_bs, const vector<size_t> &conn_bmin,
-                              const vector<size_t> &conn_bmax);
+                              const vector<float *> &blkvec, const vector<size_t> &bs,
+                              const vector<size_t> &bmin, const vector<size_t> &bmax,
+                              const vector<int *> &conn_blkvec, const vector<size_t> &conn_bs,
+                              const vector<size_t> &conn_bmin, const vector<size_t> &conn_bmax);
 
     VAPoR::Grid *
     _make_grid(size_t ts, int level, int lod, const VAPoR::DC::DataVar &var,
@@ -824,9 +821,9 @@ class VDF_API DataMgr : public Wasp::MyBase {
                             std::vector<double> max, std::vector<size_t> &min_ui,
                             std::vector<size_t> &max_ui);
 
-    void _setupCoordVecsHelper(string data_varname, const vector<size_t> &data_min,
-                               const vector<size_t> &data_max, string coord_varname,
-                               vector<size_t> &coord_min, vector<size_t> &coord_max) const;
+    void _setupCoordVecsHelper(string data_varname, const vector<size_t> &data_bmin,
+                               const vector<size_t> &data_bmax, string coord_varname,
+                               vector<size_t> &coord_bmin, vector<size_t> &coord_bmax) const;
 
     int _setupCoordVecs(size_t ts, string varname, int level, int lod, const vector<size_t> &min,
                         const vector<size_t> &max, vector<string> &varnames,

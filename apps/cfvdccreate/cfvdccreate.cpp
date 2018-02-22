@@ -121,15 +121,12 @@ void DefineMaskVars(const DCCF &dccf, VDCNetCDF &vdc) {
         // 1D coordinates are not blocked
         //
         string mywname;
-        vector<size_t> mybs;
         bool compress;
         if (dimnames.size() < 2) {
             mywname.clear();
-            mybs.clear();
             compress = false;
         } else {
             mywname = "intbior2.2";
-            mybs = opt.bs;
             compress = true;
         }
 
@@ -138,7 +135,7 @@ void DefineMaskVars(const DCCF &dccf, VDCNetCDF &vdc) {
         //
         vector<size_t> cratios(1, 1);
 
-        int rc = vdc.SetCompressionBlock(mybs, mywname, cratios);
+        int rc = vdc.SetCompressionBlock(mywname, cratios);
         if (rc < 0)
             exit(1);
 
@@ -202,7 +199,7 @@ int main(int argc, char **argv) {
     }
 
     size_t chunksize = 1024 * 1024 * 4;
-    int rc = vdc.Initialize(master, vector<string>(), VDC::W, chunksize);
+    int rc = vdc.Initialize(master, vector<string>(), VDC::W, opt.bs, chunksize);
     if (rc < 0)
         return (1);
 
@@ -222,12 +219,6 @@ int main(int argc, char **argv) {
         }
     }
 
-    // Make the default block dimension 64 for any missing dimensions
-    //
-    vector<size_t> bs = opt.bs;
-    for (int i = bs.size(); i < 3; i++)
-        bs.push_back(64);
-
     //
     // Define coordinate variables
     //
@@ -244,15 +235,7 @@ int main(int argc, char **argv) {
         bool ok = dccf.GetVarDimNames(coordnames[i], sdimnames, time_dimname);
         assert(ok);
 
-        //
-        // Time coordinate and 1D coordinates are not blocked
-        //
-        vector<size_t> mybs = opt.bs;
-        if (sdimnames.size() < 2) {
-            mybs.clear();
-        }
-
-        rc = vdc.SetCompressionBlock(mybs, opt.wname, cratios);
+        rc = vdc.SetCompressionBlock(opt.wname, cratios);
         if (rc < 0)
             return (1);
 
@@ -288,15 +271,12 @@ int main(int argc, char **argv) {
         // 1D coordinates are not blocked
         //
         string mywname;
-        vector<size_t> mybs;
         bool compress;
         if (d < 2) {
             mywname.clear();
-            mybs.clear();
             compress = false;
         } else {
             mywname = opt.wname;
-            mybs = opt.bs;
             compress = true;
         }
 
@@ -309,7 +289,7 @@ int main(int argc, char **argv) {
             cratios[i] = c;
         }
 
-        rc = vdc.SetCompressionBlock(mybs, mywname, cratios);
+        rc = vdc.SetCompressionBlock(mywname, cratios);
         if (rc < 0)
             return (1);
 
