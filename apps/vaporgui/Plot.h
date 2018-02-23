@@ -23,8 +23,6 @@
 #include <vapor/ParamsMgr.h>
 #include <vector>
 
-using namespace VAPoR;
-
 class Plot : public QDialog, public Ui_PlotWindow {
     Q_OBJECT
 
