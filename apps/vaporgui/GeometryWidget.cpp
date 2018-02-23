@@ -73,6 +73,10 @@ GeometryWidget::GeometryWidget(QWidget *parent) : QWidget(parent), Ui_GeometryWi
     xMinMaxGroupBox->setFont(myFont);
 }
 
+void GeometryWidget::hideSinglePointTabHeader() {
+    singlePointTab->setStyleSheet("QTabBar::tab { height: 0px }");
+}
+
 void GeometryWidget::adjustLayoutToSinglePoint() {
     QSizePolicy::Policy minimum = QSizePolicy::Minimum;
     QSizePolicy::Policy ignored = QSizePolicy::Ignored;
@@ -132,6 +136,7 @@ void GeometryWidget::Reinit(DimFlags dimFlags, DisplayFlags displayFlags, Variab
         adjustLayoutTo2D();
     } else if (_dimFlags & THREED) {
         zMinMaxGroupBox->show();
+        zSinglePointGroupBox->show();
     }
 
     if (_displayFlags & MINMAX) {
