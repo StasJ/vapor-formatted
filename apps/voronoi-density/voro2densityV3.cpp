@@ -90,7 +90,7 @@ int main(int argc, char **argv) {
             }
         }
         gettimeofday(&planeEnd, NULL);
-        std::cerr << "kdtree retrieval on one plane takes "
+        std::cerr << "kdtree retrieval plane " << z << " takes "
                   << GetElapsedSeconds(&planeStart, &planeEnd) << " seconds." << std::endl;
     }
     gettimeofday(&end, NULL);
