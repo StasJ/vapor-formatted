@@ -6,7 +6,7 @@
 #include "BarbEventRouter.h"
 #include "EventRouter.h"
 #include "VariablesWidget.h"
-#include "VizWin.h"
+#include "VizWinMgr.h"
 #include "vapor/BarbParams.h"
 #include <QFileDialog>
 #include <qcolordialog.h>
