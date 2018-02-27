@@ -438,13 +438,13 @@ void MainForm::hookupSignals() {
     connect(_tileAction, SIGNAL(triggered()), _vizWinMgr, SLOT(fitSpace()));
     connect(_cascadeAction, SIGNAL(triggered()), _vizWinMgr, SLOT(cascade()));
     connect(_windowSelector, SIGNAL(winActivated(const QString &)), _vizWinMgr,
-            SLOT(winActivated(const QString &)));
+            SLOT(SetWinActive(const QString &)));
     connect(_vizWinMgr, SIGNAL(newViz(const QString &)), _windowSelector,
-            SLOT(addWindow(const QString &)));
+            SLOT(AddWindow(const QString &)));
     connect(_vizWinMgr, SIGNAL(removeViz(const QString &)), _windowSelector,
-            SLOT(removeWindow(const QString &)));
+            SLOT(RemoveWindow(const QString &)));
     connect(_vizWinMgr, SIGNAL(activateViz(const QString &)), _windowSelector,
-            SLOT(setWindowActive(const QString &)));
+            SLOT(SetWindowActive(const QString &)));
     connect(_windowSelector, SIGNAL(newWin()), _vizWinMgr, SLOT(LaunchVisualizer()));
 
     // Slots on the NavigationEventRouter
