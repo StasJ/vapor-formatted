@@ -23,6 +23,7 @@
 #include "AnimationParams.h"
 #include "GUIStateParams.h"
 #include "MiscParams.h"
+#include "StartupParams.h"
 #include "vapor/ControlExecutive.h"
 #include <QLineEdit>
 #include <QObject>
