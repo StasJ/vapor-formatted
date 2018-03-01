@@ -148,6 +148,7 @@ MainForm::MainForm(vector<QString> files, QApplication *app, QWidget *parent, co
     _modeStatusWidget = 0;
     _recentPath.clear();
     _eventsSinceLastSave = 0;
+    _begForCitation = true;
 
     // For vertical screens, reverse aspect ratio for window size
     QSize screenSize = QDesktopWidget().availableGeometry().size();
@@ -185,8 +186,7 @@ MainForm::MainForm(vector<QString> files, QApplication *app, QWidget *parent, co
     //
     vector<string> myParams;
     myParams.push_back(GUIStateParams::GetClassType());
-    myParams.push_back(AppSettingsParams::GetClassType());
-    myParams.push_back(StartupParams::GetClassType());
+    myParams.push_back(SettingsParams::GetClassType());
     myParams.push_back(AnimationParams::GetClassType());
     myParams.push_back(MiscParams::GetClassType());
     myParams.push_back(PlotParams::GetClassType());
@@ -205,7 +205,7 @@ MainForm::MainForm(vector<QString> files, QApplication *app, QWidget *parent, co
 
     // Set Defaults from startup file
     //
-    StartupParams *sP = GetStartupParams();
+    SettingsParams *sP = GetSettingsParams();
     _controlExec->SetCacheSize(sP->GetCacheMB());
     _controlExec->SetNumThreads(sP->GetNumThreads());
 
@@ -762,7 +762,7 @@ void MainForm::sessionOpenHelper(string fileName) {
 
     // ControlExec::LoadState invalidates params state
     //
-    StartupParams *sP = GetStartupParams();
+    SettingsParams *sP = GetSettingsParams();
     if (fileName.empty()) {
         newP->SetCurrentSessionPath(concatpath(sP->GetSessionDir(), "My_Vapor_Session.vs3"));
     } else {
@@ -795,7 +795,7 @@ void MainForm::sessionOpen(QString qfileName) {
     //
     if (qfileName == "") {
 
-        StartupParams *sP = GetStartupParams();
+        SettingsParams *sP = GetSettingsParams();
         string path = sP->GetSessionDir();
 
         vector<string> files =
@@ -822,7 +822,7 @@ void MainForm::sessionOpen(QString qfileName) {
 }
 
 void MainForm::fileSave() {
-    StartupParams *sParams = GetStartupParams();
+    SettingsParams *sParams = GetSettingsParams();
     string path = sParams->GetSessionDir();
 
     if (path.empty()) {
@@ -844,7 +844,7 @@ void MainForm::fileSave() {
 }
 
 void MainForm::fileSaveAs() {
-    StartupParams *sParams = GetStartupParams();
+    SettingsParams *sParams = GetSettingsParams();
     string path = sParams->GetSessionDir();
 
     QString fileName =
@@ -877,13 +877,18 @@ void MainForm::closeEvent(QCloseEvent *) {
 #endif
 
 void MainForm::_performSessionAutoSave() {
-    cout << "StartupParams not instantiated yet!" << endl;
-    return;
-    StartupParams *sParams = GetStartupParams();
+    if (!_paramsMgr)
+        return;
+
+    SettingsParams *sParams = GetSettingsParams();
     if (!sParams)
         return;
 
     int eventCountForAutoSave = sParams->GetChangesPerAutoSave();
+
+    if (eventCountForAutoSave == 0)
+        return;
+
     if (_eventsSinceLastSave == eventCountForAutoSave) {
         string autoSaveFile = sParams->GetAutoSaveSessionFile();
         _paramsMgr->SaveToFile(autoSaveFile);
@@ -1045,7 +1050,7 @@ void MainForm::loadDataHelper(const vector<string> &files, string prompt, string
             string lastData = dataSetNames[dataSetNames.size() - 1];
             defaultPath = p->GetOpenDataSetPaths(lastData)[0];
         } else {
-            StartupParams *sP = GetStartupParams();
+            SettingsParams *sP = GetSettingsParams();
             defaultPath = sP->GetMetadataDir();
             // defaultPath = _recentPath;
         }
@@ -1172,7 +1177,7 @@ void MainForm::loadData(string fileName) {
     loadDataHelper(files, "Choose the Master data File to load", "Vapor VDC files (*.*)", "vdc",
                    false);
 
-    StartupParams *sP = GetStartupParams();
+    SettingsParams *sP = GetSettingsParams();
     bool autoStretchingEnabled = sP->GetAutoStretch();
     if (autoStretchingEnabled)
         performAutoStretching();
@@ -1479,31 +1484,24 @@ void MainForm::modeChange(int newmode) {
 }
 
 void MainForm::showCitationReminder() {
-    // First check if reminder is turned off:
-    AppSettingsParams *aParams = GetAppSettingsParams();
-    if (!aParams->GetCurrentShowCitation())
+    if (!_begForCitation)
         return;
+    _begForCitation = false;
     // Provide a customized message box
     QMessageBox msgBox;
-    QString reminder("VAPOR is developed as an Open Source application by the National Center for "
-                     "Atmospheric Research ");
-    reminder.append("under the sponsorship of the National Science Foundation.  ");
-    reminder.append("Continued support from VAPOR is dependent on demonstrable evidence of the "
-                    "software's value to the scientific community.  ");
+    QString reminder("VAPOR is developed as an Open Source application by NCAR, ");
+    reminder.append("under the sponsorship of the National Science Foundation.\n\n");
+    reminder.append("We depend on evidence of the software's value to the scientific community.  ");
     reminder.append("You are free to use VAPOR as permitted under the terms and conditions of the "
                     "licence.\n\n ");
-    reminder.append(
-        "We kindly request that you cite VAPOR in your publications and presentations. ");
-    reminder.append("Citation details can be found on the VAPOR website at: \n\n  "
-                    "http://www.vapor.ucar.edu/index.php?id=citation");
+    reminder.append("Please cite VAPOR in your publications and presentations. ");
+    reminder.append("Citation details:\n    http://www.vapor.ucar.edu/index.php?id=citation");
     msgBox.setText(reminder);
-    msgBox.setInformativeText("This reminder can be silenced from the User Preferences panel");
 
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
 
     msgBox.exec();
-    aParams->SetCurrentShowCitation(false);
 }
 void MainForm::addMouseModes() {
     MouseModeParams *p = GetStateParams()->GetMouseModeParams();
@@ -1779,7 +1777,7 @@ void MainForm::loadStartingPrefs() {
 
     // Make this path the default at startup:
     //
-    StartupParams *sP = GetStartupParams();
+    SettingsParams *sP = GetSettingsParams();
     sP->SetCurrentPrefsPath(prefPath);
 
 #ifdef DEAD
@@ -2051,7 +2049,7 @@ void MainForm::enableAnimationWidgets(bool on) {
 //
 void MainForm::captureSingleJpeg() {
     showCitationReminder();
-    StartupParams *sP = GetStartupParams();
+    SettingsParams *sP = GetSettingsParams();
     string imageDir = sP->GetImageDir();
     if (imageDir == "")
         imageDir = sP->GetDefaultImageDir();
@@ -2143,7 +2141,7 @@ void MainForm::launchPlotUtility() {
 // Then start file saving mode.
 void MainForm::startAnimCapture() {
     showCitationReminder();
-    StartupParams *sP = GetStartupParams();
+    SettingsParams *sP = GetSettingsParams();
     string imageDir = sP->GetImageDir();
     if (imageDir == "")
         imageDir = sP->GetDefaultImageDir();

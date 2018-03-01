@@ -41,13 +41,11 @@
 #include "AnimationEventRouter.h"
 #include "AnimationParams.h"
 #include "AnnotationsEventRouter.h"
-#include "AppSettingsEventRouter.h"
 #include "HelloEventRouter.h"
 #include "MainForm.h"
 #include "MouseModeParams.h"
 #include "NavigationEventRouter.h"
 #include "SettingsEventRouter.h"
-#include "StartupEventRouter.h"
 #include "TrackBall.h"
 #include "VizWin.h"
 #include "VizWinMgr.h"
@@ -140,14 +138,14 @@ void VizWinMgr::createAllDefaultTabs() {
     er = new AnimationEventRouter(NavigationTab, _controlExec);
     installTab(er->GetType(), 1, er);
 
-    er = new RegionEventRouter(NavigationTab, _controlExec);
-    installTab(er->GetType(), 1, er);
+    //	er = new RegionEventRouter(NavigationTab, _controlExec);
+    //	installTab(er->GetType(), 1, er);
 
     er = new SettingsEventRouter(SettingsTab, _controlExec);
     installTab(er->GetType(), 2, er);
 
-    er = new StartupEventRouter(SettingsTab, _controlExec);
-    installTab(er->GetType(), 2, er);
+    //	er = new StartupEventRouter(SettingsTab, _controlExec);
+    //	installTab(er->GetType(), 2, er);
 
     //	er = new AppSettingsEventRouter(SettingsTab, _controlExec);
     //	installTab(er->GetType(), 2, er);
@@ -423,7 +421,7 @@ void VizWinMgr::installTab(const std::string tag, int tabType, EventRouter *eRou
     eRouter->hookUpTab();
     QWidget *tabWidget = dynamic_cast<QWidget *>(eRouter);
     assert(tabWidget);
-    if (tag != AppSettingsParams::GetClassType() && tag != StartupParams::GetClassType()) {
+    if (tag != SettingsParams::GetClassType()) {
         tabWidget->setEnabled(false);
     }
     _tabManager->AddWidget(tabWidget, tag, tabType);

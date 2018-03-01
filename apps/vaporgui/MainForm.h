@@ -25,10 +25,9 @@
 #define MAINFORM_H
 
 #include "AnimationParams.h"
-#include "AppSettingsParams.h"
 #include "GUIStateParams.h"
 #include "MiscParams.h"
-#include "StartupParams.h"
+#include "SettingsParams.h"
 #include <QActionGroup>
 #include <QComboBox>
 #include <QIcon>
@@ -124,14 +123,9 @@ class MainForm : public QMainWindow {
         return ((GUIStateParams *)_paramsMgr->GetParams(GUIStateParams::GetClassType()));
     }
 
-    AppSettingsParams *GetAppSettingsParams() const {
+    SettingsParams *GetSettingsParams() const {
         assert(_paramsMgr != NULL);
-        return ((AppSettingsParams *)_paramsMgr->GetParams(AppSettingsParams::GetClassType()));
-    }
-
-    StartupParams *GetStartupParams() const {
-        assert(_paramsMgr != NULL);
-        return ((StartupParams *)_paramsMgr->GetParams(StartupParams::GetClassType()));
+        return ((SettingsParams *)_paramsMgr->GetParams(SettingsParams::GetClassType()));
     }
 
     AnimationParams *GetAnimationParams() const {
@@ -176,6 +170,7 @@ class MainForm : public QMainWindow {
     void _stateChangeCB();
     bool _stateChangeFlag;
     bool _sessionNewFlag;
+    bool _begForCitation;
     int _eventsSinceLastSave;
 
     // Set the various widgets in the main window consistent with latest
