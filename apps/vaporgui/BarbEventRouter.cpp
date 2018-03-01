@@ -6,7 +6,6 @@
 #include "BarbEventRouter.h"
 #include "EventRouter.h"
 #include "VariablesWidget.h"
-#include "VizWinMgr.h"
 #include "vapor/BarbParams.h"
 #include <QFileDialog>
 #include <qcolordialog.h>
@@ -19,7 +18,7 @@
 
 using namespace VAPoR;
 
-BarbEventRouter::BarbEventRouter(QWidget *parent, VizWinMgr *vizMgr, ControlExec *ce)
+BarbEventRouter::BarbEventRouter(QWidget *parent, ControlExec *ce)
     : QTabWidget(parent), RenderEventRouter(ce, BarbParams::GetClassType()) {
 
     _variables = new BarbVariablesSubtab(this);
