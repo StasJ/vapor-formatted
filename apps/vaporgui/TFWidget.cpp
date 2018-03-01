@@ -110,8 +110,8 @@ void TFWidget::loadTF() {
 
     // Ignore TF's in session, for now.
 
-    StartupParams *sP;
-    sP = (StartupParams *)_paramsMgr->GetParams(StartupParams::GetClassType());
+    SettingsParams *sP;
+    sP = (SettingsParams *)_paramsMgr->GetParams(SettingsParams::GetClassType());
     string path = sP->GetTFDir();
 
     fileLoadTF(varname, path.c_str(), true);
@@ -120,8 +120,8 @@ void TFWidget::loadTF() {
 }
 
 void TFWidget::loadTF(string varname) {
-    StartupParams *sP;
-    sP = (StartupParams *)_paramsMgr->GetParams(StartupParams::GetClassType());
+    SettingsParams *sP;
+    sP = (SettingsParams *)_paramsMgr->GetParams(SettingsParams::GetClassType());
 
     string path = sP->GetTFDir();
 
@@ -136,8 +136,8 @@ void TFWidget::fileLoadTF(string varname, const char *startPath, bool savePath) 
     if (s.length() == 0)
         return;
     else {
-        StartupParams *sP;
-        sP = (StartupParams *)_paramsMgr->GetParams(StartupParams::GetClassType());
+        SettingsParams *sP;
+        sP = (SettingsParams *)_paramsMgr->GetParams(SettingsParams::GetClassType());
         sP->SetTFDir(s.toStdString());
     }
 
