@@ -41,6 +41,7 @@
 
 #include "AnimationEventRouter.h"
 #include "BannerGUI.h"
+#include "BoxSliderFrame.h"
 #include "ErrorReporter.h"
 #include "MainForm.h"
 #include "MappingFrame.h"
@@ -52,7 +53,6 @@
 #include "VizFeatureEventRouter.h"
 #include "VizSelectCombo.h"
 #include "VizWin.h"
-#include "regioneventrouter.h"
 
 // Following shortcuts are provided:
 // CTRL_N: new session
@@ -209,7 +209,9 @@ MainForm::MainForm(vector<QString> files, QApplication *app, QWidget *parent, co
     // MappingFrame::SetControlExec(_controlExec);
     BoxSliderFrame::SetControlExec(_controlExec);
 
-    _tabMgr = TabManager::Create(this, _controlExec);
+    _vizWinMgr = new VizWinMgr(this, _mdiArea, _controlExec);
+
+    _tabMgr = TabManager::Create(this, _controlExec, _vizWinMgr);
     _tabMgr->setMaximumWidth(600);
     _tabMgr->setUsesScrollButtons(true);
     // This is just large enough to show the whole width of flow tab, with a scrollbar
@@ -219,9 +221,6 @@ MainForm::MainForm(vector<QString> files, QApplication *app, QWidget *parent, co
     _tabMgr->setMinimumHeight(500);
 
     _tabDockWindow->setWidget(_tabMgr);
-
-    _vizWinMgr = VizWinMgr::Create(_controlExec);
-    _vizWinMgr->createAllDefaultTabs();
 
     createToolBars();
 
@@ -380,7 +379,7 @@ void MainForm::hookupSignals() {
     // Slots on the MainForm
     //
     AnimationEventRouter *aRouter =
-        (AnimationEventRouter *)_vizWinMgr->GetEventRouter(AnimationEventRouter::GetClassType());
+        (AnimationEventRouter *)_tabMgr->GetEventRouter(AnimationEventRouter::GetClassType());
 
     connect(aRouter, SIGNAL(AnimationOnOffChanged(bool)), this, SLOT(setAnimationOnOff(bool)));
 
@@ -435,8 +434,8 @@ void MainForm::hookupSignals() {
 
     // Signals on the VizWinMgr
     //
-    connect(_tileAction, SIGNAL(triggered()), _vizWinMgr, SLOT(fitSpace()));
-    connect(_cascadeAction, SIGNAL(triggered()), _vizWinMgr, SLOT(cascade()));
+    connect(_tileAction, SIGNAL(triggered()), _vizWinMgr, SLOT(FitSpace()));
+    connect(_cascadeAction, SIGNAL(triggered()), _vizWinMgr, SLOT(Cascade()));
     connect(_windowSelector, SIGNAL(winActivated(const QString &)), _vizWinMgr,
             SLOT(SetWinActive(const QString &)));
     connect(_vizWinMgr, SIGNAL(newViz(const QString &)), _windowSelector,
@@ -447,10 +446,13 @@ void MainForm::hookupSignals() {
             SLOT(SetWindowActive(const QString &)));
     connect(_windowSelector, SIGNAL(newWin()), _vizWinMgr, SLOT(LaunchVisualizer()));
 
+    connect(_vizWinMgr, SIGNAL(activateViz(const QString &)), _tabMgr,
+            SLOT(SetActiveViz(const QString &)));
+
     // Slots on the NavigationEventRouter
     //
     NavigationEventRouter *vpRouter =
-        (NavigationEventRouter *)_vizWinMgr->GetEventRouter(NavigationEventRouter::GetClassType());
+        (NavigationEventRouter *)_tabMgr->GetEventRouter(NavigationEventRouter::GetClassType());
 
     connect(vpRouter, SIGNAL(Proj4StringChanged()), this, SLOT(setProj4String()));
 }
@@ -716,6 +718,7 @@ void MainForm::sessionOpenHelper(string fileName) {
     enableWidgets(false);
 
     _vizWinMgr->Shutdown();
+    _tabMgr->Shutdown();
 
     // Close any open data sets
     //
@@ -806,6 +809,7 @@ void MainForm::sessionOpen(QString qfileName) {
     sessionOpenHelper(fileName);
 
     _vizWinMgr->Restart();
+    _tabMgr->Restart();
 
     _stateChangeFlag = false;
     _sessionNewFlag = false;
@@ -883,6 +887,7 @@ void MainForm::undoRedoHelper(bool undo) {
 
     bool status;
     _vizWinMgr->Shutdown();
+    _tabMgr->Shutdown();
 
     if (undo) {
         status = _controlExec->Undo();
@@ -895,6 +900,7 @@ void MainForm::undoRedoHelper(bool undo) {
     }
 
     _vizWinMgr->Restart();
+    _tabMgr->Restart();
 
     // Ugh. Trackball isn't integrated with Params database so need to
     // handle undo/redo manually. I.e. get modelview matrix params from
@@ -1068,7 +1074,8 @@ void MainForm::loadDataHelper(const vector<string> &files, string prompt, string
     BoxSliderFrame::setDataStatus(ds);
 
     _tabMgr->Update();
-    _vizWinMgr->ReinitRouters();
+    _vizWinMgr->Reinit();
+    _tabMgr->Reinit();
 
     enableWidgets(true);
 
@@ -1104,7 +1111,7 @@ void MainForm::closeData(string fileName) {
     }
 
     _tabMgr->Update();
-    _vizWinMgr->ReinitRouters();
+    _vizWinMgr->Reinit();
 }
 
 // import WRF data into current session
@@ -1253,7 +1260,7 @@ void MainForm::setInteractiveRefinementSpin(int val) {}
 
 void MainForm::pauseClick() {
     AnimationEventRouter *aRouter =
-        (AnimationEventRouter *)_vizWinMgr->GetEventRouter(AnimationEventRouter::GetClassType());
+        (AnimationEventRouter *)_tabMgr->GetEventRouter(AnimationEventRouter::GetClassType());
 
     aRouter->AnimationPause();
     //	update();
@@ -1261,7 +1268,7 @@ void MainForm::pauseClick() {
 
 void MainForm::playForward() {
     AnimationEventRouter *aRouter =
-        (AnimationEventRouter *)_vizWinMgr->GetEventRouter(AnimationEventRouter::GetClassType());
+        (AnimationEventRouter *)_tabMgr->GetEventRouter(AnimationEventRouter::GetClassType());
 
     aRouter->AnimationPlayForward();
     //	update();
@@ -1269,7 +1276,7 @@ void MainForm::playForward() {
 
 void MainForm::playBackward() {
     AnimationEventRouter *aRouter =
-        (AnimationEventRouter *)_vizWinMgr->GetEventRouter(AnimationEventRouter::GetClassType());
+        (AnimationEventRouter *)_tabMgr->GetEventRouter(AnimationEventRouter::GetClassType());
 
     aRouter->AnimationPlayReverse();
     //	update();
@@ -1277,7 +1284,7 @@ void MainForm::playBackward() {
 
 void MainForm::stepBack() {
     AnimationEventRouter *aRouter =
-        (AnimationEventRouter *)_vizWinMgr->GetEventRouter(AnimationEventRouter::GetClassType());
+        (AnimationEventRouter *)_tabMgr->GetEventRouter(AnimationEventRouter::GetClassType());
 
     aRouter->AnimationStepReverse();
     //	update();
@@ -1285,7 +1292,7 @@ void MainForm::stepBack() {
 
 void MainForm::stepForward() {
     AnimationEventRouter *aRouter =
-        (AnimationEventRouter *)_vizWinMgr->GetEventRouter(AnimationEventRouter::GetClassType());
+        (AnimationEventRouter *)_tabMgr->GetEventRouter(AnimationEventRouter::GetClassType());
 
     aRouter->AnimationStepForward();
     //	update();
@@ -1311,7 +1318,7 @@ void MainForm::setAnimationOnOff(bool on) {
 }
 
 void MainForm::setAnimationDraw() {
-    _vizWinMgr->updateDirtyWindows();
+    _vizWinMgr->Update();
     // update();
 }
 
@@ -1320,7 +1327,7 @@ void MainForm::setTimestep() {
     int timestep = _timeStepEdit->text().toInt();
 
     AnimationEventRouter *aRouter =
-        (AnimationEventRouter *)_vizWinMgr->GetEventRouter(AnimationEventRouter::GetClassType());
+        (AnimationEventRouter *)_tabMgr->GetEventRouter(AnimationEventRouter::GetClassType());
 
     aRouter->SetTimeStep(timestep);
     //	update();
@@ -1353,7 +1360,7 @@ for (int i = 0; i < _modeCombo->count(); i++) {
 
 void MainForm::showTab(const std::string &tag) {
     _tabMgr->MoveToFront(tag);
-    EventRouter *eRouter = _vizWinMgr->GetEventRouter(tag);
+    EventRouter *eRouter = _tabMgr->GetEventRouter(tag);
     eRouter->updateTab();
 }
 
@@ -1700,7 +1707,7 @@ void MainForm::loadStartingPrefs() {
 
 void MainForm::setActiveEventRouter(string type) {
 
-    EventRouter *eRouter = _vizWinMgr->GetEventRouter(type);
+    EventRouter *eRouter = _tabMgr->GetEventRouter(type);
     if (!eRouter)
         return;
 
@@ -1716,7 +1723,7 @@ void MainForm::setActiveEventRouter(string type) {
 
 void MainForm::goHome() {
     NavigationEventRouter *vRouter =
-        (NavigationEventRouter *)_vizWinMgr->GetEventRouter(NavigationEventRouter::GetClassType());
+        (NavigationEventRouter *)_tabMgr->GetEventRouter(NavigationEventRouter::GetClassType());
     assert(vRouter);
 
     vRouter->UseHomeViewpoint();
@@ -1724,7 +1731,7 @@ void MainForm::goHome() {
 
 void MainForm::viewAll() {
     NavigationEventRouter *vRouter =
-        (NavigationEventRouter *)_vizWinMgr->GetEventRouter(NavigationEventRouter::GetClassType());
+        (NavigationEventRouter *)_tabMgr->GetEventRouter(NavigationEventRouter::GetClassType());
     assert(vRouter);
 
     vRouter->ViewAll();
@@ -1732,7 +1739,7 @@ void MainForm::viewAll() {
 
 void MainForm::setHome() {
     NavigationEventRouter *vRouter =
-        (NavigationEventRouter *)_vizWinMgr->GetEventRouter(NavigationEventRouter::GetClassType());
+        (NavigationEventRouter *)_tabMgr->GetEventRouter(NavigationEventRouter::GetClassType());
     assert(vRouter);
 
     vRouter->SetHomeViewpoint();
@@ -1743,7 +1750,7 @@ void MainForm::alignView(int axis) {
         return;
 
     NavigationEventRouter *vRouter =
-        (NavigationEventRouter *)_vizWinMgr->GetEventRouter(NavigationEventRouter::GetClassType());
+        (NavigationEventRouter *)_tabMgr->GetEventRouter(NavigationEventRouter::GetClassType());
     assert(vRouter);
 
     vRouter->AlignView(axis);
@@ -1751,7 +1758,7 @@ void MainForm::alignView(int axis) {
 
 void MainForm::viewRegion() {
     NavigationEventRouter *vRouter =
-        (NavigationEventRouter *)_vizWinMgr->GetEventRouter(NavigationEventRouter::GetClassType());
+        (NavigationEventRouter *)_tabMgr->GetEventRouter(NavigationEventRouter::GetClassType());
     assert(vRouter);
 
     vRouter->CenterSubRegion();
@@ -1809,10 +1816,8 @@ bool MainForm::eventFilter(QObject *obj, QEvent *event) {
             _plot->Update();
         }
 
-        _vizWinMgr->UpdateRouters();
-
         _tabMgr->Update();
-        _vizWinMgr->updateDirtyWindows();
+        _vizWinMgr->Update();
 
         update();
 
@@ -1832,7 +1837,7 @@ bool MainForm::eventFilter(QObject *obj, QEvent *event) {
         //
         // case (QEvent::Paint):
 
-        _vizWinMgr->updateDirtyWindows();
+        _vizWinMgr->Update();
 
         break;
     default:
@@ -1922,13 +1927,12 @@ void MainForm::enableWidgets(bool onOff) {
     _navigationAction->setEnabled(onOff);
     _Edit->setEnabled(onOff);
     _windowSelector->setEnabled(onOff);
-    _vizWinMgr->setEnabled(onOff);
     _tabMgr->setEnabled(onOff);
     _statsAction->setEnabled(onOff);
     _plotAction->setEnabled(onOff);
     //	_seedMeAction->setEnabled(onOff);
 
-    _vizWinMgr->EnableRouters(onOff);
+    _tabMgr->EnableRouters(onOff);
 }
 
 void MainForm::enableAnimationWidgets(bool on) {
@@ -1940,10 +1944,9 @@ void MainForm::enableAnimationWidgets(bool on) {
         _stepForwardAction->setEnabled(true);
         playForwardAction->setEnabled(true);
     } else {
-        AnimationEventRouter *aRouter = (AnimationEventRouter *)_vizWinMgr->GetEventRouter(
-            AnimationEventRouter::GetClassType());
+        AnimationEventRouter *aRouter =
+            (AnimationEventRouter *)_tabMgr->GetEventRouter(AnimationEventRouter::GetClassType());
 
-        _vizWinMgr->setEnabled(true);
         aRouter->setEnabled(true);
 
         _animationToolBar->setEnabled(true);
