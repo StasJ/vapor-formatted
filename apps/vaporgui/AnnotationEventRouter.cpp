@@ -30,7 +30,7 @@
 #include <vapor/AnnotationParams.h>
 
 #include "qcolordialog.h"
-#include "ui_vizFeaturesTab.h"
+#include "ui_AnnotationGUI.h"
 
 #include <qlabel.h>
 
@@ -67,7 +67,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
 } // namespace
 
 AnnotationEventRouter::AnnotationEventRouter(QWidget *parent, ControlExec *ce)
-    : QWidget(parent), Ui_vizFeaturesTab(), EventRouter(ce, AnnotationParams::GetClassType()) {
+    : QWidget(parent), Ui_AnnotationGUI(), EventRouter(ce, AnnotationParams::GetClassType()) {
 
     setupUi(this);
 
