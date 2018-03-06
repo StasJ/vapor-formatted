@@ -66,8 +66,8 @@ void ParamsMgr::_init(vector<string> appParams, XmlNode *node) {
         _otherParams->Create(RegionParams::GetClassType(), RegionParams::GetClassType());
     }
 
-    if (!_otherParams->GetParams(VizFeatureParams::GetClassType())) {
-        _otherParams->Create(VizFeatureParams::GetClassType(), VizFeatureParams::GetClassType());
+    if (!_otherParams->GetParams(AnnotationParams::GetClassType())) {
+        _otherParams->Create(AnnotationParams::GetClassType(), AnnotationParams::GetClassType());
     }
 
     // Deal with any Params registered by the application
