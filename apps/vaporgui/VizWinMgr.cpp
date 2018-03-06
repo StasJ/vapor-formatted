@@ -40,6 +40,7 @@
 
 #include "AnimationEventRouter.h"
 #include "AnimationParams.h"
+#include "AnnotationEventRouter.h"
 #include "AppSettingsEventRouter.h"
 #include "HelloEventRouter.h"
 #include "MainForm.h"
@@ -47,7 +48,6 @@
 #include "NavigationEventRouter.h"
 #include "StartupEventRouter.h"
 #include "TrackBall.h"
-#include "VizFeatureEventRouter.h"
 #include "VizWin.h"
 #include "VizWinMgr.h"
 #include "regioneventrouter.h"
@@ -129,7 +129,7 @@ void VizWinMgr::createAllDefaultTabs() {
     installTab(er->GetType(), 1, er);
 
     parent = TabManager::getInstance()->GetSubTabWidget(2);
-    er = new VizFeatureEventRouter(parent, _controlExec);
+    er = new AnnotationEventRouter(parent, _controlExec);
     installTab(er->GetType(), 2, er);
 
     parent = TabManager::getInstance()->GetSubTabWidget(2);
