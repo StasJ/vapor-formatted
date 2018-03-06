@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <map>
 #include <string>
+#include <vapor/common.h>
 #include <vector>
 
 union ut_unit;
