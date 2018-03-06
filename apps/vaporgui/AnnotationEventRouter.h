@@ -15,7 +15,7 @@
 //	Date:		June, 2015
 //
 //	Description:	Defines the AnnotationEventRouter class.
-//		This class handles events for the VizFeature params
+//		This class handles events for the Annotation params
 //
 #ifndef ANNOTATIONEVENTROUTER_H
 #define ANNOTATIONEVENTROUTER_H
@@ -53,7 +53,7 @@ class AnnotationEventRouter : public QWidget, public Ui_vizFeaturesTab, public E
 
     // Get static string identifier for this router class
     //
-    static string GetClassType() { return ("VizFeature"); }
+    static string GetClassType() { return ("Annotation"); }
     string GetType() const { return GetClassType(); }
 
     virtual void _confirmText(){};
