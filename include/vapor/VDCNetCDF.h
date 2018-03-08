@@ -206,7 +206,7 @@ class VDF_API VDCNetCDF : public VAPoR::VDC {
 #endif
 
   private:
-    int _version;
+    string _version;
     WASP *_master; // Master NetCDF file
 
     class open_file_info {
