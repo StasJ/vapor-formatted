@@ -53,10 +53,7 @@ class SettingsEventRouter : public QWidget, public Ui_SettingsGUI, public EventR
 
     // Get static string identifier for this router class
     //
-    static string GetClassType() {
-        // return("Settings");
-        return ("SettingsEventRouter");
-    }
+    static string GetClassType() { return ("SettingsEventRouter"); }
     string GetType() const { return GetClassType(); }
 
   protected:
@@ -65,15 +62,19 @@ class SettingsEventRouter : public QWidget, public Ui_SettingsGUI, public EventR
 
   private slots:
 
-    // void _configureCacheSize(bool enabled);
+    void _enableAutoStretch(bool enabled);
+    void _enableAutoSave(bool enabled);
+    void _changesPerSaveChanged();
+    void _autoSaveFileChanged();
+    void _chooseAutoSaveFile();
+
     void _numThreadsChanged();
     void _cacheSizeChanged();
     void _enableWinSize(bool enabled);
     void _windowSizeChanged();
-    void _enableAutoStretch(bool enabled);
 
     void _saveSettings();
-    void _setDirChanged();
+    void _setDirectoryPaths();
 
     void _chooseSessionPath();
     void _chooseMetadataPath();
@@ -93,7 +94,9 @@ class SettingsEventRouter : public QWidget, public Ui_SettingsGUI, public EventR
     void _warnUserAfterHeightChange();
 
     void _updateGeneralSettings();
-    void _updateDirChanged();
+    void _updateStartupSettings();
+    void _updateDirectoryPaths();
+
     string _choosePathHelper(string current, string help);
 };
 
