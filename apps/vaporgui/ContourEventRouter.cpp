@@ -6,7 +6,6 @@
 #include "ContourEventRouter.h"
 #include "EventRouter.h"
 #include "VariablesWidget.h"
-#include "VizWin.h"
 #include "vapor/ContourParams.h"
 #include <QFileDialog>
 #include <qcolordialog.h>
@@ -19,7 +18,7 @@
 
 using namespace VAPoR;
 
-ContourEventRouter::ContourEventRouter(QWidget *parent, VizWinMgr *vizMgr, ControlExec *ce)
+ContourEventRouter::ContourEventRouter(QWidget *parent, ControlExec *ce)
     : QTabWidget(parent), RenderEventRouter(ce, ContourParams::GetClassType()) {
 
     _variables = new ContourVariablesSubtab(this);
