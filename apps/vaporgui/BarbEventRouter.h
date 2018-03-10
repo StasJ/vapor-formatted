@@ -4,7 +4,6 @@
 #include "BarbSubtabs.h"
 #include "GL/glew.h"
 #include "RenderEventRouter.h"
-#include "TabManager.h"
 #include "VariablesWidget.h"
 #include "vapor/BarbParams.h"
 #include "vapor/BarbRenderer.h"
