@@ -4,7 +4,6 @@
 #include "ContourSubtabs.h"
 #include "GL/glew.h"
 #include "RenderEventRouter.h"
-#include "TabManager.h"
 #include "VariablesWidget.h"
 #include "vapor/ContourParams.h"
 #include "vapor/ContourRenderer.h"
