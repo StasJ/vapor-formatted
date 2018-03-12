@@ -74,9 +74,9 @@ TabManager::TabManager(QWidget *parent, ControlExec *ce) : QTabWidget(parent) {
     _initialized = false;
 
     connect(_renderHolder, SIGNAL(activeChanged(string, string, string)), this,
-            SLOT(setActive(string, string, string)));
+            SLOT(_setActive(string, string, string)));
     connect(_renderHolder, SIGNAL(newRendererSignal(string, string, string)), this,
-            SLOT(newRenderer(string, string, string)));
+            SLOT(_newRenderer(string, string, string)));
 
     _createAllDefaultTabs();
 
@@ -250,7 +250,7 @@ void TabManager::_setFrontTab(int newFrontPosn) {
     }
 }
 
-void TabManager::setActive(string activeViz, string renderClass, string renderInst) {
+void TabManager::_setActive(string activeViz, string renderClass, string renderInst) {
 
     if (renderClass.empty() || renderInst.empty()) {
         HideRenderWidgets();
@@ -268,7 +268,7 @@ void TabManager::setActive(string activeViz, string renderClass, string renderIn
     emit ActiveEventRouterChanged(eRouter->GetType());
 }
 
-void TabManager::newRenderer(string activeViz, string renderClass, string renderInst) {
+void TabManager::_newRenderer(string activeViz, string renderClass, string renderInst) {
     if (renderClass.empty() || renderInst.empty()) {
         HideRenderWidgets();
         return;

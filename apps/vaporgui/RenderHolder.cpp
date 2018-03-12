@@ -18,7 +18,6 @@
 
 #include "RenderHolder.h"
 #include "ErrorReporter.h"
-#include "RenderEventRouter.h"
 #include "VizSelectCombo.h"
 #include "qdialog.h"
 #include "ui_NewRendererDialog.h"
