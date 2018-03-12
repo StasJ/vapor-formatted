@@ -885,6 +885,8 @@ void MainForm::_stateChangeCB() {
     //
     ParamsChangeEvent *event = new ParamsChangeEvent();
     QApplication::postEvent(this, event);
+
+    _eventsSinceLastSave++;
 }
 
 void MainForm::undoRedoHelper(bool undo) {
@@ -1921,8 +1923,6 @@ void MainForm::_performSessionAutoSave() {
         string autoSaveFile = sParams->GetAutoSaveSessionFile();
         _paramsMgr->SaveToFile(autoSaveFile);
         _eventsSinceLastSave = 0;
-    } else {
-        _eventsSinceLastSave++;
     }
 }
 
