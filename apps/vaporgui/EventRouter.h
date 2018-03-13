@@ -22,6 +22,7 @@
 #define EVENTROUTER_H
 #include "AnimationParams.h"
 #include "GUIStateParams.h"
+#include "SettingsParams.h"
 #include "vapor/ControlExecutive.h"
 #include <QLineEdit>
 #include <QObject>

@@ -19,15 +19,12 @@
 //
 #include "TabManager.h"
 #include "AnimationEventRouter.h"
-#include "AnnotationEventRouter.h"
-#include "AppSettingsEventRouter.h"
 #include "AppSettingsParams.h"
 #include "HelloEventRouter.h"
 #include "NavigationEventRouter.h"
 #include "RenderEventRouter.h"
 #include "RenderHolder.h"
-#include "StartupEventRouter.h"
-#include "StartupParams.h"
+#include "SettingsEventRouter.h"
 #include "ui_NavigationTab.h"
 #include <QScrollArea>
 #include <QSizePolicy>
@@ -365,17 +362,21 @@ RenderEventRouter *TabManager::GetRenderEventRouter(string winName, string rende
 void TabManager::_createAllDefaultTabs() {
 
     QWidget *parent;
+    EventRouter *er;
 
     // Install built-in tabs
     //
-    parent = _getSubTabWidget(2);
-    EventRouter *er = new StartupEventRouter(parent, _controlExec);
-    _installTab(er->GetType(), 2, er);
+    //<<<<<<< HEAD
+    //	parent = _getSubTabWidget(2);
+    //	EventRouter *er = new StartupEventRouter(parent, _controlExec);
+    //	_installTab(er->GetType(), 2, er);
 
     parent = _getSubTabWidget(1);
     er = new AnnotationEventRouter(parent, _controlExec);
     _installTab(er->GetType(), 1, er);
 
+    //=======
+    //>>>>>>> master
     parent = _getSubTabWidget(1);
     er = new AnimationEventRouter(parent, _controlExec);
     _installTab(er->GetType(), 1, er);
@@ -385,7 +386,11 @@ void TabManager::_createAllDefaultTabs() {
     _installTab(er->GetType(), 1, er);
 
     parent = _getSubTabWidget(2);
-    er = new AppSettingsEventRouter(parent, _controlExec);
+    //<<<<<<< HEAD
+    //	er = new AppSettingsEventRouter(parent, _controlExec);
+    //=======
+    er = new SettingsEventRouter(parent, _controlExec);
+    //>>>>>>> master
     _installTab(er->GetType(), 2, er);
 
     // Renderer tabs
@@ -421,9 +426,6 @@ void TabManager::_installTab(const std::string tag, int tabType, EventRouter *eR
     eRouter->hookUpTab();
     QWidget *tabWidget = dynamic_cast<QWidget *>(eRouter);
     assert(tabWidget);
-    if (tag != AppSettingsParams::GetClassType() && tag != StartupParams::GetClassType()) {
-        tabWidget->setEnabled(false);
-    }
     _addWidget(tabWidget, tag, tabType);
 }
 
