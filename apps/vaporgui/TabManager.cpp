@@ -19,6 +19,7 @@
 //
 #include "TabManager.h"
 #include "AnimationEventRouter.h"
+#include "AnnotationEventRouter.h"
 #include "AppSettingsParams.h"
 #include "HelloEventRouter.h"
 #include "NavigationEventRouter.h"
