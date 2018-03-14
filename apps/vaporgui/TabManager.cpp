@@ -39,8 +39,6 @@
 #include "ImageEventRouter.h"
 #include "TwoDDataEventRouter.h"
 
-TabManager *TabManager::_tabManager = NULL;
-
 using namespace VAPoR;
 TabManager::TabManager(QWidget *parent, ControlExec *ce, VizWinMgr *vizWinMgr)
     : QTabWidget(parent) {
@@ -143,7 +141,7 @@ int TabManager::findWidget(string widgetTag) {
 
 void TabManager::SetActiveViz(const QString &vizNameQ) {
 
-    _tabManager->show();
+    this->show();
     // Make the renderHolder show either the active renderer or none.
     //
     _renderHolder->Update();
