@@ -283,10 +283,16 @@ class MainForm : public QMainWindow {
 
     void loadDataHelper(const std::vector<string> &files, string prompt, string filter,
                         string format, bool multi);
-    void createActions();
+    void _createCaptureMenu();
+    void _createToolsMenu();
+    void _createEditMenu();
     void _createFileMenu();
+    void _createHelpMenu();
     void createMenus();
     void hookupSignals();
+    void _createModeToolBar();
+    void _createAnimationToolBar();
+    void _createVizToolBar();
     void createToolBars();
     virtual void sessionOpenHelper(string fileName);
 
@@ -295,6 +301,8 @@ class MainForm : public QMainWindow {
     void enableWidgets(bool onOff);
 
     void enableAnimationWidgets(bool onOff);
+
+    void _fileSaveHelper(string path);
 
   private slots:
     void sessionOpen(QString qfileName = "");
@@ -334,9 +342,6 @@ class MainForm : public QMainWindow {
 
     void launchWebHelp(QAction *);
     void modeChange(int);
-    void languageChange();
-    void initCaptureMenu();
-    void setupEditMenu();
     void setInteractiveRefLevel(int);
     void loadStartingPrefs();
 
