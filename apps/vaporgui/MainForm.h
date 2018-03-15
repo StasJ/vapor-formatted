@@ -28,10 +28,12 @@
 #include "GUIStateParams.h"
 #include "MiscParams.h"
 #include "SettingsParams.h"
+#include "TabManager.h"
 #include <QActionGroup>
 #include <QComboBox>
 #include <QIcon>
 #include <QLabel>
+#include <QLineEdit>
 #include <QPaintEvent>
 #include <QWidgetAction>
 #include <cassert>
@@ -50,12 +52,10 @@ class QMdiArea;
 class QDockWindow;
 class QLabel;
 class QSpinBox;
-class QLineEdit;
 
 // class SeedMe;
 class VizWindow;
 class VizWinMgr;
-class TabManager;
 class VizSelectCombo;
 
 class BannerGUI;
@@ -209,7 +209,6 @@ class MainForm : public QMainWindow {
     void _performSessionAutoSave();
     void _stateChangeCB();
 
-    void showTab(const std::string &tag);
     QMdiArea *getMDIArea() { return _mdiArea; }
 
     QApplication *getApp() { return _App; }
@@ -331,14 +330,10 @@ class MainForm : public QMainWindow {
     void setNavigate(bool);
 
     // animation toolbar:
-    void playForward();
-    void playBackward();
-    void pauseClick();
-    void stepForward();
-    void stepBack();
-    void setAnimationOnOff(bool);
-    void setAnimationDraw();
-    void setTimestep();
+    void _setTimeStep() {
+        int ts = _timeStepEdit->text().toInt();
+        _tabMgr->AnimationSetTimestep(ts);
+    }
 
     void launchWebHelp(QAction *);
     void modeChange(int);
@@ -348,5 +343,8 @@ class MainForm : public QMainWindow {
     void setActiveEventRouter(string type);
 
     void _setProj4String(string proj4String);
+
+    void _setAnimationOnOff(bool onOff);
+    void _setAnimationDraw();
 };
 #endif // MAINFORM_H
