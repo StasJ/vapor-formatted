@@ -21,7 +21,6 @@
 #define ANIMATIONEVENTROUTER_H
 
 #include "EventRouter.h"
-#include "TabManager.h"
 #include "ui_animationTab.h"
 #include <vapor/MyBase.h>
 
