@@ -18,7 +18,6 @@
 
 #include "RenderHolder.h"
 #include "ErrorReporter.h"
-#include "RenderEventRouter.h"
 #include "VizSelectCombo.h"
 #include "qdialog.h"
 #include "ui_NewRendererDialog.h"
@@ -177,8 +176,17 @@ void NewRendererDialog::uncheckAllButtons() {
     twoDDataButton->blockSignals(false);
 }
 
-RenderHolder::RenderHolder(QWidget *parent, ControlExec *ce) : QWidget(parent), Ui_LeftPanel() {
+RenderHolder::RenderHolder(QWidget *parent, ControlExec *ce, const vector<QWidget *> &widgets,
+                           const vector<string> &widgetNames, const vector<string> &descriptions,
+                           const vector<string> &iconPaths, const vector<string> &smallIconPaths)
+    : QWidget(parent), Ui_LeftPanel() {
+
+    assert(widgets.size() == widgetNames.size());
+    assert(widgets.size() == iconPaths.size());
+    assert(widgets.size() == smallIconPaths.size());
+
     setupUi(this);
+
     _controlExec = ce;
     _newRendererDialog = new NewRendererDialog(this, ce);
     _vaporTable = new VaporTable(tableWidget, false, true);
@@ -186,8 +194,13 @@ RenderHolder::RenderHolder(QWidget *parent, ControlExec *ce) : QWidget(parent), 
                         (VaporTable::HighlightFlags)(VaporTable::ROWS));
     _currentRow = 0;
 
+    _widgetNames = widgetNames;
+    for (int i = 0; i < widgets.size(); i++) {
+        stackedWidget->addWidget(widgets[i]);
+    }
+    stackedWidget->setCurrentIndex(0);
+
     makeConnections();
-    clearStackedWidget();
     initializeSplitter();
 }
 
@@ -200,14 +213,6 @@ void RenderHolder::makeConnections() {
     connect(dupCombo, SIGNAL(activated(int)), this, SLOT(copyInstanceTo(int)));
 }
 
-void RenderHolder::clearStackedWidget() {
-    for (int i = stackedWidget->count() - 1; i >= 0; i--) {
-        QWidget *wid = stackedWidget->widget(i);
-        stackedWidget->removeWidget(wid);
-        delete wid;
-    }
-}
-
 void RenderHolder::initializeSplitter() {
     QList<int> proportions;
     int topHeight = deleteButton->height() + newButton->height() + newButton->height();
@@ -215,16 +220,6 @@ void RenderHolder::initializeSplitter() {
     proportions.append(topHeight);
     proportions.append(bottomHeight);
     mainSplitter->setSizes(proportions);
-}
-
-int RenderHolder::AddWidget(QWidget *wid, const char *name, string tag) {
-    // rc indicates position in the stacked widget.  It will
-    // be needed to change "active" renderer
-    //
-    int rc = stackedWidget->addWidget(wid);
-    stackedWidget->setCurrentIndex(rc);
-
-    return rc;
 }
 
 void RenderHolder::initializeNewRendererDialog(vector<string> datasetNames) {
@@ -237,14 +232,13 @@ void RenderHolder::initializeNewRendererDialog(vector<string> datasetNames) {
 void RenderHolder::showNewRendererDialog() {
     ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
     vector<string> dataSetNames = paramsMgr->GetDataMgrNames();
-    vector<string> rendererTypees = _controlExec->GetAllRenderClasses();
 
     initializeNewRendererDialog(dataSetNames);
     if (_newRendererDialog->exec() != QDialog::Accepted) {
         return;
     }
 
-    string rendererType = _newRendererDialog->getSelectedRenderer();
+    string rendererType = _newRendererDialog->GetSelectedRenderer();
 
     int selection = _newRendererDialog->dataMgrCombo->currentIndex();
     string dataSetName = dataSetNames[selection];
@@ -613,7 +607,7 @@ void RenderHolder::Update() {
     //
     if (numRows == 0) {
         p->SetActiveRenderer(activeViz, "", "");
-        SetCurrentIndex(-1);
+        SetCurrentWidget("");
         stackedWidget->hide();
         deleteButton->setEnabled(false);
         dupCombo->setEnabled(false);
@@ -621,6 +615,22 @@ void RenderHolder::Update() {
         deleteButton->setEnabled(true);
         dupCombo->setEnabled(true);
     }
+}
+
+void RenderHolder::SetCurrentWidget(string name) {
+
+    int indx = -1;
+    for (int i = 0; i < _widgetNames.size(); i++) {
+        if (name == _widgetNames[i]) {
+            indx = i;
+            break;
+        }
+    }
+    if (indx < 0)
+        return;
+
+    stackedWidget->setCurrentIndex(indx);
+    stackedWidget->show();
 }
 
 void RenderHolder::getRow(int row, string &rendererName, string &rendererType,
