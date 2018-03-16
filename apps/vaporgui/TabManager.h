@@ -24,6 +24,7 @@
 #include <qwidget.h>
 
 #include "GUIStateParams.h"
+#include <vapor/ControlExecutive.h>
 class RenderHolder;
 class EventRouter;
 class RenderEventRouter;

@@ -18,14 +18,11 @@
 //		that contains a tab for each of the Params classes
 //
 #include "AnimationEventRouter.h"
-#include "AppSettingsEventRouter.h"
 #include "AppSettingsParams.h"
 #include "NavigationEventRouter.h"
 #include "RenderEventRouter.h"
 #include "RenderHolder.h"
-#include "StartupEventRouter.h"
-#include "StartupParams.h"
-#include "VizFeatureEventRouter.h"
+#include "SettingsEventRouter.h"
 #include <QScrollArea>
 #include <QSizePolicy>
 #include <algorithm>
@@ -271,7 +268,7 @@ void TabManager::_newRenderer(string activeViz, string renderClass, string rende
         (AnimationParams *)paramsMgr->GetParams(AnimationParams::GetClassType());
     size_t ts = aParams->GetCurrentTimestep();
 
-    DataStatus *dataStatus = _controlExec->getDataStatus();
+    DataStatus *dataStatus = _controlExec->GetDataStatus();
 
     RenderParams *rParams = er->GetActiveParams();
     size_t local_ts = dataStatus->MapGlobalToLocalTimeStep(dataSetName, ts);
@@ -390,13 +387,10 @@ QWidget *TabManager::_getTabWidget(string tabName) const {
 void TabManager::_createAllDefaultTabs() {
 
     QWidget *parent;
+    EventRouter *er;
 
     // Install built-in tabs
     //
-    parent = _getTabWidget(_settingsTabName);
-    EventRouter *er = new StartupEventRouter(parent, _controlExec);
-    _installTab(_settingsTabName, er->GetType(), er);
-
     parent = _getTabWidget(_navigationTabName);
     er = new AnimationEventRouter(parent, _controlExec);
     _installTab(_navigationTabName, er->GetType(), er);
@@ -406,11 +400,7 @@ void TabManager::_createAllDefaultTabs() {
     _installTab(_navigationTabName, er->GetType(), er);
 
     parent = _getTabWidget(_settingsTabName);
-    er = new VizFeatureEventRouter(parent, _controlExec);
-    _installTab(_settingsTabName, er->GetType(), er);
-
-    parent = _getTabWidget(_settingsTabName);
-    er = new AppSettingsEventRouter(parent, _controlExec);
+    er = new SettingsEventRouter(parent, _controlExec);
     _installTab(_settingsTabName, er->GetType(), er);
 
     // Create renderers from render factory
@@ -436,10 +426,6 @@ void TabManager::_installTab(string tabName, string subTabName, EventRouter *eRo
     eRouter->hookUpTab();
     QWidget *tabWidget = dynamic_cast<QWidget *>(eRouter);
     assert(tabWidget);
-    if (subTabName != AppSettingsParams::GetClassType() &&
-        subTabName != StartupParams::GetClassType()) {
-        tabWidget->setEnabled(false);
-    }
     _addSubTabWidget(tabWidget, subTabName, tabName);
 }
 
