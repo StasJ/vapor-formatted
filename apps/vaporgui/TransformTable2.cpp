@@ -17,7 +17,6 @@
 //  Description:	Implements the TransformTable class.  This provides
 //  a widget that is inserted in the "Geometry" tab of various Renderer GUIs
 //
-#include "MainForm.h"
 #include "TransformTable.h"
 #include "vapor/RenderParams.h"
 #include "vapor/Transform.h"
