@@ -30,7 +30,6 @@ VaporTable::VaporTable(QTableWidget *table, bool lastRowIsCheckboxes, bool lastC
 }
 
 // Clear current table, then generate table of rows x columns
-// Determine template type and set validators on all cells accordingly
 // Determine if checkboxes are needed
 // Convert values, rowHeaders, and colHeaders to QStrings, then populate
 void VaporTable::Update(int rows, int cols, std::vector<int> values,
@@ -206,6 +205,8 @@ QLineEdit *VaporTable::createLineEdit(QString val) {
 
     connect(edit, SIGNAL(editingFinished()), this, SLOT(emitValueChanged()));
 
+    connect(edit, SIGNAL(returnPressed()), this, SLOT(emitReturnPressed()));
+
     edit->installEventFilter(this);
 
     return edit;
@@ -225,6 +226,8 @@ void VaporTable::emitValueChanged() {
 
     emit valueChanged(row, col);
 }
+
+void VaporTable::emitReturnPressed() { emit returnPressed(); }
 
 void VaporTable::emitCellClicked(QObject *obj) {
     int row = obj->property("row").toInt();
@@ -328,6 +331,7 @@ Value VaporTable::GetValue(int row, int col) {
     int nCols = _table->columnCount();
 
     QWidget *widget = _table->cellWidget(row, col);
+    assert(widget);
 
     if ((col == nCols - 1 && _lastColIsCheckboxes) || (row == nRows - 1 && _lastRowIsCheckboxes)) {
         QCheckBox *checkBox = widget->findChild<QCheckBox *>();
@@ -342,6 +346,17 @@ Value VaporTable::GetValue(int row, int col) {
 
     return {value};
 }
+
+/*template <class T>
+void VaporTable::GetRow(int row, std::vector<T> & values) {
+    values.clear();
+
+    int nCols = _table->columnCount();
+    for (int col=0; col<nCols; col++) {
+        T v = GetValue(row, col);
+        values.push_back(v);
+    }
+}*/
 
 std::string VaporTable::GetStringValue(int row, int col) {
     std::string value;

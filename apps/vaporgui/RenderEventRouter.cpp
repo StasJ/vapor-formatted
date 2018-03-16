@@ -54,7 +54,7 @@ DataMgr *RenderEventRouter::GetActiveDataMgr() const {
     bool status = paramsMgr->RenderParamsLookup(_instName, winName, dataSetName, paramsType);
     assert(status);
 
-    DataStatus *dataStatus = _controlExec->getDataStatus();
+    DataStatus *dataStatus = _controlExec->GetDataStatus();
     DataMgr *dataMgr = dataStatus->GetDataMgr(dataSetName);
     assert(dataMgr);
 
