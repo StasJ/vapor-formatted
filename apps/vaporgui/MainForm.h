@@ -265,8 +265,6 @@ class MainForm : public QMainWindow {
         return ((MiscParams *)_paramsMgr->GetParams(MiscParams::GetClassType()));
     }
 
-    void performAutoStretching();
-
     // Set the various widgets in the main window consistent with latest
     // params settings:
     //
