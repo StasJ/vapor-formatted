@@ -53,7 +53,7 @@
 #include "Statistics.h"
 #include "TabManager.h"
 #include "VizSelectCombo.h"
-#include "VizWin.h"
+#include "VizWinMgr.h"
 
 // Following shortcuts are provided:
 // CTRL_N: new session
@@ -220,7 +220,7 @@ MainForm::MainForm(vector<QString> files, QApplication *app, QWidget *parent, co
 
     _vizWinMgr = new VizWinMgr(this, _mdiArea, _controlExec);
 
-    _tabMgr = TabManager::Create(this, _controlExec, _vizWinMgr);
+    _tabMgr = new TabManager(this, _controlExec);
     _tabMgr->setMaximumWidth(600);
     _tabMgr->setUsesScrollButtons(true);
     // This is just large enough to show the whole width of flow tab, with a scrollbar
@@ -1044,11 +1044,6 @@ void MainForm::loadDataHelper(const vector<string> &files, string prompt, string
         viewAll();
         setHome();
 
-        vector<string> winNames = _paramsMgr->GetVisualizerNames();
-        for (int i = 0; i < winNames.size(); i++) {
-            ViewpointParams *vpParams = _paramsMgr->GetViewpointParams(winNames[i]);
-            vpParams->SetCurrentVPToHome();
-        }
         _sessionNewFlag = false;
     }
 
@@ -1392,12 +1387,6 @@ for (int i = 0; i < _modeCombo->count(); i++) {
 }
 #endif
 
-void MainForm::showTab(const std::string &tag) {
-    _tabMgr->MoveToFront(tag);
-    EventRouter *eRouter = _tabMgr->GetEventRouter(tag);
-    eRouter->updateTab();
-}
-
 void MainForm::modeChange(int newmode) {
     string modeName = _modeCombo->itemText(newmode).toStdString();
 
@@ -1412,10 +1401,6 @@ void MainForm::modeChange(int newmode) {
     }
 
     _navigationAction->setChecked(false);
-
-#ifdef DEAD
-    showTab(MouseModeParams::getModeTag(newmode));
-#endif
 
     if (_modeStatusWidget) {
         statusBar()->removeWidget(_modeStatusWidget);
