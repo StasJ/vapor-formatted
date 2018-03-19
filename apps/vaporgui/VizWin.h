@@ -19,6 +19,7 @@
 #ifndef VIZWIN_H
 #define VIZWIN_H
 
+#include "vapor/Manip.h"
 #include "vapor/Visualizer.h"
 #include <GL/glew.h>
 #include <QGLWidget>
@@ -107,6 +108,8 @@ class VizWin : public QGLWidget {
 
     void setUpProjMatrix();
     void setUpModelViewMatrix();
+
+    VAPoR::Manip *_manip;
 };
 
 #endif // VIZWIN_H
