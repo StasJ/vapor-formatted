@@ -22,7 +22,6 @@
 #define EVENTROUTER_H
 #include "AnimationParams.h"
 #include "GUIStateParams.h"
-#include "MiscParams.h"
 #include "SettingsParams.h"
 #include "vapor/ControlExecutive.h"
 #include <QLineEdit>
@@ -220,11 +219,6 @@ class EventRouter {
         assert(_controlExec != NULL);
         return ((GUIStateParams *)_controlExec->GetParamsMgr()->GetParams(
             GUIStateParams::GetClassType()));
-    }
-
-    MiscParams *GetMiscParams() const {
-        assert(_controlExec != NULL);
-        return ((MiscParams *)_controlExec->GetParamsMgr()->GetParams(MiscParams::GetClassType()));
     }
 
     AnimationParams *GetAnimationParams() const {
