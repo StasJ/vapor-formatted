@@ -38,8 +38,6 @@
 #include <string>
 #include <vector>
 
-#include "TabManager.h"
-
 #include "ErrorReporter.h"
 #include "EventRouter.h"
 #include "StartupEventRouter.h"
