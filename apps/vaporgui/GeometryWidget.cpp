@@ -18,8 +18,8 @@
 //  a widget that is inserted in the "Appearance" tab of various Renderer GUIs
 //
 #include "GeometryWidget.h"
-#include "MainForm.h"
 #include "vapor/DataMgrUtils.h"
+#include "vapor/ParamsMgr.h"
 #include "vapor/RenderParams.h"
 #include <QFileDialog>
 #include <qwidget.h>
