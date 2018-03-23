@@ -77,6 +77,8 @@ class VizWin : public QGLWidget {
   private:
     VizWin() {}
 
+    void updateManip(bool initialize = false);
+
     // Event handling
     // Virtual overrides:
     virtual void wheelEvent(QWheelEvent *e) { e->accept(); }
