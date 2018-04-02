@@ -41,6 +41,12 @@
 #include <vapor/Version.h>
 #include <vapor/glutil.h> // Must be included first!!!
 
+#include "TabManager.h"
+#include "VizSelectCombo.h"
+#include "VizWinMgr.h"
+//#include "NavigationEventRouter.h"
+//#include "AnnotationEventRouter.h"
+//#include "AnimationEventRouter.h"
 #include "BannerGUI.h"
 #include "ErrorReporter.h"
 #include "MainForm.h"
@@ -48,9 +54,6 @@
 #include "Plot.h"
 #include "SeedMe.h"
 #include "Statistics.h"
-#include "TabManager.h"
-#include "VizSelectCombo.h"
-#include "VizWinMgr.h"
 
 // Following shortcuts are provided:
 // CTRL_N: new session
@@ -265,7 +268,7 @@ MainForm::MainForm(vector<QString> files, QApplication *app, QWidget *parent)
     myParams.push_back(GUIStateParams::GetClassType());
     myParams.push_back(SettingsParams::GetClassType());
     myParams.push_back(AnimationParams::GetClassType());
-    myParams.push_back(MiscParams::GetClassType());
+    myParams.push_back(AnnotationParams::GetClassType());
 
     vector<string> myRenParams;
     myRenParams.push_back(StatisticsParams::GetClassType());
