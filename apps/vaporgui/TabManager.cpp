@@ -19,6 +19,7 @@
 //
 #include "TabManager.h"
 #include "AnimationEventRouter.h"
+#include "AnnotationEventRouter.h"
 #include "NavigationEventRouter.h"
 #include "RenderEventRouter.h"
 #include "RenderHolder.h"
@@ -408,6 +409,10 @@ void TabManager::_createAllDefaultTabs() {
     // Install built-in tabs
     //
     parent = _getTabWidget(_navigationTabName);
+
+    er = new AnnotationEventRouter(parent, _controlExec);
+    _installTab(_navigationTabName, er->GetType(), er);
+
     _animationEventRouter = new AnimationEventRouter(parent, _controlExec);
 
     connect(_animationEventRouter, SIGNAL(AnimationOnOffSignal(bool)), this,
@@ -417,7 +422,6 @@ void TabManager::_createAllDefaultTabs() {
     er = _animationEventRouter;
     _installTab(_navigationTabName, er->GetType(), er);
 
-    parent = _getTabWidget(_navigationTabName);
     _navigationEventRouter = new NavigationEventRouter(parent, _controlExec);
     er = _navigationEventRouter;
     _installTab(_navigationTabName, er->GetType(), er);
