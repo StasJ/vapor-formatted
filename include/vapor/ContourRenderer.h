@@ -59,7 +59,7 @@ class RENDER_API ContourRenderer : public Renderer {
     virtual int _paintGL();
 
   private:
-    GLuint drawList;
+    GLuint _drawList;
 
     struct {
         string varName;
@@ -74,7 +74,7 @@ class RENDER_API ContourRenderer : public Renderer {
         vector<double> boxMin, boxMax;
         vector<double> contourValues;
         vector<float> contourColors;
-    } cacheParams;
+    } _cacheParams;
 
     void _buildCache();
     bool _isCacheDirty() const;
