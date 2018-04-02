@@ -26,9 +26,7 @@
 
 #include "AnimationParams.h"
 #include "GUIStateParams.h"
-#include "MiscParams.h"
 #include "SettingsParams.h"
-#include "TabManager.h"
 #include <QActionGroup>
 #include <QComboBox>
 #include <QIcon>
@@ -41,6 +39,8 @@
 #include <qstring.h>
 #include <qvariant.h>
 #include <vapor/ControlExecutive.h>
+//#include "MiscParams.h"
+#include "TabManager.h"
 
 class QApplication;
 class QSpacerItem;
@@ -260,10 +260,12 @@ class MainForm : public QMainWindow {
         return ((AnimationParams *)_paramsMgr->GetParams(AnimationParams::GetClassType()));
     }
 
-    MiscParams *GetMiscParams() const {
-        assert(_paramsMgr != NULL);
-        return ((MiscParams *)_paramsMgr->GetParams(MiscParams::GetClassType()));
-    }
+    /*MiscParams *GetMiscParams() const {
+       assert(_paramsMgr != NULL);
+       return ((MiscParams *)
+           _paramsMgr->GetParams(MiscParams::GetClassType())
+       );
+    }*/
 
     // Set the various widgets in the main window consistent with latest
     // params settings:

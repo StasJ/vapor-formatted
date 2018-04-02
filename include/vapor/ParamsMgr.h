@@ -27,7 +27,7 @@
 #include <stack>
 #include <utility>
 
-#include <vapor/AnnotationsParams.h>
+#include <vapor/AnnotationParams.h>
 #include <vapor/DataMgr.h>
 #include <vapor/ParamsBase.h>
 #include <vapor/RenderParams.h>
@@ -340,16 +340,16 @@ class PARAMS_API ParamsMgr : public MyBase {
         return ((RegionParams *)_otherParams->GetParams(RegionParams::GetClassType()));
     };
 
-    //! Obtain the AnnotationsParams that are applicable in a particular Visualizer
+    //! Obtain the AnnotationParams that are applicable in a particular Visualizer
     //! window.
     //!
-    //! Return the AnnotationsParams instance associated with the
+    //! Return the AnnotationParams instance associated with the
     //! window named by \p winName in the current session state
     //!
-    //! \retval ptr AnnotationsParams instance that is applicable.
+    //! \retval ptr AnnotationParams instance that is applicable.
     //
-    AnnotationsParams *GetAnnotationsParams(string winName) const {
-        return ((AnnotationsParams *)_otherParams->GetParams(AnnotationsParams::GetClassType()));
+    AnnotationParams *GetAnnotationParams(string winName) const {
+        return ((AnnotationParams *)_otherParams->GetParams(AnnotationParams::GetClassType()));
     };
 
     //! Optain any paramers registered by the application
