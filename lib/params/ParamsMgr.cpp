@@ -482,7 +482,8 @@ void ParamsMgr::GetRenderParamNames(string winName, string dataSetName, string c
 
     // Sanity check.  Names should always be unique!
     //
-    unique(instNames.begin(), instNames.end());
+    sort(instNames.begin(), instNames.end());
+    instNames.erase(unique(instNames.begin(), instNames.end()), instNames.end());
 }
 
 void ParamsMgr::GetRenderParamNames(string winName, string dataSetName,
@@ -505,7 +506,8 @@ void ParamsMgr::GetRenderParamNames(string winName, string dataSetName,
 
         instNames.insert(instNames.end(), tmp.begin(), tmp.end());
     }
-    unique(instNames.begin(), instNames.end());
+    sort(instNames.begin(), instNames.end());
+    instNames.erase(unique(instNames.begin(), instNames.end()), instNames.end());
 }
 
 void ParamsMgr::GetRenderParamNames(string winName, vector<string> &instNames) const {
@@ -525,7 +527,8 @@ void ParamsMgr::GetRenderParamNames(string winName, vector<string> &instNames) c
         GetRenderParamNames(winName, itr->first, tmp);
         instNames.insert(instNames.end(), tmp.begin(), tmp.end());
     }
-    unique(instNames.begin(), instNames.end());
+    sort(instNames.begin(), instNames.end());
+    instNames.erase(unique(instNames.begin(), instNames.end()), instNames.end());
 }
 
 void ParamsMgr::GetRenderParamNames(vector<string> &instNames) const {
@@ -538,7 +541,8 @@ void ParamsMgr::GetRenderParamNames(vector<string> &instNames) const {
         GetRenderParamNames(itr->first, tmp);
         instNames.insert(instNames.end(), tmp.begin(), tmp.end());
     }
-    unique(instNames.begin(), instNames.end());
+    sort(instNames.begin(), instNames.end());
+    instNames.erase(unique(instNames.begin(), instNames.end()), instNames.end());
 }
 
 bool ParamsMgr::RenderParamsLookup(string instName, string &winName, string &dataSetName,
@@ -700,6 +704,10 @@ vector<string> ParamsMgr::GetRenderParamsClassNames(string winName, string dataS
         rClassNames.push_back(itr->first);
     }
 
+    // remove duplicates
+    //
+    sort(rClassNames.begin(), rClassNames.end());
+    rClassNames.erase(unique(rClassNames.begin(), rClassNames.end()), rClassNames.end());
     return (rClassNames);
 }
 
@@ -728,6 +736,10 @@ vector<string> ParamsMgr::GetRenderParamsClassNames(string winName) const {
         rClassNames.insert(rClassNames.end(), tmpV.begin(), tmpV.end());
     }
 
+    // remove duplicates
+    //
+    sort(rClassNames.begin(), rClassNames.end());
+    rClassNames.erase(unique(rClassNames.begin(), rClassNames.end()), rClassNames.end());
     return (rClassNames);
 }
 
@@ -741,6 +753,10 @@ vector<string> ParamsMgr::GetRenderParamInstances(string winName, string dataSet
         instances.insert(instances.end(), names.begin(), names.end());
     }
 
+    // Sanity check.  Names should always be unique!
+    //
+    sort(instances.begin(), instances.end());
+    instances.erase(unique(instances.begin(), instances.end()), instances.end());
     return (instances);
 }
 
@@ -765,6 +781,10 @@ vector<string> ParamsMgr::GetRenderParamInstances(string winName, string classNa
         }
     }
 
+    // Sanity check.  Names should always be unique!
+    //
+    sort(instances.begin(), instances.end());
+    instances.erase(unique(instances.begin(), instances.end()), instances.end());
     return (instances);
 }
 
