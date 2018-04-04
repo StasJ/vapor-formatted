@@ -249,7 +249,7 @@ void NavigationEventRouter::updateCameraChanged() {
 
 void NavigationEventRouter::setLightChanged() {
 
-    ViewpointParams *vpParams = (ViewpointParams *)GetActiveParams();
+    ViewpointParams *vpParams = _getActiveParams();
 
     ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
 
@@ -286,7 +286,7 @@ void NavigationEventRouter::setLightChanged() {
 
 void NavigationEventRouter::updateLightChanged() {
 
-    ViewpointParams *vpParams = (ViewpointParams *)GetActiveParams();
+    ViewpointParams *vpParams = _getActiveParams();
 
     lightPos00->setText(QString::number(vpParams->getLightDirection(0, 0)));
     lightPos01->setText(QString::number(vpParams->getLightDirection(0, 1)));
@@ -540,6 +540,9 @@ void NavigationEventRouter::customProjStringChanged() {
 //
 void NavigationEventRouter::_updateTab() {
 
+    if (!_getActiveParams())
+        return;
+
     updateCameraChanged();
     updateLightChanged();
     updateTransforms();
@@ -552,7 +555,9 @@ void NavigationEventRouter::CenterSubRegion() {
 
 #ifdef DEAD
 
-    ViewpointParams *vpParams = (ViewpointParams *)GetActiveParams();
+    ViewpointParams *vpParams = _getActiveParams();
+    if (!vpParams)
+        return;
 
     // Find the largest of the dimensions of the current region, projected orthogonal to view
     // direction:
@@ -619,7 +624,9 @@ void NavigationEventRouter::AlignView(int axis) {
     double dirvec[3] = {0.0, 0.0, 0.0};
     double upvec[3] = {0.0, 0.0, 0.0};
     upvec[1] = 1.;
-    ViewpointParams *vpParams = (ViewpointParams *)GetActiveParams();
+    ViewpointParams *vpParams = _getActiveParams();
+    if (!vpParams)
+        return;
 
     double curPosVec[3], curViewDir[3], curUpVec[3], curCenter[3];
     bool status = _getViewpointParams(curCenter, curPosVec, curViewDir, curUpVec);
@@ -715,7 +722,9 @@ void NavigationEventRouter::SetCenter(const double *coords) {
 #ifdef DEAD
     double vdir[3];
     vector<double> nvdir;
-    ViewpointParams *vpParams = (ViewpointParams *)GetActiveParams();
+    ViewpointParams *vpParams = _getActiveParams();
+    if (!vpParams)
+        return;
     vector<double> stretch = _dataStatus->getStretchFactors();
 
     // Determine the new viewDir in stretched world coords
@@ -798,10 +807,12 @@ void NavigationEventRouter::ViewAll() {
     _setViewpointParams(center, posvec, dirvec, upvec);
 }
 
-VAPoR::ParamsBase *NavigationEventRouter::GetActiveParams() const {
+VAPoR::ViewpointParams *NavigationEventRouter::_getActiveParams() const {
 
     GUIStateParams *p = GetStateParams();
     string vizName = p->GetActiveVizName();
+    if (vizName.empty())
+        return (NULL);
 
     ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
 
@@ -831,7 +842,7 @@ bool NavigationEventRouter::_getViewpointParams(double center[3], double posvec[
 
     // Get camera parameters from ViewpointParams
     //
-    ViewpointParams *vpParams = (ViewpointParams *)GetActiveParams();
+    ViewpointParams *vpParams = _getActiveParams();
     double m[16];
     vpParams->GetModelViewMatrix(m);
 

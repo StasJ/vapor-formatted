@@ -81,7 +81,7 @@ class NavigationEventRouter : public QWidget, public Ui_NavigationTab, public Ev
     void updateCameraChanged();
     void updateLightChanged();
 
-    VAPoR::ParamsBase *GetActiveParams() const;
+    VAPoR::ViewpointParams *_getActiveParams() const;
 
     void _setViewpointParams(const double center[3], const double posvec[3], const double dirvec[3],
                              const double upvec[3]) const;
