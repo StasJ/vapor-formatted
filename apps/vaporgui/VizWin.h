@@ -113,6 +113,8 @@ class VizWin : public QGLWidget {
     void getNearFarDist(const double posVec[3], const double dirVec[3], double &boxNear,
                         double &boxFar) const;
 
+    VAPoR::RenderParams *getRenderParams();
+
     void setUpProjMatrix();
     void setUpModelViewMatrix();
 
