@@ -321,9 +321,7 @@ void VizWin::initializeGL() {
 }
 
 void VizWin::mousePressEventNavigate(QMouseEvent *e) {
-
-    _navigating = true;
-
+    cout << "mousePressEventNavigate" << endl;
     // Let trackball handle mouse events for navigation
     //
     _trackBall->MouseOnTrackball(0, _buttonNum, e->x(), e->y(), width(), height());
@@ -367,6 +365,7 @@ void VizWin::mousePressEvent(QMouseEvent *e) {
         std::vector<double> screenCoords = getScreenCoords(e);
         bool mouseOnManip = _manip->MouseEvent(_buttonNum, screenCoords, _strHandleMid);
         if (mouseOnManip) {
+            cout << "Returning" << endl;
             return;
         }
     }
@@ -407,8 +406,6 @@ void VizWin::mouseReleaseEventNavigate(QMouseEvent *e) {
     p->SetCameraUpVec(upvec);
 
     paramsMgr->EndSaveStateGroup();
-
-    _navigating = false;
 }
 
 /*
@@ -429,17 +426,17 @@ void VizWin::mouseReleaseEvent(QMouseEvent *e) {
         _manip->MouseEvent(_buttonNum, screenCoords, _strHandleMid, true);
     }
 
-    if (modeName == MouseModeParams::GetNavigateModeName()) {
+    if (modeName == MouseModeParams::GetNavigateModeName())
         mouseReleaseEventNavigate(e);
-        _buttonNum = 0;
-        return;
-    }
 
+    cout << "Setting _navigating to false" << endl;
+    _navigating = false;
     _buttonNum = 0;
 }
 
 void VizWin::mouseMoveEventNavigate(QMouseEvent *e) {
-
+    cout << "mouseMoveEventNavigate"
+         << " " << e->x() << " " << e->y() << " " << width() << " " << height() << endl;
     _trackBall->MouseOnTrackball(1, _buttonNum, e->x(), e->y(), width(), height());
 
     _trackBall->TrackballSetMatrix();
@@ -493,13 +490,16 @@ void VizWin::mouseMoveEvent(QMouseEvent *e) {
     string modeName = getCurrentMouseMode();
 
     if (modeName == MouseModeParams::GetRegionModeName()) {
+        cout << "Here1" << endl;
         if (!_navigating) {
+            cout << "Here" << endl;
             std::vector<double> screenCoords = getScreenCoords(e);
 
             bool mouseOnManip = _manip->MouseEvent(_buttonNum, screenCoords, _strHandleMid);
-            if (mouseOnManip) {
+            if (mouseOnManip)
                 return;
-            }
+            else
+                _navigating = true;
         }
     }
 
