@@ -1832,7 +1832,6 @@ void MainForm::enableAnimationWidgets(bool on) {
 
 // Capture just one image
 // Launch a file save dialog to specify the names
-// Then put jpeg in it.
 //
 void MainForm::captureSingleJpeg() {
     showCitationReminder();
@@ -1865,13 +1864,14 @@ void MainForm::captureSingleJpeg() {
     string filepath = fileInfo->absoluteFilePath().toStdString();
 
     // Save the path for future captures
-    // p->SetCurrentImageSavePath(fileInfo->absolutePath().toStdString());
     sP->SetImageDir(filepath);
 
     // Turn on "image capture mode" in the current active visualizer
     GUIStateParams *p = GetStateParams();
     string vizName = p->GetActiveVizName();
     _controlExec->EnableImageCapture(filepath, vizName);
+
+    delete fileInfo;
 }
 
 void MainForm::launchSeedMe() {
@@ -1932,14 +1932,13 @@ void MainForm::launchPlotUtility() {
 // Launch a file save dialog to specify the names
 // Then start file saving mode.
 void MainForm::startAnimCapture() {
-
     showCitationReminder();
     SettingsParams *sP = GetSettingsParams();
     string imageDir = sP->GetImageDir();
     if (imageDir == "")
         imageDir = sP->GetDefaultImageDir();
 
-    QFileDialog fileDialog(this, "Specify first file name for image capture sequence",
+    QFileDialog fileDialog(this, "Specify the base file name for image capture sequence",
                            imageDir.c_str(), "PNG or JPEG images (*.png *.jpg *.jpeg )");
     fileDialog.setAcceptMode(QFileDialog::AcceptSave);
     fileDialog.move(pos());
@@ -1951,30 +1950,30 @@ void MainForm::startAnimCapture() {
     QStringList qsl = fileDialog.selectedFiles();
     if (qsl.isEmpty())
         return;
-    QString s = qsl[0];
-    QFileInfo *fileInfo = new QFileInfo(s);
+    QFileInfo *fileInfo = new QFileInfo(qsl[0]);
 
     QString suffix = fileInfo->suffix();
-    if (suffix != "jpg" && suffix != "jpeg" && suffix != "png") {
+    if (suffix != "png" && suffix != "jpg" && suffix != "jpeg") {
         MSG_ERR("Image capture file name must end with .png or .jpg or .jpeg");
         return;
     }
     // Save the path for future captures
     sP->SetImageDir(fileInfo->absolutePath().toStdString());
-
     QString fileBaseName = fileInfo->baseName();
-    // See if it ends with digits.  If not, append them
+
     int posn;
     for (posn = fileBaseName.length() - 1; posn >= 0; posn--) {
         if (!fileBaseName.at(posn).isDigit())
             break;
     }
     int startFileNum = 0;
+
     unsigned int lastDigitPos = posn + 1;
     if (lastDigitPos < fileBaseName.length()) {
         startFileNum = fileBaseName.right(fileBaseName.length() - lastDigitPos).toInt();
         fileBaseName.truncate(lastDigitPos);
     }
+
     QString filePath = fileInfo->absolutePath() + "/" + fileBaseName;
     // Insert up to 4 zeros
     QString zeroes;
@@ -2001,16 +2000,36 @@ void MainForm::startAnimCapture() {
     filePath += ".";
     filePath += suffix;
     string fpath = filePath.toStdString();
+
+    // Check if the numbered file exists.
+    QFileInfo check_file(filePath);
+    if (check_file.exists()) {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Are you sure?");
+        QString msg = "The following numbered file exists.\n ";
+        msg += filePath;
+        msg += "\n";
+        msg +=
+            "Do you want to continue? You can choose \"No\" to go back and change the file name.";
+        msgBox.setText(msg);
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::No);
+        if (msgBox.exec() == QMessageBox::No) {
+            return;
+        }
+    }
+
     // Turn on "image capture mode" in the current active visualizer
     GUIStateParams *p = GetStateParams();
     string vizName = p->GetActiveVizName();
     _controlExec->EnableAnimationCapture(vizName, true, fpath);
     _capturingAnimationVizName = vizName;
-    delete fileInfo;
 
     _captureEndJpegCaptureAction->setEnabled(true);
     _captureStartJpegCaptureAction->setEnabled(false);
     _captureSingleJpegCaptureAction->setEnabled(false);
+
+    delete fileInfo;
 }
 
 void MainForm::endAnimCapture() {
