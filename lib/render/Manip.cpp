@@ -56,7 +56,8 @@ void TranslateStretchManip::Update(std::vector<double> llc, std::vector<double> 
                                    std::vector<double> minExts, std::vector<double> maxExts,
                                    std::vector<double> cameraPosition,
                                    std::vector<double> rotationCenter, double modelViewMatrix[16],
-                                   double projectionMatrix[16], std::vector<int> windowSize) {
+                                   double projectionMatrix[16], std::vector<int> windowSize,
+                                   bool constrain) {
     for (int i = 0; i < 16; i++) {
         _modelViewMatrix[i] = modelViewMatrix[i];
         _projectionMatrix[i] = projectionMatrix[i];
@@ -75,6 +76,8 @@ void TranslateStretchManip::Update(std::vector<double> llc, std::vector<double> 
     std::copy(urc.begin(), urc.end(), _selection + 3);
     std::copy(minExts.begin(), minExts.end(), _extents);
     std::copy(maxExts.begin(), maxExts.end(), _extents + 3);
+
+    _constrain = constrain;
 }
 
 void TranslateStretchManip::GetBox(std::vector<double> &llc, std::vector<double> &urc) {
@@ -897,7 +900,9 @@ void TranslateStretchManip::captureMouseDown(int handleNum, int buttonNum, doubl
 // If constrain is true, the slide will not go out of the full extents of the data.
 //
 
-void TranslateStretchManip::slideHandle(int handleNum, double movedRay[3], bool constrain) {
+void TranslateStretchManip::
+    // slideHandle(int handleNum, double movedRay[3]){
+    slideHandle(int handleNum, double movedRay[3], bool constrain) {
     double normalVector[3] = {0.f, 0.f, 0.f};
     double q[3], r[3], w[3];
     assert(handleNum >= 0);
