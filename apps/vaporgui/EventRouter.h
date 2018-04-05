@@ -22,7 +22,6 @@
 #define EVENTROUTER_H
 #include "AnimationParams.h"
 #include "GUIStateParams.h"
-#include "MiscParams.h"
 #include "SettingsParams.h"
 #include "vapor/ControlExecutive.h"
 #include <QLineEdit>
@@ -222,11 +221,6 @@ class EventRouter {
             GUIStateParams::GetClassType()));
     }
 
-    MiscParams *GetMiscParams() const {
-        assert(_controlExec != NULL);
-        return ((MiscParams *)_controlExec->GetParamsMgr()->GetParams(MiscParams::GetClassType()));
-    }
-
     AnimationParams *GetAnimationParams() const {
         assert(_controlExec != NULL);
         return ((AnimationParams *)_controlExec->GetParamsMgr()->GetParams(
@@ -247,6 +241,10 @@ class EventRouter {
     //! Return a string identifier for the derived EventRouter type
     //!
     virtual string GetType() const = 0;
+
+    //! Notify the event router that new data set has been loaded
+    //!
+    virtual void LoadDataNotify(string dataSetName) {}
 
   protected:
     EventRouter() {}
