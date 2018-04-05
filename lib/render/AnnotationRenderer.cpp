@@ -608,10 +608,10 @@ std::vector<double> AnnotationRenderer::getDomainExtents(string dmName) const {
     m_dataStatus->GetActiveExtents(m_paramsMgr, m_winName, dmName, ts, minExts, maxExts);
 
     for (int i = 0; i < minExts.size(); i++) {
-        cout << "minExts[" << i << "]:   " << minExts[i] << endl;
-        cout << "dsMinExts[" << i << "]: " << dsMinExts[i] << endl;
-        cout << "maxExts[" << i << "]:   " << maxExts[i] << endl;
-        cout << "dsMaxExts[" << i << "]: " << dsMaxExts[i] << endl;
+        cout << "DataStatus   min[" << i << "]: " << minExts[i] << endl;
+        cout << "DataMgrUtils min[" << i << "]: " << dsMinExts[i] << endl;
+        cout << "DataStatus   max[" << i << "]: " << maxExts[i] << endl;
+        cout << "DataMgrUtils max[" << i << "]: " << dsMaxExts[i] << endl;
         cout << endl;
     }
 
