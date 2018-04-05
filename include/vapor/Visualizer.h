@@ -24,7 +24,7 @@
 #define Visualizer_H
 
 #include <map>
-#include <vapor/AnnotationsRenderer.h>
+#include <vapor/AnnotationRenderer.h>
 #include <vapor/DataStatus.h>
 #include <vapor/ParamsMgr.h>
 #include <vapor/Renderer.h>
@@ -58,9 +58,9 @@ class RENDER_API Visualizer : public MyBase {
     //! \retval RegionParams* current active RegionParams
     RegionParams *getActiveRegionParams() const;
 
-    //! Method that returns the AnnotationsParams that is active in this window.
-    //! \retval AnnotationsParams* current active AnnotationsParams
-    AnnotationsParams *getActiveAnnotationsParams() const;
+    //! Method that returns the AnnotationParams that is active in this window.
+    //! \retval AnnotationParams* current active AnnotationParams
+    AnnotationParams *getActiveAnnotationParams() const;
 
     //! Method to initialize GL rendering.  Must be called from a GL context.
     //! \param[in] sm A pointer to a ShaderMgr
@@ -131,9 +131,9 @@ class RENDER_API Visualizer : public MyBase {
     Renderer *getRenderer(string type, string instance) const;
 
 #ifdef DEAD
-    //! Identify the AnnotationsRenderer associated with this Visualizer
+    //! Identify the AnnotationRenderer associated with this Visualizer
     //! \return associated RenderParams instance
-    AnnotationsRenderer *getAnnotationsRenderer() { return _vizFeatures; }
+    AnnotationRenderer *getAnnotationRenderer() { return _vizFeatures; }
 #endif
 
     //! Insert a renderer in the queue using the default (5) render order
@@ -308,7 +308,7 @@ class RENDER_API Visualizer : public MyBase {
     const DataStatus *m_dataStatus;
     string m_winName;
     ShaderMgr *m_shaderMgr;
-    AnnotationsRenderer *m_vizFeatures;
+    AnnotationRenderer *m_vizFeatures;
     bool m_viewpointDirty;
 
     //! There's a separate manipholder for each window

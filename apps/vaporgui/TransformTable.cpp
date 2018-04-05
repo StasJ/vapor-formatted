@@ -18,7 +18,6 @@
 //  a widget that is inserted in the "Geometry" tab of various Renderer GUIs
 //
 #include "TransformTable.h"
-#include "MainForm.h"
 #include "vapor/RenderParams.h"
 #include "vapor/Transform.h"
 #include "vapor/ViewpointParams.h"

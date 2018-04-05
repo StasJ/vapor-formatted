@@ -19,7 +19,6 @@
 //
 #include "TFWidget.h"
 #include "ErrorReporter.h"
-#include "MainForm.h"
 #include "RenderEventRouter.h"
 #include "TwoDSubtabs.h"
 #include "vapor/RenderParams.h"

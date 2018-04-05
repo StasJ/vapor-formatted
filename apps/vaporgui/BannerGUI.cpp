@@ -1,6 +1,5 @@
 
 #include "BannerGUI.h"
-#include "MainForm.h"
 #include <QDesktopServices>
 #include <QTranslator>
 #include <QUrl>
@@ -11,7 +10,9 @@
 #include <qtimer.h>
 #include <vapor/GetAppPath.h>
 
-BannerGUI::BannerGUI(std::string imagefile, int maxwait, bool center, QString text, QString url) {
+BannerGUI::BannerGUI(QWidget *parent, std::string imagefile, int maxwait, bool center, QString text,
+                     QString url) {
+    _parent = parent;
     this->url = url;
 
     if (maxwait >= 0)
@@ -43,7 +44,7 @@ BannerGUI::BannerGUI(std::string imagefile, int maxwait, bool center, QString te
         std::vector<std::string> vec = std::vector<std::string>();
         vec.push_back("images");
         vec.push_back(imagefile);
-        QImage image(GetAppPath("VAPOR", "share", vec).c_str());
+        QImage image(Wasp::GetAppPath("VAPOR", "share", vec).c_str());
         // QImage image(imagefile.c_str());
         if (image.isNull()) {
             QMessageBox::information(this, tr("VAPoR Banner"),
@@ -60,21 +61,11 @@ BannerGUI::BannerGUI(std::string imagefile, int maxwait, bool center, QString te
                 buttonLayout->addWidget(infoButton);
             if (maxwait < 0)
                 buttonLayout->addWidget(closeButton);
-            // imageLabel->resize(image.size());
-            /*
-            QRect position = frameGeometry();
-            position.moveCenter(MainForm::getInstance()->pos());
-            move(position.center() - image.size());
-            */
-            // move(MainForm::getInstance()->rect().center().x() - (image.width() / 2),
-            // MainForm::getInstance()->rect().center().y() - (image.width() / 2)); I will assume the
-            // problem is my high-res monitor or something
 
             if (center) {
-                MainForm *mf = MainForm::getInstance();
-                QPoint mpos = mf->pos();
-                move(mpos.x() + (mf->width() / 2) - (image.width() / 2),
-                     mpos.y() + (mf->height() / 2) - (image.height() / 2));
+                QPoint mpos = parent->pos();
+                move(mpos.x() + (this->width() / 2) - (image.width() / 2),
+                     mpos.y() + (this->height() / 2) - (image.height() / 2));
             } else {
                 QRect screenGeometry = QApplication::desktop()->screenGeometry();
                 int x = (screenGeometry.width() - image.size().width()) / 2;
