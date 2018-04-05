@@ -481,19 +481,13 @@ class VDF_API DataMgr : public Wasp::MyBase {
     //
     virtual bool VariableExists(size_t ts, string varname, int level = 0, int lod = 0) const;
 
-    //! \copydoc DC::GetMapProjection(
-    //!   string varname
-    //! ) const;
-    //
-    virtual string GetMapProjection(string varname) const { return (_proj4String); }
-
     //! \copydoc DC::GetMapProjection() const;
     //
     virtual string GetMapProjection() const { return (_proj4String); }
 
     //! \copydoc DC::GetMapProjectionDefault() const;
     //
-    virtual string GetMapProjectionDefault() const { return (_proj4String); }
+    virtual string GetMapProjectionDefault() const { return (_proj4StringDefault); }
 
 #ifdef DEAD
 
@@ -711,6 +705,7 @@ class VDF_API DataMgr : public Wasp::MyBase {
 
     std::vector<double> _timeCoordinates;
     string _proj4String;
+    string _proj4StringDefault;
 
     typedef struct {
         size_t ts;
@@ -953,7 +948,7 @@ class VDF_API DataMgr : public Wasp::MyBase {
     int _getCoordPairExtents(string lon, string lat, float &lonmin, float &lonmax, float &latmin,
                              float &latmax);
 
-    int _initProj4String();
+    int _initProj4StringDefault();
 
     int _initHorizontalCoordVars();
 };
