@@ -72,12 +72,6 @@ class PARAMS_API ViewpointParams : public ParamsBase {
     //! \retval float Specular exponent
     double getExponent() const { return (GetValueDouble(_specularExpTag, _defaultSpecularExp)); }
 
-    //! Set the current viewpoint to be the home viewpoint
-    void SetCurrentVPToHome() {
-        Viewpoint *currentViewpoint = getCurrentViewpoint();
-        setHomeViewpoint(currentViewpoint);
-    }
-
     //! Set the number of directional light sources
     //! \param[in] int number of lights (0,1,2)
     //! \retval 0 on success
@@ -147,12 +141,6 @@ class PARAMS_API ViewpointParams : public ParamsBase {
     //! \sa Viewpoint
     void SetCurrentViewpoint(Viewpoint *newVP);
 
-    //! Set the home viewpoint
-    //! \param[in] Viewpoint* home viewpoint to be set
-    //! \retval int 0 if successful
-    //! \sa Viewpoint
-    void setHomeViewpoint(Viewpoint *newVP);
-
     //! Set widow width and height
     //!
     //! \param[in] width width of window in pixels
@@ -177,65 +165,35 @@ class PARAMS_API ViewpointParams : public ParamsBase {
     //! \param[in] factors 3-vector of stretch factors
     void SetStretchFactors(vector<double> factors);
 
-    //! Obtain the home viewpoint
-    //! \sa Viewpoint
-    //! \retval Viewpoint* current home viewpoint.
-    virtual Viewpoint *GetHomeViewpoint() const {
-        Viewpoint *v = (Viewpoint *)m_VPs->GetParams(_homeViewTag);
-        assert(v != NULL);
-        return (v);
-    }
-
     //! Obtain the current viewpoint
     //! \sa Viewpoint
-    //! \retval Viewpoint* current home viewpoint.
+    //! \retval Viewpoint* current viewpoint.
     virtual Viewpoint *getCurrentViewpoint() const {
         Viewpoint *v = (Viewpoint *)m_VPs->GetParams(_currentViewTag);
         assert(v != NULL);
         return (v);
     }
 
-    //! Get current camera position
-    //! \param[out] position 3-element vector with camera position in
-    //! world coordinates
-    //
-    void GetCameraPos(double position[3]) const { getCurrentViewpoint()->GetCameraPos(position); }
-
-    //! Get current camera normalized view direction
-    //! \param[out] viewDir 3-element vector with camera position in
-    //! world coordinates
-    //
-    void GetCameraViewDir(double viewDir[3]) const {
-        getCurrentViewpoint()->GetCameraViewDir(viewDir);
-    }
-
-    //! Get current camera normalized up direction
-    //! \param[out] upVec 3-element vector with camera position in
-    //! world coordinates
-    //
-    void GetCameraUpVec(double upVec[3]) const { getCurrentViewpoint()->GetCameraUpVec(upVec); }
-
-    //! Obtain rotation center in local coordinates
-    //! \param[out] center 3-element vector with center of rotation
-    //
-    void GetRotationCenter(double center[3]) const {
-        getCurrentViewpoint()->GetRotationCenter(center);
-    }
-
-    //! Specify rotation center in local coordinates
-    //! \param[in] vector<double>& rotation center in local coordinates
-    //! \retval int 0 if successful
-    void SetRotationCenter(const double center[3]) {
-        getCurrentViewpoint()->SetRotationCenter(center);
-    }
-
     //! Return the current 4x4 model-view matrix
     //
     void GetModelViewMatrix(double m[16]) const { getCurrentViewpoint()->GetModelViewMatrix(m); }
-    void SetModelViewMatrix(const double m[16]) { getCurrentViewpoint()->SetModelViewMatrix(m); }
+    void SetModelViewMatrix(const double matrix[16]) {
+        // printf( "trackball perspective Matrix is: \n %f %f %f %f \n %f %f %f %f \n %f %f %f %f \n
+        // %f %f %f %f ",
+        //          matrix[0], matrix[1],matrix[2],matrix[3],
+        //        matrix[4], matrix[5],matrix[6],matrix[7],
+        //      matrix[8], matrix[9],matrix[10],matrix[11],
+        //    matrix[12], matrix[13],matrix[14],matrix[15]);
+        getCurrentViewpoint()->SetModelViewMatrix(matrix);
+    }
 
     void GetProjectionMatrix(double m[16]) const { getCurrentViewpoint()->GetProjectionMatrix(m); }
     void SetProjectionMatrix(const double m[16]) { getCurrentViewpoint()->SetProjectionMatrix(m); }
+
+    bool ReconstructCamera(const double m[16], double position[3], double upVec[3],
+                           double viewDir[3]) const {
+        return (getCurrentViewpoint()->ReconstructCamera(m, position, upVec, viewDir));
+    }
 
     //! Access the transform for a data set
     //!
@@ -295,7 +253,6 @@ class PARAMS_API ViewpointParams : public ParamsBase {
     static const string _viewPointsTag;
     static const string _transformsTag;
     static const string _currentViewTag;
-    static const string _homeViewTag;
     static const string _lightDirectionsTag;
     static const string _diffuseCoeffTag;
     static const string _specularCoeffTag;
@@ -315,10 +272,6 @@ class PARAMS_API ViewpointParams : public ParamsBase {
     static int _defaultNumLights;
 
     void _init();
-
-#ifdef DEAD
-    void setupHomeView();
-#endif
 
 #endif // DOXYGEN_SKIP_THIS
 };

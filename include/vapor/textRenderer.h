@@ -65,13 +65,13 @@ class RENDER_API TextObject {
 
     int Initialize(string font, string text, int size, float txtColor[4], float bgColor[4],
                    ViewpointParams *vpParams = NULL, TypeFlag type = LABEL,
-                   OrientationFlag orientation = DEADCENTER);
+                   OrientationFlag orientation = BOTTOMLEFT);
     int Initialize(string font, string text, int size, double txtColor[4], double bgColor[4],
                    ViewpointParams *vpParams = NULL, TypeFlag type = LABEL,
-                   OrientationFlag orientation = DEADCENTER);
+                   OrientationFlag orientation = BOTTOMLEFT);
     int Initialize(string font, string text, int size, vector<double> txtColor,
                    vector<double> bgColor, ViewpointParams *vpParams = NULL, TypeFlag type = LABEL,
-                   OrientationFlag orientation = DEADCENTER);
+                   OrientationFlag orientation = BOTTOMLEFT);
     ~TextObject();
 
     int drawMe(double coords[3]);

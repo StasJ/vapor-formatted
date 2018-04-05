@@ -19,7 +19,6 @@
 //
 #include "TFWidget.h"
 #include "ErrorReporter.h"
-#include "MainForm.h"
 #include "RenderEventRouter.h"
 #include "TwoDSubtabs.h"
 #include "vapor/RenderParams.h"
@@ -51,11 +50,8 @@ TFWidget::TFWidget(QWidget *parent) : QWidget(parent), Ui_TFWidgetGUI() {
 }
 
 void TFWidget::collapseConstColorWidgets() {
-    useConstColorLabel->hide();
-    useConstColorCheckbox->hide();
-    constColorLabel->hide();
-    colorDisplay->hide();
-    colorSelectButton->hide();
+    useConstColorFrame->hide();
+    constColorFrame->hide();
 }
 
 void TFWidget::showConstColorWidgets() {
@@ -64,7 +60,12 @@ void TFWidget::showConstColorWidgets() {
     constColorLabel->show();
     colorDisplay->show();
     colorSelectButton->show();
+    constColorFrame->show();
 }
+
+void TFWidget::hideWhitespaceFrame() { whitespaceFrame->hide(); }
+
+void TFWidget::showWhitespaceFrame() { whitespaceFrame->show(); }
 
 void TFWidget::Reinit(Flags flags) {
     _flags = flags;
@@ -101,11 +102,28 @@ void TFWidget::enableTFWidget(bool state) {
     colorInterpCombo->setEnabled(state);
 }
 
-void TFWidget::loadTF(string varname) {
-    GUIStateParams *p;
-    p = (GUIStateParams *)_paramsMgr->GetParams(GUIStateParams::GetClassType());
+void TFWidget::loadTF() {
+    string varname = getCurrentVarName();
+    if (varname.empty())
+        return;
 
-    string path = p->GetCurrentTFPath();
+    // Ignore TF's in session, for now.
+
+    SettingsParams *sP;
+    sP = (SettingsParams *)_paramsMgr->GetParams(SettingsParams::GetClassType());
+    string path = sP->GetTFDir();
+
+    fileLoadTF(varname, path.c_str(), true);
+
+    Update(_dataMgr, _paramsMgr, _rParams);
+}
+
+void TFWidget::loadTF(string varname) {
+    SettingsParams *sP;
+    sP = (SettingsParams *)_paramsMgr->GetParams(SettingsParams::GetClassType());
+
+    string path = sP->GetTFDir();
+
     fileLoadTF(varname, path.c_str(), true);
 }
 
@@ -116,6 +134,11 @@ void TFWidget::fileLoadTF(string varname, const char *startPath, bool savePath) 
     // Null string indicates nothing selected
     if (s.length() == 0)
         return;
+    else {
+        SettingsParams *sP;
+        sP = (SettingsParams *)_paramsMgr->GetParams(SettingsParams::GetClassType());
+        sP->SetTFDir(s.toStdString());
+    }
 
     // Force name to end with .tf3
     if (!s.endsWith(".tf3")) {
@@ -204,12 +227,21 @@ void TFWidget::updateColorInterpolation() {
     colorInterpCombo->blockSignals(true);
     if (t == TFInterpolator::diverging) {
         colorInterpCombo->setCurrentIndex(0);
+        showWhitespaceFrame();
     } else if (t == TFInterpolator::discrete) {
         colorInterpCombo->setCurrentIndex(1);
+        hideWhitespaceFrame();
     } else {
         colorInterpCombo->setCurrentIndex(2);
+        hideWhitespaceFrame();
     }
     colorInterpCombo->blockSignals(false);
+
+    int useWhitespace = tf->getUseWhitespace();
+    if (useWhitespace)
+        whitespaceCheckbox->setCheckState(Qt::Checked);
+    else
+        whitespaceCheckbox->setCheckState(Qt::Unchecked);
 }
 
 void TFWidget::updateAutoUpdateHistoCheckbox() {
@@ -231,6 +263,7 @@ void TFWidget::updateSliders() {
     //
     float range[2], values[2];
     getRange(range, values);
+
     _rangeCombo->Update(range[0], range[1], values[0], values[1]);
     opacitySlider->setValue(getOpacity() * 100);
 
@@ -302,6 +335,7 @@ void TFWidget::connectWidgets() {
     connect(autoUpdateHistoCheckbox, SIGNAL(stateChanged(int)), this,
             SLOT(autoUpdateHistoChecked(int)));
     connect(colorInterpCombo, SIGNAL(activated(int)), this, SLOT(colorInterpChanged(int)));
+    connect(whitespaceCheckbox, SIGNAL(stateChanged(int)), this, SLOT(setUseWhitespace(int)));
     connect(loadButton, SIGNAL(pressed()), this, SLOT(loadTF()));
     connect(saveButton, SIGNAL(pressed()), this, SLOT(fileSaveTF()));
     connect(mappingFrame, SIGNAL(updateParams()), this, SLOT(setRange()));
@@ -346,8 +380,11 @@ void TFWidget::updateHisto() {
         bool force = true;
         mappingFrame->RefreshHistogram(force);
         updateMappingFrame();
-    } else
+        updateHistoButton->setEnabled(false);
+    } else {
         mappingFrame->fitToView();
+        updateHistoButton->setEnabled(true);
+    }
 }
 
 void TFWidget::autoUpdateHistoChecked(int state) {
@@ -405,20 +442,10 @@ void TFWidget::colorInterpChanged(int index) {
     updateHisto();
 }
 
-void TFWidget::loadTF() {
-    string varname = getCurrentVarName();
-    if (varname.empty())
-        return;
-
-    // Ignore TF's in session, for now.
-
-    GUIStateParams *p;
-    p = (GUIStateParams *)_paramsMgr->GetParams(GUIStateParams::GetClassType());
-    string path = p->GetCurrentTFPath();
-
-    fileLoadTF(varname, p->GetCurrentTFPath().c_str(), true);
-
-    Update(_dataMgr, _paramsMgr, _rParams);
+void TFWidget::setUseWhitespace(int state) {
+    MapperFunction *tf = getCurrentMapperFunction();
+    tf->setUseWhitespace(state);
+    updateHisto();
 }
 
 bool TFWidget::autoUpdateHisto() {

@@ -4,7 +4,6 @@
 #include "BarbSubtabs.h"
 #include "GL/glew.h"
 #include "RenderEventRouter.h"
-#include "TabManager.h"
 #include "VariablesWidget.h"
 #include "vapor/BarbParams.h"
 #include "vapor/BarbRenderer.h"
@@ -35,7 +34,7 @@ class BarbEventRouter : public QTabWidget, public RenderEventRouter {
     Q_OBJECT
 
   public:
-    BarbEventRouter(QWidget *parent, VizWinMgr *vizMgr, VAPoR::ControlExec *ce);
+    BarbEventRouter(QWidget *parent, VAPoR::ControlExec *ce);
     ~BarbEventRouter();
 
     virtual void hookUpTab() {}
@@ -51,6 +50,11 @@ class BarbEventRouter : public QTabWidget, public RenderEventRouter {
   protected:
     virtual void _updateTab();
     virtual void _initializeTab();
+
+    virtual string _getDescription() const;
+
+    virtual string _getSmallIconImagePath() const { return ("Barbs_small.png"); }
+    virtual string _getIconImagePath() const { return ("Barbs.png"); }
 
   private:
     BarbEventRouter() {}

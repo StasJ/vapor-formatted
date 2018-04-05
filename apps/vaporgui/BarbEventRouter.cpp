@@ -6,7 +6,6 @@
 #include "BarbEventRouter.h"
 #include "EventRouter.h"
 #include "VariablesWidget.h"
-#include "VizWin.h"
 #include "vapor/BarbParams.h"
 #include <QFileDialog>
 #include <qcolordialog.h>
@@ -19,7 +18,12 @@
 
 using namespace VAPoR;
 
-BarbEventRouter::BarbEventRouter(QWidget *parent, VizWinMgr *vizMgr, ControlExec *ce)
+//
+// Register class with object factory!!!
+//
+static RenderEventRouterRegistrar<BarbEventRouter> registrar(BarbEventRouter::GetClassType());
+
+BarbEventRouter::BarbEventRouter(QWidget *parent, ControlExec *ce)
     : QTabWidget(parent), RenderEventRouter(ce, BarbParams::GetClassType()) {
 
     _variables = new BarbVariablesSubtab(this);
@@ -91,4 +95,14 @@ void BarbEventRouter::_updateTab() {
     _appearance->Update(GetActiveDataMgr(), _controlExec->GetParamsMgr(), GetActiveParams());
 
     _geometry->Update(_controlExec->GetParamsMgr(), GetActiveDataMgr(), GetActiveParams());
+}
+
+string BarbEventRouter::_getDescription() const {
+
+    return ("Displays an "
+            "array of arrows with the users domain, with custom dimensions that are "
+            "defined by the user in the X, Y, and Z axes.  The arrows represent a vector "
+            "whos direction is determined by up to three user-defined variables.\n\nBarbs "
+            "can have a constant color applied to them, or they may be colored according "
+            "to an additional user-defined variable.\n\n");
 }
