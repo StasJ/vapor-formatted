@@ -32,7 +32,7 @@
 #include <QResizeEvent>
 #include <cassert>
 #include <vapor/ControlExecutive.h>
-#include <vapor/ImageRenderer.h>
+#include <vapor/ImageParams.h>
 #include <vapor/Viewpoint.h>
 #include <vapor/ViewpointParams.h>
 #include <vapor/debug.h>
@@ -574,18 +574,16 @@ void VizWin::paintGL() {
     glPopMatrix();
 }
 
-// VAPoR::RenderParams* VizWin::getRenderParams() {
-VAPoR::RenderParams *VizWin::getRenderParams(string &classType) {
-    // string classType;
-    return getRenderParams(classType);
+VAPoR::RenderParams *VizWin::getRenderParams() {
+    string className;
+    return getRenderParams(className);
 }
 
-// VAPoR::RenderParams* VizWin::getRenderParams(string &classType) {
-VAPoR::RenderParams *VizWin::getRenderParams() {
+VAPoR::RenderParams *VizWin::getRenderParams(string &className) {
     ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
     GUIStateParams *guiP = (GUIStateParams *)paramsMgr->GetParams(GUIStateParams::GetClassType());
 
-    string inst, winName, dataSetName, className;
+    string inst, winName, dataSetName;
     guiP->GetActiveRenderer(_winName, className, inst);
 
     bool exists = paramsMgr->RenderParamsLookup(inst, winName, dataSetName, className);
@@ -665,8 +663,7 @@ void VizWin::updateManip(bool initialize) {
 
     std::vector<double> llc, urc;
     string classType;
-    //	VAPoR::RenderParams* rParams = getRenderParams(classType);
-    VAPoR::RenderParams *rParams = getRenderParams();
+    VAPoR::RenderParams *rParams = getRenderParams(classType);
     if (initialize || rParams == NULL) {
         llc = minExts;
         urc = maxExts;
@@ -675,11 +672,9 @@ void VizWin::updateManip(bool initialize) {
         box->GetExtents(llc, urc);
     }
 
-    bool constrain = false; // true;
-    if (classType == ImageRenderer::GetClassType()) {
-        cout << "setting constraint to false" << endl;
+    bool constrain = true;
+    if (classType == ImageParams::GetClassType())
         constrain = false;
-    }
 
     _manip->Update(llc, urc, minExts, maxExts, cameraPosition, rotationCenter, mv, proj, windowSize,
                    constrain);
