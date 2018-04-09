@@ -342,6 +342,8 @@ void VizWinMgr::Restart() {
     }
 
     _initialized = true;
+
+    Update();
 }
 
 void VizWinMgr::Reinit() {
