@@ -22,6 +22,7 @@
 #ifndef MANIP_H
 #define MANIP_H
 
+#include "vapor/Transform.h"
 #include <vapor/glutil.h>
 
 // Handle diameter in pixels:
@@ -69,7 +70,8 @@ class RENDER_API Manip {
                         std::vector<double> minExtents, std::vector<double> maxExtents,
                         std::vector<double> cameraPosition, std::vector<double> rotationCenter,
                         double modelViewMatrix[16], double projectionMatrix[16],
-                        std::vector<int> windowSize, bool constrain) = 0;
+                        std::vector<int> windowSize, VAPoR::Transform *transform,
+                        bool constrain) = 0;
 
     //! Notify that manipulator that is being moved with the mouse
     //! \param[in] buttonNum - The mouse button being used to move the manipulator
@@ -110,6 +112,7 @@ class RENDER_API Manip {
 
     int _buttonNum;
     double _selection[6];
+    double _transformedSelection[6];
     double _extents[6];
     double _cameraPosition[3];
     // std::vector<double> _selection;
@@ -156,7 +159,7 @@ class RENDER_API TranslateStretchManip : public Manip {
                         std::vector<double> minExtents, std::vector<double> maxExtents,
                         std::vector<double> cameraPosition, std::vector<double> rotationCenter,
                         double modelViewMatrix[16], double projectionMatrix[16],
-                        std::vector<int> windowSize, bool constrain);
+                        std::vector<int> windowSize, VAPoR::Transform *transform, bool constrain);
 
     //! @copydoc Manip::MoveEvent(int, std::vector<double>)
     virtual bool MouseEvent(int buttonNum, std::vector<double> screenCoords,
@@ -289,6 +292,7 @@ class RENDER_API TranslateStretchManip : public Manip {
     double _rotationCenter[3];
     double _modelViewMatrix[16];
     double _projectionMatrix[16];
+    VAPoR::Transform *_transform;
 
     // screen coords where mouse is pressed:
     float _mouseDownPoint[2];

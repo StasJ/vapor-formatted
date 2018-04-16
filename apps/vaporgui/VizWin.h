@@ -20,6 +20,7 @@
 #define VIZWIN_H
 
 #include "vapor/Manip.h"
+#include "vapor/Transform.h"
 #include "vapor/Visualizer.h"
 #include <GL/glew.h>
 #include <QGLWidget>
@@ -113,6 +114,8 @@ class VizWin : public QGLWidget {
     void getActiveExtents(std::vector<double> &minExts, std::vector<double> &maxExts);
     void getCenterAndCamPos(std::vector<double> &rotationCenter, std::vector<double> &cameraPos);
     void getWindowSize(std::vector<int> &windowSize);
+    string getCurrentDataMgrName() const;
+    VAPoR::Transform *getTransform() const;
 
     void getNearFarDist(const double posVec[3], const double dirVec[3], double &boxNear,
                         double &boxFar) const;
