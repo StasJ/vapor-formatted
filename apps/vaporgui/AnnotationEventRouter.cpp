@@ -129,6 +129,18 @@ void AnnotationEventRouter::GetWebHelp(vector<pair<string, string>> &help) const
 }
 
 void AnnotationEventRouter::_updateTab() {
+    ParamsMgr *pMgr = _controlExec->GetParamsMgr();
+    vector<string> names = pMgr->GetDataMgrNames();
+
+    // If no data managers we can't update
+    //
+    if (names.empty()) {
+        this->setEnabled(false);
+        return;
+    } else {
+        this->setEnabled(true);
+    }
+
     updateRegionColor();
     updateDomainColor();
     updateBackgroundColor();
@@ -436,6 +448,9 @@ void AnnotationEventRouter::convertLonLatToPCS(double &xCoord, double &yCoord) {
 AxisAnnotation *AnnotationEventRouter::_getCurrentAxisAnnotation() {
     AnnotationParams *vfParams = (AnnotationParams *)GetActiveParams();
     string dataMgr = vfParams->GetCurrentAxisDataMgrName();
+    if (dataMgr.empty())
+        return (NULL);
+
     AxisAnnotation *aa = vfParams->GetAxisAnnotation(dataMgr);
 
     bool initialized = aa->GetAxisAnnotationInitialized();
@@ -489,6 +504,7 @@ void AnnotationEventRouter::initializeAnnotation(AxisAnnotation *aa) {
 }
 
 void AnnotationEventRouter::updateAxisAnnotations() {
+
     updateDataMgrCombo();
     updateCopyRegionCombo();
     updateAxisEnabledCheckbox();
