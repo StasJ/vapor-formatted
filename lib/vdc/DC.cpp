@@ -633,6 +633,9 @@ template <class T> int DC::_getVarTemplate(string varname, int level, int lod, T
     return (0);
 }
 
+template int DC::_getVarTemplate<float>(string varname, int level, int lod, float *data);
+template int DC::_getVarTemplate<int>(string varname, int level, int lod, int *data);
+
 template <class T> int DC::_getVarTemplate(size_t ts, string varname, int level, int lod, T *data) {
 
     int fd = OpenVariableRead(ts, varname, level, lod);
@@ -647,6 +650,9 @@ template <class T> int DC::_getVarTemplate(size_t ts, string varname, int level,
 
     return (rc);
 }
+
+template int DC::_getVarTemplate<float>(size_t ts, string varname, int level, int lod, float *data);
+template int DC::_getVarTemplate<int>(size_t ts, string varname, int level, int lod, int *data);
 
 bool DC::GetVarDimensions(string varname, bool spatial, vector<DC::Dimension> &dimensions) const {
     dimensions.clear();
