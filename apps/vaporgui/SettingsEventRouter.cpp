@@ -47,6 +47,7 @@
 #include "SettingsParams.h"
 #include "vapor/ControlExecutive.h"
 
+#include "FileOperationChecker.h"
 #include "QIntValidatorWithFixup.h"
 
 using namespace VAPoR;
