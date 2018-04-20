@@ -84,7 +84,6 @@ class AnnotationEventRouter : public QWidget, public Ui_AnnotationGUI, public Ev
     void timeLLXChanged();
     void timeLLYChanged();
     void timeSizeChanged();
-    void setCurrentAxisDataMgr(int);
     void copyRegionFromRenderer();
 
   private:
@@ -118,6 +117,7 @@ class AnnotationEventRouter : public QWidget, public Ui_AnnotationGUI, public Ev
     void updateLatLonCheckbox();
     void updateCopyRegionCombo();
     void updateTicOrientationCombos();
+    void addRendererToCombo(string, string, string, string);
 
     void updateTimePanel();
     void updateTimeColor();
@@ -126,6 +126,7 @@ class AnnotationEventRouter : public QWidget, public Ui_AnnotationGUI, public Ev
     void updateTimeSize();
 
     void updateDataMgrCombo();
+    string getProjString();
 
     VAPoR::AxisAnnotation *_getCurrentAxisAnnotation();
 
