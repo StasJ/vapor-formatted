@@ -479,3 +479,7 @@ void VaporTable::highlightActiveCol(int col) {
         }
     }
 }
+
+void VaporTable::SetActiveRow(int row) { _activeRow = row; }
+
+void VaporTable::SetActiveCol(int col) { _activeCol = col; }
