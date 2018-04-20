@@ -94,9 +94,9 @@ class PARAMS_API AnnotationParams : public ParamsBase {
     void SetBackgroundColor(std::vector<double> color);
 
     string GetCurrentAxisDataMgrName() const;
-    void SetCurrentAxisDataMgrName(string dataMgr);
+    void SetCurrentAxisDataMgrName(string dataMgr = "default");
 
-    AxisAnnotation *GetAxisAnnotation(string dataMgr = "");
+    AxisAnnotation *GetAxisAnnotation();
 
     void SetAxisArrowCoords(std::vector<double> coords);
     std::vector<double> GetAxisArrowCoords() const;
@@ -163,6 +163,8 @@ class PARAMS_API AnnotationParams : public ParamsBase {
     static const string _timeColorTag;
     static const string _timeTypeTag;
     static const string _timeSizeTag;
+
+    static const string _projStringTag;
 
     void _init();
 
