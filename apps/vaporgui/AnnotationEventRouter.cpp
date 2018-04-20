@@ -161,7 +161,6 @@ void AnnotationEventRouter::copyRegionFromRenderer() {
     string renderer = elems[3];
 
     ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
-    cout << visualizer << " " << dataSetName << " " << renType << " " << renderer << endl;
     RenderParams *copyParams =
         paramsMgr->GetRenderParams(visualizer, dataSetName, renType, renderer);
     assert(copyParams);
@@ -205,8 +204,6 @@ void AnnotationEventRouter::addRendererToCombo(string visName, string typeName, 
     ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
     renNames = paramsMgr->GetRenderParamInstances(visName, typeName);
 
-    cout << renNames.size() << " " << visName << " " << typeAbb << endl;
-
     for (int k = 0; k < renNames.size(); k++) {
         string displayName = visAbb + ":" + dataSetName + ":" + typeAbb + ":" + renNames[k];
         QString qDisplayName = QString::fromStdString(displayName);
@@ -242,7 +239,6 @@ void AnnotationEventRouter::updateCopyRegionCombo() {
             std::vector<string> dmNames = paramsMgr->GetDataMgrNames();
             for (int k = 0; k < dmNames.size(); k++) {
                 string dataSetName = dmNames[k];
-                cout << visName << " " << typeName << " " << visAbb << " " << dataSetName << endl;
                 addRendererToCombo(visName, typeName, visAbb, dataSetName);
             }
         }
