@@ -188,10 +188,13 @@ XmlNode::~XmlNode() {
 }
 
 void XmlNode::SetElementLong(const string &tag, const vector<long> &values) {
+    assert(!tag.empty());
     _longmap[tag] = values;
 }
 
 void XmlNode::SetElementLong(const vector<string> &tags, const vector<long> &values) {
+    assert(!tags.empty());
+
     // Iterate through tags, finding associated node
     XmlNode *currNode = this;
     for (int i = 0; i < tags.size() - 1; i++) {
@@ -203,10 +206,13 @@ void XmlNode::SetElementLong(const vector<string> &tags, const vector<long> &val
     }
 
     string tag = tags[tags.size() - 1];
+    assert(!tag.empty());
     currNode->_longmap[tag] = values;
 }
 
 void XmlNode::SetElementDouble(const vector<string> &tags, const vector<double> &values) {
+    assert(!tags.empty());
+
     // Iterate through tags, finding associated node
     XmlNode *currNode = this;
     for (int i = 0; i < tags.size() - 1; i++) {
@@ -216,7 +222,9 @@ void XmlNode::SetElementDouble(const vector<string> &tags, const vector<double> 
         }
         currNode = child;
     }
+
     string tag = tags[tags.size() - 1];
+    assert(!tag.empty());
     currNode->_doublemap[tag] = values;
 }
 
@@ -239,6 +247,7 @@ bool XmlNode::HasElementLong(const string &tag) const {
 }
 
 void XmlNode::SetElementDouble(const string &tag, const vector<double> &values) {
+    assert(!tag.empty());
     _doublemap[tag] = values;
 }
 
@@ -262,9 +271,15 @@ bool XmlNode::HasElementDouble(const string &tag) const {
     return (p != _doublemap.end());
 }
 
-void XmlNode::SetElementString(const string &tag, const string &str) { _stringmap[tag] = str; }
+void XmlNode::SetElementString(const string &tag, const string &str) {
+    assert(!tag.empty());
+
+    _stringmap[tag] = str;
+}
 
 void XmlNode::SetElementStringVec(const string &tag, const vector<string> &strvec) {
+    assert(!tag.empty());
+
     string s;
     for (int i = 0; i < strvec.size(); i++) {
         s.append(strvec[i]);
@@ -276,6 +291,8 @@ void XmlNode::SetElementStringVec(const string &tag, const vector<string> &strve
 }
 
 void XmlNode::SetElementStringVec(const vector<string> &tags, const vector<string> &strvec) {
+    assert(!tags.empty());
+
     // Iterate through tags, finding associated node
     XmlNode *currNode = this;
     for (int i = 0; i < tags.size() - 1; i++) {
@@ -286,6 +303,7 @@ void XmlNode::SetElementStringVec(const vector<string> &tags, const vector<strin
         currNode = child;
     }
     string tag = tags[tags.size() - 1];
+    assert(!tag.empty());
 
     string s;
     for (int i = 0; i < strvec.size(); i++) {

@@ -73,6 +73,13 @@ int DataMgrUtils::ConvertPCSToLonLat(const DataMgr *dataMgr, double coords[2], i
     if (pstring.size() == 0)
         return 0;
 
+    return ConvertPCSToLonLat(pstring, coords, npoints);
+}
+
+int DataMgrUtils::ConvertPCSToLonLat(string pstring, double coords[2], int npoints) {
+    if (pstring.size() == 0)
+        return 0;
+
     Proj4API proj4API;
     int rc = proj4API.Initialize(pstring, "");
     if (rc < 0)
@@ -91,6 +98,10 @@ int DataMgrUtils::ConvertLonLatToPCS(const DataMgr *dataMgr, double coords[2], i
     if (projString.size() == 0)
         return (0);
 
+    return ConvertLonLatToPCS(projString, coords, npoints);
+}
+
+int DataMgrUtils::ConvertLonLatToPCS(string projString, double coords[2], int npoints) {
     Proj4API proj4API;
     int rc = proj4API.Initialize("", projString);
     if (rc < 0)
