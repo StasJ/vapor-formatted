@@ -624,7 +624,7 @@ void VizWin::getActiveExtents(std::vector<double> &minExts, std::vector<double> 
         (AnimationParams *)paramsMgr->GetParams(AnimationParams::GetClassType());
     int timeStep = aParams->GetCurrentTimestep();
     DataStatus *dataStatus = _controlExec->GetDataStatus();
-    dataStatus->GetActiveExtents(paramsMgr, _winName, timeStep, minExts, maxExts);
+    dataStatus->GetActiveExtents(paramsMgr, timeStep, minExts, maxExts);
 }
 
 void VizWin::getCenterAndCamPos(std::vector<double> &rotationCenter,
@@ -676,6 +676,8 @@ void VizWin::updateManip(bool initialize) {
     std::vector<double> minExts(3, 0.f);
     std::vector<double> maxExts(3, 0.f);
     getActiveExtents(minExts, maxExts);
+    cout << minExts[0] << " " << minExts[1] << " " << minExts[2] << " ";
+    cout << maxExts[0] << " " << maxExts[1] << " " << maxExts[2] << endl;
 
     std::vector<double> rotationCenter, cameraPosition;
     getCenterAndCamPos(rotationCenter, cameraPosition);
@@ -707,6 +709,9 @@ void VizWin::updateManip(bool initialize) {
     VAPoR::Transform *transform = getTransform();
     std::vector<double> scales = transform->GetScales();
     cout << "Tx Vscales " << scales[0] << " " << scales[1] << " " << scales[2] << endl;
+
+    cout << llc[1] << "!!!" << endl;
+    cout << minExts[1] << "!!!" << endl;
 
     _manip->Update(llc, urc, minExts, maxExts, cameraPosition, rotationCenter, mv, proj, windowSize,
                    transform, constrain);
