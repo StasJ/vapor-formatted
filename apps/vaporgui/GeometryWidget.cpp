@@ -261,7 +261,8 @@ void GeometryWidget::updateCopyCombo() {
                 _renTypeNames[typeAbb] = typeNames[j];
 
                 std::vector<string> renNames;
-                renNames = _paramsMgr->GetRenderParamInstances(visNames[i], typeNames[j]);
+                renNames = _paramsMgr->GetRenderParamInstances(visNames[i], _dataSetNames[ii],
+                                                               typeNames[j]);
 
                 for (int k = 0; k < renNames.size(); k++) {
                     string displayName =
