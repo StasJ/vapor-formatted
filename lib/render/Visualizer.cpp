@@ -985,7 +985,6 @@ int Visualizer::captureImage(string filename) {
     unsigned char *buf = new unsigned char[3 * width * height];
     // Use openGL to fill the buffer:
     if (!getPixelData(buf)) {
-        // Error!
         SetErrMsg("Image Capture Error; error obtaining GL data");
         delete[] buf;
         return -1;
@@ -1015,14 +1014,13 @@ int Visualizer::captureImage(string filename) {
         }
         TIFFClose(tiffFile);
     } else if (suffix == ".jpg" || suffix == "jpeg") {
-        // m_paramsMgr->GetParams(StartupParams::GetClassType())
-        // int quality = vpParams->GetJpegQuality();
         int quality = 95;
         int rc = write_JPEG_file(jpegFile, width, height, buf, quality);
         fclose(jpegFile);
         if (rc) {
             SetErrMsg("Image Capture Error; Error writing jpeg file %s",
                       (const char *)filename.c_str());
+            delete[] buf;
             return -1;
         }
     } else // PNG
@@ -1031,6 +1029,7 @@ int Visualizer::captureImage(string filename) {
         if (rc) {
             SetErrMsg("Image Capture Error; Error writing PNG file %s",
                       (const char *)filename.c_str());
+            delete[] buf;
             return -1;
         }
     }
