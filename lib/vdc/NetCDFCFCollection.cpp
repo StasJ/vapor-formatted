@@ -2382,7 +2382,6 @@ int NetCDFCFCollection::DerivedVar_vertStag::Close(int) { return (_ncdfc->Close(
 int NetCDFCFCollection::DerivedVar_vertStag::Read(float *buf, int) {
     size_t nx = _dims[2];
     size_t ny = _dims[1];
-    size_t nz = _dims[0];
 
     for (size_t i = 0; i < nx * ny; i++) {
         int rc = ReadSlice(buf, _fd);
