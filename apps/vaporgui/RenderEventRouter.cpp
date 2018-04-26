@@ -93,7 +93,7 @@ void RenderEventRouter::setEditorDirty() {
     mp->Update(GetActiveDataMgr(), _controlExec->GetParamsMgr(), rParams);
 }
 
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
 float RenderEventRouter::CalcCurrentValue(const double point[3]) {
     RenderParams *rParams = GetActiveParams();
 
@@ -102,7 +102,7 @@ float RenderEventRouter::CalcCurrentValue(const double point[3]) {
 
     size_t timeStep = GetCurrentTimeStep();
 
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
     if (rParams->doBypass(timeStep))
         return _OUT_OF_BOUNDS;
 #endif
@@ -130,7 +130,7 @@ float RenderEventRouter::CalcCurrentValue(const double point[3]) {
     int rc =
         dataStatus->getGrids(timeStep, varnames, minExts, maxExts, &numRefinements, &lod, &grid);
 
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
     if (rc < 0)
         return _OUT_OF_BOUNDS;
 #endif

@@ -690,7 +690,7 @@ int idwt_template(MatWaveDwt *dwt, const T *cA, const T *cD, const size_t L[3],
             //
             cDTempLen = cATempLen;
         }
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
 #endif
     } else {
         cATempLen = L[0];
