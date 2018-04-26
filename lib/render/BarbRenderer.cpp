@@ -157,7 +157,6 @@ bool BarbRenderer::_isCacheDirty() const {
 }
 
 int BarbRenderer::_paintGL() {
-    static int i = 0;
     if (!_isCacheDirty()) {
         glCallList(_drawList);
         return 0;
@@ -463,8 +462,6 @@ void BarbRenderer::renderGrid(int rakeGrid[3], double rakeExts[6], vector<Grid *
     assert(variableData.size() == 5);
 
     string winName = GetVisualizer();
-    ViewpointParams *vpParams = _paramsMgr->GetViewpointParams(winName);
-    //	vector<double> scales = vpParams->GetStretchFactors();
     vector<double> scales(3, 1.0);
 
     Grid *heightVar = variableData[3];
