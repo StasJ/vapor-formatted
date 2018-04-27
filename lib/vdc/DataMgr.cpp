@@ -291,7 +291,7 @@ void grid_params(const DC::DataVar &var, const vector<size_t> &roi_dims, const v
     }
 }
 
-#ifdef VAPOR3_0_0_ALPHA
+#ifdef UNUSED_FUNCTION
 void coord_setup_helper(const vector<string> &dimnames, const vector<size_t> &dims,
                         const vector<size_t> &dims_at_level, const vector<size_t> &bs,
                         const vector<size_t> &bs_at_level, const vector<size_t> &bmin,
