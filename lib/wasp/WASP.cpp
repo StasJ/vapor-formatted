@@ -2494,8 +2494,8 @@ int WASP::_PutVara(vector<size_t> start, vector<size_t> count, const T *data,
     // Ugh. Can't preserve type in thread_state, which has to be passed
     // as a void * to thread library
     //
-    int data_type = NetCDFType(*data);
-    int block_type = NetCDFType(*block);
+    int data_type = _NetCDFType(*data);
+    int block_type = _NetCDFType(*block);
 
     //
     // Set up thread state for parallel (threaded) execution
@@ -2759,8 +2759,8 @@ int WASP::_GetVara(vector<size_t> start, vector<size_t> count, bool unblock_flag
     // Ugh. Can't preserve type in thread_state, which has to be passed
     // as a void * to thread library
     //
-    int data_type = NetCDFType(*data);
-    int block_type = NetCDFType(*block);
+    int data_type = _NetCDFType(*data);
+    int block_type = _NetCDFType(*block);
 
     //
     // Set up thread state for parallel (threaded) execution
