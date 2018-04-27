@@ -53,7 +53,7 @@ BarbEventRouter::BarbEventRouter(QWidget *parent, ControlExec *ce)
 BarbEventRouter::~BarbEventRouter() {
     if (_variables)
         delete _variables;
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
     if (_image)
         delete _image;
 #endif
