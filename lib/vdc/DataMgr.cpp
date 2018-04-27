@@ -291,6 +291,7 @@ void grid_params(const DC::DataVar &var, const vector<size_t> &roi_dims, const v
     }
 }
 
+#ifdef UNUSED_FUNCTION
 void coord_setup_helper(const vector<string> &dimnames, const vector<size_t> &dims,
                         const vector<size_t> &dims_at_level, const vector<size_t> &bs,
                         const vector<size_t> &bs_at_level, const vector<size_t> &bmin,
@@ -327,6 +328,7 @@ void coord_setup_helper(const vector<string> &dimnames, const vector<size_t> &di
         }
     }
 }
+#endif
 
 }; // namespace
 
@@ -3216,7 +3218,6 @@ string DataMgr::_getTimeCoordVarNameDerived() const {
 
     for (int i = 0; i < cvars.size(); i++) {
         DC::CoordVar varInfo;
-        bool ok = GetCoordVarInfo(cvars[i], varInfo);
         if (varInfo.GetAxis() == 3)
             return (cvars[i]);
     }

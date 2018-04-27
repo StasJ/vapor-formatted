@@ -309,7 +309,6 @@ void DataStatus::GetActiveExtents(const ParamsMgr *paramsMgr, size_t ts, vector<
             }
         }
     }
-    int s = minExts.size();
 }
 
 size_t DataStatus::MapGlobalToLocalTimeStep(string dataSetName, size_t ts) const {

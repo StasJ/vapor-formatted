@@ -27,8 +27,8 @@ using namespace VAPoR;
 // Constructor
 //----------------------------------------------------------------------------
 OpacityWidget::OpacityWidget(MappingFrame *parent, OpacityMap *omap)
-    : GLWidget(), _parent(parent), _opacityMap(omap), _handleRadius(0.045), _handle(NULL),
-      _minValue(0.0), _maxValue(1.0) {
+    : GLWidget(), _parent(parent), _opacityMap(omap), _minValue(0.0), _maxValue(1.0),
+      _handleRadius(0.045), _handle(NULL) {
     _minY = -0.05;
     _maxY = 1.05;
     _handle = gluNewQuadric();
