@@ -57,7 +57,7 @@ AnnotationRenderer::AnnotationRenderer(const ParamsMgr *pm, const DataStatus *da
 //
 //----------------------------------------------------------------------------
 AnnotationRenderer::~AnnotationRenderer() {
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
     if (_textObjectsValid)
         invalidateCache();
 #endif
@@ -75,7 +75,7 @@ void AnnotationRenderer::drawDomainFrame(size_t ts) const {
     vector<double> minExts, maxExts;
     m_dataStatus->GetActiveExtents(m_paramsMgr, m_winName, ts, minExts, maxExts);
 
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
     vector<double> stretchFac = vfParams->GetStretchFactors();
 
 #endif
@@ -243,7 +243,7 @@ void AnnotationRenderer::ClearText(int type) {
     }
 }
 
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
 
 void AnnotationRenderer::drawRegionBounds(size_t ts) const {
     RegionParams *rParams = _visualizer->getActiveRegionParams();
@@ -332,7 +332,7 @@ void AnnotationRenderer::InScenePaint(size_t ts) {
     glGetDoublev(GL_MODELVIEW_MATRIX, mvMatrix);
     vpParams->SetModelViewMatrix(mvMatrix);
 
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
     if (vfParams->GetUseRegionFrame())
         drawRegionBounds(ts);
 #endif
@@ -362,7 +362,7 @@ void AnnotationRenderer::InScenePaint(size_t ts) {
     printOpenGLErrorMsg(m_winName.c_str());
 }
 
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
 
 void AnnotationRenderer::OverlayPaint(size_t ts) {}
 
