@@ -743,7 +743,8 @@ typedef int (*copyFunc)(TIFF *in, TIFF *out, uint32 l, uint32 w, uint16 samplesp
 static copyFunc pickCopyFunc(TIFF *, TIFF *, uint16, uint16);
 
 static int tiffcp(TIFF *in, TIFF *out) {
-    uint16 bitspersample, samplesperpixel, shortv;
+    uint16 samplesperpixel, shortv;
+    uint16 bitspersample = 0;
     copyFunc cf;
     uint32 w, l;
 
