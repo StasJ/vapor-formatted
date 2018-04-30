@@ -193,7 +193,6 @@ void MainForm::_initMembers() {
     _captureStartJpegCaptureAction = NULL;
     _captureEndJpegCaptureAction = NULL;
     _captureSingleJpegCaptureAction = NULL;
-    _seedMeAction = NULL;
 
     _mouseModeActions = NULL;
     _tileAction = NULL;
@@ -209,7 +208,6 @@ void MainForm::_initMembers() {
 
     _stats = NULL;
     _plot = NULL;
-    _seedMe = NULL;
     _banner = NULL;
     _windowSelector = NULL;
     _modeStatusWidget = NULL;
@@ -751,12 +749,6 @@ void MainForm::_createCaptureMenu() {
         "End capture of image files in current active visualizer");
     _captureEndJpegCaptureAction->setEnabled(false);
 
-    _seedMeAction = new QAction(this);
-    _seedMeAction->setText("SeedMe Video Encoder");
-    _seedMeAction->setToolTip(
-        "Launch the SeedMe application to create videos of your still-frames");
-    _seedMeAction->setEnabled(false);
-
     // Note that the ordering of the following 4 is significant, so that image
     // capture actions correctly activate each other.
     //
@@ -764,12 +756,10 @@ void MainForm::_createCaptureMenu() {
     _captureMenu->addAction(_captureSingleJpegCaptureAction);
     _captureMenu->addAction(_captureStartJpegCaptureAction);
     _captureMenu->addAction(_captureEndJpegCaptureAction);
-    _captureMenu->addAction(_seedMeAction);
 
     connect(_captureSingleJpegCaptureAction, SIGNAL(triggered()), this, SLOT(captureSingleJpeg()));
     connect(_captureStartJpegCaptureAction, SIGNAL(triggered()), this, SLOT(startAnimCapture()));
     connect(_captureEndJpegCaptureAction, SIGNAL(triggered()), this, SLOT(endAnimCapture()));
-    connect(_seedMeAction, SIGNAL(triggered()), this, SLOT(launchSeedMe()));
 }
 
 void MainForm::_createHelpMenu() {
@@ -1830,7 +1820,6 @@ void MainForm::enableWidgets(bool onOff) {
     _tabMgr->setEnabled(onOff);
     _statsAction->setEnabled(onOff);
     _plotAction->setEnabled(onOff);
-    //	_seedMeAction->setEnabled(onOff);
 
     _tabMgr->EnableRouters(onOff);
 }
@@ -1894,12 +1883,6 @@ void MainForm::captureSingleJpeg() {
     _controlExec->EnableImageCapture(filepath, vizName);
 
     delete fileInfo;
-}
-
-void MainForm::launchSeedMe() {
-    if (_seedMe == NULL)
-        _seedMe = new VAPoR::SeedMe;
-    _seedMe->Initialize();
 }
 
 void MainForm::installCLITools() {
