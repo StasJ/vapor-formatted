@@ -1889,7 +1889,7 @@ void MainForm::captureSingleJpeg() {
     // Turn on "image capture mode" in the current active visualizer
     GUIStateParams *p = GetStateParams();
     string vizName = p->GetActiveVizName();
-    _controlExec->EnableImageCapture(filepath, vizName);
+    _vizWinMgr->EnableImageCapture(filepath, vizName);
 
     delete fileInfo;
 }
