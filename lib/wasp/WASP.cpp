@@ -410,6 +410,7 @@ size_t vproduct(vector<size_t> a) {
     return (ntotal);
 }
 
+#ifdef UNUSED_FUNCTION
 // Elementwise difference between vector a and b (return (a-b));
 //
 vector<size_t> vdiff(vector<size_t> a, vector<size_t> b) {
@@ -421,16 +422,7 @@ vector<size_t> vdiff(vector<size_t> a, vector<size_t> b) {
         c[i] = a[i] - b[i];
     return (c);
 }
-
-// Determine POD type
-//
-int NetCDFType(float dummy) { return NC_FLOAT; }
-int NetCDFType(double dummy) { return NC_DOUBLE; }
-int NetCDFType(char dummy) { return NC_BYTE; }
-int NetCDFType(unsigned char dummy) { return NC_UBYTE; }
-int NetCDFType(int16_t dummy) { return NC_SHORT; }
-int NetCDFType(int dummy) { return NC_INT; }
-int NetCDFType(long dummy) { return NC_INT64; }
+#endif
 
 // Extract a single block of data from an array. Perform padding as
 // needed based on mode value if this is a boundary block
@@ -2527,8 +2519,8 @@ int WASP::_PutVara(vector<size_t> start, vector<size_t> count, const T *data,
     // Ugh. Can't preserve type in thread_state, which has to be passed
     // as a void * to thread library
     //
-    int data_type = NetCDFType(*data);
-    int block_type = NetCDFType(*block);
+    int data_type = _NetCDFType(*data);
+    int block_type = _NetCDFType(*block);
 
     //
     // Set up thread state for parallel (threaded) execution
@@ -2792,8 +2784,8 @@ int WASP::_GetVara(vector<size_t> start, vector<size_t> count, bool unblock_flag
     // Ugh. Can't preserve type in thread_state, which has to be passed
     // as a void * to thread library
     //
-    int data_type = NetCDFType(*data);
-    int block_type = NetCDFType(*block);
+    int data_type = _NetCDFType(*data);
+    int block_type = _NetCDFType(*block);
 
     //
     // Set up thread state for parallel (threaded) execution
@@ -3045,7 +3037,7 @@ int WASP::_CopyVar(string varname, NetCDFCpp &src_ncdf, NetCDFCpp &dst_ncdf) con
     // hyperslab at a time.
     //
     int nk = 1;
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
     //
     // Need to fix this so that count is block-aligned
     //
