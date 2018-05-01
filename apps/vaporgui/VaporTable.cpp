@@ -27,6 +27,7 @@ VaporTable::VaporTable(QTableWidget *table, bool lastRowIsCheckboxes, bool lastC
     _lastColIsCheckboxes = lastColIsCheckboxes;
     _activeRow = -1;
     _activeCol = -1;
+    _autoResizeHeight = false;
 }
 
 // Clear current table, then generate table of rows x columns
@@ -37,6 +38,8 @@ void VaporTable::Update(int rows, int cols, std::vector<int> values,
 
     std::vector<std::string> sValues = convertToString(values);
     Update(rows, cols, sValues, rowHeaders, colHeaders);
+
+    resizeTableHeight();
 }
 
 void VaporTable::Update(int rows, int cols, std::vector<double> values,
@@ -44,6 +47,8 @@ void VaporTable::Update(int rows, int cols, std::vector<double> values,
 
     std::vector<std::string> sValues = convertToString(values);
     Update(rows, cols, sValues, rowHeaders, colHeaders);
+
+    resizeTableHeight();
 }
 
 void VaporTable::Update(int rows, int cols, std::vector<std::string> values,
@@ -63,6 +68,21 @@ void VaporTable::Update(int rows, int cols, std::vector<std::string> values,
         highlightActiveRow(_activeRow);
     if (_highlightFlags & COLS)
         highlightActiveCol(_activeCol);
+
+    resizeTableHeight();
+}
+
+void VaporTable::SetAutoResizeHeight(bool val) { _autoResizeHeight = val; }
+
+bool VaporTable::GetAutoResizeHeight() const { return _autoResizeHeight; }
+
+void VaporTable::resizeTableHeight() {
+    if (!_autoResizeHeight)
+        return;
+
+    int height = _table->horizontalHeader()->height();
+    int rows = _table->rowCount();
+    _table->setMaximumHeight(height * rows * 3);
 }
 
 void VaporTable::Reinit(VaporTable::ValidatorFlags vFlags, VaporTable::MutabilityFlags mFlags,

@@ -882,7 +882,8 @@ class VDF_API DataMgr : public Wasp::MyBase {
 
     const KDTreeRG *_getKDTree2D(size_t ts, int level, int lod,
                                  const vector<DC::CoordVar> &cvarsinfo, const Grid &xg,
-                                 const Grid &yg);
+                                 const Grid &yg, const vector<size_t> &bmin,
+                                 const vector<size_t> &bmax);
 
     vector<string> _getDataVarNamesDerived(int ndim) const;
 
