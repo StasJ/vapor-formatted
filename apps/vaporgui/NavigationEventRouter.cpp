@@ -22,6 +22,7 @@
 // Annoying unreferenced formal parameter warning
 #pragma warning(disable : 4100)
 #endif
+#include <QScrollArea>
 #include <QTextEdit>
 #include <fstream>
 #include <iostream>
@@ -420,6 +421,10 @@ void NavigationEventRouter::resizeProjTable() {
     datasetProjectionTable->verticalHeader()->setResizeMode(QHeaderView::Stretch);
     datasetProjectionTable->verticalHeader()->hide();
     datasetProjectionTable->resizeRowsToContents();
+
+    int height = datasetProjectionTable->horizontalHeader()->height();
+    int rows = datasetProjectionTable->rowCount();
+    datasetProjectionTable->setMaximumHeight(height * rows * 3);
 }
 
 void NavigationEventRouter::createProjCheckBox(int row, bool usingCurrentProj) {
