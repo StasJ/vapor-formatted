@@ -26,20 +26,34 @@
 #ifdef WIN32
 #pragma warning(disable : 4251 4100)
 #endif
-#include <QDesktopWidget>
 #include <cassert>
 #include <cmath>
 #include <fstream>
 #include <functional>
 #include <iostream>
 #include <sstream>
+#include <vapor/glutil.h> // Must be included first!!!
+
+#include <QComboBox>
+#include <QDesktopServices>
+#include <QDesktopWidget>
+#include <QDockWidget>
+#include <QFileDialog>
+#include <QInputDialog>
+#include <QMdiArea>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QStatusBar>
+#include <QToolBar>
+#include <QUrl>
+#include <QWhatsThis>
+
 #include <vapor/CFuncs.h>
 #include <vapor/ControlExecutive.h>
 #include <vapor/DataMgr.h>
 #include <vapor/DataMgrUtils.h>
 #include <vapor/GetAppPath.h>
 #include <vapor/Version.h>
-#include <vapor/glutil.h> // Must be included first!!!
 
 #include "TabManager.h"
 #include "VizSelectCombo.h"
@@ -53,8 +67,8 @@
 #include "MainForm.h"
 #include "MappingFrame.h"
 #include "Plot.h"
-#include "SeedMe.h"
 #include "Statistics.h"
+#include "windowsUtils.h"
 
 // Following shortcuts are provided:
 // CTRL_N: new session
@@ -193,7 +207,6 @@ void MainForm::_initMembers() {
     _captureStartJpegCaptureAction = NULL;
     _captureEndJpegCaptureAction = NULL;
     _captureSingleJpegCaptureAction = NULL;
-    _seedMeAction = NULL;
 
     _mouseModeActions = NULL;
     _tileAction = NULL;
@@ -209,7 +222,6 @@ void MainForm::_initMembers() {
 
     _stats = NULL;
     _plot = NULL;
-    _seedMe = NULL;
     _banner = NULL;
     _windowSelector = NULL;
     _modeStatusWidget = NULL;
@@ -751,12 +763,6 @@ void MainForm::_createCaptureMenu() {
         "End capture of image files in current active visualizer");
     _captureEndJpegCaptureAction->setEnabled(false);
 
-    _seedMeAction = new QAction(this);
-    _seedMeAction->setText("SeedMe Video Encoder");
-    _seedMeAction->setToolTip(
-        "Launch the SeedMe application to create videos of your still-frames");
-    _seedMeAction->setEnabled(false);
-
     // Note that the ordering of the following 4 is significant, so that image
     // capture actions correctly activate each other.
     //
@@ -764,12 +770,10 @@ void MainForm::_createCaptureMenu() {
     _captureMenu->addAction(_captureSingleJpegCaptureAction);
     _captureMenu->addAction(_captureStartJpegCaptureAction);
     _captureMenu->addAction(_captureEndJpegCaptureAction);
-    _captureMenu->addAction(_seedMeAction);
 
     connect(_captureSingleJpegCaptureAction, SIGNAL(triggered()), this, SLOT(captureSingleJpeg()));
     connect(_captureStartJpegCaptureAction, SIGNAL(triggered()), this, SLOT(startAnimCapture()));
     connect(_captureEndJpegCaptureAction, SIGNAL(triggered()), this, SLOT(endAnimCapture()));
-    connect(_seedMeAction, SIGNAL(triggered()), this, SLOT(launchSeedMe()));
 }
 
 void MainForm::_createHelpMenu() {
@@ -806,7 +810,13 @@ void MainForm::_createHelpMenu() {
     buildWebHelpMenus();
     _webTabHelpMenu = new QMenu("Web Help: About the current tab", this);
     _helpMenu->addMenu(_webTabHelpMenu);
+#ifdef WIN32
+#define ADD_INSTALL_CLI_TOOLS_ACTION 1
+#endif
 #ifdef Darwin
+#define ADD_INSTALL_CLI_TOOLS_ACTION 1
+#endif
+#ifdef ADD_INSTALL_CLI_TOOLS_ACTION
     _helpMenu->addAction(_installCLIToolsAction);
 #endif
 
@@ -1835,7 +1845,6 @@ void MainForm::enableWidgets(bool onOff) {
     _tabMgr->setEnabled(onOff);
     _statsAction->setEnabled(onOff);
     _plotAction->setEnabled(onOff);
-    //	_seedMeAction->setEnabled(onOff);
 
     _tabMgr->EnableRouters(onOff);
 }
@@ -1902,21 +1911,15 @@ void MainForm::captureSingleJpeg() {
     delete fileInfo;
 }
 
-void MainForm::launchSeedMe() {
-    if (_seedMe == NULL)
-        _seedMe = new VAPoR::SeedMe;
-    _seedMe->Initialize();
-}
-
 void MainForm::installCLITools() {
     vector<string> pths;
-    string home = GetAppPath("VAPOR", "home", pths, true);
-    string path = home + "/MacOS";
-
-    home.erase(home.size() - strlen("Contents/"), strlen("Contents/"));
-
     QMessageBox box;
     box.addButton(QMessageBox::Ok);
+
+#ifdef Darwin
+    string home = GetAppPath("VAPOR", "home", pths, true);
+    string path = home + "/MacOS";
+    home.erase(home.size() - strlen("Contents/"), strlen("Contents/"));
 
     string profilePath = string(getenv("HOME")) + "/.profile";
     FILE *prof = fopen(profilePath.c_str(), "a");
@@ -1933,6 +1936,66 @@ void MainForm::installCLITools() {
         box.setText("Unable to set environmental variables");
         box.setIcon(QMessageBox::Critical);
     }
+#endif
+
+#ifdef WIN32
+    HKEY key;
+    long error;
+    long errorClose;
+    bool pathWasModified = false;
+    string home = GetAppPath("VAPOR", "", pths, true);
+
+    error = Windows_OpenRegistry(WINDOWS_HKEY_CURRENT_USER, "Environment", key);
+    if (error == WINDOWS_SUCCESS) {
+        string path;
+        error = Windows_GetRegistryString(key, "Path", path, "");
+        if (error == WINDOWS_ERROR_FILE_NOT_FOUND) {
+            error = WINDOWS_SUCCESS;
+            path = "";
+        }
+        if (error == WINDOWS_SUCCESS) {
+            bool alreadyExists = false;
+            size_t index;
+            if (path.find(";" + home + ";") != std::string::npos)
+                alreadyExists = true;
+            else if ((index = path.find(";" + home)) != std::string::npos &&
+                     index + home.length() + 1 == path.length())
+                alreadyExists = true;
+            else if ((index = path.find(home + ";")) != std::string::npos && index == 0)
+                alreadyExists = true;
+            else if (path == home)
+                alreadyExists = true;
+
+            if (!alreadyExists) {
+                if (path.length() > 0)
+                    path += ";";
+                path += home;
+                error = Windows_SetRegistryString(key, "Path", path);
+                if (error == WINDOWS_SUCCESS)
+                    pathWasModified = true;
+            }
+        }
+        errorClose = Windows_CloseRegistry(key);
+    }
+
+    if (error == WINDOWS_SUCCESS && errorClose == WINDOWS_SUCCESS) {
+        box.setIcon(QMessageBox::Information);
+        if (pathWasModified)
+            box.setText("Vapor conversion utilities were added to your path");
+        else
+            box.setText("Your path is properly configured");
+    } else {
+        box.setIcon(QMessageBox::Critical);
+        box.setText("Unable to set environmental variables");
+        string errString = "";
+        if (error != WINDOWS_SUCCESS)
+            errString += Windows_GetErrorString(error) + "\n";
+        if (errorClose != WINDOWS_SUCCESS)
+            errString += "CloseRegistry: " + Windows_GetErrorString(errorClose);
+        box.setInformativeText(QString::fromStdString(errString));
+    }
+#endif
+
     box.exec();
 }
 
