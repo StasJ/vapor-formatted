@@ -118,6 +118,7 @@ string makename(string file) {
     return (ControlExec::MakeStringConformant(qFileInfo.fileName().toStdString()));
 }
 
+#ifdef UNUSED_FUNCTION
 string concatpath(string s1, string s2) {
     string s;
     if (!s1.empty()) {
@@ -127,6 +128,8 @@ string concatpath(string s1, string s2) {
     }
     return (QDir::toNativeSeparators(s.c_str()).toStdString());
 }
+#endif
+
 }; // namespace
 
 void MainForm::_initMembers() {
@@ -206,7 +209,7 @@ void MainForm::_initMembers() {
 
     _stats = NULL;
     _plot = NULL;
-    SeedMe *_seedMe = NULL;
+    _seedMe = NULL;
     _banner = NULL;
     _windowSelector = NULL;
     _modeStatusWidget = NULL;
@@ -930,16 +933,21 @@ void MainForm::_fileSaveHelper(string path) {
         SettingsParams *sP = GetSettingsParams();
         string dir = sP->GetSessionDir();
 
-        QString fileName;
-        fileName =
-            QFileDialog::getSaveFileName(this, tr("Save VAPOR session file"), tr(dir.c_str()),
-                                         "Vapor 3 Session Save Files (*.vs3)");
-        path = fileName.toStdString();
-    }
-    if (path.empty())
-        return;
+        QFileDialog fileDialog(this, "Save VAPOR session file", QString::fromStdString(dir),
+                               QString::fromAscii("Vapor 3 Session Save file (*.vs3)"));
+        fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+        fileDialog.setDefaultSuffix(QString::fromAscii("vs3"));
+        if (fileDialog.exec() != QDialog::Accepted)
+            return;
 
-    if (!FileOperationChecker::FileGoodToWrite(path)) {
+        QStringList files = fileDialog.selectedFiles();
+        if (files.isEmpty() || files.size() > 1)
+            return;
+
+        path = files[0].toStdString();
+    }
+
+    if (!FileOperationChecker::FileGoodToWrite(QString::fromStdString(path))) {
         MSG_ERR(FileOperationChecker::GetLastErrorMessage().toStdString());
         return;
     }
@@ -1058,7 +1066,7 @@ bool MainForm::openDataHelper(string dataSetName, string format, const vector<st
     GUIStateParams *p = GetStateParams();
     vector<string> dataSetNames = p->GetOpenDataSetNames();
 
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
     // If data set with this name already exists, close it
     //
     for (int i = 0; i < dataSetNames.size(); i++) {
@@ -1257,7 +1265,7 @@ void MainForm::sessionNew() {
 // navigate mode.  Don't change tab menu
 //
 void MainForm::setNavigate(bool on) {
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
     // Only do something if this is an actual change of mode
     if (MouseModeParams::GetCurrentMouseMode() == MouseModeParams::navigateMode)
         return;
@@ -1635,7 +1643,7 @@ void MainForm::loadStartingPrefs() {
     SettingsParams *sP = GetSettingsParams();
     sP->SetCurrentPrefsPath(prefPath);
 
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
     _controlExec->RestorePreferences(prefPath);
 #endif
 }
@@ -1702,7 +1710,6 @@ bool MainForm::eventFilter(QObject *obj, QEvent *event) {
     // Only update the GUI if the Params state has changed
     //
     if (event->type() == ParamsChangeEvent::type()) {
-        ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
         if (_stats) {
             _stats->Update();
         }
@@ -1862,6 +1869,7 @@ void MainForm::captureSingleJpeg() {
 
     QFileDialog fileDialog(this, "Specify single image capture file name", imageDir.c_str(),
                            "PNG or JPEG images (*.png *.jpg *.jpeg)");
+    fileDialog.setDefaultSuffix(QString::fromAscii("png"));
     fileDialog.setAcceptMode(QFileDialog::AcceptSave);
     fileDialog.move(pos());
     fileDialog.resize(450, 450);
@@ -1889,7 +1897,7 @@ void MainForm::captureSingleJpeg() {
     // Turn on "image capture mode" in the current active visualizer
     GUIStateParams *p = GetStateParams();
     string vizName = p->GetActiveVizName();
-    _controlExec->EnableImageCapture(filepath, vizName);
+    _vizWinMgr->EnableImageCapture(filepath, vizName);
 
     delete fileInfo;
 }
@@ -1960,6 +1968,7 @@ void MainForm::startAnimCapture() {
 
     QFileDialog fileDialog(this, "Specify the base file name for image capture sequence",
                            imageDir.c_str(), "PNG or JPEG images (*.png *.jpg *.jpeg )");
+    fileDialog.setDefaultSuffix(QString::fromAscii("png"));
     fileDialog.setAcceptMode(QFileDialog::AcceptSave);
     fileDialog.move(pos());
     fileDialog.resize(450, 450);
