@@ -936,6 +936,9 @@ template <class T> int VDCNetCDF::_putVarTemplate(string varname, int lod, const
     return (0);
 }
 
+template int VDCNetCDF::_putVarTemplate<float>(string varname, int lod, const float *data);
+template int VDCNetCDF::_putVarTemplate<int>(string varname, int lod, const int *data);
+
 template <class T>
 int VDCNetCDF::_putVarTemplate(size_t ts, string varname, int lod, const T *data) {
 
@@ -953,6 +956,10 @@ int VDCNetCDF::_putVarTemplate(size_t ts, string varname, int lod, const T *data
 
     return (0);
 }
+
+template int VDCNetCDF::_putVarTemplate<float>(size_t ts, string varname, int lod,
+                                               const float *data);
+template int VDCNetCDF::_putVarTemplate<int>(size_t ts, string varname, int lod, const int *data);
 
 int VDCNetCDF::_copyVar0d(DC &dc, size_t ts, const BaseVar &varInfo) {
     if (varInfo.GetXType() == FLOAT || varInfo.GetXType() == DOUBLE) {
