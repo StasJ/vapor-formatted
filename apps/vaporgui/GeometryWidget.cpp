@@ -205,11 +205,18 @@ GeometryWidget::~GeometryWidget() {
 }
 
 void GeometryWidget::updateRangeLabels(std::vector<double> minExt, std::vector<double> maxExt) {
+
+    assert(minExt.size() == maxExt.size());
+
+    if (minExt.size() < 1)
+        return;
     QString xTitle = QString("X Coordinates	Min: ") + QString::number(minExt[0], 'g', 3) +
                      QString("	Max: ") + QString::number(maxExt[0], 'g', 3);
     xMinMaxGroupBox->setTitle(xTitle);
     xSinglePointGroupBox->setTitle(xTitle);
 
+    if (minExt.size() < 2)
+        return;
     QString yTitle = QString("Y Coordinates	Min: ") + QString::number(minExt[1], 'g', 3) +
                      QString("	Max: ") + QString::number(maxExt[1], 'g', 3);
     yMinMaxGroupBox->setTitle(yTitle);
@@ -370,6 +377,10 @@ bool GeometryWidget::getVariableExtents(std::vector<double> &minFullExts,
 
 void GeometryWidget::updateBoxCombos(std::vector<double> &minFullExt,
                                      std::vector<double> &maxFullExt) {
+
+    assert(minFullExt.size() == maxFullExt.size());
+    if (minFullExt.size() < 2)
+        return;
 
     // Get current user selected extents
     //
