@@ -26,20 +26,34 @@
 #ifdef WIN32
 #pragma warning(disable : 4251 4100)
 #endif
-#include <QDesktopWidget>
 #include <cassert>
 #include <cmath>
 #include <fstream>
 #include <functional>
 #include <iostream>
 #include <sstream>
+#include <vapor/glutil.h> // Must be included first!!!
+
+#include <QComboBox>
+#include <QDesktopServices>
+#include <QDesktopWidget>
+#include <QDockWidget>
+#include <QFileDialog>
+#include <QInputDialog>
+#include <QMdiArea>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QStatusBar>
+#include <QToolBar>
+#include <QUrl>
+#include <QWhatsThis>
+
 #include <vapor/CFuncs.h>
 #include <vapor/ControlExecutive.h>
 #include <vapor/DataMgr.h>
 #include <vapor/DataMgrUtils.h>
 #include <vapor/GetAppPath.h>
 #include <vapor/Version.h>
-#include <vapor/glutil.h> // Must be included first!!!
 
 #include "TabManager.h"
 #include "VizSelectCombo.h"
@@ -53,7 +67,6 @@
 #include "MainForm.h"
 #include "MappingFrame.h"
 #include "Plot.h"
-#include "SeedMe.h"
 #include "Statistics.h"
 #include "windowsUtils.h"
 
