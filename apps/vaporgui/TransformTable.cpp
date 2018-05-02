@@ -37,6 +37,7 @@ TransformTable::TransformTable(QWidget *parent) {
                         (VaporTable::MutabilityFlags)(VaporTable::MUTABLE),
                         (VaporTable::HighlightFlags)(0));
     connect(_scaleTable, SIGNAL(valueChanged(int, int)), this, SLOT(ScaleChanged(int, int)));
+    _scaleTable->SetAutoResizeHeight(true);
 
     _translationTable = new VaporTable(translationTable);
     _translationTable->Reinit((VaporTable::ValidatorFlags)(VaporTable::DOUBLE),
@@ -44,18 +45,21 @@ TransformTable::TransformTable(QWidget *parent) {
                               (VaporTable::HighlightFlags)(0));
     connect(_translationTable, SIGNAL(valueChanged(int, int)), this,
             SLOT(TranslationChanged(int, int)));
+    _translationTable->SetAutoResizeHeight(true);
 
     _rotationTable = new VaporTable(rotationTable);
     _rotationTable->Reinit((VaporTable::ValidatorFlags)(VaporTable::DOUBLE),
                            (VaporTable::MutabilityFlags)(VaporTable::MUTABLE),
                            (VaporTable::HighlightFlags)(0));
     connect(_rotationTable, SIGNAL(valueChanged(int, int)), this, SLOT(RotationChanged(int, int)));
+    _rotationTable->SetAutoResizeHeight(true);
 
     _originTable = new VaporTable(originTable);
     _originTable->Reinit((VaporTable::ValidatorFlags)(VaporTable::DOUBLE),
                          (VaporTable::MutabilityFlags)(VaporTable::MUTABLE),
                          (VaporTable::HighlightFlags)(0));
     connect(_originTable, SIGNAL(valueChanged(int, int)), this, SLOT(OriginChanged(int, int)));
+    _originTable->SetAutoResizeHeight(true);
 
     _horizontalHeaders.push_back("X");
     _horizontalHeaders.push_back("Y");
@@ -67,7 +71,6 @@ void TransformTable::Update(const std::map<string, Transform *> &transforms) {
     _transforms = transforms;
 
     _verticalHeaders.clear();
-    int numDatasets = transforms.size();
     map<std::string, Transform *>::iterator it;
     for (it = _transforms.begin(); it != _transforms.end(); ++it) {
         string datasetName = it->first;
@@ -80,6 +83,7 @@ void TransformTable::Update(const std::map<string, Transform *> &transforms) {
     UpdateTranslations();
     UpdateRotations();
     UpdateOrigins();
+    adjustSize();
 }
 
 void TransformTable::UpdateScales() {

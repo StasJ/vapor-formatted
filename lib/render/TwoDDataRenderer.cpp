@@ -286,8 +286,6 @@ const GLvoid *TwoDDataRenderer::GetTexture(DataMgr *dataMgr, GLsizei &width, GLs
     texelSize = _texelSize;
     gridAligned = GridAligned;
 
-    TwoDDataParams *rParams = (TwoDDataParams *)GetActiveParams();
-
     GLvoid *texture = (GLvoid *)_getTexture(dataMgr);
     if (!texture)
         return (NULL);
@@ -486,8 +484,6 @@ int TwoDDataRenderer::_getMeshStructured(DataMgr *dataMgr, const StructuredGrid 
 // Get mesh for an unstructured grid
 //
 int TwoDDataRenderer::_getMeshUnStructured(DataMgr *dataMgr, const Grid *g, double defaultZ) {
-    TwoDDataParams *rParams = (TwoDDataParams *)GetActiveParams();
-
     assert(g->GetTopologyDim() == 2);
     vector<size_t> dims = g->GetDimensions();
 
