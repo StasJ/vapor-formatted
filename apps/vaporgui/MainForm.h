@@ -61,6 +61,7 @@ class VizSelectCombo;
 class BannerGUI;
 class Statistics;
 class Plot;
+class ErrorReporter;
 
 namespace VAPoR {
 class SeedMe;
@@ -200,6 +201,8 @@ class MainForm : public QMainWindow {
     bool _sessionNewFlag;
     bool _begForCitation;
     int _eventsSinceLastSave;
+
+    ErrorReporter *_errRep;
 
     // Zero out all member variables
     //
