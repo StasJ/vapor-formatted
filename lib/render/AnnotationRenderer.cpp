@@ -57,7 +57,7 @@ AnnotationRenderer::AnnotationRenderer(const ParamsMgr *pm, const DataStatus *da
 //
 //----------------------------------------------------------------------------
 AnnotationRenderer::~AnnotationRenderer() {
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
     if (_textObjectsValid)
         invalidateCache();
 #endif
@@ -75,7 +75,7 @@ void AnnotationRenderer::drawDomainFrame(size_t ts) const {
     vector<double> minExts, maxExts;
     m_dataStatus->GetActiveExtents(m_paramsMgr, m_winName, ts, minExts, maxExts);
 
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
     vector<double> stretchFac = vfParams->GetStretchFactors();
 
 #endif
@@ -243,7 +243,7 @@ void AnnotationRenderer::ClearText(int type) {
     }
 }
 
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
 
 void AnnotationRenderer::drawRegionBounds(size_t ts) const {
     RegionParams *rParams = _visualizer->getActiveRegionParams();
@@ -332,7 +332,7 @@ void AnnotationRenderer::InScenePaint(size_t ts) {
     glGetDoublev(GL_MODELVIEW_MATRIX, mvMatrix);
     vpParams->SetModelViewMatrix(mvMatrix);
 
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
     if (vfParams->GetUseRegionFrame())
         drawRegionBounds(ts);
 #endif
@@ -362,7 +362,7 @@ void AnnotationRenderer::InScenePaint(size_t ts) {
     printOpenGLErrorMsg(m_winName.c_str());
 }
 
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
 
 void AnnotationRenderer::OverlayPaint(size_t ts) {}
 
@@ -386,7 +386,6 @@ void AnnotationRenderer::drawAxisTics(AxisAnnotation *aa) {
 
     // Preserve the current GL color state
     glPushAttrib(GL_CURRENT_BIT);
-    AnnotationParams *vfParams = m_paramsMgr->GetAnnotationParams(m_winName);
 
     vector<double> origin = aa->GetAxisOrigin();
     vector<double> minTic = aa->GetMinTics();
@@ -542,7 +541,6 @@ void AnnotationRenderer::convertPointToLonLat(double &xCoord, double &yCoord) {
     double coords[2] = {xCoord, yCoord};
     double coordsForError[2] = {coords[0], coords[1]};
 
-    AnnotationParams *aParams = m_paramsMgr->GetAnnotationParams(m_winName);
     string projString = m_dataStatus->GetMapProjection();
     int rc = DataMgrUtils::ConvertPCSToLonLat(projString, coords, 1);
     if (!rc) {
@@ -596,12 +594,11 @@ std::vector<double> AnnotationRenderer::getDomainExtents() const {
 
 void AnnotationRenderer::renderText(double text, double coord[], AxisAnnotation *aa) {
     if (aa == NULL)
-        AxisAnnotation *aa = getCurrentAxisAnnotation();
+        aa = getCurrentAxisAnnotation();
 
     std::vector<double> axisColor = aa->GetAxisColor();
     std::vector<double> txtBackground = aa->GetAxisBackgroundColor();
     int fontSize = aa->GetAxisFontSize();
-    bool latLon = aa->GetLatLonAxesEnabled();
     ViewpointParams *vpParams = m_paramsMgr->GetViewpointParams(m_winName);
 
     int precision = (int)aa->GetAxisDigits();
