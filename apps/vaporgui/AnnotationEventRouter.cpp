@@ -697,6 +697,9 @@ void AnnotationEventRouter::timeAnnotationChanged() {
     aParams->SetTimeType(index);
 
     switch (index) {
+    case 0:
+        _controlExec->ClearText();
+        break;
     case 1:
         drawTimeStep();
         break;
