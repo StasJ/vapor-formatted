@@ -157,7 +157,10 @@ int ContourRenderer::_buildCache() {
         return -1;
     }
 
+    double mv = grid->GetMissingValue();
+
     Grid::ConstCellIterator it = grid->ConstCellBegin(_cacheParams.boxMin, _cacheParams.boxMax);
+
     Grid::ConstCellIterator end = grid->ConstCellEnd();
     for (; it != end; ++it) {
         vector<size_t> cell = *it;
@@ -166,10 +169,16 @@ int ContourRenderer::_buildCache() {
 
         vector<double> *coords = new vector<double>[nodes.size()];
         float *values = new float[nodes.size()];
+        bool hasMissing = false;
         for (int i = 0; i < nodes.size(); i++) {
             grid->GetUserCoordinates(nodes[i], coords[i]);
             values[i] = grid->GetValue(coords[i]);
+            if (values[i] == mv) {
+                hasMissing = true;
+            }
         }
+        if (hasMissing)
+            continue;
 
         glBegin(GL_LINES);
 
