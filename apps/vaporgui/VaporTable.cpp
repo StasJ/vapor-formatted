@@ -21,6 +21,11 @@
 #include <iostream>
 #include <stdlib.h>
 
+namespace {
+QString selectionColor = "{color: white; background-color: blue}";
+QString normalColor = "{ color: black; background: white; }";
+} // namespace
+
 VaporTable::VaporTable(QTableWidget *table, bool lastRowIsCheckboxes, bool lastColIsCheckboxes) {
     _table = table;
     _lastRowIsCheckboxes = lastRowIsCheckboxes;
@@ -448,10 +453,6 @@ void VaporTable::highlightActiveRow(int row) {
     if (row < 0)
         return;
 
-    QString selectionColor = "{ background-color: rgb(255,182,42);"
-                             " selection-background-color: red; }";
-    QString normalColor = "{ background: white; }";
-
     for (int i = 0; i < _table->rowCount(); i++) {
         for (int j = 0; j < _table->columnCount(); j++) {
             QWidget *cell = _table->cellWidget(i, j);
@@ -474,10 +475,6 @@ void VaporTable::highlightActiveRow(int row) {
 void VaporTable::highlightActiveCol(int col) {
     if (col < 0)
         return;
-
-    QString selectionColor = "{ background-color: rgb(255,182,42);"
-                             " selection-background-color: red; }";
-    QString normalColor = "{ background: white; }";
 
     for (int i = 0; i < _table->rowCount(); i++) {
         for (int j = 0; j < _table->columnCount(); j++) {
