@@ -14,7 +14,9 @@
 #include <mach/mach_time.h>
 #endif
 
+#include <fstream>
 #include <iostream>
+
 #ifdef WIN32
 #include "Winbase.h"
 #include "windows.h"
@@ -202,3 +204,5 @@ int Wasp::MkDirHier(const string &dir) {
     }
     return (0);
 }
+
+bool Wasp::FileExists(const string path) { return (bool)std::ifstream(path.c_str()); }
