@@ -102,12 +102,7 @@ class VDF_API UnstructuredGridCoordless : public UnstructuredGrid {
         virtual ConstCoordType &deref() const { return (_coords); }
         virtual const void *address() const { return this; };
 
-        virtual bool equal(const void *rhs) const {
-            const ConstCoordItrUCoordless *itrptr =
-                static_cast<const ConstCoordItrUCoordless *>(rhs);
-
-            return (true);
-        }
+        virtual bool equal(const void *rhs) const { return (true); }
 
         virtual std::unique_ptr<ConstCoordItrAbstract> clone() const {
             return std::unique_ptr<ConstCoordItrAbstract>(new ConstCoordItrUCoordless(*this));

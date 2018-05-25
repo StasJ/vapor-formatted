@@ -469,6 +469,9 @@ ParamsContainer::~ParamsContainer() {
 
 ParamsBase *ParamsContainer::Insert(ParamsBase *pb, string name) {
     assert(pb != NULL);
+    if (name.empty()) {
+        name = "NULL";
+    }
 
     map<string, ParamsBase *>::iterator itr = _elements.find(name);
     if (itr != _elements.end()) {
@@ -498,6 +501,8 @@ ParamsBase *ParamsContainer::Insert(ParamsBase *pb, string name) {
 }
 
 ParamsBase *ParamsContainer::Create(string className, string name) {
+    assert(!className.empty());
+    assert(!name.empty());
 
     map<string, ParamsBase *>::iterator itr = _elements.find(name);
     if (itr != _elements.end()) {
@@ -544,6 +549,11 @@ void ParamsContainer::Remove(string name) {
 }
 
 ParamsBase *ParamsContainer::GetParams(string name) const {
+
+    if (name.empty()) {
+        name = "NULL";
+    }
+
     map<string, ParamsBase *>::const_iterator itr = _elements.find(name);
     if (itr != _elements.end())
         return (itr->second);
