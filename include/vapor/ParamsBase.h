@@ -104,7 +104,7 @@ class PARAMS_API ParamsBase : public Wasp::MyBase {
     //! Equivalence operator
     //
     bool operator==(const ParamsBase &rhs) const {
-        return (_ssave == rhs._ssave && _node == rhs._node);
+        return (_ssave == rhs._ssave && *_node == *(rhs._node));
     }
 
     bool operator!=(const ParamsBase &rhs) const { return (!(*this == rhs)); };
@@ -218,6 +218,8 @@ class PARAMS_API ParamsSeparator : public ParamsBase {
 
     ParamsSeparator(ParamsSeparator *parent, const string &name);
 
+    virtual ~ParamsSeparator() {}
+
     bool HasChild(const string &name) { return (GetNode()->HasChild(name)); }
 };
 
@@ -298,21 +300,21 @@ template <class T> class ParamsRegistrar {
 // the derived class; and 'ele name x' is the unique name of the element
 // contained in the container.
 //
-//
-//            |----------------|
-//            | Container Name |
-//            |----------------|
-//                    |
-//                   \|/
-//            |----------------|
-//            |   Class Name   |
-//            |----------------|
-//                    |         \
-//                   \|/         \
-//            |----------------|  \ |----------------|
-//            |   ele name 1   |....|   ele name n   |
-//            |----------------|    |----------------|
-//
+/*
+            |----------------|
+            | Container Name |
+            |----------------|
+                    |
+                   \|/
+            |----------------|
+            |   Class Name   |
+            |----------------|
+                    |         \
+                   \|/         \
+            |----------------|  \ |----------------|
+            |   ele name 1   |....|   ele name n   |
+            |----------------|    |----------------|
+*/
 class PARAMS_API ParamsContainer : public Wasp::MyBase {
   public:
     ParamsContainer(ParamsBase::StateSave *ssave, const string &myname);
@@ -330,7 +332,7 @@ class PARAMS_API ParamsContainer : public Wasp::MyBase {
     //! with this object. If this object's node is a root node (i.e. has
     //! no parent) the node is freed. Otherwise it is not
     //!
-    ~ParamsContainer();
+    virtual ~ParamsContainer();
 
     //! Set parent
     //!

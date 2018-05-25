@@ -65,7 +65,7 @@ class TwoDDataEventRouter : public QTabWidget, public RenderEventRouter {
     GLTwoDDataImageWindow *_glTwoDDataImageWindow;
     TwoDAppearanceSubtab *_appearance;
 
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
     TwoDDataImageGUI *_image;
 #endif
 };
