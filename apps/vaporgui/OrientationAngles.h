@@ -28,13 +28,6 @@ class OrientationAngles : public QWidget, public Ui_OrientationAnglesGUI {
 
     virtual void Update(const VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                         VAPoR::RenderParams *rParams){};
-
-  protected slots:
-
-  private:
-    const VAPoR::DataMgr *_dataMgr;
-    VAPoR::ParamsMgr *_paramsMgr;
-    VAPoR::RenderParams *_rParams;
 };
 
 #endif // ORIENTATIONANGLES_H
