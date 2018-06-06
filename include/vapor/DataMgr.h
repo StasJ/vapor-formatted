@@ -489,7 +489,7 @@ class VDF_API DataMgr : public Wasp::MyBase {
     //
     virtual string GetMapProjectionDefault() const { return (_proj4StringDefault); }
 
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
 
     //!
     //! Add a pipeline stage to produce derived variables
@@ -826,8 +826,7 @@ class VDF_API DataMgr : public Wasp::MyBase {
                         vector<vector<size_t>> &bsvec, vector<vector<size_t>> &bs_at_levelvec,
                         vector<vector<size_t>> &bminvec, vector<vector<size_t>> &bmaxvec) const;
 
-    int _setupConnVecs(size_t ts, string varname, int level, int lod, const vector<size_t> &min,
-                       const vector<size_t> &max, vector<string> &varnames,
+    int _setupConnVecs(size_t ts, string varname, int level, int lod, vector<string> &varnames,
                        vector<vector<size_t>> &dims_at_levelvec, vector<vector<size_t>> &bsvec,
                        vector<vector<size_t>> &bs_at_levelvec, vector<vector<size_t>> &bminvec,
                        vector<vector<size_t>> &bmaxvec) const;
@@ -882,7 +881,8 @@ class VDF_API DataMgr : public Wasp::MyBase {
 
     const KDTreeRG *_getKDTree2D(size_t ts, int level, int lod,
                                  const vector<DC::CoordVar> &cvarsinfo, const Grid &xg,
-                                 const Grid &yg);
+                                 const Grid &yg, const vector<size_t> &bmin,
+                                 const vector<size_t> &bmax);
 
     vector<string> _getDataVarNamesDerived(int ndim) const;
 

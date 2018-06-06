@@ -149,7 +149,7 @@ void AnnotationsEventRouter::confirmText() {
         return;
     AnnotationsParams *vParams = (AnnotationsParams *)GetActiveParams();
 
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
     AnnotationsParams *defParams =
         (AnnotationsParams *)_paramsMgr->GetDefaultParams(Params::_visualizerFeaturesParamsTag);
     assert(defParams);
@@ -161,7 +161,7 @@ void AnnotationsEventRouter::confirmText() {
 
     SetTextChanged(false);
 
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
     vParams->Validate(2);
 
     Command::CaptureEnd(cmd, vParams, defParams);
@@ -169,7 +169,7 @@ void AnnotationsEventRouter::confirmText() {
 }
 
 void AnnotationsEventRouter::_confirmText() {
-#ifdef DEAD
+#ifdef VAPOR3_0_0_ALPHA
     AnnotationsParams *vParams = (AnnotationsParams *)GetActiveParams();
 
     vector<double> stretch;
