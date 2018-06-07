@@ -99,7 +99,8 @@ MappingFrame::MappingFrame(QWidget *parent)
       _minX(-0.035), _maxX(1.035), _minY(-0.35), _maxY(1.3), _minValue(0.0), _maxValue(1.0),
       _colorbarHeight(16), _domainBarHeight(16), _domainLabelHeight(10),
       _domainHeight(_domainBarHeight + _domainLabelHeight + 3), _axisRegionHeight(20),
-      _opacityGap(4), _bottomGap(10), _dataMgr(NULL), _rParams(NULL), _mousePressFlag(false) {
+      _opacityGap(4), _bottomGap(10), _dataMgr(NULL), _rParams(NULL), _mousePressFlag(false),
+      _initialized(false) {
     initWidgets();
     initConnections();
     setMouseTracking(true);
@@ -354,7 +355,11 @@ void MappingFrame::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, RenderParams *
 
     deselectWidgets();
 
-    RefreshHistogram();
+    if (_initialized == false) {
+        _initialized = true;
+        RefreshHistogram();
+    }
+
     _minValue = getMinEditBound();
     _maxValue = getMaxEditBound();
 
