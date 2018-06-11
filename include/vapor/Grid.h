@@ -5,6 +5,7 @@
 #include <iostream>
 #include <memory>
 #include <ostream>
+#include <string>
 #include <vapor/common.h>
 #include <vector>
 
@@ -82,6 +83,8 @@ class VDF_API Grid {
     //! the constructor.
     //!
     const std::vector<size_t> &GetDimensions() const { return (_dims); }
+
+    virtual std::string GetType() const = 0;
 
     //! Get geometric dimension of cells
     //!
