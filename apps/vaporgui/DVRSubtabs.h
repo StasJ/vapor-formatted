@@ -13,7 +13,6 @@ class DataMgr;
 } // namespace VAPoR
 
 class DVRVariablesSubtab : public QWidget, public Ui_DVRVariablesGUI {
-
     Q_OBJECT
 
   public:
@@ -31,7 +30,6 @@ class DVRVariablesSubtab : public QWidget, public Ui_DVRVariablesGUI {
 };
 
 class DVRAppearanceSubtab : public QWidget, public Ui_DVRAppearanceGUI {
-
     Q_OBJECT
 
   public:
@@ -48,7 +46,6 @@ class DVRAppearanceSubtab : public QWidget, public Ui_DVRAppearanceGUI {
 };
 
 class DVRGeometrySubtab : public QWidget, public Ui_DVRGeometryGUI {
-
     Q_OBJECT
 
   public:
@@ -64,8 +61,6 @@ class DVRGeometrySubtab : public QWidget, public Ui_DVRGeometryGUI {
         _copyRegionWidget->Update(paramsMgr, rParams);
         _transformTable->Update(rParams->GetTransform());
     }
-
-  private:
 };
 
 #endif // DVRSUBTABS_H
