@@ -38,29 +38,31 @@ class RENDER_API DirectVolumeRenderer : public Renderer {
   private:
     // C++ stuff
     const std::string _effectNameStr = "DVR";
-    struct {
+
+    struct UserCoordinates {
+        float *frontFace, *backFace; // user coordinates, size == bx * by * 3
+        float *rightFace, *leftFace; // user coordinates, size == by * bz * 3
+        float *topFace, *bottomFace; // user coordinates, size == bx * bz * 3
+        size_t dims[3];              // num. of samples along each axis
+
+        UserCoordinates();  // constructor
+        ~UserCoordinates(); // destructor
+        void Fill(const VAPoR::StructuredGrid *grid);
+    };
+
+    struct CacheParams {
         std::string varName;
         size_t ts;
         int level;
         int lod;
         std::vector<double> boxMin, boxMax;
         std::vector<GLfloat> colormap;
-    } _cacheParams;
-    void _saveCacheParams();
-    bool _isCacheDirty() const;
-
-    struct UserCoordinates {
-        float *frontFace, *backFace; // user coordinates, size == bx * by * 3
-        float *rightFace, *leftFace; // user coordinates, size == by * bz * 3
-        float *topFace, *bottomFace; // user coordinates, size == bx * bz * 3
-        int dimX, dimY, dimZ;        // num. of samples along each axis
-        float volumeMin[3], volumeMax[3];
-
-        UserCoordinates();  // constructor
-        ~UserCoordinates(); // destructor
+        UserCoordinates userCoords;
     };
 
-    UserCoordinates _userCoordinates;
+    CacheParams _cacheParams;
+    void _saveCacheParams(bool considerUserCoord);    // True: consider user coordinates too
+    bool _isCacheDirty(bool considerUserCoord) const; // False: not consider user coordinates
 
     // OpenGL stuff
     GLuint _volumeTextureUnit;   // GL_TEXTURE0
@@ -77,6 +79,7 @@ class RENDER_API DirectVolumeRenderer : public Renderer {
                                   const float *topFace, const float *bottomFace,
                                   const float *volumeMin, // array of 3 values
                                   const float *volumeMax, int bx, int by, int bz, bool frontFacing);
+    void _fillUserCoordinates();
 
 }; // End of class DirectVolumeRenderer
 
