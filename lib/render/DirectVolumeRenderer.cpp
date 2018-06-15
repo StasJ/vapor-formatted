@@ -205,7 +205,7 @@ int DirectVolumeRenderer::_initializeGL() {
 int DirectVolumeRenderer::_paintGL() {
     std::cout << "_paintGL() called" << std::endl;
 
-    if (_isCacheDirty(true))
+    if (_isCacheDirty())
         _saveCacheParams(true);
 
     int rc = _shaderMgr->EnableEffect(_effectNameStr);
@@ -214,11 +214,17 @@ int DirectVolumeRenderer::_paintGL() {
         return (-1);
     }
 
-    glColor3f(1.0f, 1.0f, 1.0f);
+    /*glColor3f(1.0f,1.0f,1.0f);
     glBegin(GL_LINES);
-    glVertex3dv(_cacheParams.boxMin.data());
-    glVertex3dv(_cacheParams.boxMax.data());
-    glEnd();
+        glVertex3dv( _cacheParams.boxMin.data() );
+        glVertex3dv( _cacheParams.boxMax.data() );
+    glEnd();*/
+
+    _drawVolumeFaces(_cacheParams.userCoords.frontFace, _cacheParams.userCoords.backFace,
+                     _cacheParams.userCoords.rightFace, _cacheParams.userCoords.leftFace,
+                     _cacheParams.userCoords.topFace, _cacheParams.userCoords.bottomFace,
+                     _cacheParams.boxMin.data(), _cacheParams.boxMax.data(),
+                     _cacheParams.userCoords.dims, true);
 
     _shaderMgr->DisableEffect();
 
@@ -251,7 +257,7 @@ void DirectVolumeRenderer::_saveCacheParams(bool considerUserCoordinates) {
     }
 }
 
-bool DirectVolumeRenderer::_isCacheDirty(bool considerUserCoordinates) const {
+bool DirectVolumeRenderer::_isCacheDirty() const {
     DVRParams *params = dynamic_cast<DVRParams *>(GetActiveParams());
     if (_cacheParams.varName != params->GetVariableName())
         return true;
@@ -278,10 +284,13 @@ bool DirectVolumeRenderer::_isCacheDirty(bool considerUserCoordinates) const {
 void DirectVolumeRenderer::_drawVolumeFaces(const float *frontFace, const float *backFace,
                                             const float *rightFace, const float *leftFace,
                                             const float *topFace, const float *bottomFace,
-                                            const float *volumeMin, const float *volumeMax, int bx,
-                                            int by, int bz, bool frontFacing) {
+                                            const double *volumeMin, const double *volumeMax,
+                                            const size_t *dims, bool frontFacing) {
     float gridCoord[3];      // normalized grid coordinates, for drawing front-facing facets
     float realWorldCoord[3]; // normalized real world coordinates
+    size_t bx = dims[0];
+    size_t by = dims[1];
+    size_t bz = dims[2];
     float deltaX = 1.0f / (bx - 1);
     float deltaY = 1.0f / (by - 1);
     float deltaZ = 1.0f / (bz - 1);
@@ -489,5 +498,3 @@ void DirectVolumeRenderer::_drawVolumeFaces(const float *frontFace, const float 
         glEnd();
     }
 }
-
-void DirectVolumeRenderer::_fillUserCoordinates() {}
