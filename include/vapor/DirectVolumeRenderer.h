@@ -28,7 +28,7 @@ class RENDER_API DirectVolumeRenderer : public Renderer {
 
     virtual ~DirectVolumeRenderer();
 
-    static std::string GetClassType() { return ("Direct_Volume_Renderer"); }
+    static std::string GetClassType() { return ("DirectVolumeRenderer"); }
 
   protected:
     // pure virtual functions that are required to implement
