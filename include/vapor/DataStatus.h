@@ -23,6 +23,7 @@
 #include <map>
 #include <string>
 #include <vapor/DataMgr.h>
+#include <vapor/ParamsMgr.h>
 #include <vapor/common.h>
 #include <vector>
 
@@ -45,8 +46,6 @@ namespace VAPoR {
 //! metadata. To support using active variables and session variable nums, mappings are provided
 //! between active names/nums and session nums, and also between variable names and their 2D and 3D
 //! session variable numbers and active variable numbers.
-
-class ParamsMgr;
 
 class PARAMS_API DataStatus {
   public:
