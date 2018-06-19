@@ -127,6 +127,7 @@ class ImageGeometrySubtab : public QWidget, public Ui_ImageGeometryGUI {
     void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
                 VAPoR::RenderParams *rParams) {
         _geometryWidget->Update(paramsMgr, dataMgr, rParams);
+        _copyRegionWidget->Update(paramsMgr, rParams);
         _transformTable->Update(rParams->GetTransform());
     }
 
