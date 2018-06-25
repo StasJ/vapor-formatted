@@ -19,7 +19,7 @@
 #ifndef VIZWIN_H
 #define VIZWIN_H
 
-#include "vapor/Manip.h"
+#include "Manip.h"
 #include "vapor/Transform.h"
 #include "vapor/Visualizer.h"
 #include <GL/glew.h>
