@@ -30,6 +30,7 @@ DirectVolumeRenderer::DirectVolumeRenderer(const ParamsMgr *pm, std::string &win
     _frameBufferId = 0;
     _baskFaceTextureId = 0;
     _depthBufferId = 0;
+    _enablePrintGLInfo = false;
 }
 
 DirectVolumeRenderer::UserCoordinates::UserCoordinates() {
@@ -178,16 +179,6 @@ int DirectVolumeRenderer::_initializeGL() {
     // glEnable              ( GL_DEBUG_OUTPUT );
     // glDebugMessageCallback( MessageCallback, 0 );
 
-    int maxTextureUnits;
-    glGetIntegerv(GL_MAX_TEXTURE_UNITS, &maxTextureUnits);
-    std::cout << "    **** System Info ****" << std::endl;
-    std::cout << "    OpenGL version : " << glGetString(GL_VERSION) << std::endl;
-    std::cout << "    GLSL version   : " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
-    std::cout << "    Vendor         : " << glGetString(GL_VENDOR) << std::endl;
-    std::cout << "    Renderer       : " << glGetString(GL_RENDERER) << std::endl;
-    std::cout << "    Number of texture units: " << maxTextureUnits << std::endl;
-    std::cout << "    **** System Info ****" << std::endl;
-
     if (!_shaderMgr) {
         std::cerr << "Programmable shading not available" << std::endl;
         SetErrMsg("Programmable shading not available");
@@ -217,6 +208,8 @@ int DirectVolumeRenderer::_initializeGL() {
 
     _initializeTextures();
 
+    _enablePrintGLInfo = true;
+
     return 0;
 }
 
@@ -243,6 +236,11 @@ int DirectVolumeRenderer::_paintGL() {
                      _cacheParams.userCoords.dims, true);
 
     _shaderMgr->DisableEffect();
+
+    if (_enablePrintGLInfo) {
+        _printGLInfo();
+        _enablePrintGLInfo = false;
+    }
 
     return 0;
 }
@@ -341,11 +339,26 @@ void DirectVolumeRenderer::_initializeTextures() {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+void DirectVolumeRenderer::_printGLInfo() const {
+    int maxTextureUnits;
+    glGetIntegerv(GL_MAX_TEXTURE_UNITS, &maxTextureUnits);
+    std::cout << "    **** System Info ****" << std::endl;
+    std::cout << "    OpenGL version : " << glGetString(GL_VERSION) << std::endl;
+    std::cout << "    GLSL version   : " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+    std::cout << "    Vendor         : " << glGetString(GL_VENDOR) << std::endl;
+    std::cout << "    Renderer       : " << glGetString(GL_RENDERER) << std::endl;
+    std::cout << "    Number of texture units: " << maxTextureUnits << std::endl;
+    std::cout << "    **** System Info ****" << std::endl;
+}
+
 void DirectVolumeRenderer::_drawVolumeFaces(const float *frontFace, const float *backFace,
                                             const float *rightFace, const float *leftFace,
                                             const float *topFace, const float *bottomFace,
                                             const double *volumeMin, const double *volumeMax,
                                             const size_t *dims, bool frontFacing) {
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT); // don't draw front-facing facets
+
     float gridCoord[3];      // normalized grid coordinates, for drawing front-facing facets
     float realWorldCoord[3]; // normalized real world coordinates
     size_t bx = dims[0];
@@ -360,43 +373,38 @@ void DirectVolumeRenderer::_drawVolumeFaces(const float *frontFace, const float 
     const float *ptr = NULL;
 
     // Render front face:
-    /*
     gridCoord[2] = 1.0;
-    for( int y = 0; y < by - 1; y++ )   // strip by strip
+    for (int y = 0; y < by - 1; y++) // strip by strip
     {
-      glBegin( GL_TRIANGLE_STRIP );
-      for( int x = 0; x < bx; x++ )
-      {
-        ptr = frontFace + ((y + 1) * bx + x) * 3;
-        */
-    /*realWorldCoord[0] = (*ptr        - volumeMin[0]) * volumeSpanInverse[0];
-    realWorldCoord[1] = (*(ptr + 1)  - volumeMin[1]) * volumeSpanInverse[1];
-    realWorldCoord[2] = (*(ptr + 2)  - volumeMin[2]) * volumeSpanInverse[2];
-    glColor3fv(       realWorldCoord );
-    if( frontFacing )
-    {
-      gridCoord[0] =   x      * deltaX;
-      gridCoord[1] =  (y + 1) * deltaY;
-      glTexCoord3fv(  gridCoord );
-    }*/
-    // glVertex3fv(      ptr );
+        glBegin(GL_TRIANGLE_STRIP);
+        for (int x = 0; x < bx; x++) {
+            ptr = frontFace + ((y + 1) * bx + x) * 3;
+            /*realWorldCoord[0] = (*ptr        - volumeMin[0]) * volumeSpanInverse[0];
+            realWorldCoord[1] = (*(ptr + 1)  - volumeMin[1]) * volumeSpanInverse[1];
+            realWorldCoord[2] = (*(ptr + 2)  - volumeMin[2]) * volumeSpanInverse[2];
+            glColor3fv(       realWorldCoord );
+            if( frontFacing )
+            {
+              gridCoord[0] =   x      * deltaX;
+              gridCoord[1] =  (y + 1) * deltaY;
+              glTexCoord3fv(  gridCoord );
+            }*/
+            glVertex3fv(ptr);
 
-    // ptr = frontFace + (y * bx + x) * 3;
-    /*realWorldCoord[0] = (*ptr        - volumeMin[0]) * volumeSpanInverse[0];
-    realWorldCoord[1] = (*(ptr + 1)  - volumeMin[1]) * volumeSpanInverse[1];
-    realWorldCoord[2] = (*(ptr + 2)  - volumeMin[2]) * volumeSpanInverse[2];
-    glColor3fv(       realWorldCoord );
-    if( frontFacing )
-    {
-      gridCoord[1] =  y * deltaY;
-      glTexCoord3fv(  gridCoord );
-    }*/
-    /*
-    glVertex3fv(      ptr );
-  }
-  glEnd();
-}
-  */
+            ptr = frontFace + (y * bx + x) * 3;
+            /*realWorldCoord[0] = (*ptr        - volumeMin[0]) * volumeSpanInverse[0];
+            realWorldCoord[1] = (*(ptr + 1)  - volumeMin[1]) * volumeSpanInverse[1];
+            realWorldCoord[2] = (*(ptr + 2)  - volumeMin[2]) * volumeSpanInverse[2];
+            glColor3fv(       realWorldCoord );
+            if( frontFacing )
+            {
+              gridCoord[1] =  y * deltaY;
+              glTexCoord3fv(  gridCoord );
+            }*/
+            glVertex3fv(ptr);
+        }
+        glEnd();
+    }
 
     // Render back face:
     gridCoord[2] = 0.0;
@@ -432,43 +440,37 @@ void DirectVolumeRenderer::_drawVolumeFaces(const float *frontFace, const float 
     }
 
     // Render right face:
-    /*
-      gridCoord[0] = 1.0;
-      for( int z = 0; z < bz - 1; z++ )
-      {
-        glBegin( GL_TRIANGLE_STRIP );
-        for( int y = 0; y < by; y++ )
-        {
-          ptr = rightFace + ((z + 1) * by + y) * 3;
-    */
-    /*realWorldCoord[0] = (*ptr        - volumeMin[0]) * volumeSpanInverse[0];
-    realWorldCoord[1] = (*(ptr + 1)  - volumeMin[1]) * volumeSpanInverse[1];
-    realWorldCoord[2] = (*(ptr + 2)  - volumeMin[2]) * volumeSpanInverse[2];
-    glColor3fv(       realWorldCoord );
-    if( frontFacing )
-    {
-      gridCoord[1] =   y      * deltaY;
-      gridCoord[2] =  (z + 1) * deltaZ;
-      glTexCoord3fv(  gridCoord );
-    }*/
-    //     glVertex3fv(      ptr );
+    gridCoord[0] = 1.0;
+    for (int z = 0; z < bz - 1; z++) {
+        glBegin(GL_TRIANGLE_STRIP);
+        for (int y = 0; y < by; y++) {
+            ptr = rightFace + ((z + 1) * by + y) * 3;
+            /*realWorldCoord[0] = (*ptr        - volumeMin[0]) * volumeSpanInverse[0];
+            realWorldCoord[1] = (*(ptr + 1)  - volumeMin[1]) * volumeSpanInverse[1];
+            realWorldCoord[2] = (*(ptr + 2)  - volumeMin[2]) * volumeSpanInverse[2];
+            glColor3fv(       realWorldCoord );
+            if( frontFacing )
+            {
+              gridCoord[1] =   y      * deltaY;
+              gridCoord[2] =  (z + 1) * deltaZ;
+              glTexCoord3fv(  gridCoord );
+            }*/
+            glVertex3fv(ptr);
 
-    //    ptr = rightFace + (z * by + y) * 3;
-    /*realWorldCoord[0] = (*ptr        - volumeMin[0]) * volumeSpanInverse[0];
-    realWorldCoord[1] = (*(ptr + 1)  - volumeMin[1]) * volumeSpanInverse[1];
-    realWorldCoord[2] = (*(ptr + 2)  - volumeMin[2]) * volumeSpanInverse[2];
-    glColor3fv(       realWorldCoord );
-    if( frontFacing )
-    {
-      gridCoord[2] =  z * deltaZ;
-      glTexCoord3fv(  gridCoord );
-    }*/
-    /*
-          glVertex3fv(      ptr );
+            ptr = rightFace + (z * by + y) * 3;
+            /*realWorldCoord[0] = (*ptr        - volumeMin[0]) * volumeSpanInverse[0];
+            realWorldCoord[1] = (*(ptr + 1)  - volumeMin[1]) * volumeSpanInverse[1];
+            realWorldCoord[2] = (*(ptr + 2)  - volumeMin[2]) * volumeSpanInverse[2];
+            glColor3fv(       realWorldCoord );
+            if( frontFacing )
+            {
+              gridCoord[2] =  z * deltaZ;
+              glTexCoord3fv(  gridCoord );
+            }*/
+            glVertex3fv(ptr);
         }
         glEnd();
-      }
-    */
+    }
 
     // Render left face:
     gridCoord[0] = 0.0;
