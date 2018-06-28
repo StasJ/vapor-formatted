@@ -84,6 +84,7 @@ class RENDER_API DirectVolumeRenderer : public Renderer {
     GLuint _depthBufferId;
 
     GLuint _vertexArrayId;
+    GLuint _shaderProgramId;
 
     //
     // Draw faces using triangle strips
@@ -109,6 +110,12 @@ class RENDER_API DirectVolumeRenderer : public Renderer {
     // Simple shader compilation
     //
     GLuint _loadShaders(const char *vertex_file_path, const char *fragment_file_path);
+
+    //
+    // Get current Model View Projection matrix that can be passed to shaders
+    //   Note: MVP should be a memory space of 16 GLfloats that is already allocated.
+    //         The MVP matrix is stored in a colume-major fashion.
+    void _getMVPMatrix(GLfloat *MVP) const;
 
 }; // End of class DirectVolumeRenderer
 
