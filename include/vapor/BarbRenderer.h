@@ -93,7 +93,7 @@ class RENDER_API BarbRenderer : public Renderer {
 
     float getHeightOffset(Grid *heightVar, float xCoord, float yCoord, bool &missing);
 
-    bool _doColorMapping(float clut[1024]) const;
+    bool _makeCLUT(float clut[1024]) const;
 
     void _getDirection(float direction[3], vector<Grid *> varData, float xCoord, float yCoord,
                        float zCoord, bool &missing) const;
