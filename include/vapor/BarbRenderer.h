@@ -43,14 +43,15 @@ class RENDER_API BarbRenderer : public Renderer {
 
   private:
     vector<string> _fieldVariables; // old, used instead of _currentVarname
-    double _vectorScaleFactor;      // old
+    double _vectorScaleFactor;
+    double _maxThickness;
 
-    vector<double> _currentBoxMinExts; // new!
-    vector<double> _currentBoxMaxExts; // new!
+    vector<double> _currentBoxMinExts;
+    vector<double> _currentBoxMaxExts;
 
-    string _currentHgtVar;                // new!
-    vector<double> _currentBoxMinExtsTex; // new, do we need this?
-    vector<double> _currentBoxMaxExtsTex; // new, do we need this?
+    string _currentHgtVar;
+    vector<double> _currentBoxMinExtsTex;
+    vector<double> _currentBoxMaxExtsTex;
 
     GLuint _drawList;
 
@@ -88,8 +89,7 @@ class RENDER_API BarbRenderer : public Renderer {
     //! \param[in] Grid Grid used in rendering.
     //! The first three are the vector field, Grid[3] is the Height variable, Grid[4] is the color
     //! variable. \retval int zero if successful
-    int performRendering(BarbParams *rParams, int actualRefLevel, float vectorScale,
-                         vector<Grid *> variableData);
+    int performRendering(BarbParams *rParams, int actualRefLevel, vector<Grid *> variableData);
 
     float getHeightOffset(Grid *heightVar, float xCoord, float yCoord, bool &missing);
 
@@ -102,10 +102,10 @@ class RENDER_API BarbRenderer : public Renderer {
 
     float _calculateLength(float start[3], float end[3]) const;
 
-    void _makeStartAndEndPoint(float start[3], float end[3], float direction[3], float length);
+    void _makeStartAndEndPoint(float start[3], float end[3], float direction[3]);
 
     void renderGrid(int rakeGrid[3], double rakeExts[6], vector<Grid *> variableData, int timestep,
-                    float vectorLengthScale, float rad, BarbParams *params);
+                    BarbParams *params);
 
     bool _getColorMapping(float val, float clut[256 * 4]);
 
@@ -122,8 +122,7 @@ class RENDER_API BarbRenderer : public Renderer {
     //! Protected method to draw one barb (a hexagonal tube with a cone barbhead)
     //! \param[in] const float startPoint[3] beginning position of barb
     //! \param[in] const float endPoint[3] ending position of barb
-    //! \param[in] float radius Radius of barb in voxels
-    void drawBarb(const float startPoint[3], const float endPoint[3], float radius);
+    void drawBarb(const float startPoint[3], const float endPoint[3]);
 
     struct {
         vector<string> fieldVarNames;
