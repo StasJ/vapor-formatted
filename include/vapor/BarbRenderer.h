@@ -65,8 +65,8 @@ class RENDER_API BarbRenderer : public Renderer {
 
     double _getDomainHypotenuse(size_t ts, const std::vector<string> varnames) const;
 
-    double _calcDefaultScale(size_t ts, const std::vector<string> &varnames,
-                             const BarbParams *bParams);
+    void _setDefaultLengthAndThicknessScales(size_t ts, const std::vector<string> &varnames,
+                                             const BarbParams *bParams);
 
     //! \copydoc Renderer::_initializeGL()
     virtual int _initializeGL();
