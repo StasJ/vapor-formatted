@@ -216,6 +216,8 @@ class MouseModeParams : public VAPoR::ParamsBase {
 
     static string GetNavigateModeName() { return ("Navigate"); }
 
+    static string GetRegionModeName() { return ("Region"); }
+
   private:
     static const string _currentMouseModeTag;
     static const string _rotCenterTag;
