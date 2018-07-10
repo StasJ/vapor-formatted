@@ -79,9 +79,6 @@ void BarbParams::_init() {
     float rgb[] = {1.f, 1.f, 1.f};
     SetConstantColor(rgb);
 
-    int grid[] = {4, 4, 1};
-    SetGrid(grid);
-
     // Crap. No error handling from constructor. Need Initialization()
     // method.
     //
