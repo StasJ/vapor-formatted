@@ -2,9 +2,9 @@
 #include "vapor/BarbParams.h"
 #include <cmath>
 
-#define LENGTH_MIN 0
+#define LENGTH_MIN .01
 #define LENGTH_MAX 1
-#define THICKNESS_MIN 0
+#define THICKNESS_MIN .01
 #define THICKNESS_MAX 1
 #define COUNT_MIN 1
 #define COUNT_MAX 50
