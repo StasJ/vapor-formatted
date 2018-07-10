@@ -743,7 +743,7 @@ double BarbRenderer::_getMaxAtBarbLocations(VAPoR::Grid *grid) const {
 
                 value = abs(value);
                 if (value > maxValue && value < std::numeric_limits<double>::max() &&
-                    value > std::numeric_limits<double>::lowest())
+                    value > std::numeric_limits<double>::lowest() && !isnan(value))
                     maxValue = value;
             }
         }
