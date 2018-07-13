@@ -4,6 +4,7 @@
 #include <vapor/BlkMemMgr.h>
 #include <vapor/CurvilinearGrid.h>
 #include <vapor/DC.h>
+#include <vapor/DerivedVarMgr.h>
 #include <vapor/GridHelper.h>
 #include <vapor/KDTreeRG.h>
 #include <vapor/LayeredGrid.h>
