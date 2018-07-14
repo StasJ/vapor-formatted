@@ -161,6 +161,8 @@ bool DirectVolumeRenderer::UserCoordinates::updateCoordinates(const DVRParams *p
         std::cerr << "UserCoordinates::updateCoordinates() isn't on a StructuredGrid" << std::endl;
         return false;
     } else {
+        std::cout << "EXPENSIVE operation in progress!" << std::endl;
+
         /* update member variables */
         grid->GetUserExtents(extMin, extMax);
         for (int i = 0; i < 3; i++) {
@@ -284,10 +286,10 @@ bool DirectVolumeRenderer::UserCoordinates::updateCoordinates(const DVRParams *p
                 value = (float)(*valItr);
                 if (value == missingValue) {
                     field[i * 4 + 3] = 0.0;
-                    missingValueMask[i] = 0;
+                    missingValueMask[i] = 255;
                 } else {
                     field[i * 4 + 3] = (value - valueRange[0]) * valueRange1o;
-                    missingValueMask[i] = 255;
+                    missingValueMask[i] = 0;
                 }
                 ++coordItr;
                 ++valItr;
@@ -305,7 +307,7 @@ bool DirectVolumeRenderer::UserCoordinates::updateCoordinates(const DVRParams *p
                 ++coordItr;
                 ++valItr;
             }
-            std::memset(missingValueMask, 255, numOfVertices);
+            std::memset(missingValueMask, 0, numOfVertices);
         }
     }
 
