@@ -89,8 +89,8 @@ class RENDER_API BarbRenderer : public Renderer {
     int _getVectorVarGrids(int ts, int refLevel, int lod, std::vector<double> minExts,
                            std::vector<double> maxExts, std::vector<VAPoR::Grid *> &varData);
 
-    int _getHeightVarGrid(int ts, int refLevel, int lod, std::vector<double> minExts,
-                          std::vector<double> maxExts, std::vector<VAPoR::Grid *> &varData);
+    int _getVarGrid(int ts, int refLevel, int lod, string varName, std::vector<double> minExts,
+                    std::vector<double> maxExts, std::vector<VAPoR::Grid *> &varData);
 
     void _setUpLightingAndColor();
 
