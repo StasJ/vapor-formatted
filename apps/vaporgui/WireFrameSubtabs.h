@@ -55,8 +55,7 @@ class WireFrameGeometrySubtab : public QWidget, public Ui_WireFrameGeometryGUI {
   public:
     WireFrameGeometrySubtab(QWidget *parent) {
         setupUi(this);
-        _geometryWidget->Reinit(GeometryWidget::THREED, GeometryWidget::MINMAX,
-                                GeometryWidget::SCALAR);
+        _geometryWidget->Reinit(GeometryWidget::MINMAX, GeometryWidget::SCALAR);
     }
 
     void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
