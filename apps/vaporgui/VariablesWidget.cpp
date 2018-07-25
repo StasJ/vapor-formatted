@@ -60,19 +60,12 @@ VariablesWidget::VariablesWidget(QWidget *parent) : QWidget(parent), Ui_Variable
     // Legacy crap. Should remove
     //
     distribVariableFrame->hide();
-
-#ifdef VAPOR3_0_0_ALPHA
-    if (!(dspFlags & COLOR)) {
-        colorVarCombo->hide();
-    }
-#endif
 }
 
-void VariablesWidget::Reinit(DisplayFlags dspFlags, DimFlags dimFlags, ColorFlags colorFlags) {
+void VariablesWidget::Reinit(DisplayFlags dspFlags, DimFlags dimFlags) {
 
     _dspFlags = dspFlags;
     _dimFlags = dimFlags;
-    _colorFlags = colorFlags;
 
     showHideVar(true);
 
@@ -80,7 +73,7 @@ void VariablesWidget::Reinit(DisplayFlags dspFlags, DimFlags dimFlags, ColorFlag
         dimensionFrame->hide();
     }
 
-    if (_colorFlags ^ COLORVAR) {
+    if (_dspFlags ^ COLOR) {
         collapseColorVarSettings();
     }
 
@@ -114,7 +107,7 @@ void VariablesWidget::setVarName(const QString &qname) {
     name = name == "0" ? "" : name;
     _rParams->SetVariableName(name);
 
-    if (!(_colorFlags & COLORVAR))
+    if (!(_dspFlags & COLOR))
         _rParams->SetColorMapVariableName(name);
 
     _paramsMgr->EndSaveStateGroup();
@@ -183,7 +176,7 @@ void VariablesWidget::setHeightVarName(const QString &qname) {
 void VariablesWidget::setColorMappedVariable(const QString &qname) {
     assert(_rParams);
 
-    if (!(_colorFlags & COLORVAR))
+    if (!(_dspFlags & COLOR))
         return;
 
     string name = qname.toStdString();
@@ -314,7 +307,7 @@ void VariablesWidget::updateVariableCombos(RenderParams *rParams) {
         _paramsMgr->SetSaveStateEnabled(enabled);
     }
 
-    if (_colorFlags & COLORVAR) {
+    if (_dspFlags & COLOR) {
         vector<string> vars = _dataMgr->GetDataVarNames(2);
         string setVarReq = rParams->GetColorMapVariableName();
 
