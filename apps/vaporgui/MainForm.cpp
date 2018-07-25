@@ -236,6 +236,7 @@ void MainForm::_initMembers() {
     _sessionNewFlag = false;
     _begForCitation = false;
     _eventsSinceLastSave = 0;
+    _buttonPressed = false;
 }
 
 // Only the main program should call the constructor:
@@ -1728,6 +1729,9 @@ bool MainForm::eventFilter(QObject *obj, QEvent *event) {
         }
 
         _tabMgr->Update();
+
+        // force visualizer redraw
+        //
         _vizWinMgr->Update();
 
         update();
@@ -1735,22 +1739,24 @@ bool MainForm::eventFilter(QObject *obj, QEvent *event) {
         return (false);
     }
 
-    // Most other events result in a redraw. Not sure if this
-    // is necessary
+    //
+    // Force a redraw if mouse button is pressed and moving
     //
     switch (event->type()) {
     case (QEvent::MouseButtonPress):
-    case (QEvent::MouseButtonRelease):
-    case (QEvent::MouseMove):
-        //	case (QEvent::KeyRelease):
-
-        // Not sure why Paint is needed. Who generates it?
-        //
-        // case (QEvent::Paint):
-
-        _vizWinMgr->Update();
-
+        _buttonPressed = true;
         break;
+
+    case (QEvent::MouseButtonRelease):
+        _buttonPressed = false;
+        break;
+
+    case (QEvent::MouseMove):
+        if (_buttonPressed) {
+            _vizWinMgr->Update();
+        }
+        break;
+
     default:
         break;
     }
