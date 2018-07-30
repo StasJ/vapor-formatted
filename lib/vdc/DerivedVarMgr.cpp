@@ -11,21 +11,15 @@ int DerivedVarMgr::initialize(const std::vector<string> &, const std::vector<str
 }
 
 void DerivedVarMgr::AddCoordVar(DerivedCoordVar *cvar) {
-    vector<string> names = cvar->GetNames();
 
-    for (int i = 0; i < names.size(); i++) {
-        _coordVars[names[i]] = cvar;
-        _vars[names[i]] = cvar;
-    }
+    _coordVars[cvar->GetName()] = cvar;
+    _vars[cvar->GetName()] = cvar;
 }
 
 void DerivedVarMgr::AddDataVar(DerivedDataVar *dvar) {
-    vector<string> names = dvar->GetNames();
 
-    for (int i = 0; i < names.size(); i++) {
-        _dataVars[names[i]] = dvar;
-        _vars[names[i]] = dvar;
-    }
+    _dataVars[dvar->GetName()] = dvar;
+    _vars[dvar->GetName()] = dvar;
 }
 
 void DerivedVarMgr::RemoveVar(const DerivedVar *var) {
@@ -70,13 +64,49 @@ void DerivedVarMgr::RemoveVar(const DerivedVar *var) {
     }
 }
 
+void DerivedVarMgr::AddMesh(const Mesh &m) { _meshes[m.GetName()] = m; }
+
+DerivedVar *DerivedVarMgr::GetVar(string varname) const {
+
+    DerivedVar *var = _getDataVar(varname);
+    if (var)
+        return (var);
+
+    var = _getCoordVar(varname);
+    if (var)
+        return (var);
+
+    return (NULL);
+}
+
+std::vector<string> DerivedVarMgr::getMeshNames() const {
+
+    std::map<string, Mesh>::const_iterator itr;
+    vector<string> names;
+    for (itr = _meshes.begin(); itr != _meshes.end(); ++itr) {
+        names.push_back(itr->first);
+    }
+    return (names);
+}
+
+bool DerivedVarMgr::getMesh(string mesh_name, DC::Mesh &mesh) const {
+
+    std::map<string, Mesh>::const_iterator itr;
+    itr = _meshes.find(mesh_name);
+    if (itr == _meshes.end())
+        return (false);
+
+    mesh = itr->second;
+    return (true);
+}
+
 bool DerivedVarMgr::getCoordVarInfo(string varname, DC::CoordVar &cvarInfo) const {
 
     DerivedCoordVar *dvar = _getCoordVar(varname);
     if (!dvar)
         return (false);
 
-    return (dvar->GetCoordVarInfo(varname, cvarInfo));
+    return (dvar->GetCoordVarInfo(cvarInfo));
 }
 
 bool DerivedVarMgr::getDataVarInfo(string varname, DC::DataVar &dvarInfo) const {
@@ -85,7 +115,7 @@ bool DerivedVarMgr::getDataVarInfo(string varname, DC::DataVar &dvarInfo) const 
     if (!dvar)
         return (false);
 
-    return (dvar->GetDataVarInfo(varname, dvarInfo));
+    return (dvar->GetDataVarInfo(dvarInfo));
 }
 
 bool DerivedVarMgr::getBaseVarInfo(string varname, DC::BaseVar &varInfo) const {
@@ -94,7 +124,7 @@ bool DerivedVarMgr::getBaseVarInfo(string varname, DC::BaseVar &varInfo) const {
     if (!var)
         return (false);
 
-    return (var->GetBaseVarInfo(varname, varInfo));
+    return (var->GetBaseVarInfo(varInfo));
 }
 
 std::vector<string> DerivedVarMgr::getDataVarNames() const {
@@ -124,7 +154,7 @@ size_t DerivedVarMgr::getNumRefLevels(string varname) const {
     if (!var)
         return (0);
 
-    return (var->GetNumRefLevels(varname));
+    return (var->GetNumRefLevels());
 }
 
 bool DerivedVarMgr::getAtt(string varname, string attname, vector<double> &values) const {
@@ -132,7 +162,7 @@ bool DerivedVarMgr::getAtt(string varname, string attname, vector<double> &value
     if (!var)
         return (false);
 
-    return (var->GetAtt(varname, attname, values));
+    return (var->GetAtt(attname, values));
 }
 
 bool DerivedVarMgr::getAtt(string varname, string attname, vector<long> &values) const {
@@ -140,7 +170,7 @@ bool DerivedVarMgr::getAtt(string varname, string attname, vector<long> &values)
     if (!var)
         return (false);
 
-    return (var->GetAtt(varname, attname, values));
+    return (var->GetAtt(attname, values));
 }
 
 bool DerivedVarMgr::getAtt(string varname, string attname, string &values) const {
@@ -148,7 +178,7 @@ bool DerivedVarMgr::getAtt(string varname, string attname, string &values) const
     if (!var)
         return (false);
 
-    return (var->GetAtt(varname, attname, values));
+    return (var->GetAtt(attname, values));
 }
 
 std::vector<string> DerivedVarMgr::getAttNames(string varname) const {
@@ -157,7 +187,7 @@ std::vector<string> DerivedVarMgr::getAttNames(string varname) const {
     if (!var)
         return (vector<string>());
 
-    return (var->GetAttNames(varname));
+    return (var->GetAttNames());
 }
 
 DC::XType DerivedVarMgr::getAttType(string varname, string attname) const {
@@ -166,7 +196,7 @@ DC::XType DerivedVarMgr::getAttType(string varname, string attname) const {
     if (!var)
         return (DC::INVALID);
 
-    return (var->GetAttType(varname, attname));
+    return (var->GetAttType(attname));
 }
 
 int DerivedVarMgr::getDimLensAtLevel(string varname, int level, std::vector<size_t> &dims_at_level,
@@ -176,7 +206,7 @@ int DerivedVarMgr::getDimLensAtLevel(string varname, int level, std::vector<size
     if (!var)
         return (-1);
 
-    return (var->GetDimLensAtLevel(varname, level, dims_at_level, bs_at_level));
+    return (var->GetDimLensAtLevel(level, dims_at_level, bs_at_level));
 }
 
 int DerivedVarMgr::openVariableRead(size_t ts, string varname, int level, int lod) {
@@ -188,7 +218,7 @@ int DerivedVarMgr::openVariableRead(size_t ts, string varname, int level, int lo
         return (-1);
     }
 
-    return (var->OpenVariableRead(ts, varname, level, lod));
+    return (var->OpenVariableRead(ts, level, lod));
 }
 
 int DerivedVarMgr::closeVariable(int fd) {
@@ -230,7 +260,7 @@ bool DerivedVarMgr::variableExists(size_t ts, string varname, int reflevel, int 
     if (!var)
         return (false);
 
-    return (var->VariableExists(ts, varname, reflevel, lod));
+    return (var->VariableExists(ts, reflevel, lod));
 }
 
 DerivedVar *DerivedVarMgr::_getVar(string name) const {
