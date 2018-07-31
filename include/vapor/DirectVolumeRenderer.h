@@ -48,12 +48,10 @@ class RENDER_API DirectVolumeRenderer : public Renderer {
         //              | /
         //              |/
         //            0 --------X
-        float *frontFace, *backFace; // user coordinates, size == bx * by * 3
-        float *rightFace, *leftFace; // user coordinates, size == by * bz * 3
-        float *topFace, *bottomFace; // user coordinates, size == bx * bz * 3
-        /* data field of this volume: each data point has 4 components:
-           the X, Y, Z user coordinates, and the actual field value.   */
-        float *field;
+        float *frontFace, *backFace;     // user coordinates, size == bx * by * 3
+        float *rightFace, *leftFace;     // user coordinates, size == by * bz * 3
+        float *topFace, *bottomFace;     // user coordinates, size == bx * bz * 3
+        float *dataField;                // data field of this volume
         unsigned char *missingValueMask; // 0 == is missing value; 255 == not missing value
         size_t dims[3];                  // num. of samples along each axis
         float boxMin[3], boxMax[3];      // bounding box of this volume
@@ -69,7 +67,8 @@ class RENDER_API DirectVolumeRenderer : public Renderer {
         ~UserCoordinates();
         bool isUpToDate(const DVRParams *params);
         bool updateCoordinates(const DVRParams *params, DataMgr *dataMgr);
-    };
+    }; // end of struct UserCoordinates
+
     UserCoordinates _userCoordinates;
     std::vector<float> _colorMap;
     float _colorMapRange[2];
@@ -100,14 +99,9 @@ class RENDER_API DirectVolumeRenderer : public Renderer {
     void _drawQuad();
 
     //
-    // Initialization for 1) framebuffer and 2) textures
+    // Initialization for 1) framebuffers and 2) textures
     //
     void _initializeFramebufferTextures();
-
-    //
-    // Upload texture data to GPU
-    //
-    void _uploadTextures();
 
     //
     // Simple shader compilation
