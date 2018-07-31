@@ -923,12 +923,11 @@ DerivedCoordVar_CF1D *DCWRF::_InitVerticalCoordinatesHelper(string varName, stri
 
     DerivedCoordVar_CF1D *derivedVar;
 
-    vector<string> varNames = {varName};
     vector<string> dimNames = {dimName};
     string units = "";
     int axis = 2;
 
-    derivedVar = new DerivedCoordVar_CF1D(varNames, this, dimName, axis, units);
+    derivedVar = new DerivedCoordVar_CF1D(varName, this, dimName, axis, units);
     (void)derivedVar->Initialize();
 
     _dvm.AddCoordVar(derivedVar);
@@ -936,8 +935,17 @@ DerivedCoordVar_CF1D *DCWRF::_InitVerticalCoordinatesHelper(string varName, stri
     vector<bool> periodic(1, false);
     string time_dim_name = "";
 
-    _coordVarsMap[varName] =
-        CoordVar(varName, units, DC::FLOAT, periodic, axis, false, dimNames, time_dim_name);
+    CoordVar cvar(varName, units, DC::FLOAT, periodic, axis, false, dimNames, time_dim_name);
+
+    if (varName == "bottom_top" || varName == "bottom_top_stag") {
+
+        cvar.SetAttribute(Attribute("standard_name", DC::XType::TEXT, "wrf_terrain"));
+
+        string formula_terms = "PH: PH PHB: PHB";
+        cvar.SetAttribute(Attribute("formula_terms", DC::XType::TEXT, formula_terms));
+    }
+
+    _coordVarsMap[varName] = cvar;
 
     return (derivedVar);
 }
@@ -1156,7 +1164,6 @@ int DCWRF::_InitVars(NetCDFCollection *ncdfc) {
         // Must have a coordinate variable for each dimension!
         //
         if (sdimnames.size() != scoordvars.size()) {
-            cout << "CRAP\n";
             continue;
         }
 
@@ -1181,12 +1188,14 @@ int DCWRF::_InitVars(NetCDFCollection *ncdfc) {
         }
 
         vector<bool> periodic(3, false);
-        _dataVarsMap[vars[i]] = DataVar(vars[i], units, DC::FLOAT, periodic, mesh.GetName(),
-                                        time_coordvar, DC::Mesh::NODE);
+        DC::DataVar dvar = DataVar(vars[i], units, DC::FLOAT, periodic, mesh.GetName(),
+                                   time_coordvar, DC::Mesh::NODE);
 
-        int rc = DCUtils::CopyAtt(*ncdfc, vars[i], _dataVarsMap[vars[i]]);
+        int rc = DCUtils::CopyAtt(*ncdfc, vars[i], dvar);
         if (rc < 0)
             return (-1);
+
+        _dataVarsMap[vars[i]] = dvar;
     }
 
     return (0);
