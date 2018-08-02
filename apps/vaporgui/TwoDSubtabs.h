@@ -21,7 +21,7 @@ class TwoDVariablesSubtab : public QWidget, public Ui_TwoDVariablesGUI {
         setupUi(this);
         _variablesWidget->Reinit(
             (VariablesWidget::DisplayFlags)(VariablesWidget::SCALAR | VariablesWidget::HGT),
-            (VariablesWidget::DimFlags)(VariablesWidget::TWOD), (VariablesWidget::ColorFlags)(0));
+            (VariablesWidget::DimFlags)(VariablesWidget::TWOD));
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -55,8 +55,7 @@ class TwoDGeometrySubtab : public QWidget, public Ui_TwoDGeometryGUI {
   public:
     TwoDGeometrySubtab(QWidget *parent) {
         setupUi(this);
-        _geometryWidget->Reinit(GeometryWidget::TWOD, GeometryWidget::MINMAX,
-                                GeometryWidget::SCALAR);
+        _geometryWidget->Reinit(GeometryWidget::MINMAX, GeometryWidget::SCALAR);
     }
 
     void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
