@@ -144,8 +144,6 @@ class VariablesWidget : public QWidget, public Ui_VariablesWidgetGUI {
 
     DisplayFlags _dspFlags;
     DimFlags _dimFlags;
-
-    static string _nDimsTag;
 };
 
 #endif // VARIABLESWIDGET_H
