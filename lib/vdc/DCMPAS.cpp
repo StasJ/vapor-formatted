@@ -226,14 +226,6 @@ int DCMPAS::initialize(const vector<string> &files, const std::vector<string> &o
         return (-1);
     }
 
-    // Create derived coordinate variables.
-    //
-    rc = _InitDerivedVars(ncdfc);
-    if (rc < 0) {
-        SetErrMsg("Failed to created required derived coordinate variables");
-        return (-1);
-    }
-
     // Make sure NetCDF file(s) have everything we need
     //
     rc = _CheckRequiredFields(ncdfc);
@@ -252,6 +244,14 @@ int DCMPAS::initialize(const vector<string> &files, const std::vector<string> &o
 
     rc = _InitCoordvars(ncdfc);
     if (rc < 0) {
+        return (-1);
+    }
+
+    // Create derived coordinate variables.
+    //
+    rc = _InitDerivedVars(ncdfc);
+    if (rc < 0) {
+        SetErrMsg("Failed to created required derived coordinate variables");
         return (-1);
     }
 
@@ -825,8 +825,6 @@ int DCMPAS::_InitCoordvars(NetCDFCollection *ncdfc) {
     if (_isAtmosphere(ncdfc)) {
 
         // Vertical coordinate variables
-        // MPAS-A only outputs a single vertical coordinate variable, zgrid,
-        // which is the elevation of the staggered grid, primary (cell) mesh.
         //
         string units = "meters";
         int axis = 2;
@@ -839,30 +837,7 @@ int DCMPAS::_InitCoordvars(NetCDFCollection *ncdfc) {
         int rc = DCUtils::CopyAtt(*ncdfc, name, _coordVarsMap[name]);
         if (rc < 0)
             return (-1);
-
-        // Need derived vertical coord vars for dual mesh and unstaggered grid
-        //
-        DC::CoordVar cvarInfo;
-        bool ok = _dvm.GetCoordVarInfo(zGridVertP1VarName, cvarInfo);
-        assert(ok);
-        _coordVarsMap[zGridVertP1VarName] = cvarInfo;
-
-        ok = _dvm.GetCoordVarInfo(zGridVarName, cvarInfo);
-        assert(ok);
-        _coordVarsMap[zGridVarName] = cvarInfo;
-
-        ok = _dvm.GetCoordVarInfo(zGridVertVarName, cvarInfo);
-        assert(ok);
-        _coordVarsMap[zGridVertVarName] = cvarInfo;
     }
-
-    // Time coordinate is a derived variable
-    //
-    DC::CoordVar cvarInfo;
-    bool ok = _dvm.GetCoordVarInfo(timeDimName, cvarInfo);
-    assert(ok);
-
-    _coordVarsMap[timeDimName] = cvarInfo;
 
     return (0);
 }
@@ -871,6 +846,8 @@ int DCMPAS::_InitCoordvars(NetCDFCollection *ncdfc) {
 //
 int DCMPAS::_InitDerivedVars(NetCDFCollection *ncdfc) {
     int rc = _InitVerticalCoordinatesDerived(ncdfc);
+    if (rc < 0)
+        return (-1);
 
     // Create and install the Time coordinate variable
     //
@@ -883,10 +860,22 @@ int DCMPAS::_InitDerivedVars(NetCDFCollection *ncdfc) {
 
     _dvm.AddCoordVar(derivedVar);
 
+    // Time coordinate is a derived variable
+    //
+    DC::CoordVar cvarInfo;
+    bool ok = _dvm.GetCoordVarInfo(timeDimName, cvarInfo);
+    assert(ok);
+
+    _coordVarsMap[timeDimName] = cvarInfo;
+
     return (0);
 }
 
 int DCMPAS::_InitVerticalCoordinatesDerived(NetCDFCollection *ncdfc) {
+    // MPAS-A only outputs a single vertical coordinate variable, zgrid,
+    // which is the elevation of the staggered grid, primary (cell) mesh.
+    //
+
     if (!_isAtmosphere(ncdfc))
         return (0);
 
@@ -900,6 +889,11 @@ int DCMPAS::_InitVerticalCoordinatesDerived(NetCDFCollection *ncdfc) {
         return (-1);
     _dvm.AddCoordVar(derivedVar);
 
+    DC::CoordVar cvarInfo;
+    bool ok = _dvm.GetCoordVarInfo(zGridVarName, cvarInfo);
+    assert(ok);
+    _coordVarsMap[zGridVarName] = cvarInfo;
+
     derivedVar = new DerivedCoordVertFromCell(zGridVertP1VarName, nVertLevelsP1DimName, this,
                                               zGridP1VarName, cellsOnVertexVarName);
 
@@ -908,6 +902,10 @@ int DCMPAS::_InitVerticalCoordinatesDerived(NetCDFCollection *ncdfc) {
         return (-1);
     _dvm.AddCoordVar(derivedVar);
 
+    ok = _dvm.GetCoordVarInfo(zGridVertP1VarName, cvarInfo);
+    assert(ok);
+    _coordVarsMap[zGridVertP1VarName] = cvarInfo;
+
     derivedVar = new DerivedCoordVertFromCell(zGridVertVarName, nVertLevelsDimName, this,
                                               zGridVarName, cellsOnVertexVarName);
 
@@ -915,6 +913,10 @@ int DCMPAS::_InitVerticalCoordinatesDerived(NetCDFCollection *ncdfc) {
     if (rc < 0)
         return (-1);
     _dvm.AddCoordVar(derivedVar);
+
+    ok = _dvm.GetCoordVarInfo(zGridVertVarName, cvarInfo);
+    assert(ok);
+    _coordVarsMap[zGridVertVarName] = cvarInfo;
 
     return (0);
 }
