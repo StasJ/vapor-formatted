@@ -461,6 +461,8 @@ class VDF_API DerivedCoordVarStandardWRF_Terrain : public DerivedCFVertCoordVar 
 
     virtual bool VariableExists(size_t ts, int reflevel, int lod) const;
 
+    static bool ValidFormula(string formula);
+
   private:
     string _PHVar;
     string _PHBVar;
