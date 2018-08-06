@@ -757,9 +757,6 @@ void BarbRenderer::_getMagnitudeAtPoint(std::vector<VAPoR::Grid *> variables, fl
             double missingValue = grid->GetMissingValue();
 
             if (value == missingValue) {
-                cout << "missing value of " << value << " found at " << point[X] << " " << point[Y]
-                     << " " << point[Z] << endl;
-                counter++;
                 continue;
             }
             value = abs(value);
@@ -770,7 +767,6 @@ void BarbRenderer::_getMagnitudeAtPoint(std::vector<VAPoR::Grid *> variables, fl
         }
     }
     if (maxValue > _maxValue) {
-        cout << "Setting new maxValue" << endl;
         _maxValue = maxValue;
     }
 }
@@ -838,5 +834,4 @@ void BarbRenderer::_setDefaultLengthAndThicknessScales(size_t ts,
     _maxThickness = hypotenuse * BARB_RADIUS_TO_HYPOTENUSE;
     _vectorScaleFactor = hypotenuse * BARB_LENGTH_TO_HYPOTENUSE;
     _vectorScaleFactor *= 1.0 / _maxValue;
-    cout << "VSF " << _vectorScaleFactor << " " << _maxValue << " " << hypotenuse << endl;
 }
