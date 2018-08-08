@@ -24,7 +24,7 @@ class ContourVariablesSubtab : public QWidget, public Ui_ContourVariablesGUI {
   public:
     ContourVariablesSubtab(QWidget *parent) {
         setupUi(this);
-        _variablesWidget->Reinit((DisplayFlags)(SCALAR | HEIGHT), (DimFlags)(TWOD));
+        _variablesWidget->Reinit((VariableFlags)(SCALAR | HEIGHT), (DimFlags)(TWOD));
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -73,8 +73,7 @@ class ContourGeometrySubtab : public QWidget, public Ui_ContourGeometryGUI {
   public:
     ContourGeometrySubtab(QWidget *parent) {
         setupUi(this);
-        _geometryWidget->Reinit(GeometryWidget::TWOD, GeometryWidget::MINMAX,
-                                GeometryWidget::SCALAR);
+        _geometryWidget->Reinit(TWOD, MINMAX, SCALAR);
 
         _orientationAngles->hide();
     }
