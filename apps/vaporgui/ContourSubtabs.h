@@ -1,6 +1,7 @@
 #ifndef CONTOURSUBTABS_H
 #define CONTOURSUBTABS_H
 
+#include "Flags.h"
 #include "RangeCombos.h"
 #include "ui_ContourAppearanceGUI.h"
 #include "ui_ContourGeometryGUI.h"
@@ -23,9 +24,7 @@ class ContourVariablesSubtab : public QWidget, public Ui_ContourVariablesGUI {
   public:
     ContourVariablesSubtab(QWidget *parent) {
         setupUi(this);
-        _variablesWidget->Reinit(
-            (VariablesWidget::DisplayFlags)(VariablesWidget::SCALAR | VariablesWidget::HGT),
-            (VariablesWidget::DimFlags)(VariablesWidget::TWOD));
+        _variablesWidget->Reinit((DisplayFlags)(SCALAR | HEIGHT), (DimFlags)(TWOD));
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,

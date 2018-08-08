@@ -20,11 +20,7 @@ class BarbVariablesSubtab : public QWidget, public Ui_BarbVariablesGUI {
   public:
     BarbVariablesSubtab(QWidget *parent) {
         setupUi(this);
-        _variablesWidget->Reinit((VariablesWidget::DisplayFlags)(VariablesWidget::VECTOR |
-                                                                 VariablesWidget::HGT |
-                                                                 VariablesWidget::COLOR),
-                                 (VariablesWidget::DimFlags)(VariablesWidget::TWOD));
-        //(VariablesWidget::DimFlags)(VariablesWidget::THREED));
+        _variablesWidget->Reinit((DisplayFlags)(VECTOR | HEIGHT | COLOR), (DimFlags)(TWOD));
     }
 
     void Initialize(VAPoR::BarbParams *bParams, VAPoR::DataMgr *dataMgr);

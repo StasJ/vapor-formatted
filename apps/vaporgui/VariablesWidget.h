@@ -1,6 +1,7 @@
 #ifndef VARIABLESWIDGET_H
 #define VARIABLESWIDGET_H
 
+#include "Flags.h"
 #include "VaporTable.h"
 #include "ui_VariablesWidgetGUI.h"
 #include "vapor/MyBase.h"
@@ -51,20 +52,21 @@ class VariablesWidget : public QWidget, public Ui_VariablesWidgetGUI {
     //! HGT : RenderParams::GetHeightVariableName()
     //! COLOR : RenderParams::GetColorMapVariableNames()
     //!
-    enum DisplayFlags {
-        SCALAR = (1u << 0),
-        VECTOR = (1u << 1),
-        HGT = (1u << 2),
-        COLOR = (1u << 3),
-    };
+    /*enum DisplayFlags {
+       SCALAR = (1u << 0),
+       VECTOR = (1u << 1),
+       HGT = (1u << 2),
+       COLOR = (1u << 3),
+    };*/
 
     //! Bit mask to indicate whether 2D, 3D, or 2D and 3D variables are to
     //! be supported
     //
-    enum DimFlags {
+    /* enum DimFlags {
         TWOD = (1u << 0),
         THREED = (1u << 1),
-    };
+     };
+    */
 
     VariablesWidget(QWidget *parent);
 

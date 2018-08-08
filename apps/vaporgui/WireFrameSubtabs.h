@@ -1,6 +1,7 @@
 #ifndef WIREFRAMESUBTABS_H
 #define WIREFRAMESUBTABS_H
 
+#include "Flags.h"
 #include "ui_WireFrameAppearanceGUI.h"
 #include "ui_WireFrameGeometryGUI.h"
 #include "ui_WireFrameVariablesGUI.h"
@@ -19,9 +20,7 @@ class WireFrameVariablesSubtab : public QWidget, public Ui_WireFrameVariablesGUI
   public:
     WireFrameVariablesSubtab(QWidget *parent) {
         setupUi(this);
-        _variablesWidget->Reinit(
-            (VariablesWidget::DisplayFlags)(VariablesWidget::SCALAR | VariablesWidget::HGT),
-            (VariablesWidget::DimFlags)(VariablesWidget::THREED | VariablesWidget::TWOD));
+        _variablesWidget->Reinit((DisplayFlags)(SCALAR | HEIGHT), (DimFlags)(THREED | TWOD));
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
