@@ -67,7 +67,7 @@ string RenderEventRouter::GetSmallIconImagePath() const {
         return (imageName);
 
     vector<string> path;
-    path.push_back("Images");
+    path.push_back("images");
     path.push_back(imageName);
     return (GetAppPath("VAPOR", "share", path));
 }
