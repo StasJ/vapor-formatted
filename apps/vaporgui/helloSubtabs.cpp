@@ -9,5 +9,5 @@ HelloVariablesSubtab::HelloVariablesSubtab(QWidget *parent)
 
     setupUi(this);
 
-    _variablesWidget->Reinit((DisplayFlags)(SCALAR | HEIGHT), (DimFlags)(THREED));
+    _variablesWidget->Reinit((VariableFlags)(SCALAR | HEIGHT), (DimFlags)(THREED));
 }
