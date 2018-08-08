@@ -1,6 +1,7 @@
 #ifndef TWODSUBTABS_H
 #define TWODSUBTABS_H
 
+#include "Flags.h"
 #include "ui_TwoDAppearanceGUI.h"
 #include "ui_TwoDGeometryGUI.h"
 #include "ui_TwoDVariablesGUI.h"
@@ -19,9 +20,7 @@ class TwoDVariablesSubtab : public QWidget, public Ui_TwoDVariablesGUI {
   public:
     TwoDVariablesSubtab(QWidget *parent) {
         setupUi(this);
-        _variablesWidget->Reinit(
-            (VariablesWidget::DisplayFlags)(VariablesWidget::SCALAR | VariablesWidget::HGT),
-            (VariablesWidget::DimFlags)(VariablesWidget::TWOD));
+        _variablesWidget->Reinit((DisplayFlags)(SCALAR | HEIGHT), (DimFlags)(TWOD));
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,

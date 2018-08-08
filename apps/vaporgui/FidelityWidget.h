@@ -1,6 +1,7 @@
 #ifndef FIDELITYWIDGET_H
 #define FIDELITYWIDGET_H
 
+#include "Flags.h"
 #include "ui_FidelityWidgetGUI.h"
 #include "vapor/MyBase.h"
 #include <QObject>
@@ -29,13 +30,14 @@ class FidelityWidget : public QWidget, public Ui_FidelityWidgetGUI {
     Q_OBJECT
 
   public:
-    enum DisplayFlags {
+    /* enum DisplayFlags {
         SCALAR = (1u << 0),
         VECTOR = (1u << 1),
         COLOR = (1u << 2),
         AUXILIARY = (1u << 3),
         HEIGHT = (1u << 4),
-    };
+        };
+    */
 
     FidelityWidget(QWidget *parent);
 
