@@ -1,6 +1,7 @@
 #ifndef WIREFRAMESUBTABS_H
 #define WIREFRAMESUBTABS_H
 
+#include "Flags.h"
 #include "ui_WireFrameAppearanceGUI.h"
 #include "ui_WireFrameGeometryGUI.h"
 #include "ui_WireFrameVariablesGUI.h"
@@ -19,10 +20,7 @@ class WireFrameVariablesSubtab : public QWidget, public Ui_WireFrameVariablesGUI
   public:
     WireFrameVariablesSubtab(QWidget *parent) {
         setupUi(this);
-        _variablesWidget->Reinit(
-            (VariablesWidget::DisplayFlags)(VariablesWidget::SCALAR | VariablesWidget::HGT),
-            (VariablesWidget::DimFlags)(VariablesWidget::THREED | VariablesWidget::TWOD),
-            (VariablesWidget::ColorFlags)(0));
+        _variablesWidget->Reinit((VariableFlags)(SCALAR | HEIGHT), (DimFlags)(THREED | TWOD));
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -38,8 +36,7 @@ class WireFrameAppearanceSubtab : public QWidget, public Ui_WireFrameAppearanceG
   public:
     WireFrameAppearanceSubtab(QWidget *parent) {
         setupUi(this);
-        _TFWidget->Reinit((TFWidget::Flags)(TFWidget::CONSTANT));
-        //_TFWidget->setEventRouter(dynamic_cast<RenderEventRouter*>(parent));
+        _TFWidget->Reinit((TFFlags)(CONSTANT));
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -56,8 +53,7 @@ class WireFrameGeometrySubtab : public QWidget, public Ui_WireFrameGeometryGUI {
   public:
     WireFrameGeometrySubtab(QWidget *parent) {
         setupUi(this);
-        _geometryWidget->Reinit(GeometryWidget::THREED, GeometryWidget::MINMAX,
-                                GeometryWidget::SCALAR);
+        _geometryWidget->Reinit((DimFlags)THREED, (GeometryFlags)MINMAX, (VariableFlags)SCALAR);
     }
 
     void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
