@@ -18,6 +18,7 @@
 #include <vapor/MyPython.h>
 
 #include "ErrorReporter.h"
+#include "Flags.h"
 #include "GUIStateParams.h"
 #include "Plot.h"
 #include <QLineEdit>
@@ -50,7 +51,7 @@ Plot::Plot(VAPoR::DataStatus *status, VAPoR::ParamsMgr *manager, QWidget *parent
     // Do some static QT stuff
     setupUi(this);
     setWindowTitle("Plot Utility");
-    myFidelityWidget->Reinit(FidelityWidget::AUXILIARY);
+    myFidelityWidget->Reinit((VariableFlags)AUXILIARY);
     spaceTimeTab->setCurrentIndex(0); // default to load space tab
 
     timeTabSinglePoint->SetMainLabel(QString::fromAscii("Select one data point in space:"));

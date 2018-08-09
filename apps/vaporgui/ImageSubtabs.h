@@ -1,6 +1,7 @@
 #ifndef IMAGESUBTABS_H
 #define IMAGESUBTABS_H
 
+#include "Flags.h"
 #include "RangeCombos.h"
 #include "ui_ImageAppearanceGUI.h"
 #include "ui_ImageGeometryGUI.h"
@@ -24,8 +25,7 @@ class ImageVariablesSubtab : public QWidget, public Ui_ImageVariablesGUI {
   public:
     ImageVariablesSubtab(QWidget *parent) {
         setupUi(this);
-        _variablesWidget->Reinit(VariablesWidget::HGT, VariablesWidget::TWOD,
-                                 (VariablesWidget::ColorFlags)(0));
+        _variablesWidget->Reinit((VariableFlags)(HEIGHT), (DimFlags)(TWOD));
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -120,8 +120,7 @@ class ImageGeometrySubtab : public QWidget, public Ui_ImageGeometryGUI {
   public:
     ImageGeometrySubtab(QWidget *parent) {
         setupUi(this);
-        _geometryWidget->Reinit(GeometryWidget::TWOD, GeometryWidget::MINMAX,
-                                GeometryWidget::SCALAR);
+        _geometryWidget->Reinit((DimFlags)TWOD, (GeometryFlags)MINMAX, (VariableFlags)SCALAR);
     }
 
     void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
