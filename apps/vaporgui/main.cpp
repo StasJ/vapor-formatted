@@ -19,6 +19,8 @@
 #include "BannerGUI.h"
 #include "MainForm.h"
 #include "vapor/GetAppPath.h"
+#include <QDebug>
+#include <QFont>
 #include <QFontDatabase>
 #include <QMessageBox>
 #include <cerrno>
@@ -149,29 +151,39 @@ int main(int argc, char **argv) {
 
     app = &a;
     a.setPalette(QPalette(QColor(233, 236, 216), QColor(233, 236, 216)));
+    //	QFont font;
+    //	font.fromString("Helvetica,36,-1,5,50,1,0,0,0,0");
+    //	a.setFont(font);
+    //	qDebug() << a.font();
 
     vector<QString> files;
     for (int i = 1; i < argc; i++) {
         files.push_back(argv[i]);
     }
+    //	QFont font;
+    //	font.fromString("Helvetica,36,-1,5,50,1,0,0,0,0");
+    //	app->setFont(font);
     MainForm *mw = new MainForm(files, app);
+    mw->setAttribute(Qt::WA_WindowPropagation);
+    //	mw->setFont(font);
 
     // StartupParams* sParams = new StartupParams(0);
 
-    vector<string> fpath;
-    fpath.push_back("fonts");
-    string fontFile = GetAppPath("VAPOR", "share", fpath);
-    fontFile = fontFile + "//arimo.ttf";
+    /*    vector<string> fpath;
+        fpath.push_back("fonts");
+        string fontFile = GetAppPath("VAPOR", "share", fpath);
+        fontFile = fontFile + "//arimo.ttf";
 
-    QFontDatabase fdb;
-    fdb.addApplicationFont(QString::fromStdString(fontFile));
-    QStringList fonts = fdb.families();
-    QFont f = fdb.font("Arimo", "normal", 12);
+        QFontDatabase fdb;
+        fdb.addApplicationFont(QString::fromStdString(fontFile));
+        QStringList fonts = fdb.families();
+        QFont f = fdb.font("Arimo", "normal", 12);
 
-    const char *useFont = std::getenv("USE_SYSTEM_FONT");
-    if (!useFont) {
-        mw->setFont(f);
-    }
+        const char* useFont = std::getenv("USE_SYSTEM_FONT");
+        if (!useFont) {
+            mw->setFont(f);
+        }
+    */
 
     mw->setWindowTitle("VAPOR User Interface");
     mw->show();

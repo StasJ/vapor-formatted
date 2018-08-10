@@ -119,6 +119,9 @@ class SettingsParams : public VAPoR::ParamsBase {
     string GetCurrentPrefsPath() const;
     void SetCurrentPrefsPath(string pth);
 
+    string GetFont() const;
+    void SetFont(string font);
+
     void Reinit();
     const std::string getShortName() { return _shortName; }
 
@@ -161,6 +164,7 @@ class SettingsParams : public VAPoR::ParamsBase {
     static const string _sessionAutoSaveEnabledTag;
     static const string _fontFileTag;
     static const string _fontSizeTag;
+    static const string _fontTag;
 
     void _init();
     bool _loadFromSettingsFile();

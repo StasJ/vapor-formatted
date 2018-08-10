@@ -86,6 +86,7 @@ class SettingsEventRouter : public QWidget, public Ui_SettingsGUI, public EventR
     void _chooseTFPath();
     void _chooseFlowPath();
     void _choosePythonPath();
+    void _chooseFont();
     void _winLockChanged(bool val);
     void _restoreDefaults();
 
