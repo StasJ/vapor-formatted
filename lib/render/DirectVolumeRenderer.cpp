@@ -365,7 +365,6 @@ int DirectVolumeRenderer::_initializeGL() {
 
     // Create Vertex Array Object (VAO)
     glGenVertexArrays(1, &_vertexArrayId);
-    glBindVertexArray(_vertexArrayId);
 
     _printGLInfo();
 
@@ -380,6 +379,8 @@ int DirectVolumeRenderer::_paintGL() {
     DVRParams *params = dynamic_cast<DVRParams *>(GetActiveParams());
     assert(params);
 
+    glBindVertexArray(_vertexArrayId); // Use our VAO
+
     /* Gather user coordinates */
     if (!_userCoordinates.IsUpToDate(params, _dataMgr)) {
         _userCoordinates.UpdateCoordinates(params, _dataMgr);
@@ -389,8 +390,7 @@ int DirectVolumeRenderer::_paintGL() {
         glTexImage3D(GL_TEXTURE_3D, 0, GL_R32F, _userCoordinates.dims[0], _userCoordinates.dims[1],
                      _userCoordinates.dims[2], 0, GL_RED, GL_FLOAT, _userCoordinates.dataField);
 
-        // If there is missing value, upload the mask to texture
-        // Otherwise, leave it empty.
+        // If there is missing value, upload the mask to texture. Otherwise, leave it empty.
         if (_userCoordinates.missingValueMask) // Has missing value!
         {
             // Adjust alignment for GL_R8UI format. Stupit OpenGL parameter.
@@ -464,6 +464,8 @@ int DirectVolumeRenderer::_paintGL() {
         _drawVolumeFaces(3, false, ModelView, InversedMV); // 3rd pass, perform ray casting
 
     delete grid;
+
+    glBindVertexArray(0); // Restore default vertex array!
 
     return 0;
 }
@@ -881,8 +883,8 @@ void DirectVolumeRenderer::_drawVolumeFaces(int whichPass, bool insideACell,
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glDeleteBuffers(1, &vertexBufferId);
     glDisableVertexAttribArray(0);
+    glDeleteBuffers(1, &vertexBufferId);
 
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
