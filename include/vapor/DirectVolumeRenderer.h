@@ -107,6 +107,7 @@ class RENDER_API DirectVolumeRenderer : public Renderer {
     // vertex arrays
     GLuint _vertexArrayId;
     GLuint _vertexBufferId;
+    GLuint _indexBufferId;
 
     // shaders
     GLuint _1stPassShaderId;
