@@ -211,6 +211,8 @@ class VDF_API DCMPAS : public VAPoR::DC {
     bool _isCoordVar(string varname) const;
     bool _isDataVar(string varname) const;
 
+    template <class T> int _getVar(size_t ts, string varname, T *buf);
+
     int _read_nEdgesOnCell(size_t ts);
     void _addMissingFlag(int *data) const;
     int _readVarToSmartBuf(size_t ts, string varname, Wasp::SmartBuf &smartBuf);
@@ -220,6 +222,9 @@ class VDF_API DCMPAS : public VAPoR::DC {
 
     int _readRegionTransposed(MPASFileObject *w, const vector<size_t> &min,
                               const vector<size_t> &max, float *region);
+
+    int _readRegionEdgeVariable(MPASFileObject *w, const vector<size_t> &min,
+                                const vector<size_t> &max, float *region);
 
     template <class T>
     int _readRegionTemplate(int fd, const vector<size_t> &min, const vector<size_t> &max,
