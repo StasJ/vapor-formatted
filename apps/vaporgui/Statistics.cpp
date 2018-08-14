@@ -21,6 +21,7 @@
 #endif
 #include "Statistics.h"
 #include "ErrorReporter.h"
+#include "Flags.h"
 #include "GUIStateParams.h"
 
 #include <QFileDialog>
@@ -46,8 +47,8 @@ Statistics::Statistics(QWidget *parent) : QDialog(parent), Ui_StatsWindow() {
 
     setupUi(this);
     setWindowTitle("Statistics");
-    MyGeometryWidget->Reinit(GeometryWidget::MINMAX, GeometryWidget::AUXILIARY);
-    MyFidelityWidget->Reinit(FidelityWidget::AUXILIARY);
+    MyGeometryWidget->Reinit((DimFlags)THREED, (GeometryFlags)MINMAX, (VariableFlags)AUXILIARY);
+    MyFidelityWidget->Reinit((VariableFlags)AUXILIARY);
 
     Connect();
 }
