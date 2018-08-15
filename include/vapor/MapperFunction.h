@@ -279,7 +279,6 @@ class PARAMS_API MapperFunction : public ParamsBase {
     //
     // XML tags
     //
-
     static const string _dataBoundsTag;
     static const string _opacityCompositionTag;
     static const string _opacityScaleTag;
