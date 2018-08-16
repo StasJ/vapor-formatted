@@ -168,7 +168,7 @@ bool GetAxes(const DataMgr *dataMgr, string varname, vector<int> &axes);
 //! \sa GetAxes()
 //
 VDF_API bool GetExtents(DataMgr *dataMgr, size_t timestep, string varname, vector<double> &minExts,
-                        vector<double> &maxExts);
+                        vector<double> &maxExts, int refLevel = -1);
 
 //! Get coordinate extents for one or more variables.
 //!
@@ -194,7 +194,8 @@ VDF_API bool GetExtents(DataMgr *dataMgr, size_t timestep, string varname, vecto
 //! \sa GetAxes()
 //
 VDF_API bool GetExtents(DataMgr *dataMgr, size_t timestep, const vector<string> &varnames,
-                        vector<double> &minExts, vector<double> &maxExts, vector<int> &axes);
+                        vector<double> &minExts, vector<double> &maxExts, vector<int> &axes,
+                        int refLevel = -1);
 
 #ifdef VAPOR3_0_0_ALPHA
 
