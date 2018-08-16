@@ -121,7 +121,6 @@ void BarbAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *par
     _bParams = (VAPoR::BarbParams *)bParams;
     _paramsMgr = paramsMgr;
     _TFWidget->Update(dataMgr, paramsMgr, bParams);
-    _ColorbarWidget->Update(dataMgr, paramsMgr, bParams);
 
     vector<long> grid = _bParams->GetGrid();
     _xDimCombo->Update(1, 50, grid[0]);
@@ -181,4 +180,11 @@ void BarbGeometrySubtab::Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dat
     _geometryWidget->Update(paramsMgr, dataMgr, rParams);
     _copyRegionWidget->Update(paramsMgr, rParams);
     _transformTable->Update(rParams->GetTransform());
+}
+
+BarbAnnotationSubtab::BarbAnnotationSubtab(QWidget *parent) { setupUi(this); }
+
+void BarbAnnotationSubtab::Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
+                                  VAPoR::RenderParams *rParams) {
+    _colorbarWidget->Update(dataMgr, paramsMgr, rParams);
 }
