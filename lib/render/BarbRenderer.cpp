@@ -265,7 +265,7 @@ int BarbRenderer::_getVarGrid(int ts, int refLevel, int lod, string varName,
     return 0;
 }
 
-int BarbRenderer::_paintGL() {
+int BarbRenderer::_paintGL(bool) {
     int rc = 0;
     if (!_isCacheDirty()) {
         glCallList(_drawList);

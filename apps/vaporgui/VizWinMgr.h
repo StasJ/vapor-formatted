@@ -69,7 +69,7 @@ class VizWinMgr : public QObject {
                       const double centerRot[3], bool perspective);
 
     //! Invoke updateGL on all the visualizers that have dirty bit set.
-    void Update();
+    void Update(bool fast);
 
     //! \copydoc VAPoR::ControlExec::EnableImageCapture()
     int EnableImageCapture(string filename, string winName);
