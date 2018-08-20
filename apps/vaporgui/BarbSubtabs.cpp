@@ -107,7 +107,6 @@ void BarbAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *par
     _bParams = (VAPoR::BarbParams *)bParams;
     _paramsMgr = paramsMgr;
     _TFWidget->Update(dataMgr, paramsMgr, bParams);
-    _ColorbarWidget->Update(dataMgr, paramsMgr, bParams);
 
     vector<long> grid = _bParams->GetGrid();
     _xDimCombo->Update(COUNT_MIN, COUNT_MAX, grid[X]);
@@ -163,3 +162,10 @@ void BarbAppearanceSubtab::lengthChanged(double d) { _bParams->SetLengthScale(d)
 void BarbAppearanceSubtab::thicknessChanged(double d) { _bParams->SetLineThickness(d); }
 
 void BarbAppearanceSubtab::recalculateScales() { _bParams->SetNeedToRecalculateScales(true); }
+
+BarbAnnotationSubtab::BarbAnnotationSubtab(QWidget *parent) { setupUi(this); }
+
+void BarbAnnotationSubtab::Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
+                                  VAPoR::RenderParams *rParams) {
+    _colorbarWidget->Update(dataMgr, paramsMgr, rParams);
+}
