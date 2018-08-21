@@ -6,7 +6,7 @@
 #include "RenderEventRouter.h"
 #include "VariablesWidget.h"
 #include "vapor/DVRParams.h"
-#include "vapor/DirectVolumeRenderer.h"
+#include "vapor/DVRenderer.h"
 #include <qobject.h>
 #include <vapor/MyBase.h>
 
@@ -25,7 +25,7 @@ class DVREventRouter : public QTabWidget, public RenderEventRouter {
 
     void GetWebHelp(vector<pair<string, string>> &help) const;
 
-    static string GetClassType() { return (VAPoR::DirectVolumeRenderer::GetClassType()); }
+    static string GetClassType() { return (VAPoR::DVRenderer::GetClassType()); }
     string GetType() const { return GetClassType(); }
 
   protected:
