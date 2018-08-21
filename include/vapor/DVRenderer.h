@@ -29,7 +29,7 @@ class RENDER_API DVRenderer : public Renderer {
 
     virtual ~DVRenderer();
 
-    static std::string GetClassType() { return ("DVRenderer"); }
+    static std::string GetClassType() { return ("Volume"); }
 
   protected:
     // pure virtual functions that are required to implement
