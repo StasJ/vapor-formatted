@@ -45,6 +45,7 @@ class DVREventRouter : public QTabWidget, public RenderEventRouter {
     DVRVariablesSubtab *_variables;
     DVRGeometrySubtab *_geometry;
     DVRAppearanceSubtab *_appearance;
+    DVRAnnotationSubtab *_annotation;
 };
 
 #endif // DVREVENTROUTER_H
