@@ -20,6 +20,7 @@
 #ifndef ANNOTATIONRENDERER_H
 #define ANNOTATIONRENDERER_H
 
+#include "vapor/GLManager.h"
 #include <vapor/DataMgrUtils.h>
 #include <vapor/Grid.h>
 #include <vapor/Renderer.h>
@@ -47,7 +48,7 @@ class RENDER_API AnnotationRenderer : public MyBase {
 
     //! Method to initialize GL rendering.  Must be called from a GL context.
     //! \param[in] sm A pointer to a ShaderMgr
-    void InitializeGL(ShaderMgr *sm);
+    void InitializeGL(ShaderMgr *sm, GLManager *glManager);
 
     //! Destructor
     virtual ~AnnotationRenderer();
@@ -89,6 +90,7 @@ class RENDER_API AnnotationRenderer : public MyBase {
     const DataStatus *m_dataStatus;
     string m_winName;
     ShaderMgr *m_shaderMgr;
+    GLManager *_glManager;
     int _currentTimestep;
     bool _textObjectsValid;
     TextObject *_textObject;

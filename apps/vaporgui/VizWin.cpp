@@ -27,7 +27,6 @@
 #include "TrackBall.h"
 #include "images/vapor-icon-32.xpm"
 #include "qdatetime.h"
-#include "vapor/GLState.h"
 #include <QCloseEvent>
 #include <QFocusEvent>
 #include <QIcon>
@@ -69,9 +68,6 @@ VizWin::VizWin(QWidget *parent, const QString &name, string winName, ControlExec
     bool initialize = true;
     updateManip(initialize);
 
-    GLState::CreateState(_winName);
-    GLState::SelectState(_winName);
-
     for (int i = 0; i < 3; i++) {
         _center[i] = 0.0;
         _posvec[i] = 0.0;
@@ -83,13 +79,12 @@ VizWin::VizWin(QWidget *parent, const QString &name, string winName, ControlExec
 /*
  *  Destroys the object and frees any allocated resources
  */
-VizWin::~VizWin() { GLState::DeleteState(_winName); }
+VizWin::~VizWin() {}
 
-void VizWin::makeCurrent() {
-    QGLWidget::makeCurrent();
-    GLState::SelectState(_winName);
-    // printf("%s\n", __func__);
-}
+// void VizWin::makeCurrent()
+// {
+// 	QGLWidget::makeCurrent();
+// }
 
 void VizWin::closeEvent(QCloseEvent *e) {
 
@@ -195,6 +190,7 @@ void VizWin::_setUpProjMatrix() {
 
     ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
     ViewpointParams *vParams = paramsMgr->GetViewpointParams(_winName);
+    // _controlExec->visu
 
     double m[16];
     vParams->GetModelViewMatrix(m);

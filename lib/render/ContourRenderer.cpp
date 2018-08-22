@@ -30,7 +30,6 @@
 //#include <vapor/params.h>
 #include <vapor/ContourParams.h>
 //#include <vapor/AnimationParams.h>
-#include "vapor/GLState.h"
 #include "vapor/ShaderManager.h"
 #include "vapor/debug.h"
 #include <glm/glm.hpp>
@@ -242,9 +241,9 @@ int ContourRenderer::_paintGL() {
 
     // glCallList(_drawList);
 
-    ShaderProgram2 *shader = _glManager->shaders.GetShader("contours");
+    ShaderProgram2 *shader = _glManager->shaderManager->GetShader("contours");
     shader->Bind();
-    shader->SetUniform("MVP", GLState::GetModelViewProjectionMatrix());
+    shader->SetUniform("MVP", _glManager->matrixManager->GetModelViewProjectionMatrix());
     glBindVertexArray(_VAO);
 
     glLineWidth(_cacheParams.lineThickness);
