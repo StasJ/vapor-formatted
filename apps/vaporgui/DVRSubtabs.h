@@ -65,7 +65,6 @@ class DVRAppearanceSubtab : public QWidget, public Ui_DVRAppearanceGUI {
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                 VAPoR::RenderParams *rParams) {
         _TFWidget->Update(dataMgr, paramsMgr, rParams);
-        _ColorbarWidget->Update(dataMgr, paramsMgr, rParams);
 
         _dvrParams = dynamic_cast<VAPoR::DVRParams *>(rParams);
         assert(_dvrParams);
