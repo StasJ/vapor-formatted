@@ -66,6 +66,7 @@ Visualizer::Visualizer(const ParamsMgr *pm, const DataStatus *dataStatus, string
     m_paramsMgr = pm;
     m_dataStatus = dataStatus;
     m_winName = winName;
+    _glManager = nullptr;
     m_shaderMgr = NULL;
     m_vizFeatures = new AnnotationRenderer(pm, dataStatus, winName);
     m_viewpointDirty = true;
@@ -269,7 +270,7 @@ int Visualizer::paintEvent() {
         {
             // Push or reset state
             glMatrixMode(GL_TEXTURE); // TODO GLState
-            glPushMatrix();
+            glPushMatrix();           // GL_TEXTURE
             glMatrixMode(GL_MODELVIEW);
             GLState::MatrixModeModelView();
             glPushMatrix();
@@ -277,7 +278,7 @@ int Visualizer::paintEvent() {
             glPushAttrib(GL_ALL_ATTRIB_BITS);
 
             if (!_renderer[i]->IsGLInitialized()) {
-                int myrc = _renderer[i]->initializeGL(m_shaderMgr);
+                int myrc = _renderer[i]->initializeGL(m_shaderMgr, _glManager);
                 if (myrc < 0)
                     rc = -1;
             }
@@ -303,7 +304,7 @@ int Visualizer::paintEvent() {
             glPopMatrix();
             GLState::PopMatrix();
             glMatrixMode(GL_TEXTURE); // TODO GLState
-            glPopMatrix();
+            glPopMatrix();            // GL_TEXTURE
             int myrc = printOpenGLErrorMsg(_renderer[i]->GetMyName().c_str());
             if (myrc < 0)
                 rc = -1;
@@ -406,7 +407,8 @@ int Visualizer::paintSetup(int timeStep) {
 //  Set up the OpenGL rendering state, and define display list
 //
 
-int Visualizer::initializeGL(ShaderMgr *shaderMgr) {
+int Visualizer::initializeGL(ShaderMgr *shaderMgr, GLManager *glManager) {
+    _glManager = glManager;
     m_shaderMgr = shaderMgr;
     m_vizFeatures->InitializeGL(shaderMgr);
 
