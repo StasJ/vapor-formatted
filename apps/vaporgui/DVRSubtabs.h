@@ -21,9 +21,7 @@ class DVRVariablesSubtab : public QWidget, public Ui_DVRVariablesGUI {
   public:
     DVRVariablesSubtab(QWidget *parent) {
         setupUi(this);
-        _variablesWidget->Reinit((VariablesWidget::DisplayFlags)(VariablesWidget::SCALAR),
-                                 (VariablesWidget::DimFlags)(VariablesWidget::THREED),
-                                 (VariablesWidget::ColorFlags)(0));
+        _variablesWidget->Reinit((VariableFlags)(SCALAR), (DimFlags)(THREED));
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -38,7 +36,7 @@ class DVRAppearanceSubtab : public QWidget, public Ui_DVRAppearanceGUI {
   public:
     DVRAppearanceSubtab(QWidget *parent) {
         setupUi(this);
-        _TFWidget->Reinit((TFWidget::Flags)(0));
+        _TFWidget->Reinit((TFFlags)(0));
 
         _dvrParams = nullptr;
 
@@ -131,8 +129,7 @@ class DVRGeometrySubtab : public QWidget, public Ui_DVRGeometryGUI {
   public:
     DVRGeometrySubtab(QWidget *parent) {
         setupUi(this);
-        _geometryWidget->Reinit(GeometryWidget::THREED, GeometryWidget::MINMAX,
-                                GeometryWidget::SCALAR);
+        _geometryWidget->Reinit((DimFlags)THREED, (GeometryFlags)MINMAX, (VariableFlags)SCALAR);
     }
 
     void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
