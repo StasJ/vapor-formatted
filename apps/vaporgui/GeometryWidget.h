@@ -1,6 +1,7 @@
 #ifndef GEOMETRYWIDGET_H
 #define GEOMETRYWIDGET_H
 
+#include "Flags.h"
 #include "RangeCombos.h"
 #include "ui_GeometryWidgetGUI.h"
 
@@ -15,27 +16,9 @@ class GeometryWidget : public QWidget, public Ui_GeometryWidgetGUI {
     Q_OBJECT
 
   public:
-    //! Bit mask to indicate whether 2D, 3D, or 2D and 3D variables are to be supported
-    //
-    enum DimFlags {
-        TWOD = (1u << 0),
-        THREED = (1u << 1),
-    };
-
-    enum VariableFlags {
-        SCALAR = (1u << 0),
-        VECTOR = (1u << 1),
-        AUXILIARY = (1u << 2),
-    };
-
-    enum DisplayFlags {
-        SINGLEPOINT = (1u << 0),
-        MINMAX = (1u << 1),
-    };
-
     GeometryWidget(QWidget *parent = 0);
 
-    void Reinit(DimFlags dimFlags, DisplayFlags displayFlags, VariableFlags varFlags);
+    void Reinit(DimFlags dimFlags, GeometryFlags geometryFlags, VariableFlags varFlags);
 
     ~GeometryWidget();
 
@@ -100,11 +83,9 @@ class GeometryWidget : public QWidget, public Ui_GeometryWidgetGUI {
 
     DimFlags _dimFlags;
     VariableFlags _varFlags;
-    DisplayFlags _displayFlags;
+    GeometryFlags _geometryFlags;
 
     bool _useAuxVariables; // for Statistics utility
-
-    static const std::string _nDimsTag;
 };
 
 #endif // GEOMETRYWIDGET_H
