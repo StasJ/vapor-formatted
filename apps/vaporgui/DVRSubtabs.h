@@ -1,6 +1,7 @@
 #ifndef DVRSUBTABS_H
 #define DVRSUBTABS_H
 
+#include "ui_DVRAnnotationGUI.h"
 #include "ui_DVRAppearanceGUI.h"
 #include "ui_DVRGeometryGUI.h"
 #include "ui_DVRVariablesGUI.h"
@@ -140,6 +141,16 @@ class DVRGeometrySubtab : public QWidget, public Ui_DVRGeometryGUI {
         _geometryWidget->Update(paramsMgr, dataMgr, rParams);
         _copyRegionWidget->Update(paramsMgr, rParams);
         _transformTable->Update(rParams->GetTransform());
+    }
+};
+
+class DVRAnnotationSubtab : public QWidget, public Ui_DVRAnnotationGUI {
+  public:
+    DVRAnnotationSubtab(QWidget *parent) { setupUi(this); }
+
+    void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
+                VAPoR::RenderParams *rParams) {
+        _colorbarWidget->Update(dataMgr, paramsMgr, rParams);
     }
 };
 
