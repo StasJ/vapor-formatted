@@ -86,10 +86,10 @@ void VariablesWidget::Reinit(VariableFlags variableFlags, DimFlags dimFlags) {
     variableSelectionWidget->adjustSize();
 
     VariableFlags fdf = (VariableFlags)0;
-    if (_dimFlags & SCALAR)
+    if (_variableFlags & SCALAR)
         fdf = (VariableFlags)(fdf | SCALAR);
 
-    if (_dimFlags & VECTOR)
+    if (_variableFlags & VECTOR)
         fdf = (VariableFlags)(fdf | VECTOR);
 
     _fidelityWidget->Reinit(fdf);
