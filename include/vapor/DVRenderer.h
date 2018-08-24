@@ -116,6 +116,10 @@ class RENDER_API DVRenderer : public Renderer {
                           const GLfloat *ModelView = nullptr, const GLfloat *InversedMV = nullptr,
                           bool fast = false);
 
+    // Spun-off function...
+    void _load3rdPassUniforms(const GLfloat *MVP, const GLfloat *ModelView,
+                              const GLfloat *InversedMV, bool fast) const;
+
     //
     // Initialization for 1) framebuffers and 2) textures
     //
