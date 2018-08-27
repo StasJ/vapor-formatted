@@ -128,11 +128,7 @@ void ShaderProgram2::SetUniform(int location, const glm::mat4 value) const {
 }
 
 SmartShaderProgram::SmartShaderProgram(ShaderProgram2 *program) : _program(program) {
-    printf("Auto Bind\n");
     _program->Bind();
 }
 
-SmartShaderProgram::~SmartShaderProgram() {
-    printf("Auto Unbind\n");
-    _program->UnBind();
-}
+SmartShaderProgram::~SmartShaderProgram() { _program->UnBind(); }
