@@ -768,7 +768,7 @@ void BarbRenderer::_getMagnitudeAtPoint(std::vector<VAPoR::Grid *> variables, fl
             value = abs(value);
 
             if (value > maxValue && value < std::numeric_limits<double>::max() &&
-                value > std::numeric_limits<double>::lowest() && !isnan(value))
+                value > std::numeric_limits<double>::lowest() && !std::isnan(value))
                 maxValue = value;
         }
     }
