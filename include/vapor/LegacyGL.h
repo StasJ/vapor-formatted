@@ -1,10 +1,11 @@
 #pragma once
 
-#include "vapor/GLManager.h"
 #include "vapor/ShaderProgram2.h"
 #include <vector>
 
 namespace VAPoR {
+
+struct GLManager;
 
 class LegacyGL {
 #pragma pack(push, 4)
