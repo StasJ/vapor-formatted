@@ -14,9 +14,7 @@ extern const char *SHADER_SOURCE_FRAGMENT;
 
 LegacyGL::LegacyGL(GLManager *glManager)
     : _glManager(glManager), _mode(0), _VAO(0), _VBO(0), _r(1), _g(1), _b(1), _a(1),
-      _initialized(false), _insideBeginEndBlock(false) {
-    Initialize();
-}
+      _initialized(false), _insideBeginEndBlock(false) {}
 
 void LegacyGL::Initialize() {
     assert(!_initialized);
