@@ -1,4 +1,5 @@
 #include "vapor/LegacyGL.h"
+#include "vapor/GLManager.h"
 #include "vapor/glutil.h"
 #include <cassert>
 #include <glm/glm.hpp>
