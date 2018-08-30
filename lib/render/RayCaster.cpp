@@ -21,7 +21,7 @@ using namespace VAPoR;
 
 // Constructor
 RayCaster::RayCaster(const ParamsMgr *pm, std::string &winName, std::string &dataSetName,
-                     std::string &paramsType, std::string &classType, std::string &instName,
+                     std::string paramsType, std::string classType, std::string &instName,
                      DataMgr *dataMgr)
     : Renderer(pm, winName, dataSetName, paramsType, classType, instName, dataMgr) {
     _backFaceTextureId = 0;
