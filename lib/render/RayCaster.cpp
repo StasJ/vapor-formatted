@@ -1,7 +1,7 @@
 #include <iostream>
 #include <sstream>
-#include <vapor/DVRenderer.h>
-#include <vapor/glutil.h> // Must be included first!!!
+#include <vapor/RayCaster.h>
+#include <vapor/glutil.h>
 
 //
 // OpenGL debug output
@@ -19,17 +19,11 @@ void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum se
 
 using namespace VAPoR;
 
-//
-// Register class with object factory!!!
-//
-static RendererRegistrar<DVRenderer> registrar(DVRenderer::GetClassType(),
-                                               DVRParams::GetClassType());
-
 // Constructor
-DVRenderer::DVRenderer(const ParamsMgr *pm, std::string &winName, std::string &dataSetName,
-                       std::string &instName, DataMgr *dataMgr)
-    : Renderer(pm, winName, dataSetName, DVRParams::GetClassType(), DVRenderer::GetClassType(),
-               instName, dataMgr) {
+RayCaster::RayCaster(const ParamsMgr *pm, std::string &winName, std::string &dataSetName,
+                     std::string &paramsType, std::string &classType, std::string &instName,
+                     DataMgr *dataMgr)
+    : Renderer(pm, winName, dataSetName, paramsType, classType, instName, dataMgr) {
     _backFaceTextureId = 0;
     _frontFaceTextureId = 0;
     _volumeTextureId = 0;
@@ -51,7 +45,7 @@ DVRenderer::DVRenderer(const ParamsMgr *pm, std::string &winName, std::string &d
 }
 
 // Destructor
-DVRenderer::~DVRenderer() {
+RayCaster::~RayCaster() {
     // delete textures
     if (_backFaceTextureId) {
         glDeleteTextures(1, &_backFaceTextureId);
@@ -114,7 +108,7 @@ DVRenderer::~DVRenderer() {
 }
 
 // Constructor
-DVRenderer::UserCoordinates::UserCoordinates() {
+RayCaster::UserCoordinates::UserCoordinates() {
     frontFace = nullptr;
     backFace = nullptr;
     rightFace = nullptr;
@@ -136,7 +130,7 @@ DVRenderer::UserCoordinates::UserCoordinates() {
 }
 
 // Destructor
-DVRenderer::UserCoordinates::~UserCoordinates() {
+RayCaster::UserCoordinates::~UserCoordinates() {
     if (frontFace) {
         delete[] frontFace;
         frontFace = nullptr;
@@ -171,8 +165,8 @@ DVRenderer::UserCoordinates::~UserCoordinates() {
     }
 }
 
-StructuredGrid *DVRenderer::UserCoordinates::GetCurrentGrid(const DVRParams *params,
-                                                            DataMgr *dataMgr) const {
+StructuredGrid *RayCaster::UserCoordinates::GetCurrentGrid(const RayCasterParams *params,
+                                                           DataMgr *dataMgr) const {
     std::vector<double> extMin, extMax;
     params->GetBox()->GetExtents(extMin, extMax);
     StructuredGrid *grid = dynamic_cast<StructuredGrid *>(dataMgr->GetVariable(
@@ -184,7 +178,7 @@ StructuredGrid *DVRenderer::UserCoordinates::GetCurrentGrid(const DVRParams *par
     return grid;
 }
 
-bool DVRenderer::UserCoordinates::IsUpToDate(const DVRParams *params, DataMgr *dataMgr) const {
+bool RayCaster::UserCoordinates::IsUpToDate(const RayCasterParams *params, DataMgr *dataMgr) const {
     if ((myCurrentTimeStep != params->GetCurrentTimestep()) ||
         (myVariableName != params->GetVariableName()) ||
         (myRefinementLevel != params->GetRefinementLevel()) ||
@@ -214,7 +208,8 @@ bool DVRenderer::UserCoordinates::IsUpToDate(const DVRParams *params, DataMgr *d
     return true;
 }
 
-bool DVRenderer::UserCoordinates::UpdateCoordinates(const DVRParams *params, DataMgr *dataMgr) {
+bool RayCaster::UserCoordinates::UpdateCoordinates(const RayCasterParams *params,
+                                                   DataMgr *dataMgr) {
     myCurrentTimeStep = params->GetCurrentTimestep();
     myVariableName = params->GetVariableName();
     myRefinementLevel = params->GetRefinementLevel();
@@ -361,7 +356,7 @@ bool DVRenderer::UserCoordinates::UpdateCoordinates(const DVRParams *params, Dat
     return true;
 }
 
-int DVRenderer::_initializeGL() {
+int RayCaster::_initializeGL() {
 #ifdef Darwin
     return 0;
 #endif
@@ -391,15 +386,15 @@ int DVRenderer::_initializeGL() {
     return 0;
 }
 
-int DVRenderer::_paintGL(bool fast) {
+int RayCaster::_paintGL(bool fast) {
 #ifdef Darwin
     return 0;
 #endif
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
-    DVRParams *params = dynamic_cast<DVRParams *>(GetActiveParams());
+    RayCasterParams *params = dynamic_cast<RayCasterParams *>(GetActiveParams());
     if (!params) {
-        MyBase::SetErrMsg("Not receiving DVR parameters; "
+        MyBase::SetErrMsg("Not receiving RayCaster parameters; "
                           "the behavior becomes undefined!");
     }
 
@@ -502,7 +497,7 @@ int DVRenderer::_paintGL(bool fast) {
     return 0;
 }
 
-void DVRenderer::_initializeFramebufferTextures() {
+void RayCaster::_initializeFramebufferTextures() {
     /* Create an Frame Buffer Object for the back side of the volume. */
     glGenFramebuffers(1, &_frameBufferId);
     glBindFramebuffer(GL_FRAMEBUFFER, _frameBufferId);
@@ -603,9 +598,9 @@ void DVRenderer::_initializeFramebufferTextures() {
     glBindTexture(GL_TEXTURE_3D, 0);
 }
 
-void DVRenderer::_drawVolumeFaces(int whichPass, bool insideACell, const GLfloat *ModelView,
-                                  const GLfloat *InversedMV, bool fast) {
-    GLuint uniformLocation;
+void RayCaster::_drawVolumeFaces(int whichPass, bool insideACell, const GLfloat *ModelView,
+                                 const GLfloat *InversedMV, bool fast) {
+    GLint uniformLocation;
     GLfloat MVP[16];
     _getMVPMatrix(MVP);
 
@@ -674,10 +669,10 @@ void DVRenderer::_drawVolumeFaces(int whichPass, bool insideACell, const GLfloat
     glUseProgram(0);
 }
 
-void DVRenderer::_load3rdPassUniforms(const GLfloat *MVP, const GLfloat *ModelView,
-                                      const GLfloat *InversedMV, bool fast) const {
+void RayCaster::_load3rdPassUniforms(const GLfloat *MVP, const GLfloat *ModelView,
+                                     const GLfloat *InversedMV, bool fast) const {
     glUseProgram(_3rdPassShaderId);
-    GLuint uniformLocation = glGetUniformLocation(_3rdPassShaderId, "MVP");
+    GLint uniformLocation = glGetUniformLocation(_3rdPassShaderId, "MVP");
     glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, MVP);
 
     uniformLocation = glGetUniformLocation(_3rdPassShaderId, "ModelView");
@@ -724,7 +719,7 @@ void DVRenderer::_load3rdPassUniforms(const GLfloat *MVP, const GLfloat *ModelVi
     if (fast) // Disable lighting during "fast" rendering
         glUniform1i(uniformLocation, int(0));
     else {
-        DVRParams *params = dynamic_cast<DVRParams *>(GetActiveParams());
+        RayCasterParams *params = dynamic_cast<RayCasterParams *>(GetActiveParams());
         glUniform1i(uniformLocation, int(params->GetLighting()));
 
         std::vector<double> coeffsD = params->GetLightingCoeffs();
@@ -774,7 +769,7 @@ void DVRenderer::_load3rdPassUniforms(const GLfloat *MVP, const GLfloat *ModelVi
     }
 }
 
-void DVRenderer::_renderTriangleStrips() const {
+void RayCaster::_renderTriangleStrips() const {
     unsigned int bx = (unsigned int)_userCoordinates.dims[0];
     unsigned int by = (unsigned int)_userCoordinates.dims[1];
     unsigned int bz = (unsigned int)_userCoordinates.dims[2];
@@ -878,7 +873,7 @@ void DVRenderer::_renderTriangleStrips() const {
     delete[] indexBuffer;
 }
 
-GLuint DVRenderer::_loadShaders(const char *vertex_file_path, const char *fragment_file_path) {
+GLuint RayCaster::_loadShaders(const char *vertex_file_path, const char *fragment_file_path) {
     // Create the shaders
     GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
     GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -966,7 +961,7 @@ GLuint DVRenderer::_loadShaders(const char *vertex_file_path, const char *fragme
     return ProgramID;
 }
 
-void DVRenderer::_getMVPMatrix(GLfloat *MVP) const {
+void RayCaster::_getMVPMatrix(GLfloat *MVP) const {
     GLfloat ModelView[16];
     GLfloat Projection[16];
     glGetFloatv(GL_MODELVIEW_MATRIX, ModelView);   // This is from OpenGL 2...
@@ -984,7 +979,7 @@ void DVRenderer::_getMVPMatrix(GLfloat *MVP) const {
         }
 }
 
-void DVRenderer::_matMultiVec(const GLfloat *mat, const GLfloat *in, GLfloat *out) const {
+void RayCaster::_matMultiVec(const GLfloat *mat, const GLfloat *in, GLfloat *out) const {
 #define MAT(m, r, c) (m)[(c)*4 + (r)]
     out[0] = MAT(mat, 0, 0) * in[0] + MAT(mat, 0, 1) * in[1] + MAT(mat, 0, 2) * in[2] +
              MAT(mat, 0, 3) * in[3];
@@ -997,8 +992,7 @@ void DVRenderer::_matMultiVec(const GLfloat *mat, const GLfloat *in, GLfloat *ou
 #undef MAT
 }
 
-double DVRenderer::_getElapsedSeconds(const struct timeval *begin,
-                                      const struct timeval *end) const {
+double RayCaster::_getElapsedSeconds(const struct timeval *begin, const struct timeval *end) const {
     return (end->tv_sec - begin->tv_sec) + ((end->tv_usec - begin->tv_usec) / 1000000.0);
 }
 
@@ -1021,7 +1015,7 @@ double DVRenderer::_getElapsedSeconds(const struct timeval *begin,
  * with partial pivoting followed by back/substitution with the loops manually
  * unrolled.
  */
-bool DVRenderer::_mesa_invert_matrix_general(GLfloat out[16], const GLfloat in[16]) {
+bool RayCaster::_mesa_invert_matrix_general(GLfloat out[16], const GLfloat in[16]) {
 /**
  * References an element of 4x4 matrix.
  * Calculate the linear storage index of the element and references it.
@@ -1207,7 +1201,7 @@ bool DVRenderer::_mesa_invert_matrix_general(GLfloat out[16], const GLfloat in[1
  * \param to destination array.
  * \param from source array.
  */
-void DVRenderer::_mesa_transposef(GLfloat to[16], const GLfloat from[16]) {
+void RayCaster::_mesa_transposef(GLfloat to[16], const GLfloat from[16]) {
     to[0] = from[0];
     to[1] = from[4];
     to[2] = from[8];
@@ -1226,7 +1220,7 @@ void DVRenderer::_mesa_transposef(GLfloat to[16], const GLfloat from[16]) {
     to[15] = from[15];
 }
 
-void DVRenderer::_printMatrix(const GLfloat m[16]) {
+void RayCaster::_printMatrix(const GLfloat m[16]) {
     for (int i = 0; i < 4; i++)
         printf("\t%f %f %f %f\n", m[i], m[4 + i], m[8 + i], m[12 + i]);
 }
