@@ -15,6 +15,7 @@ class RENDER_API IsoSurfaceRenderer : public RayCaster {
 
   protected:
     void _loadShaders();
+    void _3rdPassSpecialHandling();
 };
 
 }; // namespace VAPoR
