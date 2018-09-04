@@ -53,7 +53,7 @@ class TwoDGeometrySubtab : public QWidget, public Ui_TwoDGeometryGUI {
   public:
     TwoDGeometrySubtab(QWidget *parent) {
         setupUi(this);
-        _geometryWidget->Reinit((DimFlags)TWOD, (GeometryFlags)MINMAX, (VariableFlags)SCALAR);
+        _geometryWidget->Reinit((DimFlags)TWOD, (VariableFlags)SCALAR);
     }
 
     void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
