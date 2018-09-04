@@ -1027,6 +1027,13 @@ bool NetCDFCFCollection::_IsVertCoordVar(const NetCDFSimple::Variable &varinfo) 
     if (StrCmpNoCase(s, "Z") == 0)
         return (true);
 
+    // The attribute "cartesian_axis" is not part of the CF spec, but
+    // apparently the MOM6 ocean model uses it :-(
+    //
+    varinfo.GetAtt("cartesian_axis", s);
+    if (StrCmpNoCase(s, "Z") == 0)
+        return (true);
+
     s.clear();
     varinfo.GetAtt("standard_name", s);
 
