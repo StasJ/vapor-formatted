@@ -2,7 +2,6 @@
 #define RAYCASTERPARAMS_H
 
 #include <vapor/DataMgr.h>
-#include <vapor/GetAppPath.h>
 #include <vapor/RenderParams.h>
 
 namespace VAPoR {
