@@ -21,7 +21,7 @@ class WireFrameVariablesSubtab : public QWidget, public Ui_WireFrameVariablesGUI
   public:
     WireFrameVariablesSubtab(QWidget *parent) {
         setupUi(this);
-        _variablesWidget->Reinit((VariableFlags)(SCALAR | HEIGHT), (DimFlags)(THREED | TWOD));
+        _variablesWidget->Reinit((VariableFlags)(SCALAR | HEIGHT), (DimFlags)(THREED | TWODXY));
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
