@@ -14,6 +14,7 @@
 
 #include <vapor/DataMgr.h>
 #include <vapor/DataMgrUtils.h>
+#include <vapor/GetAppPath.h>
 #include <vapor/Grid.h>
 #include <vapor/RayCasterParams.h>
 #include <vapor/ShaderMgr.h>
@@ -31,11 +32,15 @@ class RENDER_API RayCaster : public Renderer {
     virtual ~RayCaster();
 
   protected:
+    // C++ stuff
     // pure virtual functions from Renderer
     int _initializeGL();
     int _paintGL(bool fast);
 
-    // C++ stuff
+    // Makes RayCaster an abstract class that cannot be instantiated,
+    //   and it's up to the subclasses to decide which shader to load.
+    virtual void _loadShaders() = 0;
+
     struct UserCoordinates {
         //              Y
         //              |   Z (coming out the screen)
@@ -112,9 +117,10 @@ class RENDER_API RayCaster : public Renderer {
                           const GLfloat *ModelView = nullptr, const GLfloat *InversedMV = nullptr,
                           bool fast = false);
 
-    // Spun-off function...
     void _load3rdPassUniforms(const GLfloat *MVP, const GLfloat *ModelView,
                               const GLfloat *InversedMV, bool fast) const;
+
+    virtual void _3rdPassSpecialHandling(bool fast);
 
     //
     // Initialization for 1) framebuffers and 2) textures
@@ -124,7 +130,7 @@ class RENDER_API RayCaster : public Renderer {
     //
     // Simple shader compilation
     //
-    GLuint _loadShaders(const char *vertex_file_path, const char *fragment_file_path);
+    GLuint _compileShaders(const char *vertex_file_path, const char *fragment_file_path);
 
     //
     // Get current Model View Projection matrix that can be passed to shaders
