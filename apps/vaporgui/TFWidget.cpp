@@ -89,6 +89,12 @@ void TFWidget::Reinit(TFFlags flags) {
         showConstColorWidgets();
     else
         collapseConstColorWidgets();
+
+    if (_flags & NOAUTOUPDATE)
+        autoUpdateHistoFrame->hide();
+    else
+        autoUpdateHistoFrame->show();
+
     adjustSize();
 }
 
@@ -464,7 +470,6 @@ void TFWidget::setRange(double min, double max) {
 }
 
 void TFWidget::RefreshHistogram() {
-    cout << "RefreshHistogram" << endl;
     MapperFunction *mf = getCurrentMapperFunction();
     mappingFrame->updateMapperFunction(mf);
     bool force = true;
