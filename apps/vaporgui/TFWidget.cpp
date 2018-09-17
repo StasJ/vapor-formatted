@@ -91,9 +91,9 @@ void TFWidget::Reinit(TFFlags flags) {
         collapseConstColorWidgets();
 
     if (_flags & NOAUTOUPDATE)
-        autoUpdateHistoFrame->hide();
+        autoUpdateHistoFrame->setEnabled(false);
     else
-        autoUpdateHistoFrame->show();
+        autoUpdateHistoFrame->setEnabled(true);
 
     adjustSize();
 }
