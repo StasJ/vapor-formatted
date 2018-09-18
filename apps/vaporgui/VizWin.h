@@ -20,7 +20,6 @@
 #define VIZWIN_H
 
 #include "Manip.h"
-#include "vapor/GLManager.h"
 #include "vapor/Transform.h"
 #include "vapor/Visualizer.h"
 #include <GL/glew.h>
@@ -38,7 +37,8 @@ class Trackball;
 
 namespace VAPoR {
 class ControlExec;
-};
+struct GLManager;
+}; // namespace VAPoR
 
 //! \class VizWin
 //! \ingroup Public_GUI
@@ -61,8 +61,8 @@ class VizWin : public QGLWidget {
     Q_OBJECT
 
   public:
-    VizWin(QWidget *parent, const QString &name, string winName, VAPoR::ControlExec *ce,
-           Trackball *trackBall);
+    VizWin(const QGLFormat &format, QWidget *parent, const QString &name, string winName,
+           VAPoR::ControlExec *ce, Trackball *trackBall);
     ~VizWin();
 
     //! Identify the visualizer index

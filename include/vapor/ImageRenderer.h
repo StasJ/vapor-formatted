@@ -16,7 +16,6 @@
 #include <vapor/GeoImage.h>
 #include <vapor/Grid.h>
 #include <vapor/RenderParams.h>
-#include <vapor/ShaderMgr.h>
 #include <vapor/TwoDRenderer.h>
 #include <vapor/Visualizer.h>
 #include <vapor/utils.h>
@@ -25,18 +24,12 @@ namespace VAPoR {
 
 class RENDER_API ImageRenderer : public TwoDRenderer {
   public:
-    // ImageRenderer(Visualizer *w, RenderParams* rp, ShaderMgr *sm);
     ImageRenderer(const ParamsMgr *pm, string winName, string dataSetName, string instName,
                   DataMgr *dataMgr);
 
     virtual ~ImageRenderer();
 
     static std::string GetClassType() { return ("Image"); }
-
-    /*static Renderer* CreateInstance( Visualizer* v, RenderParams* rp, ShaderMgr *sm)
-    {
-      return new ImageRenderer(v,rp,sm);
-    }*/
 
   protected:
     int GetMesh(DataMgr *dataMgr, GLfloat **verts, GLfloat **normals, GLsizei &width,
@@ -45,8 +38,6 @@ class RENDER_API ImageRenderer : public TwoDRenderer {
     const GLvoid *GetTexture(DataMgr *dataMgr, GLsizei &width, GLsizei &height,
                              GLint &internalFormat, GLenum &format, GLenum &type, size_t &texelSize,
                              bool &gridAligned);
-
-    virtual GLuint GetAttribIndex() const { return 0; }
 
   private:
     GeoImage *_geoImage;
