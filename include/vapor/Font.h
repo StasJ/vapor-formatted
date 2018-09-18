@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glm/fwd.hpp>
+#include <glm/glm.hpp>
 #include <map>
 #include <string>
 
@@ -36,7 +36,10 @@ class Font {
     Font(GLManager *glManager, const std::string &path, int size, FT_Library library = nullptr);
     ~Font();
 
-    void DrawText(const std::string &text, float x = 0, float y = 0);
+    void DrawText(const std::string &text, const glm::vec4 &color = glm::vec4(1), float x = 0,
+                  float y = 0);
+    glm::vec2 TextDimensions(const std::string &text);
+    float LineHeight() const;
 };
 
 } // namespace VAPoR

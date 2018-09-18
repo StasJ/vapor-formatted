@@ -1,11 +1,12 @@
 #pragma once
 
 #include "vapor/FontManager.h"
-#include "vapor/LegacyGL.h"
 #include "vapor/MatrixManager.h"
 #include "vapor/ShaderManager.h"
 
 namespace VAPoR {
+
+class LegacyGL;
 
 struct GLManager {
     ShaderManager *shaderManager;
@@ -15,6 +16,16 @@ struct GLManager {
 
     GLManager();
     ~GLManager();
+
+    static std::vector<int> GetViewport();
+    void PixelCoordinateSystemPush();
+    void PixelCoordinateSystemPop();
+
+    static bool CheckError();
+
+#ifndef NDEBUG
+    void ShowDepthBuffer();
+#endif
 };
 
 } // namespace VAPoR
