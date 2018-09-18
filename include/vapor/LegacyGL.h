@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vapor/ShaderProgram2.h"
+#include "vapor/ShaderProgram.h"
 #include <vector>
 
 /*
