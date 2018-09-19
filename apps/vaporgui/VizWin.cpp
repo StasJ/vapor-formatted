@@ -232,7 +232,7 @@ void VizWin::_setUpProjMatrix() {
     GL_ERR_BREAK();
 
     double pMatrix[16];
-    _glManager->matrixManager->GetDoublev(pMatrix);
+    _glManager->matrixManager->GetDoublev(MatrixManager::Mode::Projection, pMatrix);
 
     GL_ERR_BREAK();
 
@@ -752,6 +752,7 @@ void VizWin::updateManip(bool initialize) {
     if (rParams != NULL)
         rpTransform = rParams->GetTransform();
 
+    GL_ERR_BREAK();
     _manip->Update(llc, urc, minExts, maxExts, rpTransform, dmTransform, constrain);
     GL_ERR_BREAK();
 
