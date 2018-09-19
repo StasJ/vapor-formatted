@@ -1027,6 +1027,13 @@ bool NetCDFCFCollection::_IsVertCoordVar(const NetCDFSimple::Variable &varinfo) 
     if (StrCmpNoCase(s, "Z") == 0)
         return (true);
 
+    // The attribute "cartesian_axis" is not part of the CF spec, but
+    // apparently the MOM6 ocean model uses it :-(
+    //
+    varinfo.GetAtt("cartesian_axis", s);
+    if (StrCmpNoCase(s, "Z") == 0)
+        return (true);
+
     s.clear();
     varinfo.GetAtt("standard_name", s);
 
@@ -1171,6 +1178,9 @@ void NetCDFCFCollection::_GetMissingValueMap(map<string, double> &missingValueMa
 }
 
 bool NetCDFCFCollection::_camZ3Exists(const vector<string> &vars) const {
+
+#ifdef VAPOR3_1_0
+
     const string z3Name = "Z3";
 
     vector<string>::const_iterator itr;
@@ -1187,6 +1197,9 @@ bool NetCDFCFCollection::_camZ3Exists(const vector<string> &vars) const {
     if (StrCmpNoCase(s, "Geopotential Height (above sea level)") == 0) {
         return (true);
     }
+
+#endif
+
     return (false);
 }
 

@@ -24,21 +24,19 @@
 
 #include <vapor/glutil.h> // Must be included first!!!
 
-#include <vapor/ContourRenderer.h>
-#include <vapor/Renderer.h>
-#include <vapor/Visualizer.h>
-//#include <vapor/params.h>
-#include <vapor/ContourParams.h>
-//#include <vapor/AnimationParams.h>
 #include "vapor/GLManager.h"
 #include "vapor/ShaderManager.h"
 #include "vapor/debug.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <vapor/ContourParams.h>
+#include <vapor/ContourRenderer.h>
 #include <vapor/ControlExecutive.h>
 #include <vapor/DataStatus.h>
 #include <vapor/GetAppPath.h>
+#include <vapor/Renderer.h>
 #include <vapor/ViewpointParams.h>
+#include <vapor/Visualizer.h>
 #include <vapor/errorcodes.h>
 #include <vapor/regionparams.h>
 
@@ -165,7 +163,6 @@ int ContourRenderer::_buildCache() {
             _dataMgr->GetVariable(_cacheParams.ts, _cacheParams.heightVarName, _cacheParams.level,
                                   _cacheParams.lod, _cacheParams.boxMin, _cacheParams.boxMax);
     }
-    // StructuredGrid *sGrid = dynamic_cast<StructuredGrid *>(grid);
 
     if (grid == NULL || (heightGrid == NULL && !_cacheParams.heightVarName.empty())) {
         glEndList();
@@ -237,7 +234,7 @@ int ContourRenderer::_buildCache() {
     return 0;
 }
 
-int ContourRenderer::_paintGL() {
+int ContourRenderer::_paintGL(bool) {
     int rc = 0;
     if (_isCacheDirty())
         rc = _buildCache();

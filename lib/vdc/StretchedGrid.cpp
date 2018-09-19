@@ -200,7 +200,7 @@ void StretchedGrid::GetIndices(const std::vector<double> &coords,
     ClampCoord(cCoords);
 
     size_t i;
-    int rc = _binarySearchRange(_zcoords, cCoords[0], i);
+    int rc = Wasp::BinarySearchRange(_xcoords, cCoords[0], i);
     if (rc < 0) {
         indices.push_back(0);
     } else if (rc > 0) {
@@ -210,7 +210,7 @@ void StretchedGrid::GetIndices(const std::vector<double> &coords,
     }
 
     size_t j;
-    rc = _binarySearchRange(_zcoords, cCoords[1], j);
+    rc = Wasp::BinarySearchRange(_ycoords, cCoords[1], j);
     if (rc < 0) {
         indices.push_back(0);
     } else if (rc > 0) {
@@ -223,7 +223,7 @@ void StretchedGrid::GetIndices(const std::vector<double> &coords,
         return;
 
     size_t k;
-    rc = _binarySearchRange(_zcoords, cCoords[2], k);
+    rc = Wasp::BinarySearchRange(_zcoords, cCoords[2], k);
     if (rc < 0) {
         indices.push_back(0);
     } else if (rc > 0) {
@@ -461,48 +461,6 @@ void StretchedGrid::_GetUserExtents(vector<double> &minext, vector<double> &maxe
     StretchedGrid::GetBoundingBox(min, max, minext, maxext);
 }
 
-// Perform a binary search in a sorted 1D vector of values for the
-// entry that it closest to 'x'. Return the offset 'i' of 'x' in
-// 'sorted'
-//
-int StretchedGrid::_binarySearchRange(const vector<double> &sorted, double x, size_t &i) const {
-    i = 0;
-
-    // See if above or below the array
-    //
-    if (x < sorted[0])
-        return (-1);
-    if (x > sorted[sorted.size() - 1])
-        return (1);
-
-    // Binary search for starting index of cell containing x
-    //
-    size_t i0 = 0;
-    size_t i1 = sorted.size() - 1;
-    double x0 = sorted[i0];
-    double x1 = sorted[i1];
-    while (i1 - i0 > 1) {
-
-        x1 = sorted[(i0 + i1) >> 1];
-        if (x1 == x) { // pathological case
-            i0 = (i0 + i1) >> 1;
-            break;
-        }
-
-        // if the signs of differences change then the coordinate
-        // is between x0 and x1
-        //
-        if ((x - x0) * (x - x1) <= 0.0) {
-            i1 = (i0 + i1) >> 1;
-        } else {
-            i0 = (i0 + i1) >> 1;
-            x0 = x1;
-        }
-    }
-    i = i0;
-    return (0);
-}
-
 // Search for a point inside the grid. If the point is inside return true,
 // and provide the weights/coordinates for the point within
 // the XYZ cell containing the point
@@ -518,7 +476,7 @@ bool StretchedGrid::_insideGrid(double x, double y, double z, size_t &i, size_t 
     }
     i = j = k = 0;
 
-    int rc = _binarySearchRange(_xcoords, x, i);
+    int rc = Wasp::BinarySearchRange(_xcoords, x, i);
 
     if (rc != 0)
         return (false);
@@ -526,7 +484,7 @@ bool StretchedGrid::_insideGrid(double x, double y, double z, size_t &i, size_t 
     xwgt[0] = 1.0 - (x - _xcoords[i]) / (_xcoords[i + 1] - _xcoords[i]);
     xwgt[1] = 1.0 - xwgt[0];
 
-    rc = _binarySearchRange(_ycoords, y, j);
+    rc = Wasp::BinarySearchRange(_ycoords, y, j);
 
     if (rc != 0)
         return (false);
@@ -543,7 +501,7 @@ bool StretchedGrid::_insideGrid(double x, double y, double z, size_t &i, size_t 
     // Now verify that Z coordinate of point is in grid, and find
     // its interpolation weights if so.
     //
-    rc = _binarySearchRange(_zcoords, z, k);
+    rc = Wasp::BinarySearchRange(_zcoords, z, k);
 
     if (rc != 0)
         return (false);
