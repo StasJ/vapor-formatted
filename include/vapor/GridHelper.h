@@ -9,6 +9,7 @@
 #include <vapor/RegularGrid.h>
 #include <vapor/StretchedGrid.h>
 #include <vapor/UnstructuredGrid2D.h>
+#include <vapor/UnstructuredGridLayered.h>
 #include <vector>
 
 #ifndef GRIDMGR_H
@@ -160,6 +161,16 @@ class VDF_API GridHelper : public Wasp::MyBase {
         const std::vector<size_t> &conn_bmin, const std::vector<size_t> &conn_bmax,
         const std::vector<size_t> &vertexDims, const std::vector<size_t> &faceDims,
         const std::vector<size_t> &edgeDims, UnstructuredGrid::Location location,
+        size_t maxVertexPerFace, size_t maxFacePerVertex, long vertexOffset, long faceOffset);
+
+    UnstructuredGridLayered *_make_grid_unstructured_layered(
+        size_t ts, int level, int lod, const DC::DataVar &var,
+        const vector<DC::CoordVar> &cvarsinfo, const vector<size_t> &dims,
+        const vector<float *> &blkvec, const vector<size_t> &bs, const vector<size_t> &bmin,
+        const vector<size_t> &bmax, const vector<int *> &conn_blkvec, const vector<size_t> &conn_bs,
+        const vector<size_t> &conn_bmin, const vector<size_t> &conn_bmax,
+        const vector<size_t> &vertexDims, const vector<size_t> &faceDims,
+        const vector<size_t> &edgeDims, UnstructuredGrid::Location location,
         size_t maxVertexPerFace, size_t maxFacePerVertex, long vertexOffset, long faceOffset);
 
     void _makeGridHelper(const DC::DataVar &var, const std::vector<size_t> &roi_dims,

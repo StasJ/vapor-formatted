@@ -1,6 +1,8 @@
 #ifndef TWODSUBTABS_H
 #define TWODSUBTABS_H
 
+#include "Flags.h"
+#include "ui_TwoDAnnotationGUI.h"
 #include "ui_TwoDAppearanceGUI.h"
 #include "ui_TwoDGeometryGUI.h"
 #include "ui_TwoDVariablesGUI.h"
@@ -19,9 +21,7 @@ class TwoDVariablesSubtab : public QWidget, public Ui_TwoDVariablesGUI {
   public:
     TwoDVariablesSubtab(QWidget *parent) {
         setupUi(this);
-        _variablesWidget->Reinit(
-            (VariablesWidget::DisplayFlags)(VariablesWidget::SCALAR | VariablesWidget::HGT),
-            (VariablesWidget::DimFlags)(VariablesWidget::TWOD), (VariablesWidget::ColorFlags)(0));
+        _variablesWidget->Reinit((VariableFlags)(SCALAR | HEIGHT), (DimFlags)(TWOD));
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -37,14 +37,12 @@ class TwoDAppearanceSubtab : public QWidget, public Ui_TwoDAppearanceGUI {
   public:
     TwoDAppearanceSubtab(QWidget *parent) {
         setupUi(this);
-        _TFWidget->Reinit((TFWidget::Flags)(0));
-        //_TFWidget->setEventRouter(dynamic_cast<RenderEventRouter*>(parent));
+        _TFWidget->Reinit((TFFlags)(0));
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                 VAPoR::RenderParams *rParams) {
         _TFWidget->Update(dataMgr, paramsMgr, rParams);
-        _ColorbarWidget->Update(dataMgr, paramsMgr, rParams);
     }
 };
 
@@ -55,8 +53,7 @@ class TwoDGeometrySubtab : public QWidget, public Ui_TwoDGeometryGUI {
   public:
     TwoDGeometrySubtab(QWidget *parent) {
         setupUi(this);
-        _geometryWidget->Reinit(GeometryWidget::TWOD, GeometryWidget::MINMAX,
-                                GeometryWidget::SCALAR);
+        _geometryWidget->Reinit((DimFlags)TWOD, (GeometryFlags)MINMAX, (VariableFlags)SCALAR);
     }
 
     void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
@@ -65,8 +62,18 @@ class TwoDGeometrySubtab : public QWidget, public Ui_TwoDGeometryGUI {
         _copyRegionWidget->Update(paramsMgr, rParams);
         _transformTable->Update(rParams->GetTransform());
     }
-
-  private:
 };
 
+class TwoDAnnotationSubtab : public QWidget, public Ui_TwoDAnnotationGUI {
+
+    Q_OBJECT
+
+  public:
+    TwoDAnnotationSubtab(QWidget *parent) { setupUi(this); }
+
+    void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
+                VAPoR::RenderParams *rParams) {
+        _colorbarWidget->Update(dataMgr, paramsMgr, rParams);
+    }
+};
 #endif // TWODSUBTABS_H

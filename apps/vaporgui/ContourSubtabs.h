@@ -1,7 +1,9 @@
 #ifndef CONTOURSUBTABS_H
 #define CONTOURSUBTABS_H
 
+#include "Flags.h"
 #include "RangeCombos.h"
+#include "ui_ContourAnnotationGUI.h"
 #include "ui_ContourAppearanceGUI.h"
 #include "ui_ContourGeometryGUI.h"
 #include "ui_ContourVariablesGUI.h"
@@ -23,9 +25,7 @@ class ContourVariablesSubtab : public QWidget, public Ui_ContourVariablesGUI {
   public:
     ContourVariablesSubtab(QWidget *parent) {
         setupUi(this);
-        _variablesWidget->Reinit(
-            (VariablesWidget::DisplayFlags)(VariablesWidget::SCALAR | VariablesWidget::HGT),
-            (VariablesWidget::DimFlags)(VariablesWidget::TWOD), (VariablesWidget::ColorFlags)(0));
+        _variablesWidget->Reinit((VariableFlags)(SCALAR | HEIGHT), (DimFlags)(TWOD));
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -72,13 +72,7 @@ class ContourGeometrySubtab : public QWidget, public Ui_ContourGeometryGUI {
     Q_OBJECT
 
   public:
-    ContourGeometrySubtab(QWidget *parent) {
-        setupUi(this);
-        _geometryWidget->Reinit(GeometryWidget::TWOD, GeometryWidget::MINMAX,
-                                GeometryWidget::SCALAR);
-
-        _orientationAngles->hide();
-    }
+    ContourGeometrySubtab(QWidget *parent);
 
     void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
                 VAPoR::RenderParams *rParams) {
@@ -86,8 +80,19 @@ class ContourGeometrySubtab : public QWidget, public Ui_ContourGeometryGUI {
         _copyRegionWidget->Update(paramsMgr, rParams);
         _transformTable->Update(rParams->GetTransform());
     }
+};
 
-  private:
+class ContourAnnotationSubtab : public QWidget, public Ui_ContourAnnotationGUI {
+
+    Q_OBJECT
+
+  public:
+    ContourAnnotationSubtab(QWidget *parent) { setupUi(this); }
+
+    void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
+                VAPoR::RenderParams *rParams) {
+        _colorbarWidget->Update(dataMgr, paramsMgr, rParams);
+    }
 };
 
 #endif // CONTOURSUBTABS_H
