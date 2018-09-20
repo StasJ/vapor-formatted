@@ -51,7 +51,7 @@ void RayCasterParams::SetLightingCoeffs(const std::vector<double> &coeffs) {
     SetValueDoubleVec(_lightingCoeffsTag, "Coefficients for lighting effects", coeffs);
 }
 
-long RayCasterParams::GetCastingMode() const { return GetValueLong(_castingModeTag, 1); }
+long RayCasterParams::GetCastingMode() const { return GetValueLong(_castingModeTag, 2); }
 
 void RayCasterParams::SetCastingMode(long mode) {
     if (mode == 1 || mode == 2) // currently supported casting modes
