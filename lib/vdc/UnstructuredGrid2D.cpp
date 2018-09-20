@@ -89,7 +89,7 @@ void UnstructuredGrid2D::GetBoundingBox(const vector<size_t> &min, const vector<
     // access is tricky.
     //
     ConstCoordItr itr = ConstCoordBegin();
-    ConstCoordItr enditr = ConstCoordBegin();
+    ConstCoordItr enditr = ConstCoordEnd();
 
     for (size_t i = 0; i < start; i++)
         ++itr;
