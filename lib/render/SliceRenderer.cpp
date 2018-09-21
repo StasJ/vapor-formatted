@@ -23,6 +23,7 @@ SliceRenderer::SliceRenderer(const ParamsMgr *pm, string winName, string dataSet
                              string instanceName, DataMgr *dataMgr)
     : Renderer(pm, winName, dataSetName, SliceParams::GetClassType(), SliceRenderer::GetClassType(),
                instanceName, dataMgr) {
+    _initialized = false;
     _textureWidth = 250;
     _textureHeight = 250;
 
@@ -41,6 +42,7 @@ SliceRenderer::SliceRenderer(const ParamsMgr *pm, string winName, string dataSet
 
     _textureData = new unsigned char[_textureWidth * _textureHeight * 4];
     _saveCacheParams();
+    _initialized = true;
 }
 
 SliceRenderer::~SliceRenderer() {
@@ -102,9 +104,11 @@ void SliceRenderer::_saveCacheParams() {
         delete[] _textureData;
     _textureData = new unsigned char[_textureWidth * _textureHeight * 4];
 
-    int rc = _saveTextureData();
-    if (rc < 0)
-        SetErrMsg("Unable to acquire data for Slice texture");
+    if (_initialized) {
+        int rc = _saveTextureData();
+        if (rc < 0)
+            SetErrMsg("Unable to acquire data for Slice texture");
+    }
 }
 
 void SliceRenderer::_getSampleCoordinates(std::vector<double> &coords, int i, int j) const {
