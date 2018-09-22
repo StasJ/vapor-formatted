@@ -509,6 +509,8 @@ int RayCaster::_paintGL(bool fast) {
     glBindVertexArray(_vertexArrayId);
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBufferId);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferId);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 
     RayCasterParams *params = dynamic_cast<RayCasterParams *>(GetActiveParams());
     if (!params) {
@@ -666,6 +668,8 @@ int RayCaster::_paintGL(bool fast) {
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    glDisableVertexAttribArray(0);
 
     return 0;
 }
@@ -831,10 +835,6 @@ void RayCaster::_drawVolumeFaces(int whichPass, long castingMode, bool insideACe
         glDepthMask(GL_FALSE);
     }
 
-    // Let's use our VAO indices here
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
-
     if (insideACell) {
         glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(GLfloat), _userCoordinates.nearCoords,
                      GL_STREAM_DRAW);
@@ -842,8 +842,6 @@ void RayCaster::_drawVolumeFaces(int whichPass, long castingMode, bool insideACe
     } else {
         _renderTriangleStrips(castingMode);
     }
-
-    glDisableVertexAttribArray(0);
 
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
