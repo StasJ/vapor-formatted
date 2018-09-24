@@ -60,8 +60,8 @@ bool Font::LoadGlyph(int c) {
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
     _glyphMap[c] = {texture,
-                    _face->glyph->bitmap.width,
-                    _face->glyph->bitmap.rows,
+                    (int)_face->glyph->bitmap.width,
+                    (int)_face->glyph->bitmap.rows,
                     _face->glyph->bitmap_left,
                     _face->glyph->bitmap_top,
                     _face->glyph->advance.x};
