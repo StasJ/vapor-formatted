@@ -24,7 +24,6 @@
 #include <vapor/Grid.h>
 #include <vapor/Renderer.h>
 #include <vapor/Transform.h>
-#include <vapor/textRenderer.h>
 
 namespace VAPoR {
 
