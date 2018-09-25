@@ -52,6 +52,7 @@ bool GLManager::CheckError() {
     return true;
 }
 
+#ifndef NDEBUG
 void GLManager::ShowDepthBuffer() {
     static bool initialized = false;
     static unsigned int VAO = 0;
@@ -99,3 +100,4 @@ void GLManager::ShowDepthBuffer() {
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 }
+#endif
