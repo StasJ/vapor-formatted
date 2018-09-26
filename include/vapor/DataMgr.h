@@ -427,12 +427,11 @@ class VDF_API DataMgr : public Wasp::MyBase {
 
     //! \copydoc DC::GetDimLensAtLevel()
     //!
-    //! \param[in] spatial A boolean, if true, indicates that only the variable's
-    //! spatial dimensions and block size should be returned. A time varying
-    //! dimension, if one exists, is not included
-    //!
-    virtual int GetDimLensAtLevel(string varname, int level, std::vector<size_t> &dims_at_level,
-                                  std::vector<size_t> &bs_at_level) const;
+    virtual int GetDimLensAtLevel(string varname, int level,
+                                  std::vector<size_t> &dims_at_level) const {
+        std::vector<size_t> dummy;
+        return (GetDimLensAtLevel(varname, level, dims_at_level, dummy));
+    }
 
     //! Unlock a floating-point region of memory
     //!
@@ -844,9 +843,9 @@ class VDF_API DataMgr : public Wasp::MyBase {
 
     template <typename T>
     int _get_blocked_region_from_fs(size_t ts, string varname, int level, int lod,
-                                    const vector<size_t> &file_bs, const vector<size_t> &grid_bs,
-                                    const vector<size_t> &grid_min, const vector<size_t> &grid_max,
-                                    T *blks);
+                                    const vector<size_t> &file_bs, const vector<size_t> &grid_dims,
+                                    const vector<size_t> &grid_bs, const vector<size_t> &grid_min,
+                                    const vector<size_t> &grid_max, T *blks);
 
     template <typename T>
     T *_get_region_from_fs(size_t ts, string varname, int level, int lod,
@@ -950,6 +949,11 @@ class VDF_API DataMgr : public Wasp::MyBase {
         string dummy;
         return (_hasVerticalXForm(meshname, dummy, dummy));
     }
+
+    // Hide public DC::GetDimLensAtLevel by making it private
+    //
+    virtual int GetDimLensAtLevel(string varname, int level, std::vector<size_t> &dims_at_level,
+                                  std::vector<size_t> &bs_at_level) const;
 };
 
 }; // namespace VAPoR
