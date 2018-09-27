@@ -44,9 +44,6 @@ void GLManager::PixelCoordinateSystemPop() {
 bool GLManager::CheckError() {
     int err = glGetError();
     if (err != GL_NO_ERROR) {
-#ifndef GLDEMO
-        printf("ERROR %s\n", gluErrorString(err));
-#endif
         return false;
     }
     return true;
