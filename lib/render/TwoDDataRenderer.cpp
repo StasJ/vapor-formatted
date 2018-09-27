@@ -156,7 +156,6 @@ TwoDDataRenderer::~TwoDDataRenderer() {
 }
 
 int TwoDDataRenderer::_initializeGL() {
-    GL_ERR_BREAK();
 
     glGenTextures(1, &_cMapTexID);
 
@@ -174,7 +173,6 @@ int TwoDDataRenderer::_initializeGL() {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_1D, 0);
     return (TwoDRenderer::_initializeGL());
-    GL_ERR_BREAK();
 }
 
 int TwoDDataRenderer::_paintGL(bool fast) {
@@ -187,7 +185,6 @@ int TwoDDataRenderer::_paintGL(bool fast) {
     tf->makeLut(_colormap);
     vector<double> crange = tf->getMinMaxMapValue();
 
-    GL_ERR_BREAK();
     int rc;
 #ifndef NOSHADER
 
@@ -218,30 +215,21 @@ int TwoDDataRenderer::_paintGL(bool fast) {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_1D, _cMapTexID);
 
-    GL_ERR_BREAK();
-
     glActiveTexture(GL_TEXTURE1);
-    GL_ERR_BREAK();
     glBindTexture(GL_TEXTURE_1D, _cMapTexID);
-    GL_ERR_BREAK();
     GL_LEGACY(glEnable(GL_TEXTURE_1D));
-
-    GL_ERR_BREAK();
 
     // Really only need to reload colormap texture if it changes
     //
     glTexSubImage1D(GL_TEXTURE_1D, 0, 0, _colormapsize, GL_RGBA, GL_FLOAT, _colormap);
 
-    GL_ERR_BREAK();
     glActiveTexture(GL_TEXTURE0);
     rc = TwoDRenderer::_paintGL(fast);
-    GL_ERR_BREAK();
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_1D, 0);
     GL_LEGACY(glDisable(GL_TEXTURE_1D));
 
-    GL_ERR_BREAK();
     return (rc);
 }
 

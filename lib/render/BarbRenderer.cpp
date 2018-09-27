@@ -221,7 +221,6 @@ int BarbRenderer::_getVectorVarGrids(int ts, int refLevel, int lod, std::vector<
         return -1;
         // glEndList();
     }
-    GL_ERR_BREAK();
 
     // Get grids for our vector variables
     //
@@ -263,7 +262,6 @@ int BarbRenderer::_getVarGrid(int ts, int refLevel, int lod, string varName,
         }
         varData[varData.size() - 1] = sg;
     }
-    GL_ERR_BREAK();
 
     return 0;
 }
