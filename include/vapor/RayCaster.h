@@ -17,7 +17,6 @@
 #include <vapor/GetAppPath.h>
 #include <vapor/Grid.h>
 #include <vapor/RayCasterParams.h>
-#include <vapor/ShaderMgr.h>
 #include <vapor/Visualizer.h>
 #include <vapor/utils.h>
 
