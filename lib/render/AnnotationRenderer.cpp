@@ -552,7 +552,7 @@ void AnnotationRenderer::renderText(double text, double coord[], AxisAnnotation 
 
     TextLabel label(_glManager, _fontName, fontSize);
     label.HorizontalAlignment = TextLabel::Center;
-    label.VerticalAlignment = TextLabel::Center;
+    label.VerticalAlignment = TextLabel::Top;
     label.Padding = fontSize / 4.f;
     label.ForegroundColor = glm::vec4(axisColor[0], axisColor[1], axisColor[2], axisColor[3]);
     label.BackgroundColor =
