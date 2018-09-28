@@ -28,14 +28,13 @@ void TextLabel::DrawText(const glm::vec3 &position, const std::string &text) {
 
     mm->MatrixModeProjection();
     mm->PushMatrix();
-    mm->Ortho(-1, 1, -1, 1, -1, 1);
+    mm->Ortho(0, viewport[2], 0, viewport[3]);
     mm->MatrixModeModelView();
     mm->PushMatrix();
     mm->LoadIdentity();
 
-    mm->Translate(p.x, p.y, 0);
-    mm->Scale(1 / (float)viewport[2], 1 / (float)viewport[3], 1);
-    mm->Scale(2, 2, 1); // -1 -> +1
+    float x = (p.x + 1) / 2 * viewport[2];
+    float y = (p.y + 1) / 2 * viewport[3];
 
     vec2 textDimensions = font->TextDimensions(text);
 
@@ -43,10 +42,10 @@ void TextLabel::DrawText(const glm::vec3 &position, const std::string &text) {
     case Alignment::Left:
         break;
     case Alignment::Center:
-        mm->Translate(-textDimensions.x / 2.f, 0, 0);
+        x -= textDimensions.x / 2.f;
         break;
     case Alignment::Right:
-        mm->Translate(-textDimensions.x, 0, 0);
+        x -= textDimensions.x;
         break;
     default:
         break;
@@ -55,10 +54,10 @@ void TextLabel::DrawText(const glm::vec3 &position, const std::string &text) {
     case Alignment::Bottom:
         break;
     case Alignment::Center:
-        mm->Translate(0, -textDimensions.y / 2.f, 0);
+        y -= textDimensions.y / 2.f;
         break;
-    case Alignment::Right:
-        mm->Translate(0, -textDimensions.y, 0);
+    case Alignment::Top:
+        y -= textDimensions.y;
         break;
     default:
         break;
@@ -67,7 +66,7 @@ void TextLabel::DrawText(const glm::vec3 &position, const std::string &text) {
     glDepthMask(true);
     glDisable(GL_DEPTH_TEST);
 
-    mm->Translate(0, 0, -1);
+    mm->Translate((int)x, (int)y, 0);
 
     if (BackgroundColor.a > 0) {
         lgl->Color(BackgroundColor);
