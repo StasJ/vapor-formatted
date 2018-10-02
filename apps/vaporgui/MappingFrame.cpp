@@ -222,7 +222,6 @@ void MappingFrame::populateHistogram() {
 }
 
 void MappingFrame::populateSlicingHistogram() {
-    cout << "MappingFrame::populateSlicingHistogram" << endl;
     SliceParams *sParams = dynamic_cast<SliceParams *>(_rParams);
     std::vector<double> cachedValues = sParams->GetCachedValues();
 
@@ -358,7 +357,6 @@ void MappingFrame::setVariableName(std::string name) {
 //----------------------------------------------------------------------------
 // void MappingFrame::updateTab()
 void MappingFrame::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, RenderParams *rParams) {
-    cout << "MappingFrame::Update" << endl;
     assert(dataMgr);
     assert(paramsMgr);
     assert(rParams);
