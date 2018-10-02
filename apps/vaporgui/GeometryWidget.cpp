@@ -106,6 +106,7 @@ void GeometryWidget::adjustPlanarOrientation(int plane) {
 }
 
 void GeometryWidget::adjustLayoutToPlanarXY() {
+    cout << "void GeometryWidget::adjustLayoutToPlanarXY() {" << endl;
     _xMinMaxFrame->show();
     _yMinMaxFrame->show();
     _zMinMaxFrame->hide();
@@ -129,6 +130,7 @@ void GeometryWidget::adjustLayoutToPlanarXY() {
 }
 
 void GeometryWidget::adjustLayoutToPlanarXZ() {
+    cout << "void GeometryWidget::adjustLayoutToPlanarXZ() {" << endl;
     _xMinMaxFrame->show();
     _yMinMaxFrame->hide();
     _zMinMaxFrame->show();
@@ -153,6 +155,7 @@ void GeometryWidget::adjustLayoutToPlanarXZ() {
 }
 
 void GeometryWidget::adjustLayoutToPlanarYZ() {
+    cout << "void GeometryWidget::adjustLayoutToPlanarYZ() {" << endl;
     _xMinMaxFrame->hide();
     _yMinMaxFrame->show();
     _zMinMaxFrame->show();
@@ -197,6 +200,7 @@ void GeometryWidget::Reinit(DimFlags dimFlags, VariableFlags varFlags,
     }
 
     if (_geometryFlags & PLANAR) {
+        cout << "adjusting to PLANAR" << endl;
         showOrientationOptions();
         adjustPlanarOrientation(XY);
     } else
@@ -396,8 +400,11 @@ void GeometryWidget::Update(ParamsMgr *paramsMgr, DataMgr *dataMgr, RenderParams
     updateRangeLabels(minFullExt, maxFullExt);
     updateBoxCombos(minFullExt, maxFullExt);
 
-    int orientation = _rParams->GetBox()->GetOrientation();
-    _planeComboBox->setCurrentIndex(orientation);
+    if (_geometryFlags & PLANAR) {
+        int orientation = _rParams->GetBox()->GetOrientation();
+        _planeComboBox->setCurrentIndex(orientation);
+    }
+
     adjustSize();
 }
 
