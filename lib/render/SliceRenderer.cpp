@@ -76,7 +76,6 @@ void SliceRenderer::_initTexture() {
 }
 
 void SliceRenderer::_saveCacheParams() {
-    cout << "_saveCacheParams()" << endl;
     SliceParams *p = dynamic_cast<SliceParams *>(GetActiveParams());
     assert(p);
 
@@ -137,7 +136,6 @@ void SliceRenderer::_getSampleCoordinates(std::vector<double> &coords, int i, in
 }
 
 int SliceRenderer::_saveTextureData() {
-    cout << "SaveTextureData" << endl;
     Grid *grid = NULL;
     int rc = DataMgrUtils::GetGrids(
         _dataMgr, _cacheParams.ts, _cacheParams.varName, _cacheParams.boxMin, _cacheParams.boxMax,
@@ -145,7 +143,6 @@ int SliceRenderer::_saveTextureData() {
 
     if (rc < 0) {
         return (-1);
-        cout << "Returning..." << endl;
     }
     assert(grid);
 
@@ -198,7 +195,6 @@ int SliceRenderer::_saveTextureData() {
         }
     }
 
-    cout << "Missing values " << missing << endl;
     SliceParams *p = dynamic_cast<SliceParams *>(GetActiveParams());
     assert(p);
     p->SetCachedValues(cachedValuesForParams);
