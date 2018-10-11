@@ -139,8 +139,6 @@ void TFWidget::loadTF() {
     string path = sP->GetTFDir();
 
     fileLoadTF(varname, path.c_str(), true);
-
-    Update(_dataMgr, _paramsMgr, _rParams);
 }
 
 void TFWidget::fileLoadTF(string varname, const char *startPath, bool savePath) {
@@ -171,6 +169,8 @@ void TFWidget::fileLoadTF(string varname, const char *startPath, bool savePath) 
     if (rc < 0) {
         MSG_ERR("Error loading transfer function");
     }
+
+    Update(_dataMgr, _paramsMgr, _rParams);
 }
 
 void TFWidget::fileSaveTF() {
