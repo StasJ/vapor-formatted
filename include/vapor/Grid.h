@@ -538,14 +538,14 @@ class VDF_API Grid {
     //! Return the smallest node ID. The default is zero
     //
     virtual long GetNodeOffset() const { return (_nodeIDOffset); }
-    void SetNodeOffset(long offset) { _nodeIDOffset = offset; }
+    virtual void SetNodeOffset(long offset) { _nodeIDOffset = offset; }
 
     //! Get the linear offset to the cell IDs
     //!
     //! Return the smallest Cell ID. The default is zero
     //
     virtual long GetCellOffset() const { return (_cellIDOffset); }
-    void SetCellOffset(long offset) { _cellIDOffset = offset; }
+    virtual void SetCellOffset(long offset) { _cellIDOffset = offset; }
 
     VDF_API friend std::ostream &operator<<(std::ostream &o, const Grid &g);
 
@@ -894,15 +894,17 @@ class VDF_API Grid {
         ForwardIterator<T> &operator=(ForwardIterator<T> rhs);
         ForwardIterator<T> &operator=(ForwardIterator<T> &rhs) = delete;
 
-        bool operator==(const ForwardIterator<T> &rhs) const {
-            return (_index == rhs._index && _rg == rhs._rg);
-        }
+        bool operator==(const ForwardIterator<T> &rhs) const { return (_index == rhs._index); }
         bool operator!=(const ForwardIterator<T> &rhs) { return (!(*this == rhs)); }
 
         const ConstCoordItr &GetCoordItr() { return (_coordItr); }
 
         friend void swap(Grid::ForwardIterator<T> &a, Grid::ForwardIterator<T> &b) {
-            std::swap(a._rg, b._rg);
+            std::swap(a._ndims, b._ndims);
+            std::swap(a._blks, b._blks);
+            std::swap(a._dims3d, b._dims3d);
+            std::swap(a._bdims3d, b._bdims3d);
+            std::swap(a._bs3d, b._bs3d);
             std::swap(a._coordItr, b._coordItr);
             std::swap(a._index, b._index);
             std::swap(a._end_index, b._end_index);
@@ -912,7 +914,11 @@ class VDF_API Grid {
         }
 
       private:
-        T *_rg;
+        size_t _ndims;
+        std::vector<float *> _blks;
+        std::vector<size_t> _dims3d;
+        std::vector<size_t> _bdims3d;
+        std::vector<size_t> _bs3d;
         ConstCoordItr _coordItr;
         std::vector<size_t> _index;     // current index into grid
         std::vector<size_t> _end_index; // Last valid index
