@@ -91,6 +91,7 @@ void TFWidget::configureSecondaryTransferFunction() {
         if (_tabWidget->count() < 2)
             _tabWidget->insertTab(1, _secondaryTFE, "Color Mapped VARIABLE");
 
+        _mappingFrame->setColorMapping(false);
         _whitespaceFrame->hide();
         _colorInterpolationFrame->hide();
         _loadSaveFrame->hide();
@@ -107,8 +108,15 @@ void TFWidget::configureSecondaryTransferFunction() {
 void TFWidget::Reinit(TFFlags flags) {
 
     _flags = flags;
+
+    if (_flags & ISOLINES)
+        _mappingFrame->setIsolineSliders(true);
+    else
+        _mappingFrame->setIsolineSliders(false);
+
     configureSecondaryTransferFunction();
     configureConstantColorControls();
+
     _tabWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
     adjustSize();
