@@ -29,6 +29,7 @@
 
 #include <vapor/AnnotationParams.h>
 #include <vapor/DataMgr.h>
+#include <vapor/DatasetsParams.h>
 #include <vapor/ParamsBase.h>
 #include <vapor/RenderParams.h>
 #include <vapor/ViewpointParams.h>
@@ -350,6 +351,15 @@ class PARAMS_API ParamsMgr : public MyBase {
     //
     AnnotationParams *GetAnnotationParams(string winName) const {
         return ((AnnotationParams *)_otherParams->GetParams(AnnotationParams::GetClassType()));
+    };
+
+    //! Obtain the DatasetsParams that are applicable in a particular Visualizer
+    //! window.
+    //!
+    //! \retval ptr DatasetsParams instance that is applicable.
+    //
+    DatasetsParams *GetDatasetsParams() const {
+        return ((DatasetsParams *)_otherParams->GetParams(DatasetsParams::GetClassType()));
     };
 
     //! Optain any paramers registered by the application
