@@ -17,8 +17,9 @@ namespace {
 
 void free_arrays(vector<float *> &arrays) {
     for (int i = 0; i < arrays.size(); i++) {
-        if (arrays[i])
+        if (arrays[i]) {
             delete[] arrays[i];
+        }
     }
 }
 
@@ -28,20 +29,18 @@ void free_arrays(vector<float *> &inputVarArrays, vector<float *> &outputVarArra
 }
 
 int alloc_arrays(const vector<vector<size_t>> &dimsVectors, vector<float *> &arrays) {
+    arrays.clear();
 
     size_t nElements = 1;
     for (int i = 0; i < dimsVectors.size(); i++) {
         nElements *= VProduct(dimsVectors[i]);
-    }
 
-    float *buf = new (nothrow) float[nElements];
-    if (!buf)
-        return (-1);
-
-    float *bufptr = buf;
-    for (int i = 0; i < dimsVectors.size(); i++) {
-        arrays.push_back(bufptr);
-        bufptr += VProduct(dimsVectors[i]);
+        float *buf = new (nothrow) float[nElements];
+        if (!buf) {
+            free_arrays(arrays);
+            return (-1);
+        }
+        arrays.push_back(buf);
     }
 
     return (0);
@@ -572,12 +571,12 @@ int PyEngine::DerivedPythonVar::_readRegionSubset(int fd, const std::vector<size
                              outputVarDims, outputVarArrays);
     if (rc < 0) {
         DataMgrUtils::UnlockGrids(_dataMgr, variables);
-        free_arrays(inputVarArrays, outputVarArrays);
+        free_arrays(inputVarArrays); // output arrays aren't owned by us
         return (-1);
     }
 
     DataMgrUtils::UnlockGrids(_dataMgr, variables);
-    free_arrays(inputVarArrays);
+    free_arrays(inputVarArrays); // output arrays aren't owned by us
 
     return (0);
 }
