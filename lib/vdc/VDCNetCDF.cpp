@@ -1,5 +1,6 @@
 #include "vapor/VDCNetCDF.h"
 #include "vapor/CFuncs.h"
+#include "vapor/FileUtils.h"
 #include "vapor/Version.h"
 #include <cassert>
 #include <map>
@@ -521,7 +522,7 @@ int VDCNetCDF::OpenVariableWrite(size_t ts, string varname, int lod) {
     } else {
         wasp = new WASP(_nthreads);
         string dir;
-        dir = Dirname(path);
+        dir = FileUtils::Dirname(path);
         rc = MkDirHier(dir);
         if (rc < 0)
             return (-1);

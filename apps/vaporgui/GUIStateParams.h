@@ -19,8 +19,9 @@
 #ifndef GUISTATEPARAMS_H
 #define GUISTATEPARAMS_H
 
-#include "MouseModeParams.h"
 #include <vapor/ParamsBase.h>
+
+class MouseModeParams;
 
 class GUIStateParams : public VAPoR::ParamsBase {
 
