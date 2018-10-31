@@ -237,7 +237,7 @@ class VDF_API PyEngine : public Wasp::MyBase {
 
     PyEngine() : _dataMgr(NULL) {}
 
-    static void _cleanupDict(PyObject *mainDict, PyObject *copyDict);
+    static void _cleanupDict(PyObject *mainDict, vector<string> keynames);
 
     static int _c2python(PyObject *dict, vector<string> inputVarNames,
                          vector<vector<size_t>> inputVarDims, vector<float *> inputVarArrays);
