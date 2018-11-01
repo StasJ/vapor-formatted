@@ -30,6 +30,7 @@
 #include "qdatetime.h"
 #include "vapor/FileUtils.h"
 #include "vapor/GLManager.h"
+#include "vapor/GetAppPath.h"
 #include "vapor/LegacyGL.h"
 #include <QCloseEvent>
 #include <QFocusEvent>
