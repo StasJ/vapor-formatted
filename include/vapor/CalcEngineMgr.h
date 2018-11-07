@@ -33,13 +33,15 @@ class VDF_API CalcEngineMgr : public Wasp::MyBase {
 
     int AddFunction(string scriptType, string dataSetName, string scriptName, string script,
                     const vector<string> &inputVarNames, const vector<string> &outputVarNames,
-                    const vector<string> &outputVarMeshes);
+                    const vector<string> &outputVarMeshes, bool coordFlag = false);
 
     void RemoveFunction(string scriptType, string dataSetName, string scriptName);
 
     bool GetFunctionScript(string scriptType, string datasetName, string scriptName, string &script,
                            vector<string> &inputVarNames, vector<string> &outputVarNames,
-                           vector<string> &outputVarMeshes);
+                           vector<string> &outputVarMeshes, bool &coordFlag);
+
+    string GetFunctionStdout(string scriptType, string dataSetName, string scriptName);
 
     std::vector<string> GetFunctionNames(string scriptType, string datasetName);
 

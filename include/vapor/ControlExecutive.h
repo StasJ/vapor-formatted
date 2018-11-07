@@ -554,7 +554,7 @@ class RENDER_API ControlExec : public MyBase {
     //
     int AddFunction(string scriptType, string dataSetName, string scriptName, string script,
                     const vector<string> &inputVarNames, const vector<string> &outputVarNames,
-                    const vector<string> &outputVarMeshes);
+                    const vector<string> &outputVarMeshes, bool coordFlag = false);
 
     //! Remove a previously defined function
     //!
@@ -599,7 +599,14 @@ class RENDER_API ControlExec : public MyBase {
     //
     bool GetFunction(string scriptType, string dataSetName, string scriptName, string &script,
                      vector<string> &inputVarNames, vector<string> &outputVarNames,
-                     vector<string> &outputVarMeshes) const;
+                     vector<string> &outputVarMeshes, bool &coordFlag) const;
+
+    //! Return any standard output from the last invocation of a script
+    //!
+    //! This method returns as a string any standard output from the last
+    //! (most recent) invocation of the named script
+    //
+    string GetFunctionStdout(string scriptType, string dataSetName, string scriptName) const;
 
     //! Return a list of all active function names
     //!

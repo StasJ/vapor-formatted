@@ -87,7 +87,8 @@ class VDF_API PyEngine : public Wasp::MyBase {
     //! same mesh.
     //
     int AddFunction(string name, string script, const vector<string> &inputs,
-                    const vector<string> &outputs, const vector<string> &outMeshes);
+                    const vector<string> &outputs, const vector<string> &outMeshes,
+                    bool coordFlag = false);
 
     //! Remove a previously defined function
     //!
@@ -121,7 +122,14 @@ class VDF_API PyEngine : public Wasp::MyBase {
 
     bool GetFunctionScript(string name, string &script, std::vector<string> &inputVarNames,
                            std::vector<string> &outputVarNames,
-                           std::vector<string> &outputMeshNames) const;
+                           std::vector<string> &outputMeshNames, bool &coordFlag) const;
+
+    //! Return stdout as a string
+    //!
+    //! This method returns as a string any content written to stdout
+    //! by the most recent invocation of the named script \p name
+    //
+    string GetFunctionStdout(string name) const;
 
     //! Execute a NumPy script
     //!
@@ -168,7 +176,7 @@ class VDF_API PyEngine : public Wasp::MyBase {
       public:
         DerivedPythonVar(string varName, string units, DC::XType type, string mesh,
                          string time_coord_var, bool hasMissing, std::vector<string> inNames,
-                         string script, DataMgr *dataMgr);
+                         string script, DataMgr *dataMgr, bool coordFlag);
 
         ~DerivedPythonVar() {}
 
@@ -199,14 +207,20 @@ class VDF_API PyEngine : public Wasp::MyBase {
 
         bool GetDataVarInfo(DC::DataVar &cvar) const;
 
+        //! Return stdout from most recent execution of script
+        //!
+        string GetScriptStdout() const { return (_stdoutString); }
+
       private:
         DC::DataVar _varInfo;
         std::vector<string> _inNames;
         string _script;
         DataMgr *_dataMgr;
+        bool _coordFlag;
         DC::FileTable _fileTable;
         vector<size_t> _dims;
         bool _meshMatchFlag;
+        string _stdoutString;
 
         int _readRegionAll(int fd, const std::vector<size_t> &min, const std::vector<size_t> &max,
                            float *region);
@@ -221,10 +235,10 @@ class VDF_API PyEngine : public Wasp::MyBase {
         func_c(const string &name, const string &script, const std::vector<string> &inputVarNames,
                const std::vector<string> &outputVarNames,
                const std::vector<string> &outputMeshNames,
-               const std::vector<DerivedPythonVar *> &derivedVars)
+               const std::vector<DerivedPythonVar *> &derivedVars, bool coordFlag)
             : _name(name), _script(script), _inputVarNames(inputVarNames),
               _outputVarNames(outputVarNames), _outputMeshNames(outputMeshNames),
-              _derivedVars(derivedVars) {}
+              _derivedVars(derivedVars), _coordFlag(coordFlag) {}
 
         string _name;
         string _script;
@@ -232,9 +246,11 @@ class VDF_API PyEngine : public Wasp::MyBase {
         std::vector<string> _outputVarNames;
         std::vector<string> _outputMeshNames;
         std::vector<DerivedPythonVar *> _derivedVars;
+        bool _coordFlag;
     };
 
     std::map<string, func_c> _functions;
+    std::map<string, string> _functionsStdio;
     DataMgr *_dataMgr;
     static bool _isInitialized;
 

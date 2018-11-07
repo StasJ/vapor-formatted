@@ -244,13 +244,16 @@ void PythonVariables::_openScript() {
     _openAndDeleteDialog->exec();
 
     rc = _openAndDeleteDialog->result();
+
     if (rc > 0) {
         string scriptName = _openAndDeleteDialog->GetScriptName();
         string dataMgrName = _openAndDeleteDialog->GetDataMgrName();
 
         std::vector<string> inputVars;
+
+        bool coordFlag; // TODO: add support for coordinate flag
         bool rc2 = _controlExec->GetFunction(_scriptType, dataMgrName, scriptName, _script,
-                                             inputVars, _outputVars, _outputGrids);
+                                             inputVars, _outputVars, _outputGrids, coordFlag);
         if (rc2 == false) {
             MSG_ERR("Invalid script: " + scriptName);
             return;
