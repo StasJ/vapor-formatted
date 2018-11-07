@@ -11,7 +11,7 @@ using namespace Wasp;
 int CalcEngineMgr::AddFunction(string scriptType, string dataSetName, string scriptName,
                                string script, const vector<string> &inputVarNames,
                                const vector<string> &outputVarNames,
-                               const vector<string> &outputVarMeshes) {
+                               const vector<string> &outputVarMeshes, bool coordFlag) {
 
     if (scriptType != "Python") {
         SetErrMsg("Unsupported script type %s", scriptType.c_str());
@@ -43,13 +43,13 @@ int CalcEngineMgr::AddFunction(string scriptType, string dataSetName, string scr
         pyEngine = itr->second;
     }
 
-    int rc =
-        pyEngine->AddFunction(scriptName, script, inputVarNames, outputVarNames, outputVarMeshes);
+    int rc = pyEngine->AddFunction(scriptName, script, inputVarNames, outputVarNames,
+                                   outputVarMeshes, coordFlag);
     if (rc < 0)
         return (-1);
 
     _paramsMgr->GetDatasetsParams()->SetScript(dataSetName, scriptName, script, inputVarNames,
-                                               outputVarNames, outputVarMeshes);
+                                               outputVarNames, outputVarMeshes, coordFlag);
 
     return (0);
 }
@@ -96,7 +96,7 @@ vector<string> CalcEngineMgr::GetFunctionNames(string scriptType, string dataSet
 bool CalcEngineMgr::GetFunctionScript(string scriptType, string dataSetName, string scriptName,
                                       string &script, vector<string> &inputVarNames,
                                       vector<string> &outputVarNames,
-                                      vector<string> &outputVarMeshes) {
+                                      vector<string> &outputVarMeshes, bool &coordFlag) {
     script.clear();
     inputVarNames.clear();
     outputVarNames.clear();
@@ -115,7 +115,21 @@ bool CalcEngineMgr::GetFunctionScript(string scriptType, string dataSetName, str
     PyEngine *pyEngine = itr->second;
 
     return (pyEngine->GetFunctionScript(scriptName, script, inputVarNames, outputVarNames,
-                                        outputVarMeshes));
+                                        outputVarMeshes, coordFlag));
+}
+
+string CalcEngineMgr::GetFunctionStdout(string scriptType, string dataSetName, string scriptName) {
+    if (scriptType != "Python")
+        return ("");
+
+    std::map<string, PyEngine *>::const_iterator itr;
+    itr = _pyScripts.find(dataSetName);
+    if (itr == _pyScripts.cend())
+        return ("");
+
+    PyEngine *pyEngine = itr->second;
+
+    return (pyEngine->GetFunctionStdout(scriptName));
 }
 
 CalcEngineMgr::~CalcEngineMgr() { _clean(); }
@@ -159,9 +173,10 @@ void CalcEngineMgr::_sync() {
             vector<string> inputVarNames;
             vector<string> outputVarNames;
             vector<string> outputVarMeshes;
+            bool coordFlag;
 
             dParams->GetScript(dataSetNames[i], scriptNames[j], script, inputVarNames,
-                               outputVarNames, outputVarMeshes);
+                               outputVarNames, outputVarMeshes, coordFlag);
 
             // Disable error reporting
             //
@@ -169,7 +184,7 @@ void CalcEngineMgr::_sync() {
             EnableErrMsg(false);
 
             (void)pyEngine->AddFunction(scriptNames[j], script, inputVarNames, outputVarNames,
-                                        outputVarMeshes);
+                                        outputVarMeshes, coordFlag);
 
             EnableErrMsg(errEnabled);
         }
