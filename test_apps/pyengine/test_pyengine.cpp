@@ -8,6 +8,7 @@
 
 #include <vapor/CFuncs.h>
 #include <vapor/ControlExecutive.h>
+#include <vapor/FileUtils.h>
 #include <vapor/MyPython.h>
 #include <vapor/OptionParser.h>
 #include <vapor/PyEngine.h>
@@ -427,7 +428,7 @@ int main(int argc, char **argv) {
     OptionParser op;
     string s;
 
-    ProgName = Basename(argv[0]);
+    ProgName = FileUtils::LegacyBasename(argv[0]);
 
     MyBase::SetErrMsgFilePtr(stderr);
 
