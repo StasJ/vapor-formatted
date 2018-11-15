@@ -57,6 +57,7 @@ class RENDER_API SliceRenderer : public Renderer {
     void _initTextures();
     int _saveTextureData();
     void _getSampleCoordinates(std::vector<double> &coords, int i, int j) const;
+    int _getConstantAxis() const;
 
     void _configureShader();
     void _resetState();
