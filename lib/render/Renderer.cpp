@@ -29,7 +29,6 @@
 #include "vapor/TextLabel.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <vapor/DataMgrUtils.h>
-#include <vapor/GetAppPath.h>
 #include <vapor/Renderer.h>
 #include <vapor/glutil.h> // Must be included first!!!
 
