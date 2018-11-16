@@ -1,4 +1,5 @@
 #include "vapor/FileUtils.h"
+#include <algorithm>
 #include <string.h>
 #include <sys/stat.h>
 #include <vapor/MyBase.h>
