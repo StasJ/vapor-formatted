@@ -62,7 +62,7 @@ PythonVariables::PythonVariables(QWidget *parent) : QDialog(parent), Ui_PythonVa
     QPixmap thumbnail(pythonImagePath.c_str());
     _pythonLabel->setPixmap(thumbnail);
 
-    _showCoordVars = false;
+    _includeCoordVars = false;
     _variableTabs->removeTab(0);
     ;
 
@@ -132,7 +132,7 @@ void PythonVariables::Update(bool internalUpdate) {
     _dataMgrNameLabel->setText(QString::fromStdString(_dataMgrName));
     _scriptEdit->setText(QString::fromStdString(_script));
 
-    if (_showCoordVars) {
+    if (_includeCoordVars) {
         _coordVarsEnabled.clear();
         _coordVarsEnabled.resize(_coordVars.size(), false);
         _findEnabledCoordinateVariables(_2DVars, _2DVarsEnabled);
@@ -491,18 +491,6 @@ void PythonVariables::_testScript() {
     string script = _scriptEdit->toPlainText().toStdString();
 
     std::vector<string> inputVars = _buildInputVars();
-    /*for (int i=0; i<_coordVars.size(); i++) {
-        if (_coordVarsEnabled[i] == true)
-            inputVars.push_back(_coordVars[i]);
-    }
-    for (int i=0; i<_2DVars.size(); i++) {
-        if (_2DVarsEnabled[i] == true)
-            inputVars.push_back(_2DVars[i]);
-    }
-    for (int i=0; i<_3DVars.size(); i++) {
-        if (_3DVarsEnabled[i] == true)
-            inputVars.push_back(_3DVars[i]);
-    }*/
 
     if (inputVars.empty() || _outputVars.empty()) {
         MSG_ERR("At least one Input Variable and one "
@@ -511,7 +499,7 @@ void PythonVariables::_testScript() {
     }
 
     int rc = _controlExec->AddFunction(_scriptType, _dataMgrName, _scriptName, script, inputVars,
-                                       _outputVars, _outputGrids);
+                                       _outputVars, _outputGrids, _includeCoordVars);
 
     if (rc < 0) {
         MSG_ERR("Failed to add script");
@@ -550,7 +538,7 @@ void PythonVariables::_saveScript() {
     std::vector<string> inputVars = _buildInputVars();
 
     int rc = _controlExec->AddFunction(_scriptType, _dataMgrName, _scriptName, script, inputVars,
-                                       _outputVars, _outputGrids);
+                                       _outputVars, _outputGrids, _includeCoordVars);
 
     if (rc < 0) {
         MSG_ERR("Invalid syntax");
@@ -564,10 +552,6 @@ void PythonVariables::_saveScript() {
 
 std::vector<string> PythonVariables::_buildInputVars() const {
     std::vector<string> inputVars;
-    for (int i = 0; i < _coordVars.size(); i++) {
-        if (_coordVarsEnabled[i] == true)
-            inputVars.push_back(_coordVars[i]);
-    }
     for (int i = 0; i < _2DVars.size(); i++) {
         if (_2DVarsEnabled[i] == true)
             inputVars.push_back(_2DVars[i]);
@@ -670,12 +654,12 @@ void PythonVariables::_3DInputVarChanged(int row, int col) {
 
 void PythonVariables::_coordinatesCheckboxClicked(int state) {
     if (state == Qt::Unchecked) {
-        _showCoordVars = false;
+        _includeCoordVars = false;
         _variableTabs->removeTab(0);
         _coordVarsEnabled.resize(_coordVars.size());
         std::fill(_coordVarsEnabled.begin(), _coordVarsEnabled.end(), false);
     } else {
-        _showCoordVars = true;
+        _includeCoordVars = true;
         _variableTabs->insertTab(0, _coordTab, "Coordinates");
     }
     Update(true);
