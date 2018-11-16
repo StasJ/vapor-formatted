@@ -123,21 +123,21 @@ PythonVariables::~PythonVariables() {
 
 void PythonVariables::Update(bool internalUpdate) {
     if ((_scriptName == "") || (_dataMgrName == "")) {
+        _reset();
         _setGUIEnabled(false);
     } else {
         _setGUIEnabled(true);
+        if (_includeCoordVars) {
+            _coordVarsEnabled.clear();
+            _coordVarsEnabled.resize(_coordVars.size(), false);
+            _findEnabledCoordinateVariables(_2DVars, _2DVarsEnabled);
+            _findEnabledCoordinateVariables(_3DVars, _3DVarsEnabled);
+        }
     }
 
     _scriptNameLabel->setText(QString::fromStdString(_scriptName));
     _dataMgrNameLabel->setText(QString::fromStdString(_dataMgrName));
     _scriptEdit->setText(QString::fromStdString(_script));
-
-    if (_includeCoordVars) {
-        _coordVarsEnabled.clear();
-        _coordVarsEnabled.resize(_coordVars.size(), false);
-        _findEnabledCoordinateVariables(_2DVars, _2DVarsEnabled);
-        _findEnabledCoordinateVariables(_3DVars, _3DVarsEnabled);
-    }
 
     int numRows;
     int numCols = 2;
@@ -566,7 +566,7 @@ std::vector<string> PythonVariables::_buildInputVars() const {
 
 void PythonVariables::_closeScript() {
     _reset();
-    Update(true);
+    // Update(true);
     close();
 }
 
@@ -669,8 +669,9 @@ void PythonVariables::_findEnabledCoordinateVariables(const std::vector<string> 
                                                       const std::vector<bool> varsEnabled) {
     VAPoR::DataStatus *dataStatus = _controlExec->GetDataStatus();
     VAPoR::DataMgr *dataMgr = dataStatus->GetDataMgr(_dataMgrName);
-    if (dataMgr == NULL)
+    if (dataMgr == NULL) {
         MSG_ERR("Invalid DataMgr " + _dataMgrName);
+    }
 
     std::vector<string> enabledCoordVarNames;
     std::vector<string> tmpCoordVarNames;
