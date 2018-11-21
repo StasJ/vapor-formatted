@@ -24,6 +24,7 @@
 #include <QLineEdit>
 #include <QTemporaryFile>
 #include <vapor/DataMgrUtils.h>
+#include <vapor/GetAppPath.h>
 
 // Constructor
 Plot::Plot(VAPoR::DataStatus *status, VAPoR::ParamsMgr *manager, QWidget *parent)
