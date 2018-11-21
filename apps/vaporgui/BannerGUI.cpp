@@ -8,7 +8,7 @@
 #include <qdesktopwidget.h>
 #include <qmessagebox.h>
 #include <qtimer.h>
-#include <vapor/ResourcePath.h>
+#include <vapor/GetAppPath.h>
 
 BannerGUI::BannerGUI(QWidget *parent, std::string imagefile, int maxwait, bool center, QString text,
                      QString url) {
@@ -41,7 +41,10 @@ BannerGUI::BannerGUI(QWidget *parent, std::string imagefile, int maxwait, bool c
     connect(closeButton, SIGNAL(released()), this, SLOT(closeButton_action()));
 
     if (!imagefile.empty()) {
-        QImage image(Wasp::GetSharePath("images/" + imagefile).c_str());
+        std::vector<std::string> vec = std::vector<std::string>();
+        vec.push_back("images");
+        vec.push_back(imagefile);
+        QImage image(Wasp::GetAppPath("VAPOR", "share", vec).c_str());
         // QImage image(imagefile.c_str());
         if (image.isNull()) {
             QMessageBox::information(this, tr("VAPoR Banner"),
