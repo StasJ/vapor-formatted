@@ -6,8 +6,8 @@
 #include "ui_ImageAppearanceGUI.h"
 #include "ui_ImageGeometryGUI.h"
 #include "ui_ImageVariablesGUI.h"
+#include "vapor/GetAppPath.h"
 #include "vapor/ImageParams.h"
-#include "vapor/ResourcePath.h"
 #include <QFileDialog>
 
 namespace VAPoR {
@@ -91,7 +91,9 @@ class ImageAppearanceSubtab : public QWidget, public Ui_ImageAppearanceGUI {
     }
 
     void SelectImage() {
-        std::string installedImagePath = Wasp::GetSharePath("images");
+        std::vector<std::string> paths;
+        paths.push_back("images");
+        std::string installedImagePath = Wasp::GetAppPath("VAPOR", "share", paths);
         QString fileName = QFileDialog::getOpenFileName(
             this, tr("Specify installed image to load"), QString::fromStdString(installedImagePath),
             tr("TIFF files, tiled images (*.tiff *.tif *.gtif *.tms)"));

@@ -14,6 +14,7 @@
 
 #include <vapor/DataMgr.h>
 #include <vapor/DataMgrUtils.h>
+#include <vapor/GetAppPath.h>
 #include <vapor/Grid.h>
 #include <vapor/RayCasterParams.h>
 #include <vapor/Visualizer.h>
