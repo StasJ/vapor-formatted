@@ -291,7 +291,6 @@ void VizWin::resizeGL(int width, int height) {
 }
 
 void VizWin::initializeGL() {
-
     _glManager = new GLManager;
     _manip = new TranslateStretchManip(_glManager);
     bool initialize = true;
