@@ -25,7 +25,6 @@
 #include <sstream>
 #include <string>
 #include <vapor/CFuncs.h>
-#include <vapor/GetAppPath.h>
 //#include <vapor/MyPython.h>
 #include "SeedMe.h"
 #include "ui_SeedMeGUI.h"
