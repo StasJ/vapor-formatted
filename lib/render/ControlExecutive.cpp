@@ -10,6 +10,7 @@
 
 #include <vapor/CalcEngineMgr.h>
 #include <vapor/ControlExecutive.h>
+#include <vapor/GetAppPath.h>
 #include <vapor/ParamsMgr.h>
 
 using namespace VAPoR;
