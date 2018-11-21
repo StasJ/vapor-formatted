@@ -137,8 +137,7 @@ class RENDER_API RayCaster : public Renderer {
     void _renderTriangleStrips(int whichPass, long castingMode) const;
 
     void _drawVolumeFaces(int whichPass, long whichCastingMode, bool insideACell = false,
-                          const GLfloat *modelView = nullptr, const GLfloat *inversedMV = nullptr,
-                          bool fast = false);
+                          const GLfloat *inversedMV = nullptr, bool fast = false);
 
     void _load3rdPassUniforms(long castingMode, const GLfloat *inversedMV, bool fast) const;
 
