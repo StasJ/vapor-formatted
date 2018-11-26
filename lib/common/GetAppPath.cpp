@@ -2,6 +2,7 @@
 // $Id$
 //
 #include "vapor/CMakeConfig.h"
+#include "vapor/FileUtils.h"
 #include <cassert>
 #include <cctype>
 #include <iostream>
@@ -13,8 +14,9 @@
 #include <CoreFoundation/CFString.h>
 #include <CoreServices/CoreServices.h>
 #endif
-#include "vapor/GetAppPath.h"
 #include <vapor/MyBase.h>
+#define INCLUDE_DEPRECATED_GET_APP_PATH
+#include "vapor/GetAppPath.h"
 #ifdef WIN32
 #pragma warning(disable : 4996)
 #endif

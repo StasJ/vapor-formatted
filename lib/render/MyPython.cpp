@@ -24,8 +24,8 @@
 #include <unistd.h>
 #endif
 
-#include <vapor/GetAppPath.h>
 #include <vapor/MyPython.h>
+#include <vapor/ResourcePath.h>
 
 using namespace Wasp;
 
@@ -75,16 +75,14 @@ int MyPython::Initialize() {
 
         // Set pythonhome to the vapor installation (based on VAPOR_HOME)
         //
-        vector<string> pths;
 
         // On windows use VAPOR_HOME/lib/python2.7; VAPOR_HOME works
         // on Linux and Mac
         //
 #ifdef _WINDOWS
-        pths.push_back("python27");
-        m_pyHome = GetAppPath("VAPOR", "", pths, true);
+        m_pyHome = GetResourcePath("python27");
 #else
-        m_pyHome = GetAppPath("VAPOR", "home", pths, true);
+        m_pyHome = GetResourcePath("");
 #endif
     }
 
@@ -121,6 +119,8 @@ int MyPython::Initialize() {
     init_signals();
 #endif
 
+    // This is dependent on the environmental variable PYTHONHOME which is
+    // set in vaporgui/main.cpp
     Py_Initialize();
 
 #ifdef VAPOR3_0_0
@@ -192,9 +192,8 @@ int MyPython::Initialize() {
 
     // Add vapor modules to search path
     //
-    std::vector<std::string> dummy;
-    std::string path = Wasp::GetAppPath("VAPOR", "share", dummy);
-    path = "sys.path.append('" + path + "/python')\n";
+    std::string path = Wasp::GetSharePath("python");
+    path = "sys.path.append('" + path + "')\n";
     rc = PyRun_SimpleString(path.c_str());
     if (rc < 0) {
         MyBase::SetErrMsg("PyRun_SimpleString() : %s", PyErr().c_str());
@@ -227,7 +226,15 @@ string MyPython::PyErr() {
     }
 
     PyObject *output = PyObject_GetAttrString(catcher, "value");
-    return (PyString_AsString(output));
+    char *s = PyString_AsString(output);
+
+    // Erase the string
+    //
+    PyObject *eStr = PyString_FromString("");
+    int rc = PyObject_SetAttrString(catcher, "value", eStr);
+    Py_DECREF(eStr);
+
+    return (s ? string(s) : string());
 }
 
 // Fetch an error message genereated by Python API.
@@ -246,7 +253,15 @@ string MyPython::PyOut() {
     }
 
     PyObject *output = PyObject_GetAttrString(catcher, "value");
-    return (PyString_AsString(output));
+    char *s = PyString_AsString(output);
+
+    // Erase the string
+    //
+    PyObject *eStr = PyString_FromString("");
+    int rc = PyObject_SetAttrString(catcher, "value", eStr);
+    Py_DECREF(eStr);
+
+    return (s ? string(s) : string());
 }
 
 PyObject *MyPython::CreatePyFunc(string moduleName, string funcName, string script) {

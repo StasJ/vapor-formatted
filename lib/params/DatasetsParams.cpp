@@ -21,7 +21,8 @@ const string DatasetParams::_scriptsTag = "Scripts";
 const string DatasetParams::ScriptParams::_scriptTag = "Script";
 const string DatasetParams::ScriptParams::_inputVarNamesTag = "InputVarNames";
 const string DatasetParams::ScriptParams::_outputVarNamesTag = "OutputVarNames";
-const string DatasetParams::ScriptParams::_outputVarMeshes = "OutputVarMeshes";
+const string DatasetParams::ScriptParams::_outputVarMeshesTag = "OutputVarMeshes";
+const string DatasetParams::ScriptParams::_coordFlagTag = "CoordFlag";
 
 // DatasetsParams class: A collection of data sets
 //
@@ -80,7 +81,7 @@ DatasetsParams::~DatasetsParams() {
 void DatasetsParams::SetScript(string datasetName, string name, string script,
                                const vector<string> &inputVarNames,
                                const vector<string> &outputVarNames,
-                               const vector<string> &outputVarMeshes) {
+                               const vector<string> &outputVarMeshes, bool coordFlag) {
 
     DatasetParams *s = (DatasetParams *)_datasets->GetParams(datasetName);
     if (s == NULL) {
@@ -92,12 +93,12 @@ void DatasetsParams::SetScript(string datasetName, string name, string script,
         assert(s);
     }
 
-    s->SetScript(name, script, inputVarNames, outputVarNames, outputVarMeshes);
+    s->SetScript(name, script, inputVarNames, outputVarNames, outputVarMeshes, coordFlag);
 }
 
 bool DatasetsParams::GetScript(string datasetName, string name, string &script,
                                vector<string> &inputVarNames, vector<string> &outputVarNames,
-                               vector<string> &outputVarMeshes) const {
+                               vector<string> &outputVarMeshes, bool &coordFlag) const {
     script.clear();
     inputVarNames.clear();
     outputVarNames.clear();
@@ -107,7 +108,7 @@ bool DatasetsParams::GetScript(string datasetName, string name, string &script,
     if (s == NULL)
         return (false);
 
-    s->GetScript(name, script, inputVarNames, outputVarNames, outputVarMeshes);
+    s->GetScript(name, script, inputVarNames, outputVarNames, outputVarMeshes, coordFlag);
 
     return (true);
 }
@@ -181,7 +182,7 @@ DatasetParams::~DatasetParams() {
 
 void DatasetParams::SetScript(string name, string script, const vector<string> &inputVarNames,
                               const vector<string> &outputVarNames,
-                              const vector<string> &outputVarMeshes) {
+                              const vector<string> &outputVarMeshes, bool coordFlag) {
 
     ScriptParams *s = (ScriptParams *)_scripts->GetParams(name);
     if (s == NULL) {
@@ -193,12 +194,12 @@ void DatasetParams::SetScript(string name, string script, const vector<string> &
         assert(s);
     }
 
-    s->SetScript(script, inputVarNames, outputVarNames, outputVarMeshes);
+    s->SetScript(script, inputVarNames, outputVarNames, outputVarMeshes, coordFlag);
 }
 
 bool DatasetParams::GetScript(string name, string &script, vector<string> &inputVarNames,
-                              vector<string> &outputVarNames,
-                              vector<string> &outputVarMeshes) const {
+                              vector<string> &outputVarNames, vector<string> &outputVarMeshes,
+                              bool &coordFlag) const {
     script.clear();
     inputVarNames.clear();
     outputVarNames.clear();
@@ -208,7 +209,7 @@ bool DatasetParams::GetScript(string name, string &script, vector<string> &input
     if (s == NULL)
         return (false);
 
-    s->GetScript(script, inputVarNames, outputVarNames, outputVarMeshes);
+    s->GetScript(script, inputVarNames, outputVarNames, outputVarMeshes, coordFlag);
 
     return (true);
 }

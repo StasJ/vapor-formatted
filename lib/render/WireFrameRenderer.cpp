@@ -28,7 +28,6 @@
 #include "vapor/debug.h"
 #include <vapor/ControlExecutive.h>
 #include <vapor/DataStatus.h>
-#include <vapor/GetAppPath.h>
 #include <vapor/Renderer.h>
 #include <vapor/ViewpointParams.h>
 #include <vapor/WireFrameParams.h>
@@ -123,10 +122,6 @@ bool WireFrameRenderer::_isCacheDirty() const {
 
 void WireFrameRenderer::_drawCell(vector<VertexData> &vertices, vector<unsigned int> &indices,
                                   const float *verts, const float *colors, int n, bool layered) {
-
-    // glVertexPointer(3, GL_FLOAT, 0, verts);
-    // glColorPointer(4, GL_FLOAT, 0, colors);
-
     int baseIndex = vertices.size();
     for (int i = 0; i < n; i++) {
         vertices.push_back({verts[3 * i], verts[3 * i + 1], verts[3 * i + 2], colors[4 * i],
@@ -301,7 +296,7 @@ int WireFrameRenderer::_paintGL(bool fast) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
     glDrawElements(GL_LINES, _nIndices, GL_UNSIGNED_INT, 0);
 
-    DisableClippingPlanes(); // TODO GL
+    DisableClippingPlanes();
     glBindVertexArray(0);
 
     return rc;

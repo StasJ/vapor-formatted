@@ -8,6 +8,7 @@
 
 #include <vapor/CFuncs.h>
 #include <vapor/CurvilinearGrid.h>
+#include <vapor/FileUtils.h>
 #include <vapor/KDTreeRG.h>
 #include <vapor/LayeredGrid.h>
 #include <vapor/OptionParser.h>
@@ -471,7 +472,7 @@ int main(int argc, char **argv) {
     OptionParser op;
     string s;
 
-    ProgName = Basename(argv[0]);
+    ProgName = FileUtils::LegacyBasename(argv[0]);
 
     MyBase::SetErrMsgFilePtr(stderr);
 

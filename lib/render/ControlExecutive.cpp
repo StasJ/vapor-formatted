@@ -10,7 +10,6 @@
 
 #include <vapor/CalcEngineMgr.h>
 #include <vapor/ControlExecutive.h>
-#include <vapor/GetAppPath.h>
 #include <vapor/ParamsMgr.h>
 
 using namespace VAPoR;
@@ -693,9 +692,9 @@ int ControlExec::ClearText() {
 int ControlExec::AddFunction(string scriptType, string dataSetName, string scriptName,
                              string script, const vector<string> &inputVarNames,
                              const vector<string> &outputVarNames,
-                             const vector<string> &outputVarMeshes) {
+                             const vector<string> &outputVarMeshes, bool coordFlag) {
     return (_calcEngineMgr->AddFunction(scriptType, dataSetName, scriptName, script, inputVarNames,
-                                        outputVarNames, outputVarMeshes));
+                                        outputVarNames, outputVarMeshes, coordFlag));
 }
 
 void ControlExec::RemoveFunction(string scriptType, string dataSetName, string scriptName) {
@@ -704,15 +703,22 @@ void ControlExec::RemoveFunction(string scriptType, string dataSetName, string s
 
 bool ControlExec::GetFunction(string scriptType, string dataSetName, string scriptName,
                               string &script, vector<string> &inputVarNames,
-                              vector<string> &outputVarNames,
-                              vector<string> &outputVarMeshes) const {
+                              vector<string> &outputVarNames, vector<string> &outputVarMeshes,
+                              bool &coordFlag) const {
     script.clear();
     inputVarNames.clear();
     outputVarNames.clear();
     outputVarMeshes.clear();
 
     return (_calcEngineMgr->GetFunctionScript(scriptType, dataSetName, scriptName, script,
-                                              inputVarNames, outputVarNames, outputVarMeshes));
+                                              inputVarNames, outputVarNames, outputVarMeshes,
+                                              coordFlag));
+}
+
+string ControlExec::GetFunctionStdout(string scriptType, string dataSetName,
+                                      string scriptName) const {
+
+    return (_calcEngineMgr->GetFunctionStdout(scriptType, dataSetName, scriptName));
 }
 
 std::vector<string> ControlExec::GetFunctionNames(string scriptType, string dataSetName) const {
