@@ -328,7 +328,8 @@ bool TwoDDataRenderer::_gridStateDirty() const {
     vector<double> minExts, maxExts;
     rParams->GetBox()->GetExtents(minExts, maxExts);
 
-    _grid_state_c current_state(rParams->GetRefinementLevel(), rParams->GetCompressionLevel(),
+    _grid_state_c current_state(_dataMgr->GetNumRefLevels(rParams->GetVariableName()),
+                                rParams->GetRefinementLevel(), rParams->GetCompressionLevel(),
                                 rParams->GetHeightVariableName(), dvar.GetMeshName(),
                                 rParams->GetCurrentTimestep(), minExts, maxExts);
 
@@ -347,7 +348,8 @@ void TwoDDataRenderer::_gridStateSet() {
     rParams->GetBox()->GetExtents(minExts, maxExts);
     string meshName;
 
-    _grid_state = _grid_state_c(rParams->GetRefinementLevel(), rParams->GetCompressionLevel(),
+    _grid_state = _grid_state_c(_dataMgr->GetNumRefLevels(rParams->GetVariableName()),
+                                rParams->GetRefinementLevel(), rParams->GetCompressionLevel(),
                                 rParams->GetHeightVariableName(), dvar.GetMeshName(),
                                 rParams->GetCurrentTimestep(), minExts, maxExts);
 }
