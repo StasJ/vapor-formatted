@@ -7,6 +7,7 @@
 #include <vector>
 
 #include <vapor/CFuncs.h>
+#include <vapor/FileUtils.h>
 #include <vapor/OptionParser.h>
 #include <vapor/VDCNetCDF.h>
 
@@ -206,7 +207,7 @@ int main(int argc, char **argv) {
 
     OptionParser op;
 
-    ProgName = Basename(argv[0]);
+    ProgName = FileUtils::LegacyBasename(argv[0]);
     MyBase::SetErrMsgFilePtr(stderr);
 
     if (op.AppendOptions(set_opts) < 0) {

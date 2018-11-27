@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <vapor/CFuncs.h>
+#include <vapor/FileUtils.h>
 #include <vapor/MyPython.h>
 #include <vapor/OptionParser.h>
 
@@ -56,7 +57,7 @@ int main(int argc, char **argv) {
     //
     // Parse command line arguments
     //
-    ProgName = Basename(argv[0]);
+    ProgName = FileUtils::LegacyBasename(argv[0]);
 
     if (op.AppendOptions(set_opts) < 0) {
         return (1);
