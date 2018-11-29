@@ -81,9 +81,6 @@ float *Grid::AccessIndex(const std::vector<float *> &blks,
     vector<size_t> dims = GetDimensions();
     size_t ndim = dims.size();
     for (int i = 0; i < ndim; i++) {
-        if (cIndices[i] >= dims[i]) {
-            return (NULL);
-        }
         bs[i] = _bs[i];
         bdims[i] = _bdims[i];
     }
