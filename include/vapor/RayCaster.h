@@ -12,12 +12,12 @@
 #include <GL/glu.h>
 #endif
 
-#include <vapor/DataMgr.h>
-#include <vapor/DataMgrUtils.h>
-#include <vapor/Grid.h>
-#include <vapor/RayCasterParams.h>
-#include <vapor/Visualizer.h>
-#include <vapor/utils.h>
+#include "vapor/DataMgr.h"
+#include "vapor/DataMgrUtils.h"
+#include "vapor/Grid.h"
+#include "vapor/RayCasterParams.h"
+#include "vapor/Visualizer.h"
+#include "vapor/utils.h"
 
 #include <glm/glm.hpp>
 
