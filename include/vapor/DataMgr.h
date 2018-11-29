@@ -427,12 +427,11 @@ class VDF_API DataMgr : public Wasp::MyBase {
 
     //! \copydoc DC::GetDimLensAtLevel()
     //!
-    //! \param[in] spatial A boolean, if true, indicates that only the variable's
-    //! spatial dimensions and block size should be returned. A time varying
-    //! dimension, if one exists, is not included
-    //!
-    virtual int GetDimLensAtLevel(string varname, int level, std::vector<size_t> &dims_at_level,
-                                  std::vector<size_t> &bs_at_level) const;
+    virtual int GetDimLensAtLevel(string varname, int level,
+                                  std::vector<size_t> &dims_at_level) const {
+        std::vector<size_t> dummy;
+        return (GetDimLensAtLevel(varname, level, dims_at_level, dummy));
+    }
 
     //! Unlock a floating-point region of memory
     //!
@@ -544,6 +543,10 @@ class VDF_API DataMgr : public Wasp::MyBase {
     //! \sa NewPipeline()
     //
     bool IsVariableNative(string varname) const;
+
+    int AddDerivedVar(DerivedDataVar *derivedVar);
+
+    void RemoveDerivedVar(string varname);
 
     //! Purge the cache of a variable
     //!
@@ -707,6 +710,7 @@ class VDF_API DataMgr : public Wasp::MyBase {
     std::vector<double> _timeCoordinates;
     string _proj4String;
     string _proj4StringDefault;
+    std::vector<size_t> _bs;
 
     typedef struct {
         size_t ts;
@@ -801,22 +805,21 @@ class VDF_API DataMgr : public Wasp::MyBase {
                             std::vector<double> max, std::vector<size_t> &min_ui,
                             std::vector<size_t> &max_ui);
 
-    void _setupCoordVecsHelper(string data_varname, const vector<size_t> &data_bmin,
-                               const vector<size_t> &data_bmax, string coord_varname, int order,
+    void _setupCoordVecsHelper(string data_varname, const vector<size_t> &data_dimlens,
+                               const vector<size_t> &data_bmin, const vector<size_t> &data_bmax,
+                               string coord_varname, int order, vector<size_t> &coord_dimlens,
                                vector<size_t> &coord_bmin, vector<size_t> &coord_bmax,
                                bool structured) const;
 
     int _setupCoordVecs(size_t ts, string varname, int level, int lod, const vector<size_t> &min,
                         const vector<size_t> &max, vector<string> &varnames,
-                        vector<size_t> &roi_dims, vector<vector<size_t>> &dims_at_levelvec,
-                        vector<vector<size_t>> &bsvec, vector<vector<size_t>> &bs_at_levelvec,
-                        vector<vector<size_t>> &bminvec, vector<vector<size_t>> &bmaxvec,
-                        bool structured) const;
+                        vector<size_t> &roi_dims, vector<vector<size_t>> &dimsvec,
+                        vector<vector<size_t>> &bsvec, vector<vector<size_t>> &bminvec,
+                        vector<vector<size_t>> &bmaxvec, bool structured) const;
 
     int _setupConnVecs(size_t ts, string varname, int level, int lod, vector<string> &varnames,
-                       vector<vector<size_t>> &dims_at_levelvec, vector<vector<size_t>> &bsvec,
-                       vector<vector<size_t>> &bs_at_levelvec, vector<vector<size_t>> &bminvec,
-                       vector<vector<size_t>> &bmaxvec) const;
+                       vector<vector<size_t>> &dimsvec, vector<vector<size_t>> &bsvec,
+                       vector<vector<size_t>> &bminvec, vector<vector<size_t>> &bmaxvec) const;
 
     VAPoR::Grid *_getVariable(size_t ts, string varname, int level, int lod, bool lock,
                               bool dataless);
@@ -833,17 +836,31 @@ class VDF_API DataMgr : public Wasp::MyBase {
                               bool lock);
 
     template <typename T>
-    T *_get_region_from_fs(size_t ts, string varname, int level, int lod,
-                           const std::vector<size_t> &bs, const std::vector<size_t> &bmin,
-                           const std::vector<size_t> &bmax, bool lock);
+    int _get_unblocked_region_from_fs(size_t ts, string varname, int level, int lod,
+                                      const vector<size_t> &grid_dims,
+                                      const vector<size_t> &grid_bs, const vector<size_t> &grid_min,
+                                      const vector<size_t> &grid_max, T *blks);
 
     template <typename T>
-    T *_get_region(size_t ts, string varname, int level, int nlevels, int lod, int nlods,
-                   const std::vector<size_t> &bs, const std::vector<size_t> &bmin,
-                   const std::vector<size_t> &bmax, bool lock);
+    int _get_blocked_region_from_fs(size_t ts, string varname, int level, int lod,
+                                    const vector<size_t> &file_bs, const vector<size_t> &grid_dims,
+                                    const vector<size_t> &grid_bs, const vector<size_t> &grid_min,
+                                    const vector<size_t> &grid_max, T *blks);
+
+    template <typename T>
+    T *_get_region_from_fs(size_t ts, string varname, int level, int lod,
+                           const std::vector<size_t> &grid_dims, const std::vector<size_t> &grid_bs,
+                           const std::vector<size_t> &grid_bmin,
+                           const std::vector<size_t> &grid_bmax, bool lock);
+
+    template <typename T>
+    T *_get_region(size_t ts, string varname, int level, int lod, int nlods,
+                   const std::vector<size_t> &dims, const std::vector<size_t> &bs,
+                   const std::vector<size_t> &bmin, const std::vector<size_t> &bmax, bool lock);
 
     template <typename T>
     int _get_regions(size_t ts, const std::vector<string> &varnames, int level, int lod, bool lock,
+                     const std::vector<std::vector<size_t>> &dimsvec,
                      const std::vector<std::vector<size_t>> &bsvec,
                      const std::vector<std::vector<size_t>> &bminvec,
                      const std::vector<std::vector<size_t>> &bmaxvec, std::vector<T *> &blkvec);
@@ -857,7 +874,7 @@ class VDF_API DataMgr : public Wasp::MyBase {
                         bool fill);
 
     void _free_region(size_t ts, string varname, int level, int lod, std::vector<size_t> bmin,
-                      std::vector<size_t> bmax);
+                      std::vector<size_t> bmax, bool forceFlag = false);
 
     bool _free_lru();
     void _free_var(string varname);
@@ -905,7 +922,8 @@ class VDF_API DataMgr : public Wasp::MyBase {
 
     template <class T>
     int _readRegionBlock(int fd, const vector<size_t> &min, const vector<size_t> &max, T *region);
-    int _readRegion(int fd, const vector<size_t> &min, const vector<size_t> &max, float *region);
+    template <class T>
+    int _readRegion(int fd, const vector<size_t> &min, const vector<size_t> &max, T *region);
     int _closeVariable(int fd);
 
     int _getVar(string varname, int level, int lod, float *data);
@@ -931,6 +949,11 @@ class VDF_API DataMgr : public Wasp::MyBase {
         string dummy;
         return (_hasVerticalXForm(meshname, dummy, dummy));
     }
+
+    // Hide public DC::GetDimLensAtLevel by making it private
+    //
+    virtual int GetDimLensAtLevel(string varname, int level, std::vector<size_t> &dims_at_level,
+                                  std::vector<size_t> &bs_at_level) const;
 };
 
 }; // namespace VAPoR
