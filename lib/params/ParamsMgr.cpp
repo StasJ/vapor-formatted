@@ -70,6 +70,10 @@ void ParamsMgr::_init(vector<string> appParams, XmlNode *node) {
         _otherParams->Create(AnnotationParams::GetClassType(), AnnotationParams::GetClassType());
     }
 
+    if (!_otherParams->GetParams(DatasetsParams::GetClassType())) {
+        _otherParams->Create(DatasetsParams::GetClassType(), DatasetsParams::GetClassType());
+    }
+
     // Deal with any Params registered by the application
     //
     for (int i = 0; i < appParams.size(); i++) {
