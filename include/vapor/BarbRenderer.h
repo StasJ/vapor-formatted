@@ -53,8 +53,6 @@ class RENDER_API BarbRenderer : public Renderer {
     vector<double> _currentBoxMinExtsTex;
     vector<double> _currentBoxMaxExtsTex;
 
-    GLuint _drawList;
-
     double _maxValue;
 
     void _getMagnitudeAtPoint(std::vector<VAPoR::Grid *> variables, float point[3]);
