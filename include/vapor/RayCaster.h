@@ -14,6 +14,7 @@
 
 #include "vapor/DataMgr.h"
 #include "vapor/DataMgrUtils.h"
+#include "vapor/GLManager.h"
 #include "vapor/Grid.h"
 #include "vapor/RayCasterParams.h"
 #include "vapor/Visualizer.h"
