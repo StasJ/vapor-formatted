@@ -6,8 +6,8 @@
 #include "ui_ImageAppearanceGUI.h"
 #include "ui_ImageGeometryGUI.h"
 #include "ui_ImageVariablesGUI.h"
-#include "vapor/GetAppPath.h"
 #include "vapor/ImageParams.h"
+#include "vapor/ResourcePath.h"
 #include <QFileDialog>
 
 namespace VAPoR {
@@ -25,7 +25,7 @@ class ImageVariablesSubtab : public QWidget, public Ui_ImageVariablesGUI {
   public:
     ImageVariablesSubtab(QWidget *parent) {
         setupUi(this);
-        _variablesWidget->Reinit((VariableFlags)(HEIGHT), (DimFlags)(TWOD));
+        _variablesWidget->Reinit((VariableFlags)(HEIGHT), (DimFlags)(TWODXY));
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -91,9 +91,7 @@ class ImageAppearanceSubtab : public QWidget, public Ui_ImageAppearanceGUI {
     }
 
     void SelectImage() {
-        std::vector<std::string> paths;
-        paths.push_back("images");
-        std::string installedImagePath = Wasp::GetAppPath("VAPOR", "share", paths);
+        std::string installedImagePath = Wasp::GetSharePath("images");
         QString fileName = QFileDialog::getOpenFileName(
             this, tr("Specify installed image to load"), QString::fromStdString(installedImagePath),
             tr("TIFF files, tiled images (*.tiff *.tif *.gtif *.tms)"));
@@ -120,7 +118,7 @@ class ImageGeometrySubtab : public QWidget, public Ui_ImageGeometryGUI {
   public:
     ImageGeometrySubtab(QWidget *parent) {
         setupUi(this);
-        _geometryWidget->Reinit((DimFlags)TWOD, (GeometryFlags)MINMAX, (VariableFlags)SCALAR);
+        _geometryWidget->Reinit((DimFlags)TWODXY, (GeometryFlags)MINMAX, (VariableFlags)SCALAR);
     }
 
     void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,

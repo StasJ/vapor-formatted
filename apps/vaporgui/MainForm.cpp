@@ -52,7 +52,7 @@
 #include <vapor/ControlExecutive.h>
 #include <vapor/DataMgr.h>
 #include <vapor/DataMgrUtils.h>
-#include <vapor/GetAppPath.h>
+#include <vapor/ResourcePath.h>
 #include <vapor/Version.h>
 
 #include "TabManager.h"
@@ -66,7 +66,9 @@
 #include "FileOperationChecker.h"
 #include "MainForm.h"
 #include "MappingFrame.h"
+#include "MouseModeParams.h"
 #include "Plot.h"
+#include "PythonVariables.h"
 #include "Statistics.h"
 #include "windowsUtils.h"
 
@@ -132,18 +134,6 @@ string makename(string file) {
     return (ControlExec::MakeStringConformant(qFileInfo.fileName().toStdString()));
 }
 
-#ifdef UNUSED_FUNCTION
-string concatpath(string s1, string s2) {
-    string s;
-    if (!s1.empty()) {
-        s = s1 + "/" + s2;
-    } else {
-        s = s2;
-    }
-    return (QDir::toNativeSeparators(s.c_str()).toStdString());
-}
-#endif
-
 }; // namespace
 
 void MainForm::_initMembers() {
@@ -203,6 +193,7 @@ void MainForm::_initMembers() {
     _dataClose_MetafileAction = NULL;
     _plotAction = NULL;
     _statsAction = NULL;
+    _pythonAction = NULL;
 
     _captureStartJpegCaptureAction = NULL;
     _captureEndJpegCaptureAction = NULL;
@@ -222,6 +213,7 @@ void MainForm::_initMembers() {
 
     _stats = NULL;
     _plot = NULL;
+    _pythonVariables = NULL;
     _banner = NULL;
     _windowSelector = NULL;
     _modeStatusWidget = NULL;
@@ -423,7 +415,6 @@ void MainForm::_createModeToolBar() {
 
     _modeToolBar->addWidget(_modeCombo);
 
-    connect(_navigationAction, SIGNAL(toggled(bool)), this, SLOT(setNavigate(bool)));
     connect(_modeCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(modeChange(int)));
 }
 
@@ -740,12 +731,18 @@ void MainForm::_createToolsMenu() {
     _statsAction->setText("Data Statistics");
     _statsAction->setEnabled(false);
 
+    _pythonAction = new QAction(this);
+    _pythonAction->setText("Python Variables");
+    _pythonAction->setEnabled(false);
+
     _Tools = menuBar()->addMenu(tr("Tools"));
     _Tools->addAction(_plotAction);
     _Tools->addAction(_statsAction);
+    _Tools->addAction(_pythonAction);
 
     connect(_statsAction, SIGNAL(triggered()), this, SLOT(launchStats()));
     connect(_plotAction, SIGNAL(triggered()), this, SLOT(launchPlotUtility()));
+    connect(_pythonAction, SIGNAL(triggered()), this, SLOT(launchPythonVariables()));
 }
 
 void MainForm::_createCaptureMenu() {
@@ -1272,31 +1269,6 @@ void MainForm::sessionNew() {
     _sessionNewFlag = true;
 }
 
-//
-// Respond to toolbar clicks:
-// navigate mode.  Don't change tab menu
-//
-void MainForm::setNavigate(bool on) {
-#ifdef VAPOR3_0_0_ALPHA
-    // Only do something if this is an actual change of mode
-    if (MouseModeParams::GetCurrentMouseMode() == MouseModeParams::navigateMode)
-        return;
-    if (on) {
-        MouseModeParams::SetCurrentMouseMode(MouseModeParams::navigateMode);
-        _modeCombo->setCurrentIndex(0);
-
-        if (_modeStatusWidget) {
-            statusBar()->removeWidget(_modeStatusWidget);
-            delete _modeStatusWidget;
-        }
-        _modeStatusWidget = new QLabel("Navigation Mode:  Use left mouse to rotate or "
-                                       "spin-animate, right to zoom, middle to translate",
-                                       this);
-        statusBar()->addWidget(_modeStatusWidget, 2);
-    }
-#endif
-}
-
 void MainForm::setInteractiveRefLevel(int val) {}
 void MainForm::setInteractiveRefinementSpin(int val) {}
 
@@ -1358,6 +1330,9 @@ void MainForm::modeChange(int newmode) {
 }
 
 void MainForm::showCitationReminder() {
+#ifndef NDEBUG
+    return;
+#endif
     if (!_begForCitation)
         return;
 
@@ -1645,7 +1620,7 @@ void MainForm::loadStartingPrefs() {
         vector<string> tpath;
         tpath.push_back("examples");
         tpath.push_back(preffile);
-        prefPath = GetAppPath("VAPOR", "share", tpath);
+        prefPath = GetSharePath("examples/" + preffile);
     } else {
         prefPath = string(pPath) + preffile;
     }
@@ -1727,6 +1702,9 @@ bool MainForm::eventFilter(QObject *obj, QEvent *event) {
         }
         if (_plot) {
             _plot->Update();
+        }
+        if (_pythonVariables) {
+            _pythonVariables->Update();
         }
 
         _tabMgr->Update();
@@ -1830,6 +1808,7 @@ void MainForm::enableWidgets(bool onOff) {
     _tabMgr->setEnabled(onOff);
     _statsAction->setEnabled(onOff);
     _plotAction->setEnabled(onOff);
+    _pythonAction->setEnabled(onOff);
 
     _tabMgr->EnableRouters(onOff);
 }
@@ -1862,11 +1841,17 @@ void MainForm::captureSingleJpeg() {
         imageDir = sP->GetDefaultImageDir();
 
     QFileDialog fileDialog(this, "Specify single image capture file name", imageDir.c_str(),
-                           "PNG or JPEG images (*.png *.jpg *.jpeg)");
-    fileDialog.setDefaultSuffix(QString::fromAscii("png"));
+                           "PNG (*.png)\n"
+                           "JPG (*.jpg *.jpeg)\n"
+                           "TIFF (*.tif *.tiff)");
     fileDialog.setAcceptMode(QFileDialog::AcceptSave);
     fileDialog.move(pos());
     fileDialog.resize(450, 450);
+    QStringList mimeTypeFilters;
+    mimeTypeFilters << "image/jpeg"                // will show "JPEG image (*.jpeg *.jpg *.jpe)
+                    << "image/png"                 // will show "PNG image (*.png)"
+                    << "application/octet-stream"; // will show "All files (*)"
+                                                   // fileDialog.setNameFilters(mimeTypeFilters);
     if (fileDialog.exec() != QDialog::Accepted)
         return;
 
@@ -1878,10 +1863,13 @@ void MainForm::captureSingleJpeg() {
     // Extract the path, and the root name, from the returned string.
     QFileInfo *fileInfo = new QFileInfo(fn);
     QString suffix = fileInfo->suffix();
-    if (suffix != "jpg" && suffix != "jpeg" && suffix != "png") {
+
+    /* QFileDialog takes care of this
+    if (suffix != "jpg" && suffix != "jpeg" && suffix != "png" ) {
         MSG_ERR("Image capture file name must end with .png or .jpg or .jpeg");
         return;
     }
+     */
 
     string filepath = fileInfo->absoluteFilePath().toStdString();
 
@@ -1891,19 +1879,21 @@ void MainForm::captureSingleJpeg() {
     // Turn on "image capture mode" in the current active visualizer
     GUIStateParams *p = GetStateParams();
     string vizName = p->GetActiveVizName();
-    _vizWinMgr->EnableImageCapture(filepath, vizName);
+    int success = _vizWinMgr->EnableImageCapture(filepath, vizName);
+
+    if (success < 0)
+        MSG_ERR("Error capturing image");
 
     delete fileInfo;
 }
 
 void MainForm::installCLITools() {
-    vector<string> pths;
     QMessageBox box;
     box.addButton(QMessageBox::Ok);
 
 #ifdef Darwin
-    string home = GetAppPath("VAPOR", "home", pths, true);
-    string path = home + "/MacOS";
+    string home = GetResourcePath("");
+    string binPath = home + "/MacOS";
     home.erase(home.size() - strlen("Contents/"), strlen("Contents/"));
 
     string profilePath = string(getenv("HOME")) + "/.profile";
@@ -1911,7 +1901,7 @@ void MainForm::installCLITools() {
     if (prof) {
         fprintf(prof, "\n");
         fprintf(prof, "export VAPOR_HOME=\"%s\"\n", home.c_str());
-        fprintf(prof, "export PATH=\"%s:$PATH\"\n", path.c_str());
+        fprintf(prof, "export PATH=\"%s:$PATH\"\n", binPath.c_str());
         fclose(prof);
 
         box.setText("Environmental variables set in ~/.profile");
@@ -1928,7 +1918,7 @@ void MainForm::installCLITools() {
     long error;
     long errorClose;
     bool pathWasModified = false;
-    string home = GetAppPath("VAPOR", "", pths, true);
+    string home = GetResourcePath("");
 
     error = Windows_OpenRegistry(WINDOWS_HKEY_CURRENT_USER, "Environment", key);
     if (error == WINDOWS_SUCCESS) {
@@ -2004,6 +1994,15 @@ void MainForm::launchPlotUtility() {
     }
 }
 
+void MainForm::launchPythonVariables() {
+    if (!_pythonVariables)
+        _pythonVariables = new PythonVariables(this);
+    if (_controlExec) {
+        _pythonVariables->InitControlExec(_controlExec);
+    }
+    _pythonVariables->ShowMe();
+}
+
 // Begin capturing animation images.
 // Launch a file save dialog to specify the names
 // Then start file saving mode.
@@ -2014,9 +2013,10 @@ void MainForm::startAnimCapture() {
     if (imageDir == "")
         imageDir = sP->GetDefaultImageDir();
 
-    QFileDialog fileDialog(this, "Specify the base file name for image capture sequence",
-                           imageDir.c_str(), "PNG or JPEG images (*.png *.jpg *.jpeg )");
-    fileDialog.setDefaultSuffix(QString::fromAscii("png"));
+    QFileDialog fileDialog(this, "Specify single image capture file name", imageDir.c_str(),
+                           "PNG (*.png)\n"
+                           "JPG (*.jpg *.jpeg)\n"
+                           "TIFF (*.tif *.tiff)");
     fileDialog.setAcceptMode(QFileDialog::AcceptSave);
     fileDialog.move(pos());
     fileDialog.resize(450, 450);
@@ -2030,10 +2030,6 @@ void MainForm::startAnimCapture() {
     QFileInfo *fileInfo = new QFileInfo(qsl[0]);
 
     QString suffix = fileInfo->suffix();
-    if (suffix != "png" && suffix != "jpg" && suffix != "jpeg") {
-        MSG_ERR("Image capture file name must end with .png or .jpg or .jpeg");
-        return;
-    }
     // Save the path for future captures
     sP->SetImageDir(fileInfo->absolutePath().toStdString());
     QString fileBaseName = fileInfo->baseName();
