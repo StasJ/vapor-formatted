@@ -18,6 +18,7 @@
 #include <iostream>
 
 #include <vapor/CFuncs.h>
+#include <vapor/FileUtils.h>
 #include <vapor/GeoImageGeoTiff.h>
 #include <vapor/GeoImageTMS.h>
 #include <vapor/ImageParams.h>
@@ -378,11 +379,11 @@ int ImageRenderer::_reinit(string path, vector<double> times) {
 
         // Construct path to TMS tile directory
         //
-        if (IsAbsPath(tiledir)) {
+        if (FileUtils::IsPathAbsolute(tiledir)) {
             path = tiledir;
         } else {
-            string dir = Dirname(path);
-            path = Catpath("", dir, tiledir);
+            string dir = FileUtils::Dirname(path);
+            path = dir + FileUtils::Separator + tiledir;
         }
         tms_flag = true;
     }
