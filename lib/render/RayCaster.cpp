@@ -421,8 +421,7 @@ int RayCaster::UserCoordinates::UpdateFaceAndData(const RayCasterParams *params,
     return 0;
 }
 
-bool RayCaster::UserCoordinates::UpdateCurviCoords(const RayCasterParams *params,
-                                                   DataMgr *dataMgr) {
+int RayCaster::UserCoordinates::UpdateCurviCoords(const RayCasterParams *params, DataMgr *dataMgr) {
     assert(params->GetCastingMode() == 2);
 
     if (xyCoords)
@@ -432,7 +431,10 @@ bool RayCaster::UserCoordinates::UpdateCurviCoords(const RayCasterParams *params
         delete[] zCoords;
     zCoords = new float[dims[0] * dims[1] * dims[2]];
     if (!zCoords) // Test if allocation successful for 3D buffers.
-        return false;
+    {
+        MyBase::SetErrMsg("Failed to allocate memory");
+        return -1;
+    }
 
     // Gather the XY coordinate from frontFace buffer
     size_t xyIdx = 0, xyzIdx = 0;
@@ -446,7 +448,8 @@ bool RayCaster::UserCoordinates::UpdateCurviCoords(const RayCasterParams *params
     // Gather the Z coordinates from grid
     StructuredGrid *grid = nullptr;
     if (this->GetCurrentGrid(params, dataMgr, &grid) != 0) {
-        // TODO: return an integer
+        MyBase::SetErrMsg("Failed to retrieve a StructuredGrid");
+        return 1;
     }
     StructuredGrid::ConstCoordItr coordItr = grid->ConstCoordBegin();
     size_t numOfVertices = dims[0] * dims[1] * dims[2];
@@ -455,7 +458,7 @@ bool RayCaster::UserCoordinates::UpdateCurviCoords(const RayCasterParams *params
         ++coordItr;
     }
 
-    return true;
+    return 0;
 }
 
 int RayCaster::_initializeGL() {
@@ -511,7 +514,7 @@ int RayCaster::_paintGL(bool fast) {
             return 1;
         }
 
-        if (castingMode == 2 && !_userCoordinates.UpdateCurviCoords(params, _dataMgr)) {
+        if (castingMode == 2 && _userCoordinates.UpdateCurviCoords(params, _dataMgr) != 0) {
             MyBase::SetErrMsg("Error occured during updating curvilinear coordinates!");
             return 1;
         }
@@ -615,7 +618,8 @@ int RayCaster::_paintGL(bool fast) {
     std::vector<size_t> cameraCellIndices; // camera position in which cell?
     StructuredGrid *grid = nullptr;
     if (_userCoordinates.GetCurrentGrid(params, _dataMgr, &grid) != 0) {
-        // TODO: return an integer
+        MyBase::SetErrMsg("Failed to retrieve a StructuredGrid");
+        return 1;
     }
     bool insideACell = grid->GetIndicesCell(cameraUser, cameraCellIndices);
 
@@ -652,7 +656,7 @@ int RayCaster::_paintGL(bool fast) {
         _3rdPassShaderId = _3rdPassMode2ShaderId;
     else {
         MyBase::SetErrMsg("RayCasting Mode not supported!");
-        return 1;
+        return 2;
     }
     _drawVolumeFaces(3, castingMode, insideACell, InversedMV, fast);
     glCheckError();
