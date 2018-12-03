@@ -80,7 +80,11 @@ class RENDER_API RayCaster : public Renderer {
         /* Member functions */
         UserCoordinates();
         ~UserCoordinates();
-        StructuredGrid *GetCurrentGrid(const RayCasterParams *params, DataMgr *dataMgr) const;
+        //
+        // It returns 0 upon success, and non-zero upon errors.
+        //
+        int GetCurrentGrid(const RayCasterParams *params, DataMgr *dataMgr,
+                           StructuredGrid **gridpp) const;
         bool IsMetadataUpToDate(const RayCasterParams *params, DataMgr *dataMgr) const;
         //
         // Update meta data, as well as pointers:
