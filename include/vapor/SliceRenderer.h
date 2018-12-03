@@ -56,11 +56,10 @@ class RENDER_API SliceRenderer : public Renderer {
     int _resetDataCache();
     void _initTextures();
     void _createDataTexture(float *dataValues);
-    void _createMissingTexture(float *missingValues);
     int _saveTextureData();
-    void _populateDataXY(float *dataValues, float *missingValues, Grid *grid) const;
-    void _populateDataXZ(float *dataValues, float *missingValues, Grid *grid) const;
-    void _populateDataYZ(float *dataValues, float *missingValues, Grid *grid) const;
+    void _populateDataXY(float *dataValues, Grid *grid) const;
+    void _populateDataXZ(float *dataValues, Grid *grid) const;
+    void _populateDataYZ(float *dataValues, Grid *grid) const;
 
     double _newWaySeconds;
     double _newWayInlineSeconds;
@@ -86,7 +85,6 @@ class RENDER_API SliceRenderer : public Renderer {
 
     GLuint _colorMapTextureID;
     GLuint _dataValueTextureID;
-    GLuint _missingValueTextureID;
 
     std::vector<double> _vertexCoords;
     std::vector<float> _texCoords;
