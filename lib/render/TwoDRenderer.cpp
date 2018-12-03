@@ -39,10 +39,10 @@ TwoDRenderer::TwoDRenderer(const ParamsMgr *pm, string winName, string dataSetNa
     _normals = NULL;
     _meshWidth = 0;
     _meshHeight = 0;
-    _VAO = NULL;
-    _VBO = NULL;
-    _dataVBO = NULL;
-    _EBO = NULL;
+    _VAO = (int)NULL;
+    _VBO = (int)NULL;
+    _dataVBO = (int)NULL;
+    _EBO = (int)NULL;
 }
 
 //----------------------------------------------------------------------------
@@ -106,11 +106,6 @@ int TwoDRenderer::_paintGL(bool) {
 
     EnableClipToBox(_glManager->shaderManager->GetShader("2DData")); // TODO GL
 
-    // ShaderProgram::UniformNotFoundPolicy = ShaderProgram::Policy::Relaxed;
-    // ShaderProgram *shader = _glManager->shaderManager->GetShader("2DData", true);
-    // shader->Bind();
-    // shader->SetUniform("clippingPlanes[0]", glm::vec4(1000000,0,0,0));
-
     if (!_gridAligned) {
         assert(_structuredMesh);
 
@@ -131,7 +126,7 @@ int TwoDRenderer::_paintGL(bool) {
 
         _renderMeshAligned();
     }
-    // DisableClippingPlanes();
+    DisableClippingPlanes();
 
     GL_ERR_BREAK();
 
@@ -141,11 +136,7 @@ int TwoDRenderer::_paintGL(bool) {
 // Setup OpenGL state for rendering
 //
 void TwoDRenderer::_openGLInit() {
-
-    // RenderParams *myParams = (RenderParams *) GetActiveParams();
-
     if (!_gridAligned) {
-        // glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, _textureID);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -211,11 +202,6 @@ void TwoDRenderer::_renderMeshUnAligned() {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * _meshWidth * sizeof(float), _indices,
                  GL_DYNAMIC_DRAW);
     for (int j = 0; j < _meshHeight - 1; j++) {
-        // glVertexPointer(3, GL_FLOAT, 0, &_verts[j*_meshWidth*3]);
-        // glTexCoordPointer(2, GL_FLOAT, 0, &_texCoords[j*_meshWidth*2]);
-        // glNormalPointer(GL_FLOAT, 0, &_normals[j*_meshWidth*3]);
-        // glDrawElements(GL_TRIANGLE_STRIP, 2*_meshWidth, GL_UNSIGNED_INT, _indices);
-
         glBindBuffer(GL_ARRAY_BUFFER, _VBO);
         glBufferData(GL_ARRAY_BUFFER, _meshWidth * 6 * sizeof(float), &_verts[j * _meshWidth * 3],
                      GL_STREAM_DRAW);
@@ -258,11 +244,6 @@ void TwoDRenderer::_renderMeshAligned() {
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * _meshWidth * sizeof(float), _indices,
                      GL_DYNAMIC_DRAW);
         for (int j = 0; j < _meshHeight - 1; j++) {
-            // glVertexPointer(3, GL_FLOAT, 0, &_verts[j*_meshWidth*3]);
-            // glVertexAttribPointer(attrindx,  2,  GL_FLOAT,  false,  0, &data[j*_meshWidth*2]);
-            // glNormalPointer(GL_FLOAT, 0, &_normals[j*_meshWidth*3]);
-            // glDrawElements(GL_TRIANGLE_STRIP, 2*_meshWidth, GL_UNSIGNED_INT, _indices);
-
             glBindBuffer(GL_ARRAY_BUFFER, _VBO);
             glBufferData(GL_ARRAY_BUFFER, _meshWidth * 6 * sizeof(float),
                          &_verts[j * _meshWidth * 3], GL_STREAM_DRAW);
