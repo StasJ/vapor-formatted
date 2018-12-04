@@ -103,7 +103,7 @@ void SliceRenderer::_initTexCoordVBO() {
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void *)0);
     glEnableVertexAttribArray(1);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * _texCoords.size(), _texCoords.data(),
-                 GL_STATIC_DRAW);
+                 GL_DYNAMIC_DRAW);
 }
 
 void SliceRenderer::_initVertexVBO() {
@@ -370,7 +370,7 @@ void SliceRenderer::_createDataTexture(float *dataValues) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, _textureWidth, _textureHeight, 0, GL_RG, GL_FLOAT,
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, _textureWidth, _textureHeight, 0, GL_RG, GL_FLOAT,
                  dataValues);
 }
 
