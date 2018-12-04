@@ -36,6 +36,7 @@ GLColorbarWidget::~GLColorbarWidget() {
     _parent->makeCurrent();
 
     delete[] _texture;
+    cout << "   glDeleteTextures" << endl;
     glDeleteTextures(1, &_texid);
 }
 
@@ -105,11 +106,14 @@ int GLColorbarWidget::paintGL() {
         glColor3f(1.0, 1.0, 1.0);
 
         glEnable(GL_TEXTURE_1D);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_1D, _texid);
 
         if (_updateTexture) {
+            cout << "Updating texture" << endl;
             updateTexture();
-        }
+        } else
+            cout << "not Updating texture" << endl;
 
         glBegin(GL_QUADS);
         {
@@ -156,6 +160,7 @@ void GLColorbarWidget::initializeGL() {
     glShadeModel(GL_SMOOTH);
     glPolygonMode(GL_FRONT, GL_FILL);
 
+    cout << "   glGenTextures()" << endl;
     glGenTextures(1, &_texid);
     glBindTexture(GL_TEXTURE_1D, _texid);
 
@@ -205,12 +210,13 @@ void GLColorbarWidget::drawControlPoint(int index) {
 // Construct/Re-construct the colorbar texture
 //----------------------------------------------------------------------------
 void GLColorbarWidget::updateTexture() {
+    float rgb[3];
     if (_colormap) {
         float step = (_parent->maxDataValue() - _parent->minDataValue()) / (_NUM_BINS - 1);
 
         for (int i = 0; i < _NUM_BINS; i++) {
             float value = _parent->minDataValue() + i * step;
-            float rgb[3];
+            //  float rgb[3];
 
             _colormap->color(value).toRGB(rgb);
 

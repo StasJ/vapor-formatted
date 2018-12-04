@@ -101,6 +101,7 @@ MappingFrame::MappingFrame(QWidget *parent)
       _domainHeight(_domainBarHeight + _domainLabelHeight + 3), _axisRegionHeight(20),
       _opacityGap(4), _bottomGap(10), _dataMgr(NULL), _rParams(NULL), _mousePressFlag(false),
       _initialized(false) {
+    cout << "MappingFrame::MappingFrame()" << endl;
     initWidgets();
     initConnections();
     setMouseTracking(true);
@@ -110,6 +111,7 @@ MappingFrame::MappingFrame(QWidget *parent)
 // Destructor
 //----------------------------------------------------------------------------
 MappingFrame::~MappingFrame() {
+    cout << "MappingFrame::~MappingFrame()" << endl;
     for (int i = 0; i < _isolineSliders.size(); i++)
         delete _isolineSliders[i];
     makeCurrent();
@@ -784,7 +786,7 @@ void MappingFrame::resizeGL(int width, int height) {}
 // Draw the frame's contents
 //----------------------------------------------------------------------------
 void MappingFrame::paintGL() {
-
+    cout << "MappingFrame::paintGL()" << endl;
     // On Mac Qt invokes paintGL when frame frame buffer isn't ready :-(
     //
     if (!FrameBufferReady()) {
@@ -893,6 +895,7 @@ void MappingFrame::paintGL() {
     //
 
     _variableName = _rParams->GetColorMapVariableName();
+    _variableName = ".           .    .";
     if (_variableName != "") {
         // allow for 4 pixels per character in name:
         int wx = (width() - _variableName.size() * 8) / 2;
@@ -970,7 +973,7 @@ void MappingFrame::paintGL() {
 // Set up the OpenGL rendering state
 //----------------------------------------------------------------------------
 void MappingFrame::initializeGL() {
-
+    cout << "MappingFrame::initializeGL()" << endl;
     MyBase::SetDiagMsg("MappingFrame::initializeGL()");
     printOpenGLErrorMsg("MappingFrame");
     setAutoBufferSwap(false);
@@ -979,6 +982,7 @@ void MappingFrame::initializeGL() {
     //
     // Initialize the histogram texture
     //
+    glActiveTexture(GL_TEXTURE0);
     glGenTextures(1, &_texid);
     glBindTexture(GL_TEXTURE_2D, _texid);
 
