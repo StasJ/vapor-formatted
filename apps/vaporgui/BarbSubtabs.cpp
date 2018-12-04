@@ -16,7 +16,7 @@
 
 BarbVariablesSubtab::BarbVariablesSubtab(QWidget *parent) {
     setupUi(this);
-    _variablesWidget->Reinit((VariableFlags)(VECTOR | HEIGHT | COLOR), (DimFlags)(TWODXY | THREED));
+    _variablesWidget->Reinit((VariableFlags)(VECTOR | HEIGHT | COLOR), (DimFlags)(TWOD | THREED));
 }
 
 void BarbVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -28,8 +28,7 @@ void BarbVariablesSubtab::Initialize(VAPoR::BarbParams *bParams, VAPoR::DataMgr 
 
 BarbGeometrySubtab::BarbGeometrySubtab(QWidget *parent) {
     setupUi(this);
-    _geometryWidget->Reinit((DimFlags)(VECTOR | TWODXY), (GeometryFlags)(MINMAX),
-                            (VariableFlags)(VECTOR));
+    _geometryWidget->Reinit((DimFlags)(VECTOR | THREED), (VariableFlags)(VECTOR));
 }
 
 void BarbGeometrySubtab::Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
