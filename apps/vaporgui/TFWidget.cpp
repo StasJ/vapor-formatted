@@ -521,7 +521,6 @@ void TFWidget::checkForBoxChanges() {
         }
         if (maxExt[i] != _maxExt[i]) {
             _externalChangeHappened = true;
-            _maxExt[i] = maxExt[i];
         }
     }
 }
@@ -690,7 +689,6 @@ void TFWidget::connectWidgets() {
 void TFWidget::emitTFChange() { emit emitChange(); }
 
 void TFWidget::opacitySliderChanged(int value) {
-    // string varName = _rParams->GetVariableName();
     bool mainTF = true;
     if (COLORMAP_VAR_IS_IN_TF2)
         mainTF = false;
