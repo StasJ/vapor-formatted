@@ -62,9 +62,14 @@ VariablesWidget::VariablesWidget(QWidget *parent) : QWidget(parent), Ui_Variable
     connect(colormapVarCombo, SIGNAL(activated(const QString &)), this,
             SLOT(setColorMappedVariable(const QString &)));
 
+    connect(orientationCombo, SIGNAL(activated(const QString &)), this,
+            SLOT(set2DOrientation(const QString &)));
+
     // Legacy crap. Should remove
     //
     distribVariableFrame->hide();
+
+    orientationFrame->hide();
 }
 
 void VariablesWidget::Reinit(VariableFlags variableFlags, DimFlags dimFlags) {
@@ -73,15 +78,27 @@ void VariablesWidget::Reinit(VariableFlags variableFlags, DimFlags dimFlags) {
 
     showHideVarCombos(true);
 
-    // If the renderer is not 2D and 3D, hide
+    // If the renderer is not both 2D and 3D, hide
     // the dimension selector and set the _activeDim
-    if (!((_dimFlags & TWODXY) && (_dimFlags & THREED))) {
+    if (!((_dimFlags & TWOD) && (_dimFlags & THREED))) {
         dimensionFrame->hide();
-        if (dimFlags & THREED)
+        if (dimFlags & THREED) {
             _activeDim = THREEDIMS;
-        else
+            orientationFrame->hide();
+        } else
             _activeDim = TWODIMS;
+        // orientationFrame->show();
     }
+
+    // If the renderer is only 3D, hide the 2D orientation selector
+    //    if (!(_dimFlags & TWOD))
+    orientationFrame->hide();
+    /*    if (!(_dimFlags & TWODXY) &&
+            !(_dimFlags & TWODXZ) &&
+            !(_dimFlags & TWODYZ)) {
+            orientationFrame->hide();
+        }
+    */
 
     variableSelectionWidget->adjustSize();
 
@@ -177,13 +194,24 @@ void VariablesWidget::setColorMappedVariable(const QString &qname) {
     _rParams->SetColorMapVariableName(name);
 }
 
+void VariablesWidget::set2DOrientation(const QString &orientation) {
+    cout << "2D orientation is currently a no-op" << endl;
+}
+
 void VariablesWidget::setVariableDims(int index) {
     assert(_rParams);
-    if (!((_dimFlags & TWODXY) && (_dimFlags & THREED)))
+    if (!((_dimFlags & TWOD) && (_dimFlags & THREED)))
         return;
     assert(index >= 0 && index <= 1);
 
-    _activeDim = index == 0 ? TWODIMS : THREEDIMS;
+    //_activeDim = index == 0 ? TWODIMS : THREEDIMS;
+    if (index == 0) {
+        _activeDim = TWODIMS;
+        // orientationFrame->show();
+    } else {
+        _activeDim = THREEDIMS;
+        orientationFrame->hide();
+    }
 
     setDefaultVariables();
 
@@ -391,7 +419,7 @@ void VariablesWidget::updateCombos() {
 
 void VariablesWidget::updateDimCombo() {
     // Only update if we support multiple dimensions
-    if (((_dimFlags & TWODXY) && (_dimFlags & THREED))) {
+    if (((_dimFlags & TWOD) && (_dimFlags & THREED))) {
         int index = _activeDim - 2;
         dimensionCombo->setCurrentIndex(index);
     }
@@ -409,6 +437,9 @@ void VariablesWidget::Update(const DataMgr *dataMgr, ParamsMgr *paramsMgr, Rende
     updateCombos();
 
     _fidelityWidget->Update(_dataMgr, _paramsMgr, _rParams);
+
+    if (_activeDim == THREED)
+        orientationFrame->hide();
 }
 
 string VariablesWidget::findVarStartingWithLetter(vector<string> searchVars, char letter) {
