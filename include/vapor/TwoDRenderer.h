@@ -54,6 +54,11 @@ class RENDER_API TwoDRenderer : public Renderer {
     // normals : contains surface normal at each vertex. Need not be unit length
     // Same packing as verts
     //
+    // nverts : number of vertices and number of normals in verts, and
+    // normals, respectively. A single vertex or normal consists of three
+    // components. Thus if nverts == 1 then verts and normals each contain
+    // one three-component element.
+    //
     // width : For structured grids contains number of grid points along
     // fastest varying dimension. For unstructured grids contains *total*
     // number of grid points
@@ -70,8 +75,8 @@ class RENDER_API TwoDRenderer : public Renderer {
     //
     // structuredMesh : bool, true if structured mesh, false if unstructured
     //
-    virtual int GetMesh(DataMgr *dataMgr, GLfloat **verts, GLfloat **normals, GLsizei &width,
-                        GLsizei &height, GLuint **indices, GLsizei &nindices,
+    virtual int GetMesh(DataMgr *dataMgr, GLfloat **verts, GLfloat **normals, GLsizei &nverts,
+                        GLsizei &width, GLsizei &height, GLuint **indices, GLsizei &nindices,
                         bool &structuredMesh) = 0;
 
     // Return data values for mesh returned with GetMesh(). The returned
@@ -153,6 +158,7 @@ class RENDER_API TwoDRenderer : public Renderer {
     GLsizei _meshWidth;
     GLsizei _meshHeight;
     GLsizei _nindices;
+    GLsizei _nverts;
     SmartBuf _sb_texCoords;
 
     GLuint _VAO, _VBO, _dataVBO, _EBO;
