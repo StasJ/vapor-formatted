@@ -55,8 +55,9 @@ class RENDER_API TwoDDataRenderer : public TwoDRenderer {
 
     int _paintGL(bool fast);
 
-    int GetMesh(DataMgr *dataMgr, GLfloat **verts, GLfloat **normals, GLsizei &width,
-                GLsizei &height, GLuint **indices, GLsizei &nindices, bool &structuredMesh);
+    int GetMesh(DataMgr *dataMgr, GLfloat **verts, GLfloat **normals, GLsizei &nverts,
+                GLsizei &width, GLsizei &height, GLuint **indices, GLsizei &nindices,
+                bool &structuredMesh);
 
     const GLvoid *GetTexture(DataMgr *dataMgr, GLsizei &width, GLsizei &height,
                              GLint &internalFormat, GLenum &format, GLenum &type, size_t &texelSize,
@@ -142,6 +143,7 @@ class RENDER_API TwoDDataRenderer : public TwoDRenderer {
     GLsizei _vertsWidth;
     GLsizei _vertsHeight;
     GLsizei _nindices;
+    GLsizei _nverts;
 
     GLuint _cMapTexID;
     GLfloat *_colormap;
