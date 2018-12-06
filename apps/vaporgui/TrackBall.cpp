@@ -81,6 +81,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <vapor/glutil.h>
+#define INCLUDE_DEPRECATED_LEGACY_VECTOR_MATH
+#include <vapor/LegacyVectorMath.h>
 
 #include "TrackBall.h"
 

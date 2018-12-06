@@ -1,11 +1,12 @@
 #include "vapor/LayeredGrid.h"
-#include "vapor/glutil.h"
 #include "vapor/utils.h"
 #include <cassert>
 #include <cfloat>
 #include <cmath>
 #include <iostream>
 #include <stdio.h>
+#define INCLUDE_DEPRECATED_LEGACY_VECTOR_MATH
+#include <vapor/LegacyVectorMath.h>
 
 using namespace std;
 using namespace VAPoR;
