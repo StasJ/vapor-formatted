@@ -48,6 +48,16 @@
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #endif
 
+#define X 0
+#define Y 0
+#define Z 0
+
+#define XY 0
+#define XZ 1
+#define YZ 2
+
+#define SAMPLE_RATE 100
+
 using namespace VAPoR;
 using namespace std;
 
@@ -85,7 +95,7 @@ void oglPopState() {
 // Constructor
 //----------------------------------------------------------------------------
 MappingFrame::MappingFrame(QWidget *parent)
-    : QGLWidget(parent), _NUM_BINS(256), _mapper(NULL), _histogram(NULL),
+    : QGLWidget(parent), _NUM_BINS(256), _mapper(NULL), _histogram(NULL), _isSampling(false),
       _opacityMappingEnabled(false), _colorMappingEnabled(false), _isoSliderEnabled(false),
       _isolineSlidersEnabled(false), _lastSelectedIndex(-1), navigateButton(NULL),
       _editButton(NULL), _variableName(""), _domainSlider(new DomainWidget(this)),
@@ -190,23 +200,84 @@ void MappingFrame::RefreshHistogram() {
     _histogramMap[rendererName] = _histogram;
 }
 
-void MappingFrame::populateHistogram() {
-    // string var = _rParams->GetColorMapVariableName();
+void MappingFrame::SetIsSampling(bool isSampling) { _isSampling = isSampling; }
+
+void MappingFrame::getGridAndExtents(VAPoR::Grid **grid, std::vector<double> minExts,
+                                     std::vector<double> maxExts) const {
     size_t ts = _rParams->GetCurrentTimestep();
     int refLevel = _rParams->GetRefinementLevel();
     int lod = _rParams->GetCompressionLevel();
 
-    vector<double> minExts, maxExts;
     _rParams->GetBox()->GetExtents(minExts, maxExts);
 
-    Grid *grid;
-
     int rc = DataMgrUtils::GetGrids(_dataMgr, ts, _variableName, minExts, maxExts, true, &refLevel,
-                                    &lod, &grid);
+                                    &lod, grid);
     if (rc < 0) {
         MSG_ERR("Couldn't get data for Histogram");
-        return;
     }
+}
+
+void MappingFrame::populateHistogram() {
+    if (_isSampling)
+        populateSamplingHistogram();
+    else
+        populateIteratingHistogram();
+}
+
+void MappingFrame::populateSamplingHistogram() {
+    Grid *grid = nullptr;
+    std::vector<double> minExts, maxExts;
+    getGridAndExtents(&grid, minExts, maxExts);
+    grid->SetInterpolationOrder(1);
+
+    std::vector<double> deltas = calculateDeltas(minExts, maxExts);
+    float varValue, missingValue;
+    std::vector<double> coords(3, 0.0);
+    coords[X] = minExts[X];
+    coords[Y] = minExts[Y];
+    coords[Z] = minExts[Z];
+
+    int iSamples = deltas[X] * SAMPLE_RATE;
+    int jSamples = deltas[Y] * SAMPLE_RATE;
+    int kSamples = deltas[Z] * SAMPLE_RATE;
+
+    for (int k = 0; k < kSamples; k++) {
+
+        for (int j = 0; j < jSamples; j++) {
+            coords[X] = minExts[X];
+
+            for (int i = 0; i < iSamples; i++) {
+                varValue = grid->GetValue(coords);
+                missingValue = grid->GetMissingValue();
+                if (varValue != missingValue)
+                    _histogram->addToBin(varValue);
+
+                coords[X] += deltas[X];
+            }
+            coords[Y] += deltas[Y];
+        }
+        coords[Z] += deltas[Z];
+    }
+
+    delete grid;
+    grid = nullptr;
+}
+
+std::vector<double> MappingFrame::calculateDeltas(std::vector<double> minExts,
+                                                  std::vector<double> maxExts) const {
+    double dx = (minExts[X] - maxExts[X]) / (1 + SAMPLE_RATE);
+    double dy = (minExts[Y] - maxExts[Y]) / (1 + SAMPLE_RATE);
+    double dz = (minExts[Z] - maxExts[Z]) / (1 + SAMPLE_RATE);
+
+    std::vector<double> deltas = {dx, dy, dz};
+    return deltas;
+}
+
+void MappingFrame::populateIteratingHistogram() {
+    Grid *grid = nullptr;
+    std::vector<double> minExts, maxExts;
+    getGridAndExtents(&grid, minExts, maxExts);
+    grid->SetInterpolationOrder(1);
 
     float v;
     Grid::Iterator itr;
