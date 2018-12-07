@@ -22,7 +22,6 @@
 #include <cassert>
 #include <cfloat>
 #include <vapor/Box.h>
-#include <vapor/glutil.h>
 #include <vector>
 
 using namespace std;

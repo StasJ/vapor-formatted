@@ -44,6 +44,8 @@
 #include <vapor/ViewpointParams.h>
 #include <vapor/debug.h>
 #include <vapor/glutil.h> // Must be included first!!!
+#define INCLUDE_DEPRECATED_LEGACY_VECTOR_MATH
+#include <vapor/LegacyVectorMath.h>
 
 using namespace VAPoR;
 
