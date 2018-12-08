@@ -1,9 +1,10 @@
 #pragma once
 
 #ifndef INCLUDE_DEPRECATED_LEGACY_VECTOR_MATH
-#error LegacyVectorMath.h is deprecated. Please don't use unless necessary
+#error LegacyVectorMath.h is deprecated. Please dont use unless necessary
 #endif
 
+#include <cstddef>
 #include <math.h>
 #include <vapor/common.h>
 #include <vector>
