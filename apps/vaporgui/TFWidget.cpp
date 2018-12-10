@@ -543,6 +543,8 @@ void TFWidget::checkForMainMapperRangeChanges() {
     double newMin = mf->getMinMapValue();
     double newMax = mf->getMaxMapValue();
 
+    cout << min << " " << max << " " << newMin << " " << newMax << endl;
+
     if (min != newMin)
         _mainHistoRangeChanged = true;
     if (max != newMax)
@@ -908,6 +910,7 @@ MapperFunction *TFWidget::getMainMapperFunction() {
     bool mainTF = true;
     string varname = getTFVariableName(mainTF);
     MapperFunction *mf = _rParams->GetMapperFunc(varname);
+    cout << "GetMapperFunc " << varname << endl;
     assert(mf);
     return mf;
 }
