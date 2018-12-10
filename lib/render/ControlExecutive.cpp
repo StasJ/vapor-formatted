@@ -640,8 +640,11 @@ bool ControlExec::RenderLookup(string instName, string &winName, string &dataSet
                                string &renderType) const {
 
     string paramsType = RendererFactory::Instance()->GetParamsClassFromRenderClass(renderType);
+    bool success = _paramsMgr->RenderParamsLookup(instName, winName, dataSetName, paramsType);
 
-    return (_paramsMgr->RenderParamsLookup(instName, winName, dataSetName, paramsType));
+    cout << "ControlExec::RenderLookup " << instName << ":" << winName << ":" << dataSetName << ":"
+         << paramsType << endl;
+    return success;
 }
 
 int ControlExec::DrawText(string winName, string text, int x, int y, int size, float color[3],

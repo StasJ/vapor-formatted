@@ -305,6 +305,7 @@ class MainForm : public QMainWindow {
     string _getDataSetName(string file);
 
   private slots:
+    void setWinActive(const QString &visualizerName = "");
     void sessionOpen(QString qfileName = "");
     void fileSave();
     void fileSaveAs();
