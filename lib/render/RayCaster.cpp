@@ -225,8 +225,8 @@ int RayCaster::UserCoordinates::GetCurrentGrid(const RayCasterParams *params, Da
     }
 }
 
-int RayCaster::UserCoordinates::IsMetadataUpToDate(const RayCasterParams *params,
-                                                   DataMgr *dataMgr) const {
+int RayCaster::UserCoordinates::checkMetadataUpToDate(const RayCasterParams *params,
+                                                      DataMgr *dataMgr) const {
     if ((myCurrentTimeStep != params->GetCurrentTimestep()) ||
         (myVariableName != params->GetVariableName()) ||
         (myRefinementLevel != params->GetRefinementLevel()) ||
@@ -238,6 +238,7 @@ int RayCaster::UserCoordinates::IsMetadataUpToDate(const RayCasterParams *params
     std::vector<double> extMin, extMax;
     params->GetBox()->GetExtents(extMin, extMax);
     if (extMin.size() != 3 || extMax.size() != 3) {
+        MyBase::SetErrMsg("RayCaster has to operate on 3D volumes");
         return JUSTERROR;
     }
 
@@ -496,7 +497,7 @@ int RayCaster::_paintGL(bool fast) {
     long castingMode = params->GetCastingMode();
 
     // If there is an update event
-    int upToDate = _userCoordinates.IsMetadataUpToDate(params, _dataMgr);
+    int upToDate = _userCoordinates.checkMetadataUpToDate(params, _dataMgr);
     if (upToDate < 0) {
         MyBase::SetErrMsg("Error occured during updating meta data!");
         glBindVertexArray(0);
