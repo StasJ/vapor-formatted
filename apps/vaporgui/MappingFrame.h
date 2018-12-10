@@ -199,8 +199,8 @@ class MappingFrame : public QGLWidget {
     bool canBind();
     void updateHistogram();
     string getActiveRendererName() const;
-    void getGridAndExtents(VAPoR::Grid **grid, std::vector<double> minExts,
-                           std::vector<double> maxExts) const;
+    void getGridAndExtents(VAPoR::Grid **grid, std::vector<double> &minExts,
+                           std::vector<double> &maxExts) const;
     void populateHistogram();
     void populateSamplingHistogram();
     // void populateSamplingHistogramXY();
