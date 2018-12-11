@@ -1467,6 +1467,7 @@ int DataMgr::GetVariableExtents(size_t ts, string varname, int level, vector<dou
 
 int DataMgr::GetDataRange(size_t ts, string varname, int level, int lod, vector<double> &range) {
     SetDiagMsg("DataMgr::GetDataRange(%d,%s)", ts, varname.c_str());
+
     range.clear();
 
     int rc = _level_correction(varname, level);
@@ -1492,20 +1493,29 @@ int DataMgr::GetDataRange(size_t ts, string varname, int level, int lod, vector<
     //
     // Have to calculate range
     //
-    range.resize(2, 0.0);
+
+    range.clear();
+    range.push_back(0.0);
+    range.push_back(0.0);
+    float mv = sg->GetMissingValue();
     Grid::ConstIterator itr = sg->cbegin();
     Grid::ConstIterator enditr = sg->cend();
-    float mv = sg->GetMissingValue();
-    while (float(*itr) == mv)
+
+    while (*itr == mv)
         ++itr;
-    range[0] = range[1] = *itr;
-    ++itr;
-    while (itr != enditr) {
-        if (float(*itr) != mv) {
-            range[0] = *itr < range[0] ? *itr : range[0];
-            range[1] = *itr > range[1] ? *itr : range[1];
+    if (itr != enditr) {
+        range[0] = range[1] = *itr;
+        ++itr;
+    }
+
+    for (; itr != enditr; ++itr) {
+        float v = *itr;
+        if (v != mv) {
+            if (v < range[0])
+                range[0] = v;
+            if (v > range[1])
+                range[1] = v;
         }
-        ++itr;
     }
     delete sg;
 
@@ -1513,7 +1523,6 @@ int DataMgr::GetDataRange(size_t ts, string varname, int level, int lod, vector<
 
     return (0);
 }
-
 int DataMgr::GetDimLensAtLevel(string varname, int level, std::vector<size_t> &dims_at_level,
                                std::vector<size_t> &bs_at_level) const {
     assert(_dc);
