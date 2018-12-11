@@ -150,7 +150,8 @@ class TabManager : public QTabWidget {
     void AnimationStepForward() { _animationEventRouter->AnimationStepForward(); }
     void AnimationSetTimestep(int ts) { _animationEventRouter->SetTimeStep(ts); }
 
-  protected slots:
+  public slots:
+    void SetActive(string activeViz, string renderClass, string renderInst);
 
   private slots:
     void _setProj4String(string proj4String) { emit Proj4StringChanged(proj4String); }
@@ -173,7 +174,9 @@ class TabManager : public QTabWidget {
 
     void SetActiveViz(const QString &vizNameQ);
 
-    void _setActive(string activeViz, string renderClass, string renderInst);
+    // void SetActive(
+    //	string activeViz, string renderClass, string renderInst
+    // );
 
     void _newRenderer(string activeViz, string renderClass, string renderInst);
 
