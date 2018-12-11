@@ -27,6 +27,8 @@
 #include <vapor/DataMgrUtils.h>
 #include <vapor/HelloRenderer.h>
 #include <vapor/ParamsMgr.h>
+#define INCLUDE_DEPRECATED_LEGACY_VECTOR_MATH
+#include <vapor/LegacyVectorMath.h>
 
 using namespace VAPoR;
 using namespace Wasp;
