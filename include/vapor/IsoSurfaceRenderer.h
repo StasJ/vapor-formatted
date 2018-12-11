@@ -14,7 +14,7 @@ class RENDER_API IsoSurfaceRenderer : public RayCaster {
     static std::string GetClassType() { return ("IsoSurface"); }
 
   protected:
-    int _loadShaders();
+    int _load3rdPassShaders();
     void _3rdPassSpecialHandling(bool fast, long castMode);
 };
 
