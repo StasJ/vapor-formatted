@@ -14,8 +14,8 @@ class RENDER_API IsoSurfaceRenderer : public RayCaster {
     static std::string GetClassType() { return ("IsoSurface"); }
 
   protected:
-    void _loadShaders();
-    void _3rdPassSpecialHandling(bool);
+    int _load3rdPassShaders();
+    void _3rdPassSpecialHandling(bool fast, long castMode);
 };
 
 }; // namespace VAPoR
