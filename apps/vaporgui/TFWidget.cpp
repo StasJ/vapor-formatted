@@ -411,6 +411,8 @@ void TFWidget::updateSecondaryMappingFrame() {
 void TFWidget::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, RenderParams *rParams,
                       bool internalUpdate) {
 
+    cout << "hidden? " << isHidden() << endl;
+
     assert(paramsMgr);
     assert(dataMgr);
     assert(rParams);
