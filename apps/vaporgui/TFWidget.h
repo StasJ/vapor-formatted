@@ -69,9 +69,6 @@ class TFWidget : public QWidget, public Ui_TFWidgetGUI {
     void loadTF();
     void fileSaveTF();
 
-    void refreshMainHisto();
-    void refreshSecondaryHisto();
-
     void autoUpdateMainHistoChecked(int state);
     void autoUpdateSecondaryHistoChecked(int state);
 
@@ -104,10 +101,8 @@ class TFWidget : public QWidget, public Ui_TFWidgetGUI {
     void updateColorInterpolation();
     void updateConstColor();
     void updateMainAutoUpdateHistoCheckboxes();
-    //	void updateMainMappingFrame(bool refresh);
     void updateMainSliders();
     void updateSecondaryAutoUpdateHistoCheckbox();
-    //	void updateSecondaryMappingFrame(bool refresh);
     void updateSecondarySliders();
 
     bool mainVariableChanged();
