@@ -183,6 +183,7 @@ void MappingFrame::CopyHistogram(ParamsMgr *paramsMgr, string variableName, Hist
 Histo *MappingFrame::GetHistogram() { return _histogram; }
 
 void MappingFrame::RefreshHistogram() {
+    cout << "refreshing histogram" << endl;
     MapperFunction *mapper;
     mapper = _rParams->GetMapperFunc(_variableName);
     assert(mapper);
