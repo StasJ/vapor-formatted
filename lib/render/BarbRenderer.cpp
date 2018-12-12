@@ -42,14 +42,16 @@
 #include <vapor/DataStatus.h>
 #include <vapor/Visualizer.h>
 
-#include "vapor/GLManager.h"
-#include "vapor/LegacyGL.h"
-#include <glm/gtc/type_ptr.hpp>
 #include <vapor/DataMgr.h>
 #include <vapor/MyBase.h>
 #include <vapor/ViewpointParams.h>
 #include <vapor/errorcodes.h>
 #include <vapor/regionparams.h>
+#define INCLUDE_DEPRECATED_LEGACY_VECTOR_MATH
+#include "vapor/GLManager.h"
+#include "vapor/LegacyGL.h"
+#include <glm/gtc/type_ptr.hpp>
+#include <vapor/LegacyVectorMath.h>
 
 #define X 0
 #define Y 1

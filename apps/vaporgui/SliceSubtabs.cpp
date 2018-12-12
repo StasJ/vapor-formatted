@@ -42,7 +42,7 @@ void SliceVariablesSubtab::_setDefaultSampleRate() {
 
 SliceAppearanceSubtab::SliceAppearanceSubtab(QWidget *parent) {
     setupUi(this);
-    _TFWidget->Reinit((TFFlags)(0));
+    _TFWidget->Reinit((TFFlags)(SAMPLING));
 
     _sampleRateWidget->SetLabel(QString::fromAscii("Quality"));
     _sampleRateWidget->SetIntType(true);
@@ -56,7 +56,6 @@ SliceAppearanceSubtab::SliceAppearanceSubtab(QWidget *parent) {
 void SliceAppearanceSubtab::_qualityChanged(int quality) {
     int sampleRate = quality * SAMPLES_PER_QUALITY;
     _params->SetSampleRate(sampleRate);
-    _TFWidget->SetAutoUpdateParamChanged(true);
 }
 
 void SliceAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,

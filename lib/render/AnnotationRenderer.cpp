@@ -32,6 +32,8 @@
 #include <vapor/AnnotationRenderer.h>
 #include <vapor/DataStatus.h>
 #include <vapor/ResourcePath.h>
+#define INCLUDE_DEPRECATED_LEGACY_VECTOR_MATH
+#include <vapor/LegacyVectorMath.h>
 
 using namespace VAPoR;
 using namespace Wasp;
