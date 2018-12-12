@@ -174,7 +174,7 @@ void TFWidget::fileLoadTF(string varname, const char *startPath, bool savePath) 
     assert(tf);
 
     vector<double> defaultRange;
-    _dataMgr->GetDataRange(0, varname, 0, 0, defaultRange);
+    _dataMgr->GetDataRange(0, varname, 0, 0, 1, defaultRange);
 
     int rc = tf->LoadFromFile(s.toStdString(), defaultRange);
     if (rc < 0) {
@@ -239,7 +239,7 @@ void TFWidget::getVariableRange(float range[2], float values[2], bool secondaryV
         return;
 
     vector<double> rangev;
-    int rc = _dataMgr->GetDataRange(ts, varName, ref, cmp, rangev);
+    int rc = _dataMgr->GetDataRange(ts, varName, ref, cmp, 1, rangev);
     if (rc < 0) {
         MSG_ERR("Error loading variable");
         return;
