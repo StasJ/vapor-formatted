@@ -59,7 +59,7 @@
 #define YZ 2
 
 #define SAMPLE_RATE 100
-#define FAST_MODE_FACTOR .25
+#define FAST_MODE_FACTOR 2
 
 using namespace VAPoR;
 using namespace std;
@@ -186,7 +186,6 @@ void MappingFrame::CopyHistogram(ParamsMgr *paramsMgr, string variableName, Hist
 Histo *MappingFrame::GetHistogram() { return _histogram; }
 
 void MappingFrame::RefreshHistogram() {
-    cout << "refreshing histogram" << endl;
     MapperFunction *mapper;
     mapper = _rParams->GetMapperFunc(_variableName);
     assert(mapper);
@@ -213,7 +212,7 @@ void MappingFrame::RefreshHistogram() {
     populateHistogram();
 
     duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
-    std::cout << "printf: " << duration << '\n';
+    std::cout << "Refresh Histogram Time: " << duration << '\n';
 
     _histogramMap[rendererName] = _histogram;
 }
@@ -270,9 +269,9 @@ void MappingFrame::populateSamplingHistogram(bool fastMode) {
     int kSamples = SAMPLE_RATE;
 
     if (fastMode) {
-        iSamples *= FAST_MODE_FACTOR;
-        jSamples *= FAST_MODE_FACTOR;
-        kSamples *= FAST_MODE_FACTOR;
+        iSamples /= FAST_MODE_FACTOR;
+        jSamples /= FAST_MODE_FACTOR;
+        kSamples /= FAST_MODE_FACTOR;
     }
 
     if (deltas[X] == 0)
@@ -330,12 +329,11 @@ void MappingFrame::populateIteratingHistogram(bool fastMode) {
     Grid::ConstIterator enditr = grid->cend();
 
     if (fastMode) {
-        int increment = 1.f / FAST_MODE_FACTOR;
         for (; itr != enditr;) {
             v = *itr;
             if (v != grid->GetMissingValue())
                 _histogram->addToBin(v);
-            itr += increment;
+            itr += FAST_MODE_FACTOR;
         }
     } else {
         for (; itr != enditr; ++itr) {
@@ -1176,9 +1174,9 @@ int MappingFrame::drawHistogram() {
     }
 
     if (_histoNeedsUpdate)
-        glColor3f(0.0, 0.784, 0.784);
-    else
         glColor3f(0.65, 0.65, 0.65);
+    else
+        glColor3f(0.0, 0.784, 0.784);
 
     glBegin(GL_QUADS);
     {
