@@ -33,7 +33,7 @@
 #include <sstream>
 
 #define RANGE_PADDING .05
-#define FAST_MODE_FACTOR 4
+#define DEFAULT_STRIDE 4
 
 bool DATAMGRFAST = false;
 
@@ -52,6 +52,7 @@ TFWidget::TFWidget(QWidget *parent) : QWidget(parent), Ui_TFWidgetGUI() {
     _discreteColormap = false;
     _mainVarName = "";
     _secondaryVarName = "";
+    _getDataRangeStride = 1;
 
     _myRGB[0] = _myRGB[1] = _myRGB[2] = 1.f;
 
@@ -187,7 +188,7 @@ void TFWidget::fileLoadTF(string varname, const char *startPath, bool savePath) 
     int timestep = 0;
     int level = 0;
     int lod = 0;
-    _dataMgr->GetDataRange(timestep, varname, level, lod, FAST_MODE_FACTOR, defaultRange);
+    _dataMgr->GetDataRange(timestep, varname, level, lod, _getDataRangeStride, defaultRange);
 
     int rc = tf->LoadFromFile(s.toStdString(), defaultRange);
     if (rc < 0) {
@@ -252,7 +253,7 @@ void TFWidget::getVariableRange(float range[2], float values[2], bool secondaryV
         return;
 
     vector<double> rangev;
-    int rc = _dataMgr->GetDataRange(ts, varName, ref, cmp, FAST_MODE_FACTOR, rangev);
+    int rc = _dataMgr->GetDataRange(ts, varName, ref, cmp, _getDataRangeStride, rangev);
 
     if (rc < 0) {
         MSG_ERR("Error loading variable");
@@ -353,6 +354,7 @@ void TFWidget::updateSecondaryAutoUpdateHistoCheckbox() {
 void TFWidget::updateMainSliders() {
     float range[2], values[2];
     getVariableRange(range, values);
+    cout << "udpatingSliders " << _getDataRangeStride << " " << range[0] << " " << range[1] << endl;
 
     _rangeCombo->Update(range[0], range[1], values[0], values[1]);
     _opacitySlider->setValue(getOpacity() * 100);
@@ -374,9 +376,18 @@ void TFWidget::updateSecondarySliders() {
 }
 
 void TFWidget::updateMainMappingFrame() {
-    bool buttonPress = sender() == _updateMainHistoButton ? true : false;
+    /*bool buttonPress = sender() == _updateMainHistoButton ? true : false;
     if (!buttonPress)
-        buttonPress = getAutoUpdateMainHisto();
+        buttonPress = getAutoUpdateMainHisto();*/
+    bool buttonPress = false;
+    if (sender() == _updateMainHistoButton || getAutoUpdateMainHisto()) {
+        buttonPress = true;
+        _getDataRangeStride = 1;
+    } else
+        _getDataRangeStride = DEFAULT_STRIDE;
+
+    MapperFunction *mainMF = getMainMapperFunction();
+    mainMF->setHistogramStride(_getDataRangeStride);
 
     bool histogramRecalculated = _mappingFrame->Update(_dataMgr, _paramsMgr, _rParams, buttonPress);
 
@@ -454,6 +465,8 @@ void TFWidget::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, RenderParams *rPar
     updateQtWidgets();
     updateMainMappingFrame(); // set mapper func to that of current variable, refresh _rParams etc
     updateSecondaryMappingFrame();
+
+    _getDataRangeStride = 4;
 }
 
 void TFWidget::updateQtWidgets() {
