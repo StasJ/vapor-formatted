@@ -12,6 +12,11 @@ class ControlExec;
 class MapperFunction;
 } // namespace VAPoR
 
+namespace TFWidget_ {
+class LoadTFDialog;
+class CustomFileDialog;
+} // namespace TFWidget_
+
 //    V - Composition
 //    # - Association
 //
@@ -94,8 +99,8 @@ class TFWidget : public QWidget, public Ui_TFWidgetGUI {
     void updateSecondaryMappingFrame();
 
   private:
-    class LoadTFDialog;
-    LoadTFDialog *_loadTFDialog;
+    // class LoadTFDialog;
+    TFWidget_::LoadTFDialog *_loadTFDialog;
 
     void refreshMainHistoIfNecessary();
     void refreshSecondaryHistoIfNecessary();
@@ -181,20 +186,21 @@ class TFWidget : public QWidget, public Ui_TFWidgetGUI {
     void emitChange();
 };
 
-class TFWidget::LoadTFDialog : public QDialog {
+class TFWidget_::LoadTFDialog : public QDialog {
     Q_OBJECT
 
   public:
     LoadTFDialog(QWidget *parent = 0);
     ~LoadTFDialog();
 
-  private:
-    void topRight(QWidget *parent);
-    void topMiddle(QWidget *parent);
-    void topLeft(QWidget *parent);
-    void topMiddleWithTabWidgets(QWidget *parent);
+  private slots:
+    void accept();
+    void reject();
 
-    QFileDialog *_fileDialog;
+  private:
+    void configureLayout();
+
+    CustomFileDialog *_fileDialog;
     QFrame *_checkboxFrame;
     QFrame *_fileDialogFrame;
     QVBoxLayout *_mainLayout;
@@ -209,6 +215,23 @@ class TFWidget::LoadTFDialog : public QDialog {
     QSpacerItem *_hSpacer;
     QCheckBox *_loadOpacityMapCheckbox;
     QCheckBox *_loadDataBoundsCheckbox;
+
+    bool _loadOpacityMap;
+    bool _loadDataBounds;
 };
 
+class TFWidget_::CustomFileDialog : public QFileDialog {
+    Q_OBJECT
+
+  public:
+    CustomFileDialog(QWidget *parent);
+
+  protected:
+    void done(int result);
+    void accept();
+
+  signals:
+    void okClicked();
+    void cancelClicked();
+};
 #endif // TFWIDGET_H
