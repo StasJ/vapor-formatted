@@ -3,7 +3,7 @@
 #include <iostream>
 #include <iterator>
 #include <sstream>
-#ifdef _WINDOWS
+#ifdef WIN32
 #include "vapor/udunits2.h"
 #else
 #include <udunits2.h>
