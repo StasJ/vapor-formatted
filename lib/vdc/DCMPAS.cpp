@@ -749,7 +749,7 @@ int DCMPAS::closeVariable(int fd) {
 
 int DCMPAS::_readRegionTransposed(MPASFileObject *w, const vector<size_t> &min,
                                   const vector<size_t> &max, float *region) {
-    assert(min.size() == 2);
+    assert(min.size() == 1 || min.size() == 2);
     assert(min.size() == max.size());
 
     int aux = w->GetAux();
@@ -764,18 +764,28 @@ int DCMPAS::_readRegionTransposed(MPASFileObject *w, const vector<size_t> &min,
 
     float *buf = new float[vproduct(ncdf_count)];
 
-    int rc = _ncdfc->Read(ncdf_start, ncdf_count, buf, aux);
-    if (rc < 0)
-        return (-1);
+    if (min.size() == 2) {
 
-    Wasp::Transpose(buf, region, ncdf_count[1], ncdf_count[0]);
+        int rc = _ncdfc->Read(ncdf_start, ncdf_count, buf, aux);
+        if (rc < 0)
+            return (-1);
+
+        Wasp::Transpose(buf, region, ncdf_count[1], ncdf_count[0]);
+    }
+    // No transpose needed. 1D variable
+    //
+    else {
+        int rc = _ncdfc->Read(ncdf_start, ncdf_count, region, aux);
+        if (rc < 0)
+            return (-1);
+    }
 
     return (0);
 }
 
 int DCMPAS::_readRegionEdgeVariable(MPASFileObject *w, const vector<size_t> &min,
                                     const vector<size_t> &max, float *region) {
-    assert(min.size() == 2);
+    assert(min.size() == 1);
     assert(min.size() == max.size());
 
     vector<size_t> dims = _ncdfc->GetDims(edgesOnVertexVarName);
@@ -1608,6 +1618,11 @@ int DCMPAS::DerivedCoordVertFromCell::ReadRegion(int fd, const vector<size_t> &m
 
     string varname = f->GetVarname();
 
+    vector<size_t> inDims, dummy;
+    int rc = _dc->GetDimLensAtLevel(_inName, -1, inDims, dummy);
+    if (rc < 0)
+        return (-1);
+
     float *cellData = _getCellData();
     if (!cellData)
         return (-1);
@@ -1637,9 +1652,9 @@ int DCMPAS::DerivedCoordVertFromCell::ReadRegion(int fd, const vector<size_t> &m
     int offset = -1; // indexing in MPAS starts from -1
     for (size_t j = 0; j < ny; j++) {
         for (size_t i = 0; i < nx; i++) {
-            float v0 = cellData[j * nx + cellsOnVertex[i * vertexDegree + 0] + offset];
-            float v1 = cellData[j * nx + cellsOnVertex[i * vertexDegree + 1] + offset];
-            float v2 = cellData[j * nx + cellsOnVertex[i * vertexDegree + 2] + offset];
+            float v0 = cellData[j * inDims[0] + cellsOnVertex[i * vertexDegree + 0] + offset];
+            float v1 = cellData[j * inDims[0] + cellsOnVertex[i * vertexDegree + 1] + offset];
+            float v2 = cellData[j * inDims[0] + cellsOnVertex[i * vertexDegree + 2] + offset];
 
             region[j * nx + i] = v0 * wgt0 + v1 * wgt1 + v2 * wgt2;
         }
