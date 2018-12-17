@@ -32,7 +32,6 @@
 #include <qwidget.h>
 #include <sstream>
 
-#define RANGE_PADDING .05
 #define DEFAULT_STRIDE 16
 
 bool DATAMGRFAST = false;
