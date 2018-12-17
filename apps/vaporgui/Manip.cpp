@@ -51,6 +51,8 @@ const float Manip::_unselectedFaceColor[4] = {0.8f, 0.2f, 0.0f, 0.5f};
 #define MAXY 4
 #define MAXZ 5
 
+#define DEBUG true
+
 TranslateStretchManip::TranslateStretchManip(GLManager *glManager) : Manip(glManager) {
 
     _buttonNum = 0;
@@ -504,7 +506,7 @@ bool TranslateStretchManip::pixelToVector(double winCoords[2], double dirVec[3],
         // Subtract camera coords to get a direction vector:
         vsub(pt, _cameraPosition, dirVec);
     }
-    GL_ERR_BREAK();
+
     return success;
 }
 
