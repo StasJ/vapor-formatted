@@ -20,7 +20,7 @@
 #include <cstdlib>
 #include <iostream>
 
-#ifndef _WINDOWS
+#ifndef WIN32
 #include <unistd.h>
 #endif
 
