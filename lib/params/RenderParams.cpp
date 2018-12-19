@@ -26,8 +26,6 @@
 #include <vapor/DataMgr.h>
 #include <vapor/RenderParams.h>
 
-#define DEFAULT_STRIDE 16
-
 using namespace VAPoR;
 
 const string RenderParams::_EnabledTag = "Enabled";
@@ -348,7 +346,9 @@ MapperFunction *RenderParams::GetMapperFunc(string varname) {
 
         vector<double> range;
         bool prev = EnableErrMsg(false); // no error handling
-        int rc = _dataMgr->GetDataRange(ts, varname, level, lod, DEFAULT_STRIDE, range);
+        int stride = tf.getHistogramStride();
+        cout << "I am getting a stirde off ... " << stride << endl;
+        int rc = _dataMgr->GetDataRange(ts, varname, level, lod, stride, range);
         if (rc < 0) {
             range = {0.0, 1.0};
         }
