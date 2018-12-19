@@ -161,6 +161,8 @@ class MappingFrame : public QGLWidget {
 
     void SetHistoNeedsUpdate(bool needsUpdate);
 
+    void SetStride(int stride);
+
   signals:
 
     //! Signal that is invoked when user starts to modify the transfer function.
@@ -209,6 +211,7 @@ class MappingFrame : public QGLWidget {
     void setHistogramStride(int stride);
     std::vector<double> calculateDeltas(std::vector<double> minExts,
                                         std::vector<double> maxExts) const;
+    int _stride;
 
   protected slots:
     void setEditMode(bool);
