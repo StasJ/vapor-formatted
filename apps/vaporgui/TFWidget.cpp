@@ -32,7 +32,7 @@
 #include <qwidget.h>
 #include <sstream>
 
-#define REQUIRED_SAMPLE_SIZE 64000
+#define REQUIRED_SAMPLE_SIZE 1000000
 
 using namespace VAPoR;
 
@@ -277,12 +277,11 @@ void TFWidget::calculateStride(string varName) {
     for (int i = 0; i < dimsAtLevel.size(); i++)
         size *= dimsAtLevel[i];
 
-    _stride = size / REQUIRED_SAMPLE_SIZE;
-    assert(_stride > 0);
+    _stride = 1;
+    if (size > REQUIRED_SAMPLE_SIZE)
+        _stride = size / REQUIRED_SAMPLE_SIZE;
 
-    MapperFunction *mf = _rParams->GetMapperFunc(varName);
-    assert(mf);
-    mf->setHistogramStride(_stride);
+    _mappingFrame->SetStride(_stride);
 }
 
 float TFWidget::getOpacity() {
@@ -399,7 +398,6 @@ void TFWidget::updateMainMappingFrame() {
 
     if (histogramRecalculated) {
         _updateMainHistoButton->setEnabled(false);
-        cout << "A" << endl;
         _mappingFrame->SetHistoNeedsUpdate(false);
         _externalChangeHappened = false;
         _initialized = true;
@@ -410,7 +408,6 @@ void TFWidget::updateMainMappingFrame() {
         checkForTimestepChanges();
         if (_externalChangeHappened || _mainHistoRangeChanged) {
             _updateMainHistoButton->setEnabled(true);
-            cout << "B" << endl;
             _mappingFrame->SetHistoNeedsUpdate(true);
         }
     }
@@ -574,7 +571,6 @@ void TFWidget::checkForMainMapperRangeChanges() {
     if (max != newMax) {
         _mainHistoRangeChanged = true;
     }
-    cout << min << " " << newMin << " " << max << " " << newMax << endl;
 }
 
 void TFWidget::checkForSecondaryMapperRangeChanges() {
@@ -617,7 +613,6 @@ void TFWidget::enableUpdateButtonsIfNeeded() {
             _initialized = true;
         } else if (_initialized) {
             _updateMainHistoButton->setEnabled(true);
-            cout << "C" << endl;
             _mappingFrame->SetHistoNeedsUpdate(true);
         } else {
             _updateMainHistoButton->setEnabled(false);

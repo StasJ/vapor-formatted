@@ -98,9 +98,9 @@ void oglPopState() {
 //----------------------------------------------------------------------------
 MappingFrame::MappingFrame(QWidget *parent)
     : QGLWidget(parent), _NUM_BINS(256), _mapper(NULL), _histogram(NULL), _isSampling(false),
-      _histoNeedsUpdate(false), _opacityMappingEnabled(false), _colorMappingEnabled(false),
-      _isoSliderEnabled(false), _isolineSlidersEnabled(false), _lastSelectedIndex(-1),
-      navigateButton(NULL), _editButton(NULL), _variableName(""),
+      _stride(1), _histoNeedsUpdate(false), _opacityMappingEnabled(false),
+      _colorMappingEnabled(false), _isoSliderEnabled(false), _isolineSlidersEnabled(false),
+      _lastSelectedIndex(-1), navigateButton(NULL), _editButton(NULL), _variableName(""),
       _domainSlider(new DomainWidget(this)), _contourRangeSlider(new ContourRangeSlider(this)),
       _isoSlider(new IsoSlider(this)), _colorbarWidget(new GLColorbarWidget(this, NULL)),
       _lastSelected(NULL), _texid(0), _texture(NULL), _updateTexture(true), _histogramScale(LINEAR),
@@ -213,6 +213,8 @@ void MappingFrame::SetIsSampling(bool isSampling) { _isSampling = isSampling; }
 
 void MappingFrame::SetHistoNeedsUpdate(bool needsUpdate) { _histoNeedsUpdate = needsUpdate; }
 
+void MappingFrame::SetStride(int stride) { _stride = stride; }
+
 void MappingFrame::getGridAndExtents(VAPoR::Grid **grid, std::vector<double> &minExts,
                                      std::vector<double> &maxExts) const {
     size_t ts = _rParams->GetCurrentTimestep();
@@ -254,14 +256,9 @@ void MappingFrame::populateSamplingHistogram() {
     coords[Y] = minExts[Y];
     coords[Z] = minExts[Z];
 
-    MapperFunction *mapper;
-    mapper = _rParams->GetMapperFunc(_variableName);
-    assert(mapper);
-    int stride = mapper->getHistogramStride();
-
-    int iSamples = SAMPLE_RATE / stride;
-    int jSamples = SAMPLE_RATE / stride;
-    int kSamples = SAMPLE_RATE / stride;
+    int iSamples = SAMPLE_RATE / _stride;
+    int jSamples = SAMPLE_RATE / _stride;
+    int kSamples = SAMPLE_RATE / _stride;
 
     if (deltas[X] == 0)
         iSamples = 0;
@@ -313,11 +310,6 @@ void MappingFrame::populateIteratingHistogram() {
 
     grid->SetInterpolationOrder(1);
 
-    MapperFunction *mapper;
-    mapper = _rParams->GetMapperFunc(_variableName);
-    assert(mapper);
-    int stride = mapper->getHistogramStride();
-
     float v;
     float missingValue = grid->GetMissingValue();
     Grid::ConstIterator itr = grid->cbegin();
@@ -327,7 +319,7 @@ void MappingFrame::populateIteratingHistogram() {
         v = *itr;
         if (v != missingValue)
             _histogram->addToBin(v);
-        itr += stride;
+        itr += _stride;
     }
     delete grid;
 }
