@@ -80,8 +80,7 @@ class RENDER_API SliceRenderer : public Renderer {
     void _setYZVertexPositions(std::vector<double> min, std::vector<double> max);
 
     bool _initialized;
-    int _textureWidth;
-    int _textureHeight;
+    int _textureSideSize;
 
     GLuint _colorMapTextureID;
     GLuint _dataValueTextureID;
