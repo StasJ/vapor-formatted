@@ -1174,7 +1174,7 @@ void MainForm::loadData(string fileName) {
         files.push_back(fileName);
     }
 
-    loadDataHelper(files, "Choose the Master data File to load", "Vapor VDC files (*.*)", "vdc",
+    loadDataHelper(files, "Choose the Master data File to load", "Vapor VDC files (*.nc)", "vdc",
                    false);
 }
 
