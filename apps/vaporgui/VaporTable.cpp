@@ -34,6 +34,7 @@ VaporTable::VaporTable(QTableWidget *table, bool lastRowIsCheckboxes, bool lastC
     _activeRow = -1;
     _activeCol = -1;
     _autoResizeHeight = false;
+    _showToolTips = false;
 
     _table->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 }
@@ -99,6 +100,10 @@ void VaporTable::StretchToColumn(int column) {
     headerView->setResizeMode(column, QHeaderView::Stretch);
 }
 
+void VaporTable::ShowToolTips(bool showOrHide) { _showToolTips = showOrHide; }
+
+bool VaporTable::GetShowToolTips() const { return _showToolTips; }
+
 void VaporTable::resizeTableHeight() {
     if (!_autoResizeHeight)
         return;
@@ -159,6 +164,8 @@ void VaporTable::setTableCells(std::vector<std::string> values) {
             QLineEdit *edit = createLineEdit(qVal);
             edit->setProperty("row", j);
             edit->setProperty("col", i);
+            if (_showToolTips)
+                edit->setToolTip(qVal);
             _table->setCellWidget(j, i, edit);
         }
     }

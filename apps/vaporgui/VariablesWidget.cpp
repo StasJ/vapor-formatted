@@ -93,8 +93,6 @@ void VariablesWidget::Reinit(VariableFlags variableFlags, DimFlags dimFlags) {
     // If the renderer is only 3D, hide the 2D orientation selector
     orientationFrame->hide();
 
-    variableSelectionWidget->adjustSize();
-
     VariableFlags fdf = (VariableFlags)0;
     if (_variableFlags & SCALAR)
         fdf = (VariableFlags)(fdf | SCALAR);
@@ -106,6 +104,9 @@ void VariablesWidget::Reinit(VariableFlags variableFlags, DimFlags dimFlags) {
         fdf = (VariableFlags)(fdf | HEIGHT);
 
     _fidelityWidget->Reinit(fdf);
+
+    variableSelectionWidget->adjustSize();
+    adjustSize();
 }
 
 void VariablesWidget::collapseColorVarSettings() { colorVariableFrame->hide(); }
