@@ -125,7 +125,7 @@ class RENDER_API RayCaster : public Renderer {
         // This function is supposed to be called at the end of either
         // UpdateFaceAndData() or UpdateCurviCoords() .
         //
-        void FindBaseStepSize(int mode);
+        void FindBaseStepSize(CastingMode mode);
 
     }; // end of struct UserCoordinates
 
@@ -177,14 +177,14 @@ class RENDER_API RayCaster : public Renderer {
     // Render the volume surface using triangle strips
     //   This is a subroutine used by _drawVolumeFaces().
     //
-    void _renderTriangleStrips(int whichPass, int castingMode) const;
+    void _renderTriangleStrips(int whichPass, long castingMode) const;
 
-    void _drawVolumeFaces(int whichPass, int castingMode, bool insideACell = false,
+    void _drawVolumeFaces(int whichPass, long whichCastingMode, bool insideACell = false,
                           const glm::mat4 &inversedMV = glm::mat4(0.0f), bool fast = false);
 
-    void _load3rdPassUniforms(int castingMode, const glm::mat4 &inversedMV, bool fast) const;
+    void _load3rdPassUniforms(long castingMode, const glm::mat4 &inversedMV, bool fast) const;
 
-    virtual void _3rdPassSpecialHandling(bool fast, int castingMode);
+    virtual void _3rdPassSpecialHandling(bool fast, long castingMode);
 
     //
     // Initialization for 1) framebuffers and 2) textures
