@@ -260,7 +260,6 @@ void TabManager::_setActive(string activeViz, string renderClass, string renderI
 }
 
 void TabManager::_newRenderer(string activeViz, string renderClass, string renderInst) {
-
     if (renderClass.empty() || renderInst.empty()) {
         HideRenderWidgets();
         return;
