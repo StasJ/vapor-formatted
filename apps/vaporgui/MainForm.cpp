@@ -52,8 +52,10 @@
 #include <vapor/ControlExecutive.h>
 #include <vapor/DataMgr.h>
 #include <vapor/DataMgrUtils.h>
+#include <vapor/FileUtils.h>
 #include <vapor/ResourcePath.h>
 #include <vapor/Version.h>
+#include <vapor/utils.h>
 
 #include "TabManager.h"
 #include "VizSelectCombo.h"
@@ -342,8 +344,8 @@ MainForm::MainForm(vector<QString> files, QApplication *app, QWidget *parent)
     //
     // 1. No files
     // 2. Session file
-    // 3. Session file + data file(s)
-    // 4. Data file(s)
+    // 3. Session file + VDC file
+    // 4. V
     //
     if (files.size() && files[0].endsWith(".vs3")) {
         sessionOpen(files[0]);
@@ -352,14 +354,9 @@ MainForm::MainForm(vector<QString> files, QApplication *app, QWidget *parent)
         sessionNew();
     }
 
-    if (files.size()) {
-
-        // Assume VAPOR VDC file. Need to deal with import cases!
-        //
-        if (files[0].endsWith(".nc")) {
-            loadData(files[0].toStdString());
-            _stateChangeCB();
-        }
+    if (files.size() && files[0].endsWith(".nc")) {
+        loadData(files[0].toStdString());
+        _stateChangeCB();
     }
     app->installEventFilter(this);
 
@@ -877,7 +874,14 @@ void MainForm::sessionOpenHelper(string fileName) {
     dataSetNames = newP->GetOpenDataSetNames();
 
     for (int i = 0; i < dataSetNames.size(); i++) {
-        newP->RemoveOpenDateSet(dataSetNames[i]);
+        string name = dataSetNames[i];
+        vector<string> paths = newP->GetOpenDataSetPaths(name);
+        if (std::all_of(paths.begin(), paths.end(),
+                        [](string path) { return FileUtils::Exists(path); })) {
+            loadDataHelper(paths, "", "", newP->GetOpenDataSetFormat(name), true, false);
+        } else {
+            newP->RemoveOpenDateSet(name);
+        }
     }
 
     _vizWinMgr->Restart();
@@ -928,19 +932,41 @@ void MainForm::sessionOpen(QString qfileName) {
     }
 
     string fileName = qfileName.toStdString();
+    _sessionNewFlag = false;
     sessionOpenHelper(fileName);
 
     GUIStateParams *p = GetStateParams();
     p->SetCurrentSessionFile(fileName);
 
     _stateChangeFlag = false;
-    _sessionNewFlag = false;
+
+    GUIStateParams *state = GetStateParams();
+    vector<string> openDataSetNames = state->GetOpenDataSetNames();
+    string vizWin = state->GetActiveVizName();
+    string activeRendererType;
+    string activeRendererName;
+    string activeDataSetName;
+    state->GetActiveRenderer(vizWin, activeRendererType, activeRendererName);
+    _controlExec->RenderLookup(activeRendererName, vizWin, activeDataSetName, activeRendererType);
+
+    if (Wasp::contains(openDataSetNames, activeDataSetName))
+        _tabMgr->SetActiveRenderer(vizWin, activeRendererType, activeRendererName);
+    else
+        _tabMgr->HideRenderWidgets();
+
+    _stateChangeCB();
 }
 
 void MainForm::_fileSaveHelper(string path) {
     if (path.empty()) {
         SettingsParams *sP = GetSettingsParams();
-        string dir = sP->GetSessionDir();
+        GUIStateParams *guiStateParams = GetStateParams();
+
+        string dir;
+        if (not guiStateParams->GetCurrentSessionFile().empty())
+            dir = FileUtils::Dirname(guiStateParams->GetCurrentSessionFile());
+        else
+            dir = sP->GetSessionDir();
 
         QFileDialog fileDialog(this, "Save VAPOR session file", QString::fromStdString(dir),
                                QString::fromAscii("Vapor 3 Session Save file (*.vs3)"));
@@ -1105,7 +1131,7 @@ bool MainForm::openDataHelper(string dataSetName, string format, const vector<st
 }
 
 void MainForm::loadDataHelper(const vector<string> &files, string prompt, string filter,
-                              string format, bool multi) {
+                              string format, bool multi, bool promptToReplaceExistingDataset) {
     vector<string> myFiles = files;
 
     GUIStateParams *p = GetStateParams();
@@ -1134,11 +1160,17 @@ void MainForm::loadDataHelper(const vector<string> &files, string prompt, string
 
     // Generate data set name
     //
-    string dataSetName = _getDataSetName(myFiles[0]);
+    string dataSetName = _getDataSetName(myFiles[0], promptToReplaceExistingDataset);
     if (dataSetName.empty())
         return;
 
     vector<string> options = {"-project_to_pcs", "-vertical_xform"};
+
+    if (!p->GetProjectionString().empty()) {
+        options.push_back("-proj4");
+        options.push_back(p->GetProjectionString());
+    }
+
     bool status = openDataHelper(dataSetName, format, myFiles, options);
     if (!status)
         return;
@@ -2124,14 +2156,14 @@ void MainForm::endAnimCapture() {
     _captureSingleJpegCaptureAction->setEnabled(true);
 }
 
-string MainForm::_getDataSetName(string file) {
+string MainForm::_getDataSetName(string file, bool promptToReplaceExistingDataset) {
 
     vector<string> names = _controlExec->GetDataNames();
-    if (names.empty()) {
+    if (names.empty() || !promptToReplaceExistingDataset) {
         return (makename(file));
     }
 
-    string newSession = "New session";
+    string newSession = "New Dataset";
 
     QStringList items;
     items << tr(newSession.c_str());
@@ -2140,8 +2172,8 @@ string MainForm::_getDataSetName(string file) {
     }
 
     bool ok;
-    QString item = QInputDialog::getItem(this, tr("QInputDialog::getItem()"),
-                                         tr("Load data into session:"), items, 0, false, &ok);
+    QString item = QInputDialog::getItem(
+        this, tr("Load Data"), tr("Load as new dataset or replace existing"), items, 0, false, &ok);
     if (!ok || item.isEmpty())
         return ("");
 
