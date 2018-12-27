@@ -336,7 +336,7 @@ class PARAMS_API RenderParams : public ParamsBase {
     //! \param[in] Indicates whether we're using color mapped variables
     void SetDefaultVariables(int dim, bool secondaryColormapVariable);
 
-    void _initBox();
+    void InitBox();
 
   protected:
     DataMgr *_dataMgr;
