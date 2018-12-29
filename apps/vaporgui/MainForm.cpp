@@ -53,6 +53,7 @@
 #include <vapor/DataMgr.h>
 #include <vapor/DataMgrUtils.h>
 #include <vapor/FileUtils.h>
+#include <vapor/Proj4API.h>
 #include <vapor/ResourcePath.h>
 #include <vapor/Version.h>
 #include <vapor/utils.h>
@@ -1686,6 +1687,13 @@ void MainForm::_setProj4String(string proj4String) {
 
     if (proj4String == currentString)
         return;
+
+    Proj4API proj;
+    int err = proj.Initialize("", proj4String);
+    if (err < 0) {
+        MSG_ERR("Invalid proj4 string");
+        return;
+    }
 
     _App->removeEventFilter(this);
 
