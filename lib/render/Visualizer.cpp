@@ -82,7 +82,6 @@ Visualizer::Visualizer(const ParamsMgr *pm, const DataStatus *dataStatus, string
 */
 
 Visualizer::~Visualizer() {
-
     for (int i = 0; i < _renderers.size(); i++) {
         delete _renderers[i];
     }
