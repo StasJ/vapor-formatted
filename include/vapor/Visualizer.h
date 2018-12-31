@@ -76,7 +76,7 @@ class RENDER_API Visualizer : public MyBase {
 
     //! Identify the visualizer index associated with this visualizer
     //! \retval visualizer index;
-    string GetWindowName() const { return m_winName; }
+    string GetWindowName() const { return _winName; }
 
     //! Determine the number of renderers in the renderer list
     //! \return number of renderers
@@ -135,10 +135,10 @@ class RENDER_API Visualizer : public MyBase {
     //! Draw a text banner at x, y coordinates
     //
     void DrawText(string text, int x, int y, int size, float color[3], int type = 0) {
-        m_vizFeatures->AddText(text, x, y, size, color, type);
+        _vizFeatures->AddText(text, x, y, size, color, type);
     }
 
-    void ClearText() { m_vizFeatures->ClearText(); }
+    void ClearText() { _vizFeatures->ClearText(); }
 
   private:
     //! Render all the colorbars enabled in this visualizer.
@@ -194,11 +194,11 @@ class RENDER_API Visualizer : public MyBase {
 
     static void incrementPath(string &s);
 
-    const ParamsMgr *m_paramsMgr;
-    const DataStatus *m_dataStatus;
-    string m_winName;
+    const ParamsMgr *_paramsMgr;
+    const DataStatus *_dataStatus;
+    string _winName;
     GLManager *_glManager;
-    AnnotationRenderer *m_vizFeatures;
+    AnnotationRenderer *_vizFeatures;
 
     bool _insideGLContext; // This is only to make sure we don't call certain functions when they
                            // are not supposed to be called. In some situations this variable will
