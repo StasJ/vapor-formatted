@@ -21,7 +21,6 @@
 
 #include "Manip.h"
 #include "vapor/Transform.h"
-#include "vapor/Visualizer.h"
 #include <GL/glew.h>
 #include <QGLWidget>
 #include <QWheelEvent>
@@ -37,6 +36,7 @@ class Trackball;
 
 namespace VAPoR {
 class ControlExec;
+class Visualizer;
 struct GLManager;
 }; // namespace VAPoR
 

@@ -33,6 +33,7 @@
 #include <sstream>
 #include <typeinfo>
 #include <vapor/ControlExecutive.h>
+#include <vapor/DataStatus.h>
 #include <vapor/ParamsMgr.h>
 #include <vapor/glutil.h> // Must be included first!!!
 

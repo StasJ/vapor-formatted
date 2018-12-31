@@ -29,10 +29,10 @@
 #include <qgl.h>
 
 #include "GUIStateParams.h"
-#include "vapor/Visualizer.h"
 #include <QContextMenuEvent>
 #include <QMouseEvent>
 #include <QPaintEvent>
+#include <vapor/ParamsMgr.h>
 
 #include <list>
 #include <map>

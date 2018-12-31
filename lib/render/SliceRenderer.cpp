@@ -4,6 +4,7 @@
 #include <ctime>
 
 #include <vapor/ControlExecutive.h>
+#include <vapor/DataMgrUtils.h>
 #include <vapor/GLManager.h>
 #include <vapor/LegacyGL.h>
 #include <vapor/ResourcePath.h>
