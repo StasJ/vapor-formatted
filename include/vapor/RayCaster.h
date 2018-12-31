@@ -22,6 +22,8 @@
 #include "vapor/Visualizer.h"
 #include "vapor/utils.h"
 
+#define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
+#define GLM_FORCE_SIMD_AVX2
 #include <glm/glm.hpp>
 
 namespace VAPoR {
