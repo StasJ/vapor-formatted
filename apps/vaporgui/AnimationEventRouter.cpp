@@ -31,6 +31,7 @@
 #include "AnimationEventRouter.h"
 #include "AnimationParams.h"
 #include "RangeCombos.h"
+#include <vapor/DataStatus.h>
 
 #include "images/pauseA.xpm"
 #include "images/playforwardA.xpm"

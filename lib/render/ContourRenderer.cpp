@@ -35,7 +35,6 @@
 #include <vapor/DataStatus.h>
 #include <vapor/Renderer.h>
 #include <vapor/ViewpointParams.h>
-#include <vapor/Visualizer.h>
 #include <vapor/errorcodes.h>
 #include <vapor/regionparams.h>
 

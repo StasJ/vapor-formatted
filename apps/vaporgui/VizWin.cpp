@@ -31,6 +31,7 @@
 #include "vapor/FileUtils.h"
 #include "vapor/GLManager.h"
 #include "vapor/LegacyGL.h"
+#include "vapor/Visualizer.h"
 #include <QCloseEvent>
 #include <QFocusEvent>
 #include <QIcon>

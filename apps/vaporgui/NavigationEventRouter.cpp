@@ -44,6 +44,8 @@
 #include <qcombobox.h>
 #include <qfiledialog.h>
 #include <qmessagebox.h>
+#include <vapor/DataMgrUtils.h>
+#include <vapor/DataStatus.h>
 #define INCLUDE_DEPRECATED_LEGACY_VECTOR_MATH
 #include <vapor/LegacyVectorMath.h>
 
