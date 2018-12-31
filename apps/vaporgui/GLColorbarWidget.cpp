@@ -96,7 +96,7 @@ void GLColorbarWidget::drag(float dx, float, float) {
 // Render the colorbar
 //----------------------------------------------------------------------------
 int GLColorbarWidget::paintGL() {
-    int rc = printOpenGLErrorMsg("GLColorbarWidget");
+    int rc = CheckGLErrorMsg("GLColorbarWidget");
     if (rc < 0)
         return -1;
     float offset = (_maxY - _minY) * 0.2;
@@ -141,7 +141,7 @@ int GLColorbarWidget::paintGL() {
         glDisable(GL_BLEND);
     }
 
-    rc = printOpenGLErrorMsg("GLColorbarWidget");
+    rc = CheckGLErrorMsg("GLColorbarWidget");
     if (rc < 0)
         return -1;
     return 0;
@@ -151,7 +151,7 @@ int GLColorbarWidget::paintGL() {
 // Set up the OpenGL rendering state
 //----------------------------------------------------------------------------
 void GLColorbarWidget::initializeGL() {
-    printOpenGLErrorMsg("GLColorbarWidgetInitialize");
+    CheckGLErrorMsg("GLColorbarWidgetInitialize");
 
     glShadeModel(GL_SMOOTH);
     glPolygonMode(GL_FRONT, GL_FILL);
@@ -165,7 +165,7 @@ void GLColorbarWidget::initializeGL() {
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 
     updateTexture();
-    printOpenGLErrorMsg("GLColorbarWidget");
+    CheckGLErrorMsg("GLColorbarWidget");
 }
 
 //----------------------------------------------------------------------------
