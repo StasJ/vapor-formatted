@@ -87,7 +87,7 @@ int ControlExec::InitializeViz(string winName, GLManager *glManager) {
         return -1;
     }
 
-    if (v->initializeGL(glManager) < 0) {
+    if (v->InitializeGL(glManager) < 0) {
         SetErrMsg("InitializeGL failure");
         return -1;
     }
@@ -186,8 +186,8 @@ int ControlExec::ActivateRender(string winName, string dataSetName, string rende
     assert(rp);
 
     rp->SetEnabled(on);
-    v->moveRendererToFront(ren);
-    v->moveVolumeRenderersToFront();
+    v->MoveRendererToFront(ren);
+    v->MoveVolumeRenderersToFront();
 
     _paramsMgr->EndSaveStateGroup();
 
@@ -480,7 +480,7 @@ int ControlExec::EnableImageCapture(string filename, string winName) {
         SetErrMsg("Invalid Visualizer \"%s\"", winName.c_str());
         return -1;
     }
-    if (v->setImageCaptureEnabled(true, filename)) {
+    if (v->SetImageCaptureEnabled(true, filename)) {
         SetErrMsg("Visualizer (%s) failed to enable capturing  image.", winName.c_str());
         return -1;
     }
@@ -506,7 +506,7 @@ int ControlExec::EnableAnimationCapture(string winName, bool onOff, string filen
         return -1;
     }
 
-    if (v->setAnimationCaptureEnabled(onOff, filename))
+    if (v->SetAnimationCaptureEnabled(onOff, filename))
         return -1;
     return 0;
 }
