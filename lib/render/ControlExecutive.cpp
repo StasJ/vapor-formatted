@@ -269,9 +269,6 @@ void ControlExec::_removeRendererHelper(string winName, string dataSetName, stri
     if (!ren)
         return;
 
-    // v->RemoveRenderer(ren);
-    // delete ren;
-
     ren->FlagForDeletion();
 
     if (removeFromParamsFlag) {
