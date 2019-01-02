@@ -22,6 +22,7 @@
 #include "FileOperationChecker.h"
 #include "RenderEventRouter.h"
 #include "TwoDSubtabs.h"
+#include "vapor/DVRParams.h"
 #include "vapor/RenderParams.h"
 #include "vapor/ResourcePath.h"
 #include "vapor/TwoDDataParams.h"
@@ -33,6 +34,8 @@
 #include <qradiobutton.h>
 #include <qwidget.h>
 #include <sstream>
+
+#define REQUIRED_SAMPLE_SIZE 1000000
 
 using namespace VAPoR;
 using namespace TFWidget_;
@@ -52,6 +55,7 @@ TFWidget::TFWidget(QWidget *parent) : QWidget(parent), Ui_TFWidgetGUI() {
     _mainHistoRangeChanged = false;
     _secondaryHistoRangeChanged = false;
     _discreteColormap = false;
+    _isOpacityIntegrated = false;
     _mainVarName = "";
     _secondaryVarName = "";
 
@@ -74,6 +78,7 @@ TFWidget::TFWidget(QWidget *parent) : QWidget(parent), Ui_TFWidgetGUI() {
     _cLevel = 0;
     _refLevel = 0;
     _timeStep = 0;
+    _stride = 1;
     for (int i = 0; i < 3; i++) {
         _minExt.push_back(0.f);
         _maxExt.push_back(0.f);
@@ -177,6 +182,7 @@ void TFWidget::loadTF() {
 
     MapperFunction *tf = _rParams->GetMapperFunc(varname);
     assert(tf);
+
     float cachedMin = tf->getMinMapValue();
     float cachedMax = tf->getMaxMapValue();
     int numOpacityMaps = tf->getNumOpacityMaps();
@@ -258,9 +264,9 @@ void TFWidget::saveTF() {
 }
 
 void TFWidget::getVariableRange(float range[2], float values[2], bool secondaryVariable = false) {
-
     range[0] = range[1] = 0.0;
     values[0] = values[1] = 0.0;
+
     string varName;
     if (secondaryVariable)
         varName = _rParams->GetColorMapVariableName();
@@ -279,7 +285,8 @@ void TFWidget::getVariableRange(float range[2], float values[2], bool secondaryV
         return;
 
     vector<double> rangev;
-    int rc = _dataMgr->GetDataRange(ts, varName, ref, cmp, 1, rangev);
+    int rc = _dataMgr->GetDataRange(ts, varName, ref, cmp, _stride, rangev);
+
     if (rc < 0) {
         MSG_ERR("Error loading variable");
         return;
@@ -293,6 +300,23 @@ void TFWidget::getVariableRange(float range[2], float values[2], bool secondaryV
     MapperFunction *tf = _rParams->GetMapperFunc(varName);
     values[0] = tf->getMinMapValue();
     values[1] = tf->getMaxMapValue();
+}
+
+void TFWidget::calculateStride(string varName) {
+    std::vector<size_t> dimsAtLevel;
+    int ref = _rParams->GetRefinementLevel();
+    int rc = _dataMgr->GetDimLensAtLevel(varName, ref, dimsAtLevel);
+    assert(rc >= 0);
+
+    long size = 1;
+    for (int i = 0; i < dimsAtLevel.size(); i++)
+        size *= dimsAtLevel[i];
+
+    _stride = 1;
+    if (size > REQUIRED_SAMPLE_SIZE)
+        _stride = 1 + size / REQUIRED_SAMPLE_SIZE;
+
+    _mappingFrame->SetStride(_stride);
 }
 
 float TFWidget::getOpacity() {
@@ -381,7 +405,7 @@ void TFWidget::updateMainSliders() {
     getVariableRange(range, values);
 
     _rangeCombo->Update(range[0], range[1], values[0], values[1]);
-    _opacitySlider->setValue(getOpacity() * 100);
+    _opacitySlider->setValue(convertOpacityToSliderValue(getOpacity()));
 
     _minLabel->setText(QString::number(range[0]));
     _maxLabel->setText(QString::number(range[1]));
@@ -400,14 +424,16 @@ void TFWidget::updateSecondarySliders() {
 }
 
 void TFWidget::updateMainMappingFrame() {
-    bool buttonPress = sender() == _updateMainHistoButton ? true : false;
-    if (!buttonPress)
-        buttonPress = getAutoUpdateMainHisto();
+    bool buttonPress = false;
+    if (sender() == _updateMainHistoButton || getAutoUpdateMainHisto()) {
+        buttonPress = true;
+    }
 
     bool histogramRecalculated = _mappingFrame->Update(_dataMgr, _paramsMgr, _rParams, buttonPress);
 
     if (histogramRecalculated) {
         _updateMainHistoButton->setEnabled(false);
+        _mappingFrame->SetHistoNeedsUpdate(false);
         _externalChangeHappened = false;
         _initialized = true;
     } else {
@@ -417,6 +443,7 @@ void TFWidget::updateMainMappingFrame() {
         checkForTimestepChanges();
         if (_externalChangeHappened || _mainHistoRangeChanged) {
             _updateMainHistoButton->setEnabled(true);
+            _mappingFrame->SetHistoNeedsUpdate(true);
         }
     }
 }
@@ -442,14 +469,17 @@ void TFWidget::updateSecondaryMappingFrame() {
 
     if (histogramRecalculated) {
         _updateSecondaryHistoButton->setEnabled(false);
+        _secondaryMappingFrame->SetHistoNeedsUpdate(false);
         _externalChangeHappened = false;
     } else {
         checkForCompressionChanges();
         checkForBoxChanges();
         checkForSecondaryMapperRangeChanges();
         checkForTimestepChanges();
-        if (_externalChangeHappened || _secondaryHistoRangeChanged)
+        if (_externalChangeHappened || _secondaryHistoRangeChanged) {
             _updateSecondaryHistoButton->setEnabled(true);
+            _secondaryMappingFrame->SetHistoNeedsUpdate(true);
+        }
     }
 }
 
@@ -473,6 +503,7 @@ void TFWidget::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, RenderParams *rPar
         setEnabled(true);
     }
 
+    calculateStride(varname);
     updateQtWidgets();
     updateMainMappingFrame(); // set mapper func to that of current variable, refresh _rParams etc
     updateSecondaryMappingFrame();
@@ -515,6 +546,7 @@ void TFWidget::refreshSecondaryDuplicateHistogram() {
         if (mainMF == secondaryMF) {
             _secondaryMappingFrame->RefreshHistogram();
             _updateSecondaryHistoButton->setEnabled(false);
+            _secondaryMappingFrame->SetHistoNeedsUpdate(false);
         }
     }
 }
@@ -525,6 +557,7 @@ void TFWidget::refreshMainDuplicateHistogram() {
     if (mainMF == secondaryMF) {
         _mappingFrame->RefreshHistogram();
         _updateMainHistoButton->setEnabled(false);
+        _mappingFrame->SetHistoNeedsUpdate(false);
     }
 }
 
@@ -567,12 +600,12 @@ void TFWidget::checkForMainMapperRangeChanges() {
     double newMin = mf->getMinMapValue();
     double newMax = mf->getMaxMapValue();
 
-    if (min != newMin)
+    if (min != newMin) {
         _mainHistoRangeChanged = true;
-    if (max != newMax)
+    }
+    if (max != newMax) {
         _mainHistoRangeChanged = true;
-    if (_mainHistoRangeChanged)
-        _mainHistoRangeChanged = true;
+    }
 }
 
 void TFWidget::checkForSecondaryMapperRangeChanges() {
@@ -615,8 +648,10 @@ void TFWidget::enableUpdateButtonsIfNeeded() {
             _initialized = true;
         } else if (_initialized) {
             _updateMainHistoButton->setEnabled(true);
+            _mappingFrame->SetHistoNeedsUpdate(true);
         } else {
             _updateMainHistoButton->setEnabled(false);
+            _mappingFrame->SetHistoNeedsUpdate(false);
         }
     }
     _mainHistoRangeChanged = false;
@@ -632,8 +667,10 @@ void TFWidget::enableUpdateButtonsIfNeeded() {
                 _initialized = true;
             } else if (_initialized) {
                 _updateSecondaryHistoButton->setEnabled(true);
+                _secondaryMappingFrame->SetHistoNeedsUpdate(true);
             } else {
                 _updateSecondaryHistoButton->setEnabled(false);
+                _secondaryMappingFrame->SetHistoNeedsUpdate(false);
                 _initialized = true;
             }
         }
@@ -735,7 +772,7 @@ void TFWidget::opacitySliderChanged(int value) {
     string varName = getTFVariableName(mainTF);
     MapperFunction *tf = _rParams->GetMapperFunc(varName);
     assert(tf);
-    tf->setOpacityScale(value / 100.f);
+    tf->setOpacityScale(convertSliderValueToOpacity(value));
     emit emitChange();
 }
 
@@ -949,6 +986,24 @@ string TFWidget::getTFVariableName(bool mainTF = true) {
 
     return varname;
 }
+
+int TFWidget::convertOpacityToSliderValue(float opacity) const {
+    if (IsOpacityIntegrated())
+        return 100 * sqrtf(opacity);
+    else
+        return 100 * opacity;
+}
+
+float TFWidget::convertSliderValueToOpacity(int value) const {
+    if (IsOpacityIntegrated())
+        return powf(value / 100.f, 2);
+    else
+        return value / 100.f;
+}
+
+bool TFWidget::IsOpacityIntegrated() const { return _isOpacityIntegrated; }
+
+void TFWidget::SetOpacityIntegrated(bool value) { _isOpacityIntegrated = value; }
 
 LoadTFDialog::LoadTFDialog(QWidget *parent) : QDialog(parent) {
     setModal(true);
