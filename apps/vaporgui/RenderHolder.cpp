@@ -126,7 +126,10 @@ void NewRendererDialog::_buttonChecked() {
     _selectedRenderer = _rendererNames[index];
 }
 
-void NewRendererDialog::_buttonDoubleClicked() { this->accept(); }
+void NewRendererDialog::_buttonDoubleClicked() {
+    _buttonChecked();
+    this->accept();
+}
 
 void NewRendererDialog::_uncheckAllButtons() {
     int count = buttonHolderGridLayout->count() / 2;
@@ -570,6 +573,8 @@ void RenderHolder::Update() {
     int row = _getRow(activeRenderInst);
     if (row >= 0)
         _vaporTable->SetActiveRow(row);
+    else
+        p->SetActiveRenderer(activeViz, "", "");
 
     _updateDupCombo();
 
