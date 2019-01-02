@@ -152,6 +152,8 @@ void AnimationEventRouter::setCurrentTimestep(size_t ts) const {
     DataStatus *dataStatus = _controlExec->GetDataStatus();
     ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
 
+    paramsMgr->BeginSaveStateGroup("Set Timestep");
+
     // First set current *global* timestep in AnimationParams
     //
     AnimationParams *aParams = (AnimationParams *)GetActiveParams();
@@ -177,6 +179,8 @@ void AnimationEventRouter::setCurrentTimestep(size_t ts) const {
             }
         }
     }
+
+    paramsMgr->EndSaveStateGroup();
 }
 
 /////////////////////////////////////////////////////////////////////////////
