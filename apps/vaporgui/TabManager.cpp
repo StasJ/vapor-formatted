@@ -29,6 +29,7 @@
 #include <algorithm>
 #include <qtabwidget.h>
 #include <qwidget.h>
+#include <vapor/DataStatus.h>
 #include <vapor/glutil.h> // Must be included first
 
 using namespace VAPoR;

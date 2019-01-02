@@ -26,6 +26,8 @@
 #include "MappingFrame.h"
 #include <QFileDialog>
 #include <vapor/DataMgrUtils.h>
+#include <vapor/DataStatus.h>
+#include <vapor/Renderer.h>
 #include <vapor/ResourcePath.h>
 
 using namespace VAPoR;

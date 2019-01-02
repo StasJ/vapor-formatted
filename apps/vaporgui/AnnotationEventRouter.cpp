@@ -29,6 +29,8 @@
 #include <qmessagebox.h>
 #include <qrect.h>
 #include <vapor/AnnotationParams.h>
+#include <vapor/DataMgrUtils.h>
+#include <vapor/DataStatus.h>
 
 #include "qcolordialog.h"
 #include <qlabel.h>
