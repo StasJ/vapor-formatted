@@ -1048,6 +1048,7 @@ void MainForm::undoRedoHelper(bool undo) {
     // Restore state saving
     //
     _controlExec->SetSaveStateEnabled(enabled);
+    _stateChangeCB();
 }
 
 void MainForm::undo() {
