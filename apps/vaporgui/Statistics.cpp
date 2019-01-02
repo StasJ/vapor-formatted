@@ -33,6 +33,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <vapor/DataStatus.h>
 #include <vapor/MyBase.h>
 
 using namespace Wasp;

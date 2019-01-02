@@ -40,7 +40,6 @@
 #include <vapor/BarbRenderer.h>
 #include <vapor/DataMgrUtils.h>
 #include <vapor/DataStatus.h>
-#include <vapor/Visualizer.h>
 
 #include <vapor/DataMgr.h>
 #include <vapor/MyBase.h>
