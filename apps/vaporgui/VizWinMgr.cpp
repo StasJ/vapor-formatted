@@ -33,6 +33,7 @@
 #include <sstream>
 #include <typeinfo>
 #include <vapor/ControlExecutive.h>
+#include <vapor/DataStatus.h>
 #include <vapor/ParamsMgr.h>
 #include <vapor/glutil.h> // Must be included first!!!
 
@@ -285,6 +286,7 @@ void VizWinMgr::_vizAboutToDisappear(string vizName) {
     GUIStateParams *p = _getStateParams();
     string activeViz = p->GetActiveVizName();
 
+    itr->second->makeCurrent();
     _controlExec->RemoveVisualizer(vizName);
 
     // disconnect all signals from window

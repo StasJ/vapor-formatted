@@ -17,7 +17,6 @@
 #include <vapor/Grid.h>
 #include <vapor/RenderParams.h>
 #include <vapor/TwoDRenderer.h>
-#include <vapor/Visualizer.h>
 #include <vapor/utils.h>
 
 namespace VAPoR {

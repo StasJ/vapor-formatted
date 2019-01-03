@@ -31,6 +31,7 @@
 #include "AnimationEventRouter.h"
 #include "AnimationParams.h"
 #include "RangeCombos.h"
+#include <vapor/DataStatus.h>
 
 #include "images/pauseA.xpm"
 #include "images/playforwardA.xpm"
@@ -152,6 +153,8 @@ void AnimationEventRouter::setCurrentTimestep(size_t ts) const {
     DataStatus *dataStatus = _controlExec->GetDataStatus();
     ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
 
+    paramsMgr->BeginSaveStateGroup("Set Timestep");
+
     // First set current *global* timestep in AnimationParams
     //
     AnimationParams *aParams = (AnimationParams *)GetActiveParams();
@@ -177,6 +180,8 @@ void AnimationEventRouter::setCurrentTimestep(size_t ts) const {
             }
         }
     }
+
+    paramsMgr->EndSaveStateGroup();
 }
 
 /////////////////////////////////////////////////////////////////////////////
