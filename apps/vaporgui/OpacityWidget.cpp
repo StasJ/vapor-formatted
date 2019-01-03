@@ -31,7 +31,10 @@ OpacityWidget::OpacityWidget(MappingFrame *parent, OpacityMap *omap)
       _handleRadius(0.045), _handle(NULL) {
     _minY = -0.05;
     _maxY = 1.05;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     _handle = gluNewQuadric();
+#pragma GCC diagnostic pop
 }
 
 //----------------------------------------------------------------------------
@@ -222,6 +225,8 @@ list<float> OpacityWidget::selectedPoints() {
     return points;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 //----------------------------------------------------------------------------
 // Render the widget
 //----------------------------------------------------------------------------
@@ -359,6 +364,7 @@ int OpacityWidget::paintGL() {
         return -1;
     return 0;
 }
+#pragma GCC diagnostic pop
 
 //----------------------------------------------------------------------------
 // Draw the widget's bounding box lines
