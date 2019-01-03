@@ -14,6 +14,7 @@
 #include "FileOperationChecker.h"
 #include "vapor/ResourcePath.h"
 #include <vapor/DC.h>
+#include <vapor/DataStatus.h>
 
 #define READ true
 #define WRITE false
