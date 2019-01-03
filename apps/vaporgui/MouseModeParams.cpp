@@ -27,15 +27,7 @@
 #include <vector>
 
 #include "../../apps/vaporgui/images/cube.xpm"
-#include "../../apps/vaporgui/images/sphere.xpm"
 #include "../../apps/vaporgui/images/wheel.xpm"
-#ifdef VAPOR3_0_0_ALPHA
-#include "../../apps/vaporgui/images/arrowrake.xpm"
-#include "../../apps/vaporgui/images/cube.xpm"
-#include "../../apps/vaporgui/images/isoline.xpm"
-#include "../../apps/vaporgui/images/twoDData.xpm"
-#include "../../apps/vaporgui/images/twoDImage.xpm"
-#endif
 #include "MouseModeParams.h"
 
 const std::string MouseModeParams::_currentMouseModeTag = "CurrentMouseModeTag";
