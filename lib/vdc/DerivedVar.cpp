@@ -11,12 +11,15 @@ using namespace Wasp;
 
 namespace {
 
+#ifdef UNUSED_FUNCTION
 size_t numBlocks(size_t min, size_t max, size_t bs) {
     size_t b0 = min / bs;
     size_t b1 = max / bs;
     return (b1 - b0 + 1);
 }
+#endif
 
+#ifdef UNUSED_FUNCTION
 size_t numBlocks(const vector<size_t> &min, const vector<size_t> &max, const vector<size_t> &bs) {
     assert(min.size() == max.size());
     assert(min.size() == bs.size());
@@ -27,6 +30,7 @@ size_t numBlocks(const vector<size_t> &min, const vector<size_t> &max, const vec
     }
     return (nblocks);
 }
+#endif
 
 #ifdef UNUSED_FUNCTION
 size_t numBlocks(const vector<size_t> &dims, const vector<size_t> &bs) {
@@ -51,6 +55,7 @@ size_t numElements(const vector<size_t> &min, const vector<size_t> &max) {
     return (nElements);
 }
 
+#ifdef UNUSED_FUNCTION
 size_t blockSize(const vector<size_t> &bs) {
     size_t sz = 1;
     for (int i = 0; i < bs.size(); i++) {
@@ -58,7 +63,9 @@ size_t blockSize(const vector<size_t> &bs) {
     }
     return (sz);
 }
+#endif
 
+#ifdef UNUSED_FUNCTION
 vector<size_t> increment(vector<size_t> dims, vector<size_t> coord) {
     assert(dims.size() == coord.size());
 
@@ -71,6 +78,7 @@ vector<size_t> increment(vector<size_t> dims, vector<size_t> coord) {
     }
     return (coord);
 }
+#endif
 
 // Product of elements in a vector
 //
@@ -82,6 +90,7 @@ size_t vproduct(vector<size_t> a) {
     return (ntotal);
 }
 
+#ifdef UNUSED_FUNCTION
 void extractBlock(const float *data, const vector<size_t> &dims, const vector<size_t> &bcoords,
                   const vector<size_t> &bs, float *block) {
     assert(dims.size() == bcoords.size());
@@ -118,7 +127,9 @@ void extractBlock(const float *data, const vector<size_t> &dims, const vector<si
         }
     }
 }
+#endif
 
+#ifdef UNUSED_FUNCTION
 void blockit(const float *data, const vector<size_t> &dims, const vector<size_t> &bs,
              float *blocks) {
     assert(dims.size() == bs.size());
@@ -148,6 +159,7 @@ void blockit(const float *data, const vector<size_t> &dims, const vector<size_t>
         }
     }
 }
+#endif
 
 // make 2D lat and lon arrays from 1D arrays by replication, in place
 //
