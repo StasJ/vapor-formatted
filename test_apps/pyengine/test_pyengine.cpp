@@ -8,6 +8,7 @@
 
 #include <vapor/CFuncs.h>
 #include <vapor/ControlExecutive.h>
+#include <vapor/DataStatus.h>
 #include <vapor/FileUtils.h>
 #include <vapor/MyPython.h>
 #include <vapor/OptionParser.h>
