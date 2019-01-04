@@ -137,7 +137,6 @@ int ContourRenderer::_buildCache() {
     vector<pair<int, glm::vec4>> colors;
 
     if (cParams->GetVariableName().empty()) {
-        glEndList();
         return 0;
     }
     MapperFunction *tf = cParams->GetMapperFunc(_cacheParams.varName);
@@ -163,7 +162,6 @@ int ContourRenderer::_buildCache() {
     }
 
     if (grid == NULL || (heightGrid == NULL && !_cacheParams.heightVarName.empty())) {
-        glEndList();
         return -1;
     }
 
