@@ -70,9 +70,6 @@ string string_replace(string s, string olds, string news) {
 void RenderParams::SetDefaultVariables(int dim = 3, bool secondaryColormapVariable = false) {
     vector<string> varnames;
     varnames = _dataMgr->GetDataVarNames(dim);
-    if (varnames.empty()) {
-        varnames = _dataMgr->GetDataVarNames(dim - 1);
-    }
 
     string varname = "";
     if (varnames.size()) {
