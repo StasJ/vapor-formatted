@@ -80,6 +80,8 @@ void RenderParams::SetDefaultVariables(int dim = 3, bool secondaryColormapVariab
     }
     SetVariableName(varname);
 
+    cout << "varname " << varname << endl;
+
     vector<string> fieldVarNames(3, "");
     fieldVarNames[0] = _findVarStartingWithLetter(varnames, 'u');
     fieldVarNames[1] = _findVarStartingWithLetter(varnames, 'v');
@@ -95,7 +97,7 @@ void RenderParams::SetDefaultVariables(int dim = 3, bool secondaryColormapVariab
 void RenderParams::_init() {
     SetEnabled(true);
 
-    SetDefaultVariables();
+    SetDefaultVariables(_maxDim);
 
     SetRefinementLevel(0);
     SetCompressionLevel(0);
