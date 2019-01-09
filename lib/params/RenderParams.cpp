@@ -95,7 +95,7 @@ void RenderParams::SetDefaultVariables(int dim = 3, bool secondaryColormapVariab
 void RenderParams::_init() {
     SetEnabled(true);
 
-    SetDefaultVariables();
+    SetDefaultVariables(_maxDim);
 
     SetRefinementLevel(0);
     SetCompressionLevel(0);

@@ -158,7 +158,8 @@ RenderHolder::RenderHolder(QWidget *parent, ControlExec *ce, const vector<QWidge
     _newRendererDialog =
         new NewRendererDialog(this, widgetNames, descriptions, iconPaths, smallIconPaths);
     _vaporTable = new VaporTable(tableWidget, false, true);
-    _vaporTable->Reinit((VaporTable::ValidatorFlags)(0), (VaporTable::MutabilityFlags)(0),
+    _vaporTable->Reinit((VaporTable::ValidatorFlags)(0),
+                        (VaporTable::MutabilityFlags)(VaporTable::IMMUTABLE),
                         (VaporTable::HighlightFlags)(VaporTable::ROWS));
     _vaporTable->ShowToolTips(true);
     _currentRow = 0;
