@@ -112,6 +112,8 @@ class RENDER_API ImageRenderer : public TwoDRenderer {
     // Transform verts from absolute to local coordinates
     //
     void _transformToLocal(size_t width, size_t height, const vector<double> &scaleFac) const;
+
+    void _clearCache() { _cacheHgtVar.clear(); }
 };
 }; // namespace VAPoR
 
