@@ -11,7 +11,9 @@ const std::string IsoSurfaceParams::_enabledIsoValuesTag = "EnabledIsoValuesTag"
 static RenParamsRegistrar<IsoSurfaceParams> registrar(IsoSurfaceParams::GetClassType());
 
 IsoSurfaceParams::IsoSurfaceParams(DataMgr *dataManager, ParamsBase::StateSave *stateSave)
-    : RayCasterParams(dataManager, stateSave, IsoSurfaceParams::GetClassType()) {}
+    : RayCasterParams(dataManager, stateSave, IsoSurfaceParams::GetClassType()) {
+    SetUseSingleColor(true);
+}
 
 IsoSurfaceParams::IsoSurfaceParams(DataMgr *dataManager, ParamsBase::StateSave *stateSave,
                                    XmlNode *xmlNode)
