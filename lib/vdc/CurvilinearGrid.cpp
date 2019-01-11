@@ -833,7 +833,8 @@ bool CurvilinearGrid::_insideGridHelperTerrain(double x, double y, double z, con
                             _xrg.AccessIJK(iv[2], jv[2], 0), _yrg.AccessIJK(iv[2], jv[2], 0)};
 
         inside = VAPoR::BarycentricCoordsTri(tverts1, pt, lambda);
-        assert(inside);
+        if (!inside)
+            return (false);
     }
 
     // Find k index of cell containing z. Already know i and j indices
