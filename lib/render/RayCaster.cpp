@@ -687,7 +687,6 @@ int RayCaster::_initializeFramebufferTextures() {
 }
 
 void RayCaster::_drawVolumeFaces(int whichPass, int castingMode,
-                                 // bool             insideACell,
                                  const std::vector<size_t> &cameraCellIdx,
                                  const glm::mat4 &InversedMV, bool fast) {
     assert(cameraCellIdx.size() == 0 || cameraCellIdx.size() == 3);
@@ -739,7 +738,8 @@ void RayCaster::_drawVolumeFaces(int whichPass, int castingMode,
         _3rdPassShader->SetUniform("Projection", projection);
         _3rdPassShader->SetUniform("inversedMV", InversedMV);
         if (castingMode == CellTraversal) {
-            glm::ivec3 entryCellIdx(-1);
+            // Upload entryCellIdx, no matter inside or outside of the volume
+            glm::ivec3 entryCellIdx(0);
             if (insideVolume) {
                 entryCellIdx.x = int(cameraCellIdx[0]);
                 entryCellIdx.y = int(cameraCellIdx[1]);
