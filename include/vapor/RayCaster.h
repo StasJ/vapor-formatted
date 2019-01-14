@@ -160,6 +160,7 @@ class RENDER_API RayCaster : public Renderer {
     void _load3rdPassUniforms(int castingMode, const glm::mat4 &inversedMV, bool fast) const;
 
     virtual void _3rdPassSpecialHandling(bool fast, int castingMode);
+    virtual void _colormapSpecialHandling(RayCasterParams *params);
 
     //
     // Initialization for 1) framebuffers and 2) textures
