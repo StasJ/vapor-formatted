@@ -476,6 +476,7 @@ void Renderer::renderColorbar() {
 
     lgl->Color4fv(whitecolor);
 
+    glActiveTexture(GL_TEXTURE0);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     // Disable z-buffer compare, always overwrite:
