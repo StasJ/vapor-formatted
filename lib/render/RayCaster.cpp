@@ -16,39 +16,28 @@
 
 using namespace VAPoR;
 
-GLenum glCheckError_(const char *file, int line) {
+/*
+GLenum glCheckError_(const char *file, int line)
+{
     GLenum errorCode;
-    while ((errorCode = glGetError()) != GL_NO_ERROR) {
+    while ((errorCode = glGetError()) != GL_NO_ERROR)
+    {
         std::string error;
-        switch (errorCode) {
-        case GL_INVALID_ENUM:
-            error = "INVALID_ENUM";
-            break;
-        case GL_INVALID_VALUE:
-            error = "INVALID_VALUE";
-            break;
-        case GL_INVALID_OPERATION:
-            error = "INVALID_OPERATION";
-            break;
-        case GL_STACK_OVERFLOW:
-            error = "STACK_OVERFLOW";
-            break;
-        case GL_STACK_UNDERFLOW:
-            error = "STACK_UNDERFLOW";
-            break;
-        case GL_OUT_OF_MEMORY:
-            error = "OUT_OF_MEMORY";
-            break;
-        case GL_INVALID_FRAMEBUFFER_OPERATION:
-            error = "INVALID_FRAMEBUFFER_OPERATION";
-            break;
+        switch (errorCode)
+        {
+            case GL_INVALID_ENUM:                  error = "INVALID_ENUM"; break;
+            case GL_INVALID_VALUE:                 error = "INVALID_VALUE"; break;
+            case GL_INVALID_OPERATION:             error = "INVALID_OPERATION"; break;
+            case GL_STACK_OVERFLOW:                error = "STACK_OVERFLOW"; break;
+            case GL_STACK_UNDERFLOW:               error = "STACK_UNDERFLOW"; break;
+            case GL_OUT_OF_MEMORY:                 error = "OUT_OF_MEMORY"; break;
+            case GL_INVALID_FRAMEBUFFER_OPERATION: error = "INVALID_FRAMEBUFFER_OPERATION"; break;
         }
         std::cout << error << " | " << file << " (" << line << ")" << std::endl;
     }
     return errorCode;
 }
 #define glCheckError() glCheckError_(__FILE__, __LINE__)
-/*
 void glCheckError() { }
 */
 
@@ -256,10 +245,6 @@ void RayCaster::UserCoordinates::CheckUpToDateStatus(const RayCasterParams *para
         dataFieldUpToDate = false;
         vertCoordsUpToDate = false;
         secondVarUpToDate = false;
-        std::cout << "Metadata changes, resulting in all the following : " << std::endl;
-        std::cout << "  dataFieldUpToDate = " << dataFieldUpToDate << std::endl;
-        std::cout << "  vertCoordsUpToDate = " << vertCoordsUpToDate << std::endl;
-        std::cout << "  secondVarUpToDate = " << secondVarUpToDate << std::endl;
         return;
     }
 
@@ -272,17 +257,12 @@ void RayCaster::UserCoordinates::CheckUpToDateStatus(const RayCasterParams *para
             dataFieldUpToDate = false;
             vertCoordsUpToDate = false;
             secondVarUpToDate = false;
-            std::cout << "Grid extents changes, resulting in all the following : " << std::endl;
-            std::cout << "  dataFieldUpToDate = " << dataFieldUpToDate << std::endl;
-            std::cout << "  vertCoordsUpToDate = " << vertCoordsUpToDate << std::endl;
-            std::cout << "  secondVarUpToDate = " << secondVarUpToDate << std::endl;
             return;
         }
 
     // Third, let's compare the primary variable name
     if (myVariableName != params->GetVariableName()) {
         dataFieldUpToDate = false;
-        std::cout << "dataFieldUpToDate = " << dataFieldUpToDate << std::endl;
     }
 
     // Fourth, let's check the vertex coordinates.
@@ -292,7 +272,6 @@ void RayCaster::UserCoordinates::CheckUpToDateStatus(const RayCasterParams *para
     // Fifth, let check if second variable data is up to date
     if (use2ndVar && (my2ndVarName != params->GetColorMapVariableName())) {
         secondVarUpToDate = false;
-        std::cout << "secondVarUpToDate = " << secondVarUpToDate << std::endl;
     }
 }
 
@@ -401,7 +380,6 @@ int RayCaster::UserCoordinates::UpdateFaceAndData(const RayCasterParams *params,
     }
 
     dataFieldUpToDate = true;
-    std::cout << "dataFieldUpToDate = " << dataFieldUpToDate << std::endl;
 
     return 0;
 }
@@ -485,7 +463,6 @@ int RayCaster::UserCoordinates::Update2ndVariable(const RayCasterParams *params,
 
     delete grid;
     secondVarUpToDate = true;
-    std::cout << "secondVarUpToDate = " << secondVarUpToDate << std::endl;
 
     return 0;
 }
@@ -553,7 +530,6 @@ int RayCaster::UserCoordinates::UpdateVertCoords(const RayCasterParams *params,
     }
 
     vertCoordsUpToDate = true;
-    std::cout << "vertCoordsUpToDate = " << vertCoordsUpToDate << std::endl;
 
     return 0;
 }
@@ -742,10 +718,8 @@ int RayCaster::_paintGL(bool fast) {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, _currentViewport[2], _currentViewport[3]);
 
-    glCheckError();
     // 3rd pass, perform ray casting
     _drawVolumeFaces(3, castingMode, cameraCellIdx, InversedMV, fast);
-    glCheckError();
 
     // Restore OpenGL values changed in this function.
     glBindVertexArray(0);
@@ -947,11 +921,8 @@ void RayCaster::_drawVolumeFaces(int whichPass, int castingMode,
             }
             _3rdPassShader->SetUniform("entryCellIdx", entryCellIdx);
         }
-        glCheckError();
         _load3rdPassUniforms(castingMode, fast, insideVolume);
-        glCheckError();
         _3rdPassSpecialHandling(fast, castingMode);
-        glCheckError();
 
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
@@ -996,9 +967,7 @@ void RayCaster::_drawVolumeFaces(int whichPass, int castingMode,
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glDisableVertexAttribArray(0);
         } else {
-            glCheckError();
             _renderTriangleStrips(3, castingMode);
-            glCheckError();
         }
     }
 
@@ -1147,7 +1116,6 @@ void RayCaster::_renderTriangleStrips(int whichPass, int castingMode) const {
         attrib1Buffer = new int[big1 * big2 * 4]; // Enough length for all faces
     }
 
-    glCheckError();
     //
     // Render front face:
     //
@@ -1191,7 +1159,6 @@ void RayCaster::_renderTriangleStrips(int whichPass, int castingMode) const {
                      GL_STREAM_DRAW);
         glDrawElements(GL_TRIANGLE_STRIP, numOfVertices, GL_UNSIGNED_INT, (void *)0);
     }
-    glCheckError();
 
     //
     // Render back face:
@@ -1224,7 +1191,6 @@ void RayCaster::_renderTriangleStrips(int whichPass, int castingMode) const {
                      GL_STREAM_DRAW);
         glDrawElements(GL_TRIANGLE_STRIP, numOfVertices, GL_UNSIGNED_INT, (void *)0);
     }
-    glCheckError();
 
     //
     // Render top face:
@@ -1256,7 +1222,6 @@ void RayCaster::_renderTriangleStrips(int whichPass, int castingMode) const {
                      GL_STREAM_DRAW);
         glDrawElements(GL_TRIANGLE_STRIP, numOfVertices, GL_UNSIGNED_INT, (void *)0);
     }
-    glCheckError();
 
     //
     // Render bottom face:
@@ -1288,7 +1253,6 @@ void RayCaster::_renderTriangleStrips(int whichPass, int castingMode) const {
                      GL_STREAM_DRAW);
         glDrawElements(GL_TRIANGLE_STRIP, numOfVertices, GL_UNSIGNED_INT, (void *)0);
     }
-    glCheckError();
 
     // Each strip will have the same numOfVertices for the rest 2 faces.
     numOfVertices = by * 2;
@@ -1325,7 +1289,6 @@ void RayCaster::_renderTriangleStrips(int whichPass, int castingMode) const {
                      GL_STREAM_DRAW);
         glDrawElements(GL_TRIANGLE_STRIP, numOfVertices, GL_UNSIGNED_INT, (void *)0);
     }
-    glCheckError();
 
     //
     // Render left face
@@ -1357,7 +1320,6 @@ void RayCaster::_renderTriangleStrips(int whichPass, int castingMode) const {
                      GL_STREAM_DRAW);
         glDrawElements(GL_TRIANGLE_STRIP, numOfVertices, GL_UNSIGNED_INT, (void *)0);
     }
-    glCheckError();
 
     if (attrib1Enabled)
         delete[] attrib1Buffer;
@@ -1365,7 +1327,6 @@ void RayCaster::_renderTriangleStrips(int whichPass, int castingMode) const {
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glCheckError();
 }
 
 void RayCaster::_enableVertexAttribute(const float *buf, size_t length, bool attrib1Enabled) const {
@@ -1419,11 +1380,11 @@ void RayCaster::_updateColormap(RayCasterParams *params) {
         _colorMapRange[2] = 1e-5f;
     } else {
         // Subclasses will have a chance here to use their own colormaps.
-        _colormapSpecialHandling(params);
+        _colormapSpecialHandling();
     }
 }
 
-void RayCaster::_colormapSpecialHandling(RayCasterParams *params) {
+void RayCaster::_colormapSpecialHandling() {
     // Left empty intentionally.
     // Subclasses, e.g., IsoSurfaceRenderer and DVRenderer, feel free to implement it.
 }
