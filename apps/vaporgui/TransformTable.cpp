@@ -100,8 +100,6 @@ void TransformTable::UpdateScales() {
         }
     }
 
-    // if (_verticalHeaders.size())
-
     _scaleTable->Update(numDatasets, 3, allScales, _verticalHeaders, _horizontalHeaders);
 }
 
