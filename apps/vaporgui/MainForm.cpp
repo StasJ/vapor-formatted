@@ -753,12 +753,6 @@ void MainForm::_createToolsMenu() {
 
 void MainForm::_createCaptureMenu() {
 
-    /*804     _importMenu = _File->addMenu("Import");
-    805     _importMenu->addAction(_dataImportWRF_Action);
-    806     _importMenu->addAction(_dataImportCF_Action);
-    807     _importMenu->addAction(_dataImportMPAS_Action);
-    808     _File->addSeparator();*/
-
     _captureSingleJpegAction = new QAction(this);
     _captureSingleJpegAction->setText(tr("JPEG"));
     _captureSingleJpegAction->setToolTip("Capture one JPEG from current active visualizer");
@@ -2000,8 +1994,6 @@ void MainForm::captureSingleImage(string filter, string defaultSuffix) {
 
     if (success < 0)
         MSG_ERR("Error capturing image");
-
-    // delete fileInfo;
 }
 
 void MainForm::installCLITools() {
@@ -2159,8 +2151,6 @@ void MainForm::startAnimCapture(string filter, string defaultSuffix) {
     QFileDialog fileDialog(this, "Specify image sequence file name", imageDir.c_str(),
                            QString::fromStdString(filter));
     fileDialog.setAcceptMode(QFileDialog::AcceptSave);
-    // fileDialog.move(pos());
-    // fileDialog.resize(450,450);
     if (fileDialog.exec() != QDialog::Accepted)
         return;
 
