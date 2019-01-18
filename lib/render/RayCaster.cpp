@@ -700,7 +700,6 @@ int RayCaster::_paintGL(bool fast) {
     glBindTexture(GL_TEXTURE_1D, _colorMapTextureId);
     glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA32F, _colorMap.size() / 4, 0, GL_RGBA, GL_FLOAT,
                  _colorMap.data());
-    glBindTexture(GL_TEXTURE_1D, 0);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, _currentViewport[2], _currentViewport[3]);
@@ -713,6 +712,9 @@ int RayCaster::_paintGL(bool fast) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glDepthFunc(GL_LESS);
     glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_1D, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_3D, 0);
 
     delete grid;
 
@@ -806,11 +808,6 @@ int RayCaster::_initializeFramebufferTextures() {
     glActiveTexture(GL_TEXTURE0 + _depthTexOffset);
     glBindTexture(GL_TEXTURE_2D, _depthTextureId);
     this->_configure2DTextureLinearInterpolation();
-
-    /* Bind the default textures */
-    glBindTexture(GL_TEXTURE_1D, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glBindTexture(GL_TEXTURE_3D, 0);
 
     return 0;
 }
@@ -1062,10 +1059,6 @@ void RayCaster::_load3rdPassUniforms(int castingMode, bool fast, bool insideVolu
         glBindTexture(GL_TEXTURE_3D, _vertCoordsTextureId);
         shader->SetUniform("vertCoordsTexture", _vertCoordsTexOffset);
     }
-
-    glBindTexture(GL_TEXTURE_1D, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glBindTexture(GL_TEXTURE_3D, 0);
 }
 
 void RayCaster::_3rdPassSpecialHandling(bool fast, int castingMode) const {
@@ -1340,8 +1333,6 @@ void RayCaster::_updateViewportWhenNecessary(const GLint *viewport) {
         glBindTexture(GL_TEXTURE_2D, _frontFaceTextureId);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, _currentViewport[2], _currentViewport[3], 0,
                      GL_RGBA, GL_FLOAT, nullptr);
-
-        glBindTexture(GL_TEXTURE_2D, 0);
     }
 }
 
@@ -1408,8 +1399,6 @@ void RayCaster::_updateDataTextures() {
                      dummyMask);
     }
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4); // Restore default alignment.
-
-    glBindTexture(GL_TEXTURE_3D, 0);
 }
 
 int RayCaster::_updateVertCoordsTexture(const glm::mat4 &MV) {
@@ -1443,8 +1432,6 @@ int RayCaster::_updateVertCoordsTexture(const glm::mat4 &MV) {
 #endif
     glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB32F, _userCoordinates.dims[0], _userCoordinates.dims[1],
                  _userCoordinates.dims[2], 0, GL_RGB, GL_FLOAT, coordEye);
-
-    glBindTexture(GL_TEXTURE_3D, 0);
 
     delete[] coordEye;
 
