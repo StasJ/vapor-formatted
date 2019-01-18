@@ -164,8 +164,16 @@ class MainForm : public QMainWindow {
     // Capture menu
     //
     QAction *_captureStartJpegCaptureAction;
+    QAction *_captureStartPngCaptureAction;
+    QAction *_captureStartTiffCaptureAction;
+
     QAction *_captureEndJpegCaptureAction;
+    QAction *_captureEndPngCaptureAction;
+    QAction *_captureEndTiffCaptureAction;
+
     QAction *_captureSingleJpegCaptureAction;
+    QAction *_captureSinglePngCaptureAction;
+    QAction *_captureSingleTiffCaptureAction;
 
     // Toolbars:
     //
@@ -321,7 +329,10 @@ class MainForm : public QMainWindow {
     void sessionNew();
     void startAnimCapture();
     void endAnimCapture();
+    void captureSingleImage(string filter);
     void captureSingleJpeg();
+    void captureSinglePng();
+    void captureSingleTiff();
     void installCLITools();
     void launchStats();
     void launchPlotUtility();
