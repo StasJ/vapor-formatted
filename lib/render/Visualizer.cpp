@@ -32,6 +32,7 @@
 #endif
 
 #include <vapor/DataStatus.h>
+#include <vapor/FileUtils.h>
 #include <vapor/RenderParams.h>
 #include <vapor/Renderer.h>
 #include <vapor/ViewpointParams.h>
