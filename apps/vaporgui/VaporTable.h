@@ -86,7 +86,6 @@ class VaporTable : public QWidget {
     bool GetShowToolTips() const;
 
     void SetVerticalHeaderWidth(int width);
-    int GetVerticalHeaderWidth() const;
 
   public slots:
     void emitValueChanged();
@@ -130,7 +129,6 @@ class VaporTable : public QWidget {
 
     int _activeRow;
     int _activeCol;
-    int _verticalHeaderWidth;
     bool _lastRowIsCheckboxes;
     bool _lastColIsCheckboxes;
     bool _checkboxesEnabled;
