@@ -48,6 +48,7 @@ class GeometryWidget : public QWidget, public Ui_GeometryWidgetGUI {
     void adjustLayoutToPlanarXY(bool reinit);
     void adjustLayoutToPlanarXZ(bool reinit);
     void adjustLayoutToPlanarYZ(bool reinit);
+    void reinitBoxToPlanarAxis(int planarAxis, QSliderEdit *slider);
     void showOrientationOptions();
     void hideOrientationOptions();
     void connectWidgets();
