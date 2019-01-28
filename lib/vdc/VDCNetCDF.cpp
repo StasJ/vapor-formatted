@@ -237,8 +237,9 @@ int VDCNetCDF::Initialize(const vector<string> &paths, const vector<string> &opt
 
 string VDCNetCDF::GetDataDir(string master) {
     string path = master;
-    if (path.rfind(".nc") != string::npos)
-        path.erase(path.rfind(".nc"));
+    string extension = FileUtils::Extension(path);
+    if (!extension.empty())
+        path.erase(path.rfind("." + extension));
     path += "_data";
     return (path);
 }
