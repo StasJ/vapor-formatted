@@ -711,14 +711,14 @@ float CurvilinearGrid::GetValueLinear(const std::vector<double> &coords) const {
     assert(i < dims[0] - 1);
     assert(j < dims[1] - 1);
     if (dims.size() > 2)
-        assert(k < dims[2] - 1);
+        assert(k < dims[2]);
 
     float v0s[] = {AccessIJK(i, j, k), AccessIJK(i + 1, j, k), AccessIJK(i + 1, j + 1, k),
                    AccessIJK(i, j + 1, k)};
 
     float v0 = interpolateQuad(v0s, lambda, mv);
 
-    if (GetGeometryDim() == 2)
+    if (GetGeometryDim() == 2 || dims[2] < 2)
         return (v0);
 
     if (v0 == mv)
