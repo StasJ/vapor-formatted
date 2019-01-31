@@ -49,7 +49,7 @@ void VolumeParams::SetAlgorithm(std::string algorithm) {
 }
 
 const std::vector<std::string> VolumeParams::GetAlgorithmNames() {
-    return {"Regular", "Resampled", "Test"};
+    return {"Regular", "Resampled", "Cell Traversal", "Test"};
 }
 
 // Set everything to default values
