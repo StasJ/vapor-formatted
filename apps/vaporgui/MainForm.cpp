@@ -35,6 +35,7 @@
 #include <vapor/glutil.h> // Must be included first!!!
 
 #include <QComboBox>
+#include <QDebug>
 #include <QDesktopServices>
 #include <QDesktopWidget>
 #include <QDockWidget>
@@ -329,7 +330,12 @@ MainForm::MainForm(vector<QString> files, QApplication *app, QWidget *parent)
     _tabMgr = new TabManager(this, _controlExec);
     _tabMgr->setUsesScrollButtons(true);
 
-    _tabMgr->setMinimumWidth(460);
+    int dpi = qApp->desktop()->logicalDpiX();
+    if (dpi > 96)
+        _tabMgr->setMinimumWidth(675);
+    else
+        _tabMgr->setMinimumWidth(460);
+
     _tabMgr->setMinimumHeight(500);
 
     _tabDockWindow->setWidget(_tabMgr);
@@ -348,6 +354,7 @@ MainForm::MainForm(vector<QString> files, QApplication *app, QWidget *parent)
     loadStartingPrefs();
 
     setUpdatesEnabled(true);
+
     show();
 
     // Handle four initialization cases:
@@ -1259,6 +1266,9 @@ void MainForm::loadData(string fileName) {
 
     loadDataHelper(files, "Choose the Master data File to load", "Vapor VDC files (*.nc *.vdc)",
                    "vdc", false);
+
+    _tabMgr->adjustSize();
+    _tabDockWindow->adjustSize();
 }
 
 void MainForm::closeData(string fileName) {
