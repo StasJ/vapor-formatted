@@ -1,5 +1,6 @@
 #include "vapor/RayCaster.h"
 #include "vapor/glutil.h"
+#include <cctype>
 #include <fstream>
 #include <iostream>
 #include <sstream>
