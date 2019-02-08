@@ -1,8 +1,10 @@
 #include "vapor/GLManager.h"
 #include "vapor/LegacyGL.h"
 #include "vapor/glutil.h"
+#include <chrono>
 
 using namespace VAPoR;
+using namespace std::chrono;
 
 GLManager::GLManager()
     : shaderManager(new ShaderManager), fontManager(new FontManager(this)),
@@ -127,5 +129,25 @@ void GLManager::ShowDepthBuffer() {
     shader->SetUniform("linearize", true);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
+}
+
+void *GLManager::BeginTimer() {
+    glFinish();
+    auto start = new chrono::time_point<chrono::high_resolution_clock>;
+    *start = chrono::high_resolution_clock::now();
+    return start;
+}
+
+double GLManager::EndTimer(void *startTime) {
+    assert(startTime);
+    auto start = (chrono::time_point<chrono::high_resolution_clock> *)startTime;
+
+    glFinish();
+    auto stop = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(stop - *start);
+
+    delete start;
+
+    return (double)duration.count() / 1000000.0;
 }
 #endif
