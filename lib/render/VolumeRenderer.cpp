@@ -23,9 +23,8 @@ VolumeRenderer::VolumeRenderer(const ParamsMgr *pm, std::string &winName, std::s
                VolumeRenderer::GetClassType(), instName, dataMgr) {
     VAO = NULL;
     VBO = NULL;
-    dataTexture = NULL;
     LUTTexture = NULL;
-    algorithm = VolumeAlgorithm::NewAlgorithm("Regular", _glManager);
+    algorithm = NULL;
 }
 
 VolumeRenderer::~VolumeRenderer() {
@@ -33,8 +32,6 @@ VolumeRenderer::~VolumeRenderer() {
         glDeleteVertexArrays(1, &VAO);
     if (VBO)
         glDeleteBuffers(1, &VBO);
-    if (dataTexture)
-        glDeleteTextures(1, &dataTexture);
     if (LUTTexture)
         glDeleteTextures(1, &LUTTexture);
     if (cache.tf)
@@ -49,6 +46,8 @@ int VolumeRenderer::_initializeGL() {
 
                     BL, 1,  0, 1, 1, BL, 1, 0, 1,  1, 1, 1};
 
+    algorithm = VolumeAlgorithm::NewAlgorithm("Regular", _glManager);
+
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glBindVertexArray(VAO);
@@ -58,14 +57,6 @@ int VolumeRenderer::_initializeGL() {
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)(2 * sizeof(float)));
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
-
-    glGenTextures(1, &dataTexture);
-    glBindTexture(GL_TEXTURE_3D, dataTexture);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
     glGenTextures(1, &LUTTexture);
     glBindTexture(GL_TEXTURE_1D, LUTTexture);
@@ -116,13 +107,10 @@ int VolumeRenderer::_paintGL(bool fast) {
     vec3 extLengths = maxExts - minExts;
     float smallestDimension = min(extLengths[0], min(extLengths[1], extLengths[2]));
 
-    SmartShaderProgram shader(algorithm->GetShader(_glManager->shaderManager));
+    SmartShaderProgram shader(algorithm->GetShader());
     if (!shader.IsValid())
         return -1;
     shader->SetUniform("MVP", _glManager->matrixManager->GetModelViewProjectionMatrix());
-    // shader->SetUniform("ModelView", _glManager->matrixManager->GetModelViewMatrix());
-    // shader->SetUniform("Projection", _glManager->matrixManager->GetProjectionMatrix());
-    // shader->SetUniform("resolution", vec2(resolution[0], resolution[1]));
     shader->SetUniform("cameraPos", vec3(cameraPos[0], cameraPos[1], cameraPos[2]));
     shader->SetUniform("dataBoundsMin", minExts);
     shader->SetUniform("dataBoundsMax", maxExts);
@@ -130,13 +118,10 @@ int VolumeRenderer::_paintGL(bool fast) {
     shader->SetUniform("LUTMax", (float)cache.mapRange[1]);
     shader->SetUniform("unitDistance", smallestDimension / 100.f);
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_3D, dataTexture);
+    algorithm->SetUniforms();
+
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_1D, LUTTexture);
-    GL_ERR_BREAK();
-
-    shader->SetUniform("data", 0);
     shader->SetUniform("LUT", 1);
 
     glEnable(GL_BLEND);
@@ -166,7 +151,6 @@ int VolumeRenderer::_loadData() {
 
     Grid *grid = _dataMgr->GetVariable(cache.ts, cache.var, cache.refinement, cache.compression);
 
-    glBindTexture(GL_TEXTURE_3D, dataTexture);
     int ret = algorithm->LoadData(grid);
     delete grid;
     return ret;
