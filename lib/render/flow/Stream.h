@@ -6,14 +6,17 @@
 #define STREAM_H
 
 #include "Particle.h"
+#include <map>
 #include <string>
 
 namespace VAPoR {
 namespace flow {
 class Stream {
   public:
-    std::vector<flow::Particle> _particles;
-    std::vector<std::string> _propertyNames;
+    std::vector<flow::Particle> particles;
+
+    // A Stream could optionally have multiple properties
+    std::map<std::string, std::vector<float>> properties;
 
     // Constructors and destructor
     Stream();
