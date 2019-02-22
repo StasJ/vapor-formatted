@@ -12,8 +12,8 @@ namespace flow {
 class Particle {
   public:
     glm::vec3 location;
-    glm::vec4 color;
     float time;
+    std::vector<float> properties;
 
     // Constructor and destructor
     Particle();
