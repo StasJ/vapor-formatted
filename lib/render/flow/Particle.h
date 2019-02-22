@@ -14,8 +14,6 @@ class Particle {
     glm::vec3 location;
     float value;
     float time;
-    std::forward_list<float>
-        properties; // Forward_list takes only 8 bytes, whereas a vector takes 24 bytes!
 
     // Constructor and destructor
     Particle();
@@ -23,6 +21,16 @@ class Particle {
     Particle(const float *loc, float t);
     Particle(float x, float y, float z, float t);
     ~Particle();
+
+    void AttachProperty(float v);
+    int EditProperty(int i, float v);
+    int RetrieveProperty(int i,           // Input
+                         float &v) const; // Output
+    void ClearProperties();
+
+  private:
+    std::forward_list<float>
+        _properties; // Forward_list takes only 8 bytes, whereas a vector takes 24 bytes!
 };
 
 }; // namespace flow
