@@ -13,8 +13,8 @@ class OceanField : public VelocityField {
     OceanField();
     ~OceanField();
 
-    int Get(float time, const glm::vec3 &pos, glm::vec3 &vel);
-    bool insideField(const glm::vec3 &pos);
+    int Get(float time, const glm::vec3 &pos, glm::vec3 &vel) const;
+    bool insideField(const glm::vec3 &pos) const;
 };
 
 }; // namespace flow

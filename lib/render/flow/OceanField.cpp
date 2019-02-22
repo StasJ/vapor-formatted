@@ -9,14 +9,14 @@ OceanField::OceanField() {
     _fieldMax = glm::vec3(1.0f);
 }
 
-bool OceanField::insideField(const glm::vec3 &pos) {
+bool OceanField::insideField(const glm::vec3 &pos) const {
     if (glm::length(pos) > 1.0f)
         return false;
     else
         return true;
 }
 
-int OceanField::Get(float t, const glm::vec3 &pos, glm::vec3 &vel) {
+int OceanField::Get(float t, const glm::vec3 &pos, glm::vec3 &vel) const {
     if (!insideField(pos))
         return OUT_OF_FIELD;
 
