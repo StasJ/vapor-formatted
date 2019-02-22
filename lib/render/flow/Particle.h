@@ -9,7 +9,14 @@
 #include <glm/glm.hpp>
 
 namespace flow {
-enum ERROR_CODE { SUCCESS = 0, OUT_OF_FIELD = -1, OUT_OF_RANGE = -2 };
+enum ERROR_CODE {
+    SUCCESS = 0,
+    OUT_OF_FIELD = -1,
+    OUT_OF_RANGE = -2,
+    NO_VECTOR_FIELD_YET = -3,
+    NO_SEED_PARTICLE_YET = -4,
+    FILE_ERROR = -5
+};
 
 class Particle {
   public:
@@ -29,6 +36,7 @@ class Particle {
     int RetrieveProperty(int idx,         // Input
                          float &v) const; // Output
     void ClearProperties();
+    int GetNumOfProperties() const;
 
   private:
     std::forward_list<float>

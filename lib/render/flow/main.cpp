@@ -1,25 +1,35 @@
-#include "Particle.h"
 #include <cstdlib>
-#include <iostream>
-
 #include <deque>
 #include <forward_list>
+#include <iostream>
 #include <list>
 #include <queue>
 #include <stack>
 #include <vector>
 
+#include "Advection.h"
+#include "OceanField.h"
+#include "Particle.h"
+
 using namespace flow;
 
-int main() {
-    Particle p;
-    std::cout << sizeof(p) << std::endl;
-    std::cout << sizeof(Particle) << std::endl;
+int main(int argc, char **argv) {
+    int numOfSeeds = 5;
+    std::vector<Particle> seeds(numOfSeeds);
 
-    std::cout << "vector size: " << sizeof(std::vector<float>) << std::endl;
-    std::cout << "list size: " << sizeof(std::list<float>) << std::endl;
-    std::cout << "forward_list size: " << sizeof(std::forward_list<float>) << std::endl;
-    std::cout << "deque size: " << sizeof(std::deque<float>) << std::endl;
-    std::cout << "stack size: " << sizeof(std::stack<float>) << std::endl;
-    std::cout << "queue size: " << sizeof(std::queue<float>) << std::endl;
+    for (int i = 0; i < numOfSeeds; i++)
+        seeds[i].location = glm::vec3(float(i + 1) / float(numOfSeeds + 1), 0.0f, 0.0f);
+
+    OceanField f;
+    Advection a;
+
+    a.UseVelocityField(&f);
+    a.UseSeedParticles(seeds);
+
+    int steps = std::atoi(argv[1]);
+    for (int i = 0; i < steps; i++)
+        a.Advect(0.02);
+
+    std::string filename("streams.dat");
+    a.OutputStreamsGnuplot(filename);
 }

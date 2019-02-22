@@ -79,3 +79,10 @@ int Particle::RetrieveProperty(int idx, float &v) const {
 }
 
 void Particle::ClearProperties() { _properties.clear(); }
+
+int Particle::GetNumOfProperties() const {
+    int count = 0;
+    for (const auto &x : _properties)
+        count++;
+    return count;
+}
