@@ -5,15 +5,16 @@
 #ifndef PARTICLE_H
 #define PARTICLE_H
 
+#include <forward_list>
 #include <glm/glm.hpp>
-#include <vector>
 
 namespace flow {
 class Particle {
   public:
     glm::vec3 location;
     float time;
-    std::vector<float> properties;
+    std::forward_list<float>
+        properties; // Forward_list takes only 8 bytes, whereas a vector takes 24 bytes!
 
     // Constructor and destructor
     Particle();
