@@ -28,8 +28,8 @@ class VelocityField {
     virtual bool InsideField(float time, const glm::vec3 &pos) const;
 
     // Class members
-    bool isSteady;
-    bool isPeriodic;
+    bool IsSteady;
+    bool IsPeriodic;
 
   protected:
     template <class T> T lerp(const T &v1, const T &v2, float a) const {
