@@ -6,6 +6,7 @@ using namespace flow;
 
 Advection::Advection() {
     _vField = nullptr;
+    _baseDeltaT = 0.01f;
     _lowerAngle = 3.0f;
     _upperAngle = 15.0f;
     _lowerAngleCos = glm::cos(glm::radians(_lowerAngle));
@@ -14,7 +15,9 @@ Advection::Advection() {
 
 Advection::~Advection() { _vField = nullptr; }
 
-void Advection::UseVelocityField(VelocityField *p) { _vField = p; }
+void Advection::SetBaseStepSize(float f) { _baseDeltaT = f; }
+
+void Advection::UseVelocityField(const VelocityField *p) { _vField = p; }
 
 void Advection::UseSeedParticles(std::vector<Particle> &seeds) {
     _streams.clear();
@@ -35,15 +38,24 @@ int Advection::_readyToAdvect() const {
     return 0;
 }
 
-int Advection::Advect(float dt, ADVECTION_METHOD method) {
+int Advection::Advect(ADVECTION_METHOD method) {
     int ready = _readyToAdvect();
     if (ready != 0)
         return ready;
 
     for (auto &s : _streams) {
-        auto &p0 = s.back();
+        const auto &p0 = s.back();
         if (!_vField->InsideField(p0.location))
             continue;
+
+        float dt = _baseDeltaT;
+        // If there are at least 3 particles in the stream, we also adjust dt
+        if (s.size() > 2) {
+            const auto &past1 = s[s.size() - 2];
+            const auto &past2 = s[s.size() - 3];
+            dt = p0.time - past1.time; // step size used by last integration
+            dt *= _calcAdjustFactor(past2, past1, p0);
+        }
 
         Particle p1;
         int rv;
