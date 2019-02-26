@@ -11,7 +11,7 @@ OceanField::OceanField() {
 
 OceanField::~OceanField() {}
 
-bool OceanField::InsideField(const glm::vec3 &pos) const {
+bool OceanField::InsideField(float t, const glm::vec3 &pos) const {
     if (glm::length(pos) > 1.0f)
         return false;
     else
