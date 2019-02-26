@@ -25,7 +25,7 @@ class VelocityField {
     // The base class implements a basic bounding box test.
     // Children classes can implement more complex schemes.
     //
-    virtual bool InsideField(const glm::vec3 &pos) const;
+    virtual bool InsideField(float time, const glm::vec3 &pos) const;
 
     // Class members
     bool isSteady;
