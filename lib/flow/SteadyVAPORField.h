@@ -6,7 +6,7 @@
 #define STEADYVAPORFIELD_H
 
 #include "VelocityField.h"
-#include "vapor/StructuredGrid.h"
+#include "vapor/Grid.h"
 #include <unordered_map>
 
 namespace flow {
@@ -27,6 +27,12 @@ class SteadyVAPORField : public VelocityField {
     //
     void UseVelocityField(const VGrid *u, const VGrid *v, const VGrid *w);
     void UseValueField(const VGrid *val);
+
+    //
+    // Since the grids are passed in, SteadyVAPORField does NOT destroy them by default.
+    // However, SteadyVAPORField could perform this task if desired.
+    //
+    void DestroyGrids();
 
   private:
     //
