@@ -7,6 +7,7 @@
 
 #include "Particle.h"
 #include <glm/glm.hpp>
+#include <string>
 
 namespace flow {
 class VelocityField {
@@ -29,6 +30,7 @@ class VelocityField {
     // Class members
     bool IsSteady;
     bool IsPeriodic;
+    std::string VarNameU, VarNameV, VarNameW; // Varuable names for 3 velocity components
 };
 }; // namespace flow
 

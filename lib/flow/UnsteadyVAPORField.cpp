@@ -12,7 +12,7 @@ int UnsteadyVAPORField::AddTimeStep(const VGrid *u, const VGrid *v, const VGrid 
     _velArrU.push_back(u);
     _velArrV.push_back(v);
     _velArrW.push_back(w);
-    _valueArr.push_back(val);
+    _fieldValueArr.push_back(val);
     _timestamps.push_back(time);
     return 0;
 }
@@ -27,9 +27,9 @@ void UnsteadyVAPORField::DestroyGrids() {
     for (const auto &p : _velArrW)
         delete p;
     _velArrW.clear();
-    for (const auto &p : _valueArr)
+    for (const auto &p : _fieldValueArr)
         delete p;
-    _valueArr.clear();
+    _fieldValueArr.clear();
 }
 
 int UnsteadyVAPORField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &vel) const {
@@ -62,7 +62,6 @@ int UnsteadyVAPORField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 
         float w1 = _velArrW[floor + 1]->GetValue(coords);
         //   Need to do: examine u, v, w are not missing value.
         glm::vec3 velCeil(u1, v1, w1);
-        glm::vec3 velDiff = velCeil - velFloor;
         float weight = (time - _timestamps[floor]) / (_timestamps[floor + 1] - _timestamps[floor]);
         vel = glm::mix(velFloor, velCeil, weight);
         return 0;

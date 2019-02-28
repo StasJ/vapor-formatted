@@ -8,14 +8,14 @@ SteadyVAPORField::SteadyVAPORField() {
     _velocityU = nullptr;
     _velocityV = nullptr;
     _velocityW = nullptr;
-    _value = nullptr;
+    _fieldValue = nullptr;
 }
 
 SteadyVAPORField::~SteadyVAPORField() {
     _velocityU = nullptr;
     _velocityV = nullptr;
     _velocityW = nullptr;
-    _value = nullptr;
+    _fieldValue = nullptr;
 }
 
 void SteadyVAPORField::DestroyGrids() {
@@ -25,14 +25,13 @@ void SteadyVAPORField::DestroyGrids() {
         delete _velocityV;
     if (_velocityW)
         delete _velocityW;
-    if (_value)
-        delete _value;
+    if (_fieldValue)
+        delete _fieldValue;
 }
 
 int SteadyVAPORField::GetVelocity(float t, const glm::vec3 &pos, glm::vec3 &vel) const {
     if (!_velocityU || !_velocityV || !_velocityW)
-        ;
-    return NO_VECTOR_FIELD_YET;
+        return NO_VECTOR_FIELD_YET;
 
     if (!InsideVelocityField(t, pos))
         return OUT_OF_FIELD;
@@ -48,11 +47,11 @@ int SteadyVAPORField::GetVelocity(float t, const glm::vec3 &pos, glm::vec3 &vel)
 }
 
 int SteadyVAPORField::GetFieldValue(float t, const glm::vec3 &pos, float &val) const {
-    if (!_value)
+    if (!_fieldValue)
         return NO_VALUE_FIELD_YET;
 
     std::vector<double> coords{pos.x, pos.y, pos.z};
-    float v = _value->GetValue(coords);
+    float v = _fieldValue->GetValue(coords);
     // Need to do: examine v is not missing value.
     val = v;
 
@@ -77,4 +76,4 @@ void SteadyVAPORField::UseVelocityField(const VGrid *u, const VGrid *v, const VG
     _velocityW = w;
 }
 
-void SteadyVAPORField::UseValueField(const VGrid *val) { _value = val; }
+void SteadyVAPORField::UseFieldValue(const VGrid *val) { _fieldValue = val; }

@@ -32,6 +32,8 @@ class UnsteadyVAPORField : public VelocityField {
     //
     void DestroyGrids();
 
+    std::string VarNameFieldValue;
+
   private:
     //
     // These vectors keep grids for all time steps,
@@ -40,7 +42,7 @@ class UnsteadyVAPORField : public VelocityField {
     std::vector<const VGrid *> _velArrU;
     std::vector<const VGrid *> _velArrV;
     std::vector<const VGrid *> _velArrW;
-    std::vector<const VGrid *> _valueArr;
+    std::vector<const VGrid *> _fieldValueArr;
     std::vector<float> _timestamps; // always in ascending order
 
     //
