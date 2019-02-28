@@ -14,7 +14,7 @@ class VelocityField {
   public:
     // Constructor and destructor
     VelocityField();
-    ~VelocityField();
+    virtual ~VelocityField();
 
     //
     // Get the velocity value at a certain position, at a certain time.
