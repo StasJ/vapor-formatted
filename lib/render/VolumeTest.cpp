@@ -7,6 +7,8 @@ using std::vector;
 
 using namespace VAPoR;
 
+static VolumeAlgorithmRegistrar<VolumeTest> registration;
+
 VolumeTest::VolumeTest(GLManager *gl) : VolumeRegular(gl) {
     glGenTextures(1, &zCoordTexture);
     glBindTexture(GL_TEXTURE_3D, zCoordTexture);
