@@ -5,6 +5,7 @@
 #include "ui_VolumeAppearanceGUI.h"
 #include "ui_VolumeGeometryGUI.h"
 #include "ui_VolumeVariablesGUI.h"
+#include <vapor/MapperFunction.h>
 
 namespace VAPoR {
 class ControlExec;
@@ -38,6 +39,7 @@ class VolumeAppearanceSubtab : public QWidget, public Ui_VolumeAppearanceGUI {
         setupUi(this);
         _TFWidget->SetOpacityIntegrated(true);
         _TFWidget->Reinit((TFFlags)(CONSTANT_COLOR));
+        _isoEdit->SetLabel("Iso Value");
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -46,6 +48,10 @@ class VolumeAppearanceSubtab : public QWidget, public Ui_VolumeAppearanceGUI {
         _volumeParams = vp;
 
         _TFWidget->Update(dataMgr, paramsMgr, rParams);
+
+        //------------------------
+        // Algorithm Selector
+        //------------------------
 
         string algorithm = vp->GetAlgorithm();
         int index = _algorithmCombo->findText(QString::fromStdString(algorithm));
@@ -60,6 +66,13 @@ class VolumeAppearanceSubtab : public QWidget, public Ui_VolumeAppearanceGUI {
         }
 
         _algorithmCombo->setCurrentIndex(index);
+
+        //------------------------
+        // Iso Slider
+        //------------------------
+        VAPoR::MapperFunction *tf = rParams->GetMapperFunc(rParams->GetVariableName());
+        vector<double> mapRange = tf->getMinMaxMapValue();
+        _isoEdit->SetExtents(mapRange[0], mapRange[1]);
     }
 
   private slots:
@@ -67,6 +80,8 @@ class VolumeAppearanceSubtab : public QWidget, public Ui_VolumeAppearanceGUI {
         if (!text.isEmpty())
             _volumeParams->SetAlgorithm(text.toStdString());
     }
+
+    void on__isoEdit_valueChanged(double value) { _volumeParams->SetIsoValue(value); }
 
   private:
     VAPoR::VolumeParams *_volumeParams;
