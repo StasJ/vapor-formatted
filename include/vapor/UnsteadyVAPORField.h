@@ -5,8 +5,8 @@
 #ifndef UNSTEADYVAPORFIELD_H
 #define UNSTEADYVAPORFIELD_H
 
-#include "VelocityField.h"
 #include "vapor/Grid.h"
+#include "vapor/VelocityField.h"
 
 namespace flow {
 class UnsteadyVAPORField : public VelocityField {

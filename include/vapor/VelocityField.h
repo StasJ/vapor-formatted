@@ -5,7 +5,7 @@
 #ifndef VELOCITYFIELD_H
 #define VELOCITYFIELD_H
 
-#include "Particle.h"
+#include "vapor/Particle.h"
 #include <glm/glm.hpp>
 #include <string>
 
