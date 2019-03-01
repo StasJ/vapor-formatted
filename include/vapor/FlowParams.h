@@ -19,10 +19,7 @@ class PARAMS_API FlowParams : public RenderParams {
     virtual bool IsOpaque() const override { return false; }
     virtual bool usingVariable(const std::string &varname) override { return false; }
 
-    //
-    //! Obtain current MapperFunction for the primary variable.
-    //
-    MapperFunction *GetMapperFunc();
+    static std::string GetClassType() { return ("FlowParams"); }
 
   protected:
 };
