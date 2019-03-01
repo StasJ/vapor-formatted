@@ -8,7 +8,10 @@ namespace VAPoR {
 
 class PARAMS_API FlowParams : public RenderParams {
   public:
-    FlowParams(DataMgr *dataManager, ParamsBase::StateSave *stateSave, std::string classType);
+    // FlowParams( DataMgr*                 dataManager,
+    //            ParamsBase::StateSave*   stateSave,
+    //            std::string              classType );
+    FlowParams(DataMgr *dataManager, ParamsBase::StateSave *stateSave);
     FlowParams(DataMgr *dataManager, ParamsBase::StateSave *stateSave, XmlNode *xmlNode);
 
     virtual ~FlowParams();
