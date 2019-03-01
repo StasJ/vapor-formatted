@@ -68,7 +68,7 @@ FlowEventRouter::~FlowEventRouter() {
 void FlowEventRouter::GetWebHelp(vector<pair<string, string>> &help) const {
     help.clear();
 
-#ifdef DEAD
+#ifdef VAPOR_3_0
     help.push_back(make_pair("Flow Overview",
                              "http://www.vapor.ucar.edu/docs/vapor-gui-help/twoD#FlowOverview"));
 
