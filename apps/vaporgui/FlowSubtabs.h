@@ -5,7 +5,7 @@
 
 #include <QVBoxLayout>
 #include <QWidget>
-#include <vapor/SliceParams.h>
+#include <vapor/FlowParams.h>
 
 namespace VAPoR {
 class ControlExec;
@@ -41,7 +41,7 @@ class FlowVariablesSubtab : public QVaporSubtab {
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
 
   private:
-    VAPoR::SliceParams *_params;
+    VAPoR::FlowParams *_params;
     VariablesWidget *_variablesWidget;
 };
 
@@ -55,7 +55,7 @@ class FlowAppearanceSubtab : public QVaporSubtab {
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
 
   private:
-    VAPoR::SliceParams *_params;
+    VAPoR::FlowParams *_params;
     TFWidget *_TFWidget;
 };
 
@@ -69,7 +69,7 @@ class FlowGeometrySubtab : public QVaporSubtab {
     void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr, VAPoR::RenderParams *rParams);
 
   private:
-    VAPoR::SliceParams *_params;
+    VAPoR::FlowParams *_params;
     GeometryWidget *_geometryWidget;
     CopyRegionWidget *_copyRegionWidget;
     TransformTable *_transformTable;

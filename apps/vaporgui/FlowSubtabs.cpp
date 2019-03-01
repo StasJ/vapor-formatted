@@ -22,7 +22,7 @@ FlowVariablesSubtab::FlowVariablesSubtab(QWidget *parent) : QVaporSubtab(parent)
 
 void FlowVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                                  VAPoR::RenderParams *rParams) {
-    _params = dynamic_cast<VAPoR::SliceParams *>(rParams);
+    _params = dynamic_cast<VAPoR::FlowParams *>(rParams);
     assert(_params);
     _variablesWidget->Update(dataMgr, paramsMgr, rParams);
 }
@@ -38,7 +38,7 @@ FlowAppearanceSubtab::FlowAppearanceSubtab(QWidget *parent) : QVaporSubtab(paren
 
 void FlowAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                                   VAPoR::RenderParams *rParams) {
-    _params = dynamic_cast<VAPoR::SliceParams *>(rParams);
+    _params = dynamic_cast<VAPoR::FlowParams *>(rParams);
     assert(_params);
 
     _TFWidget->Update(dataMgr, paramsMgr, rParams);
@@ -59,7 +59,7 @@ FlowGeometrySubtab::FlowGeometrySubtab(QWidget *parent) : QVaporSubtab(parent) {
 
 void FlowGeometrySubtab::Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
                                 VAPoR::RenderParams *rParams) {
-    _params = dynamic_cast<VAPoR::SliceParams *>(rParams);
+    _params = dynamic_cast<VAPoR::FlowParams *>(rParams);
     assert(_params);
 
     _geometryWidget->Update(paramsMgr, dataMgr, rParams);
