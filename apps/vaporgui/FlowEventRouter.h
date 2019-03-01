@@ -6,8 +6,8 @@
 #include "RenderEventRouter.h"
 #include "VariablesWidget.h"
 #include <qobject.h>
+#include <vapor/FlowRenderer.h>
 #include <vapor/MyBase.h>
-#include <vapor/SliceRenderer.h>
 
 QT_USE_NAMESPACE
 
@@ -37,7 +37,7 @@ class FlowEventRouter : public QTabWidget, public RenderEventRouter {
     void GetWebHelp(vector<pair<string, string>> &help) const;
 
     //
-    static string GetClassType() { return (VAPoR::SliceRenderer::GetClassType()); }
+    static string GetClassType() { return (VAPoR::FlowRenderer::GetClassType()); }
     string GetType() const { return GetClassType(); }
 
   protected:
@@ -63,4 +63,4 @@ class FlowEventRouter : public QTabWidget, public RenderEventRouter {
     FlowAnnotationSubtab *_annotation;
 };
 
-#endif // SLICEEVENTROUTER_H
+#endif // FLOWEVENTROUTER_H

@@ -3,6 +3,10 @@
 #pragma warning(disable : 4100)
 #endif
 
+#include "FlowEventRouter.h"
+#include "EventRouter.h"
+#include "VariablesWidget.h"
+#include "vapor/FlowParams.h"
 #include <QFileDialog>
 #include <qcolordialog.h>
 #include <qlineedit.h>
@@ -10,12 +14,6 @@
 #include <string>
 #include <vapor/glutil.h>
 #include <vector>
-//#include "vapor/FlowParams.h"
-#include "EventRouter.h"
-#include "FlowEventRouter.h"
-#include "VariablesWidget.h"
-#include "vapor/SliceParams.h"
-#include "vapor/SliceRenderer.h"
 
 using namespace VAPoR;
 
@@ -25,9 +23,7 @@ using namespace VAPoR;
 static RenderEventRouterRegistrar<FlowEventRouter> registrar(FlowEventRouter::GetClassType());
 
 FlowEventRouter::FlowEventRouter(QWidget *parent, ControlExec *ce)
-    : QTabWidget(parent),
-      //	                  RenderEventRouter( ce, FlowParams::GetClassType())
-      RenderEventRouter(ce, SliceParams::GetClassType()) {
+    : QTabWidget(parent), RenderEventRouter(ce, FlowParams::GetClassType()) {
     _variables = new FlowVariablesSubtab(this);
     QScrollArea *qsvar = new QScrollArea(this);
     qsvar->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
