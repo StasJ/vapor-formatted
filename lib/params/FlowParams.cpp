@@ -2,6 +2,8 @@
 
 using namespace VAPoR;
 
+static RenParamsRegistrar<FlowParams> registrar(FlowParams::GetClassType());
+
 FlowParams::FlowParams(DataMgr *dataManager, ParamsBase::StateSave *stateSave,
                        std::string classType)
     : RenderParams(dataManager, stateSave, classType, 3 /* max dim */) {
