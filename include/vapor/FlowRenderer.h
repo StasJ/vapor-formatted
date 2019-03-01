@@ -29,6 +29,9 @@ class RENDER_API FlowRenderer : public Renderer {
     int _paintGL(bool fast);
     void _clearCache(){};
 
+    // OpenGL stuff: shaders
+    ShaderProgram *_lineShader;
+
 #ifndef WIN32
     double _getElapsedSeconds(const struct timeval *begin, const struct timeval *end) const;
 #endif
