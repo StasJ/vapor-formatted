@@ -1,5 +1,6 @@
 #pragma once
 
+#include <glm/fwd.hpp>
 #include <vapor/Renderer.h>
 #include <vapor/VolumeAlgorithm.h>
 
@@ -23,6 +24,7 @@ class RENDER_API VolumeRenderer : public Renderer {
 
     int _loadData();
     void _loadTF();
+    glm::vec3 _getVolumeScales() const;
 
     VolumeAlgorithm *algorithm;
 
