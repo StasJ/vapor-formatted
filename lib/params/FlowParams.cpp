@@ -16,7 +16,3 @@ FlowParams::FlowParams(DataMgr *dataManager, ParamsBase::StateSave *stateSave, X
 
 // Destructor
 FlowParams::~FlowParams() { SetDiagMsg("FlowParams::~FlowParams() this=%p", this); }
-
-MapperFunction *FlowParams::GetMapperFunc() {
-    return RenderParams::GetMapperFunc(GetVariableName());
-}
