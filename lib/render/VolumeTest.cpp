@@ -1,4 +1,5 @@
 #include <glm/glm.hpp>
+#include <vapor/GLManager.h>
 #include <vapor/VolumeTest.h>
 #include <vapor/glutil.h>
 #include <vector>
@@ -110,8 +111,8 @@ int VolumeTest::LoadData(const Grid *grid) {
     return 0;
 }
 
-ShaderProgram *VolumeTest::GetShader(ShaderManager *sm) {
-    ShaderProgram *s = sm->GetShader("ray2");
+ShaderProgram *VolumeTest::GetShader() const {
+    ShaderProgram *s = _glManager->shaderManager->GetShader("ray2");
     if (!s)
         return nullptr;
     s->Bind();
