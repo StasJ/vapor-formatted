@@ -33,7 +33,7 @@ int SteadyVAPORField::GetVelocity(float t, const glm::vec3 &pos, glm::vec3 &vel)
     if (!_velocityU || !_velocityV || !_velocityW)
         return NO_VECTOR_FIELD_YET;
 
-    if (!InsideVelocityField(t, pos))
+    if (!InsideVolume(t, pos))
         return OUT_OF_FIELD;
 
     const std::vector<double> coords{pos.x, pos.y, pos.z};
@@ -58,13 +58,17 @@ int SteadyVAPORField::GetFieldValue(float t, const glm::vec3 &pos, float &val) c
     return 0;
 }
 
-bool SteadyVAPORField::InsideVelocityField(float time, const glm::vec3 &pos) const {
+bool SteadyVAPORField::InsideVolume(float time, const glm::vec3 &pos) const {
     std::vector<double> coords{pos.x, pos.y, pos.z};
     if (!_velocityU->InsideGrid(coords))
         return false;
     if (!_velocityV->InsideGrid(coords))
         return false;
     if (!_velocityW->InsideGrid(coords))
+        return false;
+
+    // If there's field value, we test it too
+    if ((_fieldValue != nullptr) && (!_fieldValue->InsideGrid(coords)))
         return false;
 
     return true;
@@ -76,4 +80,7 @@ void SteadyVAPORField::UseVelocityField(const VGrid *u, const VGrid *v, const VG
     _velocityW = w;
 }
 
-void SteadyVAPORField::UseFieldValue(const VGrid *val) { _fieldValue = val; }
+void SteadyVAPORField::UseFieldValue(const VGrid *val) {
+    _fieldValue = val;
+    HasFieldValue = true;
+}

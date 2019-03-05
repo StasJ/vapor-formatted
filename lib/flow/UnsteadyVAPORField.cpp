@@ -40,7 +40,7 @@ int UnsteadyVAPORField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 
         return rv;
 
     // Second test if this position is inside of the volume
-    if (!InsideVelocityField(time, pos))
+    if (!InsideVolume(time, pos))
         return OUT_OF_FIELD;
 
     // Now we retrieve the velocity of this position at time step "floor"
@@ -68,7 +68,37 @@ int UnsteadyVAPORField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 
     }
 }
 
-bool UnsteadyVAPORField::InsideVelocityField(float time, const glm::vec3 &pos) const {
+int UnsteadyVAPORField::GetFieldValue(float time, const glm::vec3 &pos, float &val) const {
+    // First test if we have this time step
+    size_t floor;
+    int rv = _locateTimestamp(time, floor);
+    if (rv != 0)
+        return rv;
+
+    // Second test if this position is inside of the volume
+    if (!InsideVolume(time, pos))
+        return OUT_OF_FIELD;
+
+    // Now we retrieve the velocity of this position at time step "floor"
+    const std::vector<double> coords{pos.x, pos.y, pos.z};
+    float valFloor = _fieldValueArr[floor]->GetValue(coords);
+    //   Need to do: examine valFloor is not missing value.
+
+    // If time is greater than _timestamps[floor], we also need to retrieve _timestamps[floor+1]
+    //   We could probably still return velFloor if the time difference is small enough
+    if (time == _timestamps[floor]) {
+        val = valFloor;
+        return 0;
+    } else {
+        float valCeil = _fieldValueArr[floor + 1]->GetValue(coords);
+        //   Need to do: examine valCeil is not missing value.
+        float weight = (time - _timestamps[floor]) / (_timestamps[floor + 1] - _timestamps[floor]);
+        val = glm::mix(valFloor, valCeil, weight);
+        return 0;
+    }
+}
+
+bool UnsteadyVAPORField::InsideVolume(float time, const glm::vec3 &pos) const {
     // First test if we have this time step
     size_t floor;
     int rv = _locateTimestamp(time, floor);
@@ -83,6 +113,8 @@ bool UnsteadyVAPORField::InsideVelocityField(float time, const glm::vec3 &pos) c
         return false;
     if (!_velArrW[floor]->InsideGrid(coords))
         return false;
+    if ((!_fieldValueArr.empty()) && (!_fieldValueArr[floor]->InsideGrid(coords)))
+        return false;
 
     // If time is larger than _timestamps[floor], we also need to test _timestamps[floor+1]
     if (time > _timestamps[floor]) {
@@ -91,6 +123,8 @@ bool UnsteadyVAPORField::InsideVelocityField(float time, const glm::vec3 &pos) c
         if (!_velArrV[floor + 1]->InsideGrid(coords))
             return false;
         if (!_velArrW[floor + 1]->InsideGrid(coords))
+            return false;
+        if ((!_fieldValueArr.empty()) && (!_fieldValueArr[floor + 1]->InsideGrid(coords)))
             return false;
     }
 

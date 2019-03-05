@@ -19,7 +19,8 @@ class UnsteadyVAPORField : public VelocityField {
     ~UnsteadyVAPORField();
 
     int GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &vel) const;
-    bool InsideVelocityField(float time, const glm::vec3 &pos) const;
+    int GetFieldValue(float time, const glm::vec3 &pos, float &val) const;
+    bool InsideVolume(float time, const glm::vec3 &pos) const;
 
     //
     // Modifiers
@@ -31,8 +32,6 @@ class UnsteadyVAPORField : public VelocityField {
     // However, SteadyVAPORField could perform this task if desired.
     //
     void DestroyGrids();
-
-    std::string VarNameFieldValue;
 
   private:
     //
