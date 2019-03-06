@@ -8,14 +8,14 @@ SteadyVAPORField::SteadyVAPORField() {
     _velocityU = nullptr;
     _velocityV = nullptr;
     _velocityW = nullptr;
-    _fieldValue = nullptr;
+    _scalar = nullptr;
 }
 
 SteadyVAPORField::~SteadyVAPORField() {
     _velocityU = nullptr;
     _velocityV = nullptr;
     _velocityW = nullptr;
-    _fieldValue = nullptr;
+    _scalar = nullptr;
 }
 
 void SteadyVAPORField::DestroyGrids() {
@@ -25,8 +25,8 @@ void SteadyVAPORField::DestroyGrids() {
         delete _velocityV;
     if (_velocityW)
         delete _velocityW;
-    if (_fieldValue)
-        delete _fieldValue;
+    if (_scalar)
+        delete _scalar;
 }
 
 int SteadyVAPORField::GetVelocity(float t, const glm::vec3 &pos, glm::vec3 &vel) const {
@@ -46,12 +46,12 @@ int SteadyVAPORField::GetVelocity(float t, const glm::vec3 &pos, glm::vec3 &vel)
     return 0;
 }
 
-int SteadyVAPORField::GetFieldValue(float t, const glm::vec3 &pos, float &val) const {
-    if (!_fieldValue)
+int SteadyVAPORField::GetScalar(float t, const glm::vec3 &pos, float &val) const {
+    if (!_scalar)
         return NO_VALUE_FIELD_YET;
 
     std::vector<double> coords{pos.x, pos.y, pos.z};
-    float v = _fieldValue->GetValue(coords);
+    float v = _scalar->GetValue(coords);
     // Need to do: examine v is not missing value.
     val = v;
 
@@ -68,19 +68,19 @@ bool SteadyVAPORField::InsideVolume(float time, const glm::vec3 &pos) const {
         return false;
 
     // If there's field value, we test it too
-    if ((_fieldValue != nullptr) && (!_fieldValue->InsideGrid(coords)))
+    if ((_scalar != nullptr) && (!_scalar->InsideGrid(coords)))
         return false;
 
     return true;
 }
 
-void SteadyVAPORField::UseVelocityField(const VGrid *u, const VGrid *v, const VGrid *w) {
+void SteadyVAPORField::UseVelocities(const VGrid *u, const VGrid *v, const VGrid *w) {
     _velocityU = u;
     _velocityV = v;
     _velocityW = w;
 }
 
-void SteadyVAPORField::UseFieldValue(const VGrid *val) {
-    _fieldValue = val;
+void SteadyVAPORField::UseScalar(const VGrid *val) {
+    _scalar = val;
     HasFieldValue = true;
 }

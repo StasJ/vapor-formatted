@@ -24,8 +24,8 @@ class VelocityField {
     //
     // Get the field value at a certain position, at a certain time.
     //
-    virtual int GetFieldValue(float time, const glm::vec3 &pos, // input
-                              float &val) const = 0;            // output
+    virtual int GetScalar(float time, const glm::vec3 &pos, // input
+                          float &val) const = 0;            // output
 
     //
     // If a given position at a given time is inside of this field

@@ -72,7 +72,7 @@ int Advection::Advect(ADVECTION_METHOD method) {
             continue;
 
         if (_vField->HasFieldValue) {
-            rv = _vField->GetFieldValue(p1.time, p1.location, p1.value);
+            rv = _vField->GetScalar(p1.time, p1.location, p1.value);
             if (rv != 0)
                 continue;
         }

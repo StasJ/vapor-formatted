@@ -40,7 +40,7 @@ class RENDER_API FlowRenderer : public Renderer {
     GLuint _vertexBufferId;
 
     void _useOceanField();
-    void _useSteadyVAPORField();
+    int _useSteadyVAPORField();
     int _drawAStream(const std::vector<flow::Particle> &s) const;
 
     int _getAGrid(const FlowParams *params, // Input

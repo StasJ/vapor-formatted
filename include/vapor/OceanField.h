@@ -14,7 +14,7 @@ class OceanField : public VelocityField {
     ~OceanField();
 
     int GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &vel) const;
-    int GetFieldValue(float time, const glm::vec3 &pos, float &val) const;
+    int GetScalar(float time, const glm::vec3 &pos, float &val) const;
     bool InsideVolume(float time, const glm::vec3 &pos) const;
 };
 
