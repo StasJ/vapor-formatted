@@ -92,8 +92,9 @@ int FlowRenderer::_initializeGL() {
 
 int FlowRenderer::_paintGL(bool fast) {
     int ready = _advec.IsReady();
-    if (ready != 0)
-        _useOceanField();
+    if (ready != 0) {
+        _useSteadyVAPORField();
+    }
 
     size_t numOfStreams = _advec.GetNumberOfStreams();
     for (size_t i = 0; i < numOfStreams; i++) {
@@ -109,11 +110,11 @@ int FlowRenderer::_drawAStream(const std::vector<flow::Particle> &stream) const 
     float *posBuf = new float[3 * numOfPart];
     size_t offset = 0;
     for (const auto &p : stream) {
-        // std::memcpy( posBuf + offset, glm::value_ptr(p.location), sizeof(glm::vec3) );
-        // offset += 3;
-        posBuf[offset++] = p.location.x * 20.0 + 40.0;
-        posBuf[offset++] = p.location.y * 20.0 + 40.0;
-        posBuf[offset++] = p.location.z * 20.0 + 40.0;
+        std::memcpy(posBuf + offset, glm::value_ptr(p.location), sizeof(glm::vec3));
+        offset += 3;
+        // posBuf[offset++] = p.location.x * 20.0 + 40.0;
+        // posBuf[offset++] = p.location.y * 20.0 + 40.0;
+        // posBuf[offset++] = p.location.z * 20.0 + 40.0;
     }
 
     glm::mat4 modelview = _glManager->matrixManager->GetModelViewMatrix();
@@ -175,12 +176,43 @@ int FlowRenderer::_useSteadyVAPORField() {
     if (rv != 0)
         return rv;
 
-    // Third create a SteadyVAPORField using these grids
+    // Third create a SteadyVAPORField using these grids, and ask Advection to use it!
     flow::SteadyVAPORField *field = new flow::SteadyVAPORField();
     field->UseVelocities(gridU, gridV, gridW);
     if (_velField)
         delete _velField;
     _velField = field;
+
+    // Plant seeds
+    std::vector<flow::Particle> seeds;
+    _genSeedsXY(seeds);
+    _advec.UseSeedParticles(seeds);
+    _advec.UseVelocityField(_velField);
+
+    int numOfSteps = 100;
+    for (int i = 0; i < numOfSteps; i++)
+        _advec.Advect(flow::Advection::RK4);
+
+    return 0;
+}
+
+int FlowRenderer::_genSeedsXY(std::vector<flow::Particle> &seeds) const {
+    int numX = 5, numY = 5;
+    std::vector<double> extMin, extMax;
+    FlowParams *params = dynamic_cast<FlowParams *>(GetActiveParams());
+    params->GetBox()->GetExtents(extMin, extMax);
+    float stepX = (extMax[0] - extMin[0]) / (numX + 1.0);
+    float stepY = (extMax[1] - extMin[1]) / (numY + 1.0);
+    float stepZ = extMin[2] + (extMax[2] - extMin[2]) / 100.0;
+
+    seeds.resize(numX * numY);
+    for (int y = 0; y < numY; y++)
+        for (int x = 0; x < numX; x++) {
+            int idx = y * numX + x;
+            seeds[idx].location.x = extMin[0] + (x + 1.0f) * stepX;
+            seeds[idx].location.y = extMin[1] + (y + 1.0f) * stepY;
+            seeds[idx].location.z = stepZ;
+        }
 
     return 0;
 }
