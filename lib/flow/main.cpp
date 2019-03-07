@@ -7,9 +7,9 @@
 #include <stack>
 #include <vector>
 
-#include "Advection.h"
-#include "OceanField.h"
-#include "Particle.h"
+#include "vapor/Advection.h"
+#include "vapor/OceanField.h"
+#include "vapor/Particle.h"
 
 using namespace flow;
 
