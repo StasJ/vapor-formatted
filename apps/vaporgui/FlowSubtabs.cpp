@@ -29,7 +29,7 @@ void FlowVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *para
 
 FlowAppearanceSubtab::FlowAppearanceSubtab(QWidget *parent) : QVaporSubtab(parent) {
     _TFWidget = new TFWidget(this);
-    _TFWidget->Reinit((TFFlags)(SAMPLING));
+    _TFWidget->Reinit((TFFlags)(SAMPLING | CONSTANT_COLOR));
 
     _layout->addWidget(_TFWidget, 0, 0);
 
