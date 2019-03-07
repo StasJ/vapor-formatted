@@ -55,6 +55,9 @@ class PARAMS_API RenderParams : public ParamsBase {
 
     virtual ~RenderParams();
 
+    void PrintOne() { cout << 1 << endl; };
+    void PrintTwo() { cout << 2 << endl; };
+
     //! Determine if this params has been enabled for rendering
     //!
     //! Default is false.
