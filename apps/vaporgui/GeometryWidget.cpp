@@ -19,7 +19,6 @@
 //
 #include "GeometryWidget.h"
 #include "vapor/DataMgrUtils.h"
-#include "vapor/FlowParams.h"
 #include "vapor/ParamsMgr.h"
 #include "vapor/RenderParams.h"
 #include <QFileDialog>
@@ -165,7 +164,7 @@ void GeometryWidget::reinitBoxToPlanarAxis(int planarAxis, QSliderEdit *slider) 
 
     minExt[planarAxis] = average;
     maxExt[planarAxis] = average;
-    Box *box = getBoxHack();
+    Box *box = _rParams->GetBox();
     box->SetExtents(minExt, maxExt);
 }
 
@@ -344,7 +343,7 @@ void GeometryWidget::updateBoxCombos(std::vector<double> &minFullExt,
 
     // Get current user selected extents
     //
-    Box *box = getBoxHack();
+    Box *box = _rParams->GetBox();
     std::vector<double> minExt, maxExt;
     box->GetExtents(minExt, maxExt);
 
@@ -395,7 +394,7 @@ void GeometryWidget::Update(ParamsMgr *paramsMgr, DataMgr *dataMgr, RenderParams
     if (_geometryFlags & PLANAR) {
         _planeComboBox->blockSignals(true);
 
-        int rParamsOrientation = getBoxHack()->GetOrientation();
+        int rParamsOrientation = _rParams->GetBox()->GetOrientation();
         _planeComboBox->setCurrentIndex(rParamsOrientation);
 
         bool reinit = false;
@@ -403,14 +402,6 @@ void GeometryWidget::Update(ParamsMgr *paramsMgr, DataMgr *dataMgr, RenderParams
 
         _planeComboBox->blockSignals(false);
     }
-}
-
-VAPoR::Box *GeometryWidget::getBoxHack() {
-    if (_geometryFlags & RAKE_HACK) {
-        FlowParams *flowParams = dynamic_cast<FlowParams *>(_rParams);
-        return flowParams->GetRakeBox();
-    } else
-        return _rParams->GetBox();
 }
 
 void GeometryWidget::getFullExtents(std::vector<double> &minFullExt,
@@ -453,7 +444,7 @@ void GeometryWidget::setRange(double min, double max, int dimension) {
     }
 
     std::vector<double> minExt, maxExt;
-    Box *box = getBoxHack();
+    Box *box = _rParams->GetBox();
 
     box->GetExtents(minExt, maxExt);
     minExt[dimension] = min;
