@@ -37,6 +37,11 @@ class RENDER_API FlowRenderer : public Renderer {
     std::vector<float> _colorMap;
     float _colorMapRange[3]; // min, max, and their diff
 
+    // A few variables to keep the current advection states
+    size_t _state_currentTS;
+    int _state_refinementLevel;
+    int _state_compressionLevel;
+
     // Member variables for OpenGL
     const GLint _colorMapTexOffset;
     ShaderProgram *_shader;
