@@ -83,7 +83,7 @@ void SteadyVAPORField::UseVelocities(const VGrid *u, const VGrid *v, const VGrid
 
 void SteadyVAPORField::UseScalar(const VGrid *val) {
     _scalar = val;
-    HasFieldValue = true;
+    HasScalarValue = true;
 }
 
 int SteadyVAPORField::GetExtents(float time, glm::vec3 &minExt, glm::vec3 &maxExt) const {
