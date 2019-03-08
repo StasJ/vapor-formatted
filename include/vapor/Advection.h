@@ -5,8 +5,8 @@
 #ifndef ADVECTION_H
 #define ADVECTION_H
 
+#include "vapor/Field.h"
 #include "vapor/Particle.h"
-#include "vapor/VelocityField.h"
 #include <string>
 #include <vector>
 
@@ -25,7 +25,7 @@ class Advection {
     int Advect(ADVECTION_METHOD method = RK4);
 
     void SetBaseStepSize(float deltaT);
-    void UseVelocityField(const VelocityField *p);
+    void UseVelocityField(const Field *p);
     void UseSeedParticles(std::vector<Particle> &seeds);
 
     size_t GetNumberOfStreams() const;
@@ -49,7 +49,7 @@ class Advection {
     const std::string &GetScalarName() const;
 
   private:
-    const VelocityField *_vField;
+    const Field *_field;
     std::vector<std::vector<Particle>> _streams;
     float _lowerAngle, _upperAngle;       // Thresholds for step size adjustment
     float _lowerAngleCos, _upperAngleCos; // Cosine values of the threshold angles

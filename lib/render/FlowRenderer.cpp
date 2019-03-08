@@ -53,7 +53,6 @@ FlowRenderer::FlowRenderer(const ParamsMgr *pm, std::string &winName, std::strin
                instName, dataMgr),
       _colorMapTexOffset(0) {
     _shader = nullptr;
-    _velField = nullptr;
 
     _vertexArrayId = 0;
     _vertexBufferId = 0;
@@ -62,11 +61,6 @@ FlowRenderer::FlowRenderer(const ParamsMgr *pm, std::string &winName, std::strin
 
 // Destructor
 FlowRenderer::~FlowRenderer() {
-    if (_velField) {
-        delete _velField;
-        _velField = nullptr;
-    }
-
     // Delete vertex arrays
     if (_vertexArrayId) {
         glDeleteVertexArrays(1, &_vertexArrayId);
@@ -175,12 +169,8 @@ int FlowRenderer::_drawAStream(const std::vector<flow::Particle> &stream,
 }
 
 void FlowRenderer::_useOceanField() {
-    if (_velField) {
-        delete _velField;
-        _velField = nullptr;
-    }
-    _velField = new flow::OceanField();
-    _advec.UseVelocityField(_velField);
+    flow::OceanField *field = new flow::OceanField();
+    _advec.UseVelocityField(field);
     _advec.SetBaseStepSize(0.1f);
 
     int numOfSeeds = 5, numOfSteps = 100;
@@ -236,16 +226,11 @@ int FlowRenderer::_useSteadyVAPORField(const FlowParams *params) {
     if (!singleColor)
         field->UseScalar(scalarP);
 
-    // Step 5: hand over this velocity field
-    if (_velField)
-        delete _velField;
-    _velField = field;
-
     // Plant seeds
     std::vector<flow::Particle> seeds;
     _genSeedsXY(seeds);
     _advec.UseSeedParticles(seeds);
-    _advec.UseVelocityField(_velField);
+    _advec.UseVelocityField(field);
 
     // Do some advection
     int numOfSteps = 200;
