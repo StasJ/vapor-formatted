@@ -59,6 +59,7 @@ class GeometryWidget : public QWidget, public Ui_GeometryWidgetGUI {
     bool getAuxiliaryExtents(std::vector<double> &minFullExts, std::vector<double> &maxFullExts);
     bool getVectorExtents(std::vector<double> &minFullExts, std::vector<double> &maxFullExts);
     bool getVariableExtents(std::vector<double> &minFullExts, std::vector<double> &maxFullExts);
+    VAPoR::Box *getBoxHack();
 
     VAPoR::ParamsMgr *_paramsMgr;
     VAPoR::DataMgr *_dataMgr;
