@@ -41,8 +41,9 @@ class VelocityField {
     bool IsSteady;
     bool IsPeriodic;
     bool HasFieldValue;
-    std::string VarNameU, VarNameV, VarNameW; // Varuable names for 3 velocity components
-    std::string VarNameField;                 // Varuable names for the value field
+    // Varuable names for 3 velocity components
+    std::string VelocityNameU, VelocityNameV, VelocityNameW;
+    std::string ScalarName; // Varuable names for the value field
 };
 }; // namespace flow
 
