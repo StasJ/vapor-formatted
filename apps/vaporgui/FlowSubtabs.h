@@ -23,6 +23,7 @@ class ColorbarWidget;
 class VPushButton;
 class VComboBox;
 class VCheckBox;
+class VPathSelector;
 
 class QVaporSubtab : public QWidget {
     Q_OBJECT
@@ -75,6 +76,7 @@ class FlowSeedingSubtab : public QVaporSubtab {
     void _pushTestPressed();
     void _comboBoxSelected(int index);
     void _checkBoxSelected();
+    void _pathSelected();
 
   private:
     VAPoR::FlowParams *_params;
@@ -82,6 +84,7 @@ class FlowSeedingSubtab : public QVaporSubtab {
     VPushButton *_pushTest;
     VComboBox *_comboTest;
     VCheckBox *_checkboxTest;
+    VPathSelector *_pathSelectorTest;
 };
 
 class FlowGeometrySubtab : public QVaporSubtab {

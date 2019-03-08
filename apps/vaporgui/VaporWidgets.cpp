@@ -1,6 +1,12 @@
+#include <QFileDialog>
+
+#include "ErrorReporter.h"
+#include "FileOperationChecker.h"
 #include "VaporWidgets.h"
+
 #include "ui_VCheckBox.h"
 #include "ui_VComboBox.h"
+#include "ui_VPathSelector.h"
 #include "ui_VPushButton.h"
 
 #include <cassert>
@@ -71,11 +77,12 @@ bool VCheckBox::GetCheckState() const {
 
 void VCheckBox::_userClickedCheckbox() { emit _checkboxClicked(); }
 
-VPathSelector::VPathSelector(QWidget *parent, std::string labelText = "Label")
-    : QWidget(parent), Ui_VPathSelector {
+VPathSelector::VPathSelector(QWidget *parent, std::string labelText, std::string filePath)
+    : QWidget(parent), Ui_VPathSelector() {
     setupUi(this);
 
-    SetLAbelText(labelText);
+    SetLabelText(labelText);
+    SetPath(filePath);
 
     connect(_myButton, SIGNAL(pressed()), this, SLOT(_openFileDialog()));
     connect(_myLineEdit, SIGNAL(returnPressed()), this, SLOT(_setFilePath()));
@@ -85,14 +92,17 @@ void VPathSelector::SetLabelText(std::string text) {
     _myLabel->setText(QString::fromStdString(text));
 }
 
-std::string VPathSelector::GetPath() const { return _myLineEdit->text().toStdString(); }
+std::string VPathSelector::GetPath() const { return _filePath; }
 
 void VPathSelector::SetPath(std::string path) {
+    _filePath = path;
     _myLineEdit->setText(QString::fromStdString(path));
+    std::cout << "set path to " << _filePath << std::endl;
 }
 
 void VPathSelector::_openFileDialog() {
     QString title = "Select file containing seed points";
+    std::cout << "GetPath returns " << GetPath() << std::endl;
     QFileDialog fileDialog(this, title, QString::fromStdString(GetPath()));
 
     QFileDialog::AcceptMode acceptMode = QFileDialog::AcceptOpen;
@@ -100,9 +110,33 @@ void VPathSelector::_openFileDialog() {
 
     QFileDialog::FileMode fileMode = QFileDialog::ExistingFile;
     fileDialog.setFileMode(fileMode);
+    if (fileDialog.exec() != QDialog::Accepted)
+        return;
+
+    QStringList files = fileDialog.selectedFiles();
+    if (files.size() != 1)
+        return;
+
+    QString filePath = files[0];
+
+    bool operable = FileOperationChecker::FileGoodToRead(filePath);
+    if (!operable) {
+        MSG_ERR(FileOperationChecker::GetLastErrorMessage().toStdString());
+        SetPath(_filePath);
+        return;
+    }
+
+    SetPath(filePath.toStdString());
 }
 
 void VPathSelector::_setFilePath() {
-    string path = _myLineEdit->text().toStdString();
-    SetPath(path);
+    std::cout << "setFilePath" << std::endl;
+    QString filePath = _myLineEdit->text();
+    bool operable = FileOperationChecker::FileGoodToRead(filePath);
+    if (!operable) {
+        MSG_ERR(FileOperationChecker::GetLastErrorMessage().toStdString());
+        SetPath(_filePath);
+        return;
+    }
+    SetPath(filePath.toStdString());
 }

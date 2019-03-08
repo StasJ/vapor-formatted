@@ -7,6 +7,7 @@
 #include "Combo.h"
 #include "ui_VCheckBox.h"
 #include "ui_VComboBox.h"
+#include "ui_VPathSelector.h"
 #include "ui_VPushButton.h"
 
 namespace Ui {
@@ -69,7 +70,8 @@ class VPathSelector : public QWidget, public Ui_VPathSelector {
     Q_OBJECT
 
   public:
-    VPathSelector(QWidget *parent, std::string labelText);
+    VPathSelector(QWidget *parent, std::string labelText = "Label",
+                  std::string filePath = QDir::homePath().toStdString());
     void SetLabelText(std::string text);
     std::string GetPath() const;
     void SetPath(std::string defaultPath);
@@ -80,6 +82,9 @@ class VPathSelector : public QWidget, public Ui_VPathSelector {
 
   signals:
     void _pathChanged();
+
+  private:
+    std::string _filePath;
 };
 
 #endif // VAPORWIDGETS_H
