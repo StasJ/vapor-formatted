@@ -50,12 +50,14 @@ GLenum glCheckError_(const char *file, int line) {
 FlowRenderer::FlowRenderer(const ParamsMgr *pm, std::string &winName, std::string &dataSetName,
                            std::string &instName, DataMgr *dataMgr)
     : Renderer(pm, winName, dataSetName, FlowParams::GetClassType(), FlowRenderer::GetClassType(),
-               instName, dataMgr) {
+               instName, dataMgr),
+      _colorMapTexOffset(0) {
     _shader = nullptr;
     _velField = nullptr;
 
     _vertexArrayId = 0;
     _vertexBufferId = 0;
+    _colorMapTexId = 0;
 }
 
 // Destructor
@@ -74,6 +76,11 @@ FlowRenderer::~FlowRenderer() {
         glDeleteBuffers(1, &_vertexBufferId);
         _vertexBufferId = 0;
     }
+
+    if (_colorMapTexId) {
+        glDeleteTextures(1, &_colorMapTexId);
+        _colorMapTexId = 0;
+    }
 }
 
 int FlowRenderer::_initializeGL() {
@@ -87,25 +94,45 @@ int FlowRenderer::_initializeGL() {
     glGenVertexArrays(1, &_vertexArrayId);
     glGenBuffers(1, &_vertexBufferId);
 
+    /* Generate and configure 1D texture: _colorMapTexId */
+    glGenTextures(1, &_colorMapTexId);
+    glActiveTexture(GL_TEXTURE0 + _colorMapTexOffset);
+    glBindTexture(GL_TEXTURE_1D, _colorMapTexId);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glBindTexture(GL_TEXTURE_1D, 0);
+
     return 0;
 }
 
 int FlowRenderer::_paintGL(bool fast) {
+    FlowParams *params = dynamic_cast<FlowParams *>(GetActiveParams());
+
     int ready = _advec.IsReady();
     if (ready != 0) {
-        _useSteadyVAPORField();
+        _useSteadyVAPORField(params);
     }
+
+    // Update color map texture
+    _updateColormap(params);
+    glActiveTexture(GL_TEXTURE0 + _colorMapTexOffset);
+    glBindTexture(GL_TEXTURE_1D, _colorMapTexId);
+    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA32F, _colorMap.size() / 4, 0, GL_RGBA, GL_FLOAT,
+                 _colorMap.data());
+    glBindTexture(GL_TEXTURE_1D, _colorMapTexId);
 
     size_t numOfStreams = _advec.GetNumberOfStreams();
     for (size_t i = 0; i < numOfStreams; i++) {
         const auto &s = _advec.GetStreamAt(i);
-        _drawAStream(s);
+        _drawAStream(s, params);
     }
 
     return 0;
 }
 
-int FlowRenderer::_drawAStream(const std::vector<flow::Particle> &stream) const {
+int FlowRenderer::_drawAStream(const std::vector<flow::Particle> &stream,
+                               const FlowParams *params) const {
     size_t numOfPart = stream.size();
     float *posBuf = new float[4 * numOfPart];
     size_t offset = 0;
@@ -121,14 +148,25 @@ int FlowRenderer::_drawAStream(const std::vector<flow::Particle> &stream) const 
     _shader->Bind();
     _shader->SetUniform("MV", modelview);
     _shader->SetUniform("Projection", projection);
+    _shader->SetUniform("colorMapRange", glm::make_vec3(_colorMapRange));
+    bool singleColor = params->UseSingleColor();
+    _shader->SetUniform("singleColor", int(singleColor));
+
+    glActiveTexture(GL_TEXTURE0 + _colorMapTexOffset);
+    glBindTexture(GL_TEXTURE_1D, _colorMapTexId);
+    _shader->SetUniform("colorMapTexture", _colorMapTexOffset);
+
     glBindVertexArray(_vertexArrayId);
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBufferId);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * numOfPart, posBuf, GL_STREAM_DRAW);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, (void *)0);
     glDrawArrays(GL_LINE_STRIP, 0, numOfPart);
+
+    // Some OpenGL cleanup
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glDisableVertexAttribArray(0);
+    glBindTexture(GL_TEXTURE_1D, _colorMapTexId);
     glBindVertexArray(0);
 
     delete[] posBuf;
@@ -156,9 +194,8 @@ void FlowRenderer::_useOceanField() {
         _advec.Advect(flow::Advection::RK4);
 }
 
-int FlowRenderer::_useSteadyVAPORField() {
+int FlowRenderer::_useSteadyVAPORField(const FlowParams *params) {
     // Step 1: retrieve variable names from the params class
-    FlowParams *params = dynamic_cast<FlowParams *>(GetActiveParams());
     std::vector<std::string> velVars = params->GetFieldVariableNames();
     assert(velVars.size() == 3); // need to have three components
     for (auto &s : velVars) {
@@ -251,6 +288,32 @@ int FlowRenderer::_getAGrid(const FlowParams *params, int timestep, std::string 
     } else {
         *gridpp = grid;
         return 0;
+    }
+}
+
+void FlowRenderer::_updateColormap(FlowParams *params) {
+    if (params->UseSingleColor()) {
+        float singleColor[4];
+        params->GetConstantColor(singleColor);
+        singleColor[3] = 1.0f; // 1.0 in alpha channel
+        _colorMap.resize(8);   // _colorMap will have 2 RGBA values
+        for (int i = 0; i < 8; i++)
+            _colorMap[i] = singleColor[i % 4];
+        _colorMapRange[0] = 0.0f;  // min value of the color map
+        _colorMapRange[1] = 0.0f;  // max value of the color map
+        _colorMapRange[2] = 1e-5f; // diff of color map. Has to be non-zero though.
+    } else {
+        // This is the line that's not const
+        VAPoR::MapperFunction *mapperFunc =
+            params->GetMapperFunc(params->GetColorMapVariableName());
+        mapperFunc->makeLut(_colorMap);
+        assert(_colorMap.size() % 4 == 0);
+        std::vector<double> range = mapperFunc->getMinMaxMapValue();
+        _colorMapRange[0] = float(range[0]);
+        _colorMapRange[1] = float(range[1]);
+        _colorMapRange[2] = (_colorMapRange[1] - _colorMapRange[0]) > 1e-5f
+                                ? (_colorMapRange[1] - _colorMapRange[0])
+                                : 1e-5f;
     }
 }
 

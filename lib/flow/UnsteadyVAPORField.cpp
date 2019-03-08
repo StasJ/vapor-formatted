@@ -5,7 +5,8 @@ using namespace flow;
 
 UnsteadyVAPORField::UnsteadyVAPORField() { IsSteady = false; }
 
-UnsteadyVAPORField::~UnsteadyVAPORField() {}
+// Destructor
+UnsteadyVAPORField::~UnsteadyVAPORField() { this->DestroyGrids(); }
 
 int UnsteadyVAPORField::AddTimeStep(const VGrid *u, const VGrid *v, const VGrid *w,
                                     const VGrid *val, float time) {
