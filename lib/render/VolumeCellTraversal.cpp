@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <glm/glm.hpp>
 #include <vapor/GLManager.h>
 #include <vapor/ShaderManager.h>
