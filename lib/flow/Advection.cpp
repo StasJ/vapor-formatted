@@ -4,6 +4,7 @@
 
 using namespace flow;
 
+// Constructor;
 Advection::Advection() {
     _field = nullptr;
     _baseDeltaT = 0.01f;
@@ -13,11 +14,21 @@ Advection::Advection() {
     _upperAngleCos = glm::cos(glm::radians(_upperAngle));
 }
 
-Advection::~Advection() { _field = nullptr; }
+// Destructor;
+Advection::~Advection() {
+    if (_field) {
+        delete _field;
+        _field = nullptr;
+    }
+}
 
 void Advection::SetBaseStepSize(float f) { _baseDeltaT = f; }
 
-void Advection::UseField(const Field *p) { _field = p; }
+void Advection::UseField(const Field *p) {
+    if (_field)
+        delete _field;
+    _field = p;
+}
 
 void Advection::UseSeedParticles(std::vector<Particle> &seeds) {
     _streams.clear();
