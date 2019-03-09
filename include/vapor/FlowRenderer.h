@@ -39,6 +39,8 @@ class RENDER_API FlowRenderer : public Renderer {
     size_t _state_currentTS;
     int _state_refinementLevel;
     int _state_compressionLevel;
+    bool _state_velocitiesUpToDate;
+    bool _state_scalarUpToDate;
 
     // Member variables for OpenGL
     const GLint _colorMapTexOffset;
@@ -61,6 +63,8 @@ class RENDER_API FlowRenderer : public Renderer {
     int _genSeedsXY(std::vector<flow::Particle> &seeds) const;
 
     void _updateColormap(FlowParams *);
+
+    void _udpateAdvectionState(const FlowParams *);
 
 #ifndef WIN32
     double _getElapsedSeconds(const struct timeval *begin, const struct timeval *end) const;
