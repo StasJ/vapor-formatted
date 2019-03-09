@@ -17,7 +17,7 @@ Advection::~Advection() { _field = nullptr; }
 
 void Advection::SetBaseStepSize(float f) { _baseDeltaT = f; }
 
-void Advection::UseVelocityField(const Field *p) { _field = p; }
+void Advection::UseField(const Field *p) { _field = p; }
 
 void Advection::UseSeedParticles(std::vector<Particle> &seeds) {
     _streams.clear();

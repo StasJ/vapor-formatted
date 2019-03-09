@@ -7,7 +7,6 @@
 #endif
 
 #include "vapor/Advection.h"
-#include "vapor/Field.h"
 #include "vapor/FlowParams.h"
 #include "vapor/GLManager.h"
 #include "vapor/Renderer.h"
