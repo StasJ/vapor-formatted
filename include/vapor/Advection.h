@@ -1,5 +1,6 @@
 /*
  * This class performances advection calculations.
+ * It also holds all the particles resulting from an advection.
  */
 
 #ifndef ADVECTION_H
@@ -22,14 +23,26 @@ class Advection {
     Advection();
     ~Advection();
 
+    // Major action function
     int Advect(ADVECTION_METHOD method = RK4);
 
+    // Set advection basics
     void SetBaseStepSize(float deltaT);
     void UseVelocity(const VelocityField *p);
     void UseSeedParticles(std::vector<Particle> &seeds);
 
+    // Retrieve the resulting particles as "streams."
     size_t GetNumberOfStreams() const;
     const std::vector<Particle> &GetStreamAt(size_t i) const;
+
+    // As part of the functionality of this class, it manages the
+    // particles that it stores.
+    // 1) this function assigns values to the Particle.value field.
+    int AssignParticleValues(std::vector<float> &);
+    // 2) this function calls Particle::AttachProperty() function
+    int AttachParticleProperties(std::vector<float> &);
+    // 3) this function calls Particle::ClearProperties() function
+    int ClearParticleProperties();
 
     //
     // Output a file that could be plotted by gnuplot
@@ -41,11 +54,9 @@ class Advection {
     // Query properties (most are properties of the velocity field)
     int IsReady() const;
     bool IsSteady() const;
-    // bool HasScalarValue() const;
     const std::string GetVelocityNameU() const;
     const std::string GetVelocityNameV() const;
     const std::string GetVelocityNameW() const;
-    // const std::string GetScalarName() const;
 
   private:
     const VelocityField *_field;
@@ -67,7 +78,6 @@ class Advection {
     float _calcAdjustFactor(const Particle &past2, const Particle &past1,
                             const Particle &current) const;
 };
-
 }; // namespace flow
 
 #endif
