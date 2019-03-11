@@ -1,7 +1,7 @@
 #include "vapor/FlowRenderer.h"
 #include "vapor/OceanField.h"
 #include "vapor/Particle.h"
-#include "vapor/SteadyVAPORField.h"
+#include "vapor/SteadyVAPORVelocity.h"
 #include "vapor/glutil.h"
 #include <cstring>
 #include <iostream>
@@ -257,8 +257,8 @@ int FlowRenderer::_useSteadyVAPORField(const FlowParams *params) {
         } */
     }
 
-    // Step 4: create a SteadyVAPORField using these grids, and ask Advection to use it!
-    flow::SteadyVAPORField *field = new flow::SteadyVAPORField();
+    // Step 4: create a SteadyVAPORVelocity using these grids, and ask Advection to use it!
+    flow::SteadyVAPORVelocity *field = new flow::SteadyVAPORVelocity();
     field->UseVelocities(gridU, gridV, gridW);
     // if( !singleColor )
     //    field->UseScalar( scalarP );
@@ -267,7 +267,7 @@ int FlowRenderer::_useSteadyVAPORField(const FlowParams *params) {
     std::vector<flow::Particle> seeds;
     _genSeedsXY(seeds);
     _advec.UseSeedParticles(seeds);
-    _advec.UseField(field);
+    _advec.UseVelocity(field);
 
     // Do some advection
     int numOfSteps = 200;

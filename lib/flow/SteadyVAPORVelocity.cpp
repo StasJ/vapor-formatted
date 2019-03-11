@@ -1,10 +1,10 @@
-#include "vapor/SteadyVAPORField.h"
+#include "vapor/SteadyVAPORVelocity.h"
 #include "vapor/Particle.h"
 
 using namespace flow;
 
 // Constructor
-SteadyVAPORField::SteadyVAPORField() {
+SteadyVAPORVelocity::SteadyVAPORVelocity() {
     IsSteady = true;
 
     _velocityU = nullptr;
@@ -13,9 +13,9 @@ SteadyVAPORField::SteadyVAPORField() {
 }
 
 // Destructor
-SteadyVAPORField::~SteadyVAPORField() { this->DestroyGrids(); }
+SteadyVAPORVelocity::~SteadyVAPORVelocity() { this->DestroyGrids(); }
 
-void SteadyVAPORField::DestroyGrids() {
+void SteadyVAPORVelocity::DestroyGrids() {
     if (_velocityU)
         delete _velocityU;
     if (_velocityV)
@@ -27,7 +27,7 @@ void SteadyVAPORField::DestroyGrids() {
     _velocityW = nullptr;
 }
 
-int SteadyVAPORField::GetVelocity(float t, const glm::vec3 &pos, glm::vec3 &vel) const {
+int SteadyVAPORVelocity::GetVelocity(float t, const glm::vec3 &pos, glm::vec3 &vel) const {
     if (!_velocityU || !_velocityV || !_velocityW)
         return NO_VECTOR_FIELD_YET;
 
@@ -44,7 +44,7 @@ int SteadyVAPORField::GetVelocity(float t, const glm::vec3 &pos, glm::vec3 &vel)
     return 0;
 }
 
-bool SteadyVAPORField::InsideVolume(float time, const glm::vec3 &pos) const {
+bool SteadyVAPORVelocity::InsideVolume(float time, const glm::vec3 &pos) const {
     std::vector<double> coords{pos.x, pos.y, pos.z};
     if (!_velocityU->InsideGrid(coords))
         return false;
@@ -56,13 +56,13 @@ bool SteadyVAPORField::InsideVolume(float time, const glm::vec3 &pos) const {
     return true;
 }
 
-void SteadyVAPORField::UseVelocities(const VGrid *u, const VGrid *v, const VGrid *w) {
+void SteadyVAPORVelocity::UseVelocities(const VGrid *u, const VGrid *v, const VGrid *w) {
     _velocityU = u;
     _velocityV = v;
     _velocityW = w;
 }
 
-int SteadyVAPORField::GetExtents(float time, glm::vec3 &minExt, glm::vec3 &maxExt) const {
+int SteadyVAPORVelocity::GetExtents(float time, glm::vec3 &minExt, glm::vec3 &maxExt) const {
     if (!_velocityU || !_velocityV || !_velocityW)
         return NO_VECTOR_FIELD_YET;
 

@@ -24,7 +24,7 @@ Advection::~Advection() {
 
 void Advection::SetBaseStepSize(float f) { _baseDeltaT = f; }
 
-void Advection::UseField(const VelocityField *p) {
+void Advection::UseVelocity(const VelocityField *p) {
     if (_field)
         delete _field;
     _field = p;

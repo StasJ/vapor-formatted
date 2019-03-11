@@ -25,7 +25,7 @@ class Advection {
     int Advect(ADVECTION_METHOD method = RK4);
 
     void SetBaseStepSize(float deltaT);
-    void UseField(const VelocityField *p);
+    void UseVelocity(const VelocityField *p);
     void UseSeedParticles(std::vector<Particle> &seeds);
 
     size_t GetNumberOfStreams() const;
