@@ -24,7 +24,7 @@ Advection::~Advection() {
 
 void Advection::SetBaseStepSize(float f) { _baseDeltaT = f; }
 
-void Advection::UseField(const Field *p) {
+void Advection::UseField(const VelocityField *p) {
     if (_field)
         delete _field;
     _field = p;
@@ -61,12 +61,16 @@ bool Advection::IsPeriodic() const {
     else
         return false;
 }
-bool Advection::HasScalarValue() const {
-    if (_field)
+/*
+bool
+Advection::HasScalarValue() const
+{
+    if( _field )
         return _field->HasScalarValue;
     else
         return false;
 }
+*/
 const std::string Advection::GetVelocityNameU() const {
     if (_field)
         return _field->VelocityNameU;
@@ -85,12 +89,16 @@ const std::string Advection::GetVelocityNameW() const {
     else
         return std::string("");
 }
-const std::string Advection::GetScalarName() const {
-    if (_field)
+/*
+const std::string
+Advection::GetScalarName() const
+{
+    if( _field )
         return _field->ScalarName;
     else
         return std::string("");
 }
+*/
 
 int Advection::Advect(ADVECTION_METHOD method) {
     int ready = IsReady();
@@ -124,12 +132,14 @@ int Advection::Advect(ADVECTION_METHOD method) {
 
         if (rv != 0)
             continue;
-
-        if (_field->HasScalarValue) {
-            rv = _field->GetScalar(p1.time, p1.location, p1.value);
-            if (rv != 0)
-                continue;
-        }
+        /*
+                if( _field->HasScalarValue )
+                {
+                    rv = _field->GetScalar( p1.time, p1.location, p1.value );
+                    if( rv != 0 )
+                        continue;
+                }
+        */
 
         s.push_back(p1);
     }

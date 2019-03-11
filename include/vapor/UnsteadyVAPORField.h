@@ -5,11 +5,11 @@
 #ifndef UNSTEADYVAPORFIELD_H
 #define UNSTEADYVAPORFIELD_H
 
-#include "vapor/Field.h"
 #include "vapor/Grid.h"
+#include "vapor/VelocityField.h"
 
 namespace flow {
-class UnsteadyVAPORField : public Field {
+class UnsteadyVAPORField : public VelocityField {
 
     // Define a few alias
     using VGrid = VAPoR::Grid;
@@ -19,7 +19,7 @@ class UnsteadyVAPORField : public Field {
     ~UnsteadyVAPORField();
 
     int GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &vel) const;
-    int GetScalar(float time, const glm::vec3 &pos, float &val) const;
+    // int  GetScalar  (   float time, const glm::vec3& pos, float& val ) const;
     bool InsideVolume(float time, const glm::vec3 &pos) const;
 
     // Note: if time falls in between two time steps, the extents of the nearest
@@ -45,7 +45,7 @@ class UnsteadyVAPORField : public Field {
     std::vector<const VGrid *> _velArrU;
     std::vector<const VGrid *> _velArrV;
     std::vector<const VGrid *> _velArrW;
-    std::vector<const VGrid *> _scalarArr;
+    // std::vector<const VGrid*>   _scalarArr;
     std::vector<float> _timestamps; // always in ascending order
 
     //

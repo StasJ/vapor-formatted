@@ -48,17 +48,21 @@ int SteadyVAPORField::GetVelocity(float t, const glm::vec3 &pos, glm::vec3 &vel)
     return 0;
 }
 
-int SteadyVAPORField::GetScalar(float t, const glm::vec3 &pos, float &val) const {
-    if (!_scalar)
-        return NO_VALUE_FIELD_YET;
+#if 0
+int
+SteadyVAPORField::GetScalar( float t, const glm::vec3& pos, float& val ) const
+{
+    if( !_scalar )
+        return NO_VALUE_FIELD_YET ;
 
-    std::vector<double> coords{pos.x, pos.y, pos.z};
-    float v = _scalar->GetValue(coords);
+    std::vector<double> coords {pos.x, pos.y, pos.z};
+    float v = _scalar->GetValue( coords );
     // Need to do: examine v is not missing value.
     val = v;
 
     return 0;
 }
+#endif
 
 bool SteadyVAPORField::InsideVolume(float time, const glm::vec3 &pos) const {
     std::vector<double> coords{pos.x, pos.y, pos.z};
@@ -82,10 +86,14 @@ void SteadyVAPORField::UseVelocities(const VGrid *u, const VGrid *v, const VGrid
     _velocityW = w;
 }
 
-void SteadyVAPORField::UseScalar(const VGrid *val) {
-    _scalar = val;
+#if 0
+void 
+SteadyVAPORField::UseScalar( const VGrid* val )
+{
+    _scalar        = val;
     HasScalarValue = true;
 }
+#endif
 
 int SteadyVAPORField::GetExtents(float time, glm::vec3 &minExt, glm::vec3 &maxExt) const {
     if (!_velocityU || !_velocityV || !_velocityW)

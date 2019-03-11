@@ -51,7 +51,7 @@ class RENDER_API FlowRenderer : public Renderer {
     GLuint _colorMapTexId;
 
     // Member functions
-    void _useOceanField();
+    // void _useOceanField();
     int _useSteadyVAPORField(const FlowParams *);
 
     int _drawAStream(const std::vector<flow::Particle> &, const FlowParams *) const;

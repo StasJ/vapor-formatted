@@ -201,21 +201,25 @@ void FlowRenderer::_updateFlowStates(const FlowParams *params) {
     }
 }
 
-void FlowRenderer::_useOceanField() {
-    flow::OceanField *field = new flow::OceanField();
-    _advec.UseField(field);
-    _advec.SetBaseStepSize(0.1f);
+#if 0
+void
+FlowRenderer::_useOceanField()
+{
+    flow::OceanField* field = new flow::OceanField();
+    _advec.UseField( field );
+    _advec.SetBaseStepSize( 0.1f );
 
     int numOfSeeds = 5, numOfSteps = 100;
-    std::vector<flow::Particle> seeds(numOfSeeds);
-    seeds[0].location = glm::vec3(0.65f, 0.65f, 0.1f);
-    seeds[1].location = glm::vec3(0.3f, 0.3f, 0.1f);
-    for (int i = 2; i < numOfSeeds; i++)
-        seeds[i].location = glm::vec3(float(i + 1) / float(numOfSeeds + 1), 0.0f, 0.0f);
-    _advec.UseSeedParticles(seeds);
-    for (int i = 0; i < numOfSteps; i++)
-        _advec.Advect(flow::Advection::RK4);
+    std::vector<flow::Particle> seeds( numOfSeeds );
+    seeds[0].location = glm::vec3( 0.65f, 0.65f, 0.1f );
+    seeds[1].location = glm::vec3( 0.3f, 0.3f, 0.1f );
+    for( int i = 2; i < numOfSeeds; i++ )
+        seeds[i].location = glm::vec3( float(i + 1) / float(numOfSeeds + 1), 0.0f, 0.0f );
+    _advec.UseSeedParticles( seeds );
+    for( int i = 0; i < numOfSteps; i++ )
+        _advec.Advect( flow::Advection::RK4 );
 }
+#endif
 
 int FlowRenderer::_useSteadyVAPORField(const FlowParams *params) {
     // Step 1: retrieve variable names from the params class
@@ -245,19 +249,19 @@ int FlowRenderer::_useSteadyVAPORField(const FlowParams *params) {
     Grid *scalarP = nullptr;
     bool singleColor = params->UseSingleColor();
     if (!singleColor) {
-        std::string scalarVar = params->GetColorMapVariableName();
-        if (!scalarVar.empty()) {
-            rv = _getAGrid(params, currentTS, scalarVar, &scalarP);
-            if (rv != 0)
-                return rv;
-        }
+        /* std::string scalarVar = params->GetColorMapVariableName();
+        if( !scalarVar.empty() )
+        {
+            rv      = _getAGrid( params, currentTS, scalarVar, &scalarP );
+            if( rv != 0 )   return rv;
+        } */
     }
 
     // Step 4: create a SteadyVAPORField using these grids, and ask Advection to use it!
     flow::SteadyVAPORField *field = new flow::SteadyVAPORField();
     field->UseVelocities(gridU, gridV, gridW);
-    if (!singleColor)
-        field->UseScalar(scalarP);
+    // if( !singleColor )
+    //    field->UseScalar( scalarP );
 
     // Plant seeds
     std::vector<flow::Particle> seeds;

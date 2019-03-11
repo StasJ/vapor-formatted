@@ -48,14 +48,19 @@ int OceanField::GetVelocity(float t, const glm::vec3 &pos, glm::vec3 &vel) const
     return 0;
 }
 
-int OceanField::GetScalar(float t, const glm::vec3 &pos, float &val) const {
-    if (!InsideVolume(t, pos))
+#if 0
+int
+OceanField::GetScalar( float t, const glm::vec3& pos, float& val ) const
+{
+    if( !InsideVolume( t, pos ) )
         return OUT_OF_FIELD;
-    else {
-        val = glm::length(pos);
+    else
+    {
+        val = glm::length( pos );
         return 0;
     }
 }
+#endif
 
 int OceanField::GetExtents(float time, glm::vec3 &minExt, glm::vec3 &maxExt) const {
     minExt = glm::vec3(-1.0, -1.0, -1.0);

@@ -1,13 +1,11 @@
 /*
  * The base class of all possible fields for flow integration.
- * It must contain a velocity field and possibly a scalar field.
  */
 
 #ifndef FIELD_H
 #define FIELD_H
 
 #include <glm/glm.hpp>
-#include <string>
 
 namespace flow {
 class Field {
@@ -15,17 +13,6 @@ class Field {
     // Constructor and destructor
     Field();
     virtual ~Field();
-
-    //
-    // Get the velocity value at a certain position, at a certain time.
-    //
-    virtual int GetVelocity(float time, const glm::vec3 &pos, // input
-                            glm::vec3 &vel) const = 0;        // output
-    //
-    // Get the field value at a certain position, at a certain time.
-    //
-    virtual int GetScalar(float time, const glm::vec3 &pos, // input
-                          float &val) const = 0;            // output
 
     //
     // If a given position at a given time is inside of this field
@@ -40,10 +27,6 @@ class Field {
     // Class members
     bool IsSteady;
     bool IsPeriodic;
-    bool HasScalarValue;
-    // Varuable names for 3 velocity components
-    std::string VelocityNameU, VelocityNameV, VelocityNameW;
-    std::string ScalarName; // Varuable names for the value field
 };
 }; // namespace flow
 
