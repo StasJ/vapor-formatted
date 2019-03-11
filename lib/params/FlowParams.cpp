@@ -20,11 +20,11 @@ FlowParams::FlowParams(DataMgr *dataManager, ParamsBase::StateSave *stateSave, X
 // Destructor
 FlowParams::~FlowParams() { SetDiagMsg("FlowParams::~FlowParams() this=%p", this); }
 
-void FlowParams::SetSteady(bool steady) {
+void FlowParams::SetIsSteady(bool steady) {
     SetValueLong(_isSteadyTag, "are we using steady advection", long(steady));
 }
 
-bool FlowParams::GetSteady() const {
+bool FlowParams::GetIsSteady() const {
     long rv = GetValueLong(_isSteadyTag, long(true));
     return bool(rv);
 }

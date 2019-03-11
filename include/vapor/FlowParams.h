@@ -23,8 +23,8 @@ class PARAMS_API FlowParams : public RenderParams {
 
     // True  == Steady
     // False == Unteady
-    void SetSteady(bool steady);
-    bool GetSteady() const;
+    void SetIsSteady(bool steady);
+    bool GetIsSteady() const;
 
   protected:
     static const std::string _isSteadyTag;
