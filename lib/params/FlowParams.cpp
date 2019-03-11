@@ -2,11 +2,7 @@
 
 using namespace VAPoR;
 
-/*
-const std::string FlowParams::_velocityUTag = "velocityUTag";
-const std::string FlowParams::_velocityVTag = "velocityVTag";
-const std::string FlowParams::_velocityWTag = "velocityWTag";
-*/
+const std::string FlowParams::_isSteadyTag = "isSteadyTag";
 
 static RenParamsRegistrar<FlowParams> registrar(FlowParams::GetClassType());
 
@@ -24,40 +20,11 @@ FlowParams::FlowParams(DataMgr *dataManager, ParamsBase::StateSave *stateSave, X
 // Destructor
 FlowParams::~FlowParams() { SetDiagMsg("FlowParams::~FlowParams() this=%p", this); }
 
-/*
-void
-FlowParams::SetVelocityVarNameU( std::string& s )
-{
-    SetValueString( _velocityUTag, "Specify U velocity name", s );
+void FlowParams::SetSteady(bool steady) {
+    SetValueLong(_isSteadyTag, "are we using steady advection", long(steady));
 }
 
-void
-FlowParams::SetVelocityVarNameV( std::string& s )
-{
-    SetValueString( _velocityVTag, "Specify V velocity name", s );
+bool FlowParams::GetSteady() const {
+    long rv = GetValueLong(_isSteadyTag, long(true));
+    return bool(rv);
 }
-
-void
-FlowParams::SetVelocityVarNameW( std::string& s )
-{
-    SetValueString( _velocityWTag, "Specify W velocity name", s );
-}
-
-std::string
-FlowParams::GetVelocityVarNameU() const
-{
-    return GetValueString( _velocityUTag, "" );
-}
-
-std::string
-FlowParams::GetVelocityVarNameV() const
-{
-    return GetValueString( _velocityVTag, "" );
-}
-
-std::string
-FlowParams::GetVelocityVarNameW() const
-{
-    return GetValueString( _velocityWTag, "" );
-}
-*/
