@@ -49,13 +49,48 @@ int Advection::IsReady() const {
     return 0;
 }
 
-bool Advection::IsSteady() const { return _field->IsSteady; }
-bool Advection::IsPeriodic() const { return _field->IsPeriodic; }
-bool Advection::HasScalarValue() const { return _field->HasScalarValue; }
-const std::string &Advection::GetVelocityNameU() const { return _field->VelocityNameU; }
-const std::string &Advection::GetVelocityNameV() const { return _field->VelocityNameV; }
-const std::string &Advection::GetVelocityNameW() const { return _field->VelocityNameW; }
-const std::string &Advection::GetScalarName() const { return _field->ScalarName; }
+bool Advection::IsSteady() const {
+    if (_field)
+        return _field->IsSteady;
+    else
+        return false;
+}
+bool Advection::IsPeriodic() const {
+    if (_field)
+        return _field->IsPeriodic;
+    else
+        return false;
+}
+bool Advection::HasScalarValue() const {
+    if (_field)
+        return _field->HasScalarValue;
+    else
+        return false;
+}
+const std::string Advection::GetVelocityNameU() const {
+    if (_field)
+        return _field->VelocityNameU;
+    else
+        return std::string("");
+}
+const std::string Advection::GetVelocityNameV() const {
+    if (_field)
+        return _field->VelocityNameV;
+    else
+        return std::string("");
+}
+const std::string Advection::GetVelocityNameW() const {
+    if (_field)
+        return _field->VelocityNameW;
+    else
+        return std::string("");
+}
+const std::string Advection::GetScalarName() const {
+    if (_field)
+        return _field->ScalarName;
+    else
+        return std::string("");
+}
 
 int Advection::Advect(ADVECTION_METHOD method) {
     int ready = IsReady();
