@@ -56,7 +56,7 @@ GeometryWidget::GeometryWidget(QWidget *parent) : QWidget(parent), Ui_GeometryWi
     _paramsMgr = NULL;
     _dataMgr = NULL;
     _rParams = NULL;
-    //    _initialized = false;
+
     _functionPtr = &VAPoR::RenderParams::GetBox;
 
     _minXCombo = new Combo(_minXEdit, _minXSlider);
@@ -386,14 +386,6 @@ void GeometryWidget::Update(ParamsMgr *paramsMgr, DataMgr *dataMgr, RenderParams
     _rParams = rParams;
 
     _boxCallback = std::bind(_functionPtr, _rParams);
-    //    if (!_initialized) {
-    //        _boxCallback = std::bind( &VAPoR::RenderParams::GetBox, _rParams);
-    //        _initialized = true;
-    //    }
-    //    else
-    //        _boxCallback = std::bind( _functionPtr, _rParams);
-
-    _boxCallback();
 
     // Get current domain extents
     //
@@ -416,15 +408,8 @@ void GeometryWidget::Update(ParamsMgr *paramsMgr, DataMgr *dataMgr, RenderParams
     }
 }
 
-// void GeometryWidget::SetBoxCallback( std::function<VAPoR::Box*(void)> callback )
-void GeometryWidget::SetBoxCallback(VAPoR::Box *(VAPoR::RenderParams::*callback)())
-// void GeometryWidget::SetBoxCallback( std::function<VAPoR::Box* ()> callback )
-{
-    if (_rParams == nullptr)
-        return;
-
+void GeometryWidget::SetBoxCallback(VAPoR::Box *(VAPoR::RenderParams::*callback)() const) {
     _functionPtr = callback;
-    //_boxCallback = std::bind( callback, _rParams);
 }
 
 void GeometryWidget::getFullExtents(std::vector<double> &minFullExt,
