@@ -6,7 +6,6 @@
 #ifndef FIELD_H
 #define FIELD_H
 
-#include "vapor/Particle.h"
 #include <glm/glm.hpp>
 #include <string>
 
