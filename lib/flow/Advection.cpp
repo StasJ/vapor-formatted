@@ -55,12 +55,6 @@ bool Advection::IsSteady() const {
     else
         return false;
 }
-bool Advection::IsPeriodic() const {
-    if (_field)
-        return _field->IsPeriodic;
-    else
-        return false;
-}
 /*
 bool
 Advection::HasScalarValue() const

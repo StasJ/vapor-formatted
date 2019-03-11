@@ -22,7 +22,6 @@ class SteadyVAPORField : public VelocityField {
     // Retrieve velocity or field value
     //
     int GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &vel) const;
-    // int  GetScalar  (   float time, const glm::vec3& pos, float& val ) const;
     bool InsideVolume(float time, const glm::vec3 &pos) const;
     int GetExtents(float time, glm::vec3 &minExt, glm::vec3 &maxExt) const;
 
@@ -30,7 +29,6 @@ class SteadyVAPORField : public VelocityField {
     // Modifiers
     //
     void UseVelocities(const VGrid *u, const VGrid *v, const VGrid *w);
-    // void UseScalar (    const VGrid* val );
 
     //
     // Since the grids are passed in, SteadyVAPORField does NOT destroy them by default.
@@ -45,7 +43,6 @@ class SteadyVAPORField : public VelocityField {
     const VGrid *_velocityU;
     const VGrid *_velocityV;
     const VGrid *_velocityW;
-    const VGrid *_scalar;
 };
 
 }; // namespace flow

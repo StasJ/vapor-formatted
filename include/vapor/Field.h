@@ -26,7 +26,6 @@ class Field {
 
     // Class members
     bool IsSteady;
-    bool IsPeriodic;
 };
 }; // namespace flow
 
