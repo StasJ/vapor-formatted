@@ -29,7 +29,7 @@ void SteadyVAPORVelocity::DestroyGrids() {
 
 int SteadyVAPORVelocity::GetVelocity(float t, const glm::vec3 &pos, glm::vec3 &vel) const {
     if (!_gridU || !_gridV || !_gridW)
-        return NO_VECTOR_FIELD_YET;
+        return NO_FIELD_YET;
 
     if (!InsideVolume(t, pos))
         return OUT_OF_FIELD;
@@ -64,7 +64,7 @@ void SteadyVAPORVelocity::UseGrids(const VGrid *u, const VGrid *v, const VGrid *
 
 int SteadyVAPORVelocity::GetExtents(float time, glm::vec3 &minExt, glm::vec3 &maxExt) const {
     if (!_gridU || !_gridV || !_gridW)
-        return NO_VECTOR_FIELD_YET;
+        return NO_FIELD_YET;
 
     std::vector<double> gridMin, gridMax;
     _gridU->GetUserExtents(gridMin, gridMax);
