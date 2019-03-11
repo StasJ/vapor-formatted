@@ -56,7 +56,7 @@ bool SteadyVAPORVelocity::InsideVolume(float time, const glm::vec3 &pos) const {
     return true;
 }
 
-void SteadyVAPORVelocity::UseVelocities(const VGrid *u, const VGrid *v, const VGrid *w) {
+void SteadyVAPORVelocity::UseGrids(const VGrid *u, const VGrid *v, const VGrid *w) {
     _gridU = u;
     _gridV = v;
     _gridW = w;
