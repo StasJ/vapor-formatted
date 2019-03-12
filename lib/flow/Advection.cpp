@@ -6,7 +6,7 @@ using namespace flow;
 
 // Constructor;
 Advection::Advection() {
-    _field = nullptr;
+    _velocity = nullptr;
     _baseDeltaT = 0.01f;
     _lowerAngle = 3.0f;
     _upperAngle = 15.0f;
@@ -16,18 +16,18 @@ Advection::Advection() {
 
 // Destructor;
 Advection::~Advection() {
-    if (_field) {
-        delete _field;
-        _field = nullptr;
+    if (_velocity) {
+        delete _velocity;
+        _velocity = nullptr;
     }
 }
 
 void Advection::SetBaseStepSize(float f) { _baseDeltaT = f; }
 
 void Advection::UseVelocity(const VelocityField *p) {
-    if (_field)
-        delete _field;
-    _field = p;
+    if (_velocity)
+        delete _velocity;
+    _velocity = p;
 }
 
 void Advection::UseSeedParticles(std::vector<Particle> &seeds) {
@@ -38,7 +38,7 @@ void Advection::UseSeedParticles(std::vector<Particle> &seeds) {
 }
 
 int Advection::IsReady() const {
-    if (_field == nullptr)
+    if (_velocity == nullptr)
         return NO_FIELD_YET;
 
     for (const auto &s : _streams) {
@@ -50,8 +50,8 @@ int Advection::IsReady() const {
 }
 
 bool Advection::IsSteady() const {
-    if (_field)
-        return _field->IsSteady;
+    if (_velocity)
+        return _velocity->IsSteady;
     else
         return false;
 }
@@ -59,27 +59,27 @@ bool Advection::IsSteady() const {
 bool
 Advection::HasScalarValue() const
 {
-    if( _field )
-        return _field->HasScalarValue;
+    if( _velocity )
+        return _velocity->HasScalarValue;
     else
         return false;
 }
 */
 const std::string Advection::GetVelocityNameU() const {
-    if (_field)
-        return _field->VelocityNameU;
+    if (_velocity)
+        return _velocity->VelocityNameU;
     else
         return std::string("");
 }
 const std::string Advection::GetVelocityNameV() const {
-    if (_field)
-        return _field->VelocityNameV;
+    if (_velocity)
+        return _velocity->VelocityNameV;
     else
         return std::string("");
 }
 const std::string Advection::GetVelocityNameW() const {
-    if (_field)
-        return _field->VelocityNameW;
+    if (_velocity)
+        return _velocity->VelocityNameW;
     else
         return std::string("");
 }
@@ -87,8 +87,8 @@ const std::string Advection::GetVelocityNameW() const {
 const std::string
 Advection::GetScalarName() const
 {
-    if( _field )
-        return _field->ScalarName;
+    if( _velocity )
+        return _velocity->ScalarName;
     else
         return std::string("");
 }
@@ -101,7 +101,7 @@ int Advection::Advect(ADVECTION_METHOD method) {
 
     for (auto &s : _streams) {
         const auto &p0 = s.back();
-        if (!_field->InsideVolume(p0.time, p0.location))
+        if (!_velocity->InsideVolume(p0.time, p0.location))
             continue;
 
         float dt = _baseDeltaT;
@@ -127,9 +127,9 @@ int Advection::Advect(ADVECTION_METHOD method) {
         if (rv != 0)
             continue;
         /*
-                if( _field->HasScalarValue )
+                if( _velocity->HasScalarValue )
                 {
-                    rv = _field->GetScalar( p1.time, p1.location, p1.value );
+                    rv = _velocity->GetScalar( p1.time, p1.location, p1.value );
                     if( rv != 0 )
                         continue;
                 }
@@ -143,7 +143,7 @@ int Advection::Advect(ADVECTION_METHOD method) {
 
 int Advection::_advectEuler(const Particle &p0, float dt, Particle &p1) const {
     glm::vec3 v0;
-    int rv = _field->GetVelocity(p0.time, p0.location, v0);
+    int rv = _velocity->GetVelocity(p0.time, p0.location, v0);
     assert(rv == 0);
     p1.location = p0.location + dt * v0;
     p1.time = p0.time + dt;
@@ -154,15 +154,15 @@ int Advection::_advectRK4(const Particle &p0, float dt, Particle &p1) const {
     glm::vec3 k1, k2, k3, k4;
     float dt2 = dt * 0.5f;
     int rv;
-    rv = _field->GetVelocity(p0.time, p0.location, k1);
+    rv = _velocity->GetVelocity(p0.time, p0.location, k1);
     assert(rv == 0);
-    rv = _field->GetVelocity(p0.time + dt2, p0.location + dt2 * k1, k2);
+    rv = _velocity->GetVelocity(p0.time + dt2, p0.location + dt2 * k1, k2);
     if (rv != 0)
         return rv;
-    rv = _field->GetVelocity(p0.time + dt2, p0.location + dt2 * k2, k3);
+    rv = _velocity->GetVelocity(p0.time + dt2, p0.location + dt2 * k2, k3);
     if (rv != 0)
         return rv;
-    rv = _field->GetVelocity(p0.time + dt, p0.location + dt * k3, k4);
+    rv = _velocity->GetVelocity(p0.time + dt, p0.location + dt * k3, k4);
     if (rv != 0)
         return rv;
     p1.location = p0.location + dt / 6.0f * (k1 + 2.0f * (k2 + k3) + k4);
