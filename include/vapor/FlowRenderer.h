@@ -31,7 +31,7 @@ class RENDER_API FlowRenderer : public Renderer {
     void _clearCache(){};
 
     // Member variables
-    flow::Advection _advec;
+    flow::Advection _advection;
     std::vector<float> _colorMap;
     float _colorMapRange[3]; // min, max, and their diff
 
@@ -50,7 +50,9 @@ class RENDER_API FlowRenderer : public Renderer {
     GLuint _vertexBufferId;
     GLuint _colorMapTexId;
 
+    //
     // Member functions
+    //
     // void _useOceanField();
     int _useSteadyVAPORField(const FlowParams *);
 
@@ -67,6 +69,9 @@ class RENDER_API FlowRenderer : public Renderer {
 
     // Update values of _cache_* and _state_* member variables.
     void _updateFlowStates(const FlowParams *);
+
+    // Perform advection one step at a time
+    int _advectAStep();
 
 #ifndef WIN32
     double _getElapsedSeconds(const struct timeval *begin, const struct timeval *end) const;
