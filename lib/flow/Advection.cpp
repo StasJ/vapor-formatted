@@ -99,6 +99,7 @@ int Advection::Advect(ADVECTION_METHOD method) {
     if (ready != 0)
         return ready;
 
+    bool happened = false;
     for (auto &s : _streams) {
         const auto &p0 = s.back();
         if (!_velocity->InsideVolume(p0.time, p0.location))
@@ -123,14 +124,17 @@ int Advection::Advect(ADVECTION_METHOD method) {
             rv = _advectRK4(p0, dt, p1);
             break;
         }
-
         if (rv != 0)
             continue;
 
+        happened = true;
         s.push_back(p1);
     }
 
-    return 0;
+    if (happened)
+        return ADVECT_HAPPENED;
+    else
+        return 0;
 }
 
 int Advection::_advectEuler(const Particle &p0, float dt, Particle &p1) const {
