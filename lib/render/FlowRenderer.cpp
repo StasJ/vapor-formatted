@@ -118,7 +118,7 @@ int FlowRenderer::_paintGL(bool fast) {
 
     // Advect 200 steps
     for (int i = 0; i < 200; i++)
-        _advectAStep();
+        _advectAStep(params);
 
     // Update color map texture
     _updateColormap(params);
@@ -347,14 +347,21 @@ void FlowRenderer::_updateColormap(FlowParams *params) {
     }
 }
 
-int FlowRenderer::_advectAStep() {
-    int ready = _advection.CheckReady();
-    if (ready != 0)
-        return ready;
+int FlowRenderer::_advectAStep(FlowParams *params) {
+    int rv = _advection.CheckReady();
+    if (rv != 0)
+        return rv;
     else
-        _advection.Advect(flow::Advection::RK4);
+        rv = _advection.Advect(flow::Advection::RK4);
 
-    return 0;
+    if (rv <= 0) // Error or no advection happened
+        return rv;
+    else // Advection happened
+    {
+        long already = params->GetAlreadyAdvectionStep();
+        params->SetAlreadyAdvectionStep(already + 1);
+        return 0;
+    }
 }
 
 #ifndef WIN32

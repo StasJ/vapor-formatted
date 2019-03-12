@@ -71,7 +71,7 @@ class RENDER_API FlowRenderer : public Renderer {
     void _updateFlowStates(const FlowParams *);
 
     // Perform advection one step at a time
-    int _advectAStep();
+    int _advectAStep(FlowParams *p);
 
 #ifndef WIN32
     double _getElapsedSeconds(const struct timeval *begin, const struct timeval *end) const;
