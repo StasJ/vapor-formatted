@@ -1,4 +1,5 @@
 #include "vapor/Particle.h"
+#include <stdexcept>
 
 using namespace flow;
 
@@ -40,44 +41,22 @@ void Particle::AttachProperty(float v) {
     _properties.insert_after(itr, v);
 }
 
-int Particle::EditProperty(int idx, float v) {
+float Particle::RetrieveProperty(int idx) const {
     if (idx < 0)
-        return OUT_OF_RANGE;
+        throw std::out_of_range("flow::Particle");
 
-    auto itr = _properties.begin();
+    auto itr = _properties.cbegin();
     for (int i = 0; i < idx; i++) {
-        if (itr == _properties.end())
-            return OUT_OF_RANGE;
+        if (itr == _properties.cend())
+            throw std::out_of_range("flow::Particle");
         else
             ++itr;
     }
 
-    if (itr == _properties.end())
-        return OUT_OF_RANGE;
-    else {
-        *itr = v;
-        return 0;
-    }
-}
-
-int Particle::RetrieveProperty(int idx, float &v) const {
-    if (idx < 0)
-        return OUT_OF_RANGE;
-
-    auto itr = _properties.begin();
-    for (int i = 0; i < idx; i++) {
-        if (itr == _properties.end())
-            return OUT_OF_RANGE;
-        else
-            ++itr;
-    }
-
-    if (itr == _properties.end())
-        return OUT_OF_RANGE;
-    else {
-        v = *itr;
-        return 0;
-    }
+    if (itr == _properties.cend())
+        throw std::out_of_range("flow::Particle");
+    else
+        return *itr;
 }
 
 void Particle::ClearProperties() { _properties.clear(); }

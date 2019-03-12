@@ -35,9 +35,8 @@ class Particle {
     ~Particle();
 
     void AttachProperty(float v);
-    int EditProperty(int idx, float v);
-    int RetrieveProperty(int idx,         // Input
-                         float &v) const; // Output
+    // This function will throw an exception when idx is out of bound
+    float RetrieveProperty(int idx) const;
     void ClearProperties();
     int GetNumOfProperties() const;
 
