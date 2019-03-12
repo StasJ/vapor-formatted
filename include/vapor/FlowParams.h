@@ -26,8 +26,12 @@ class PARAMS_API FlowParams : public RenderParams {
     void SetIsSteady(bool steady);
     bool GetIsSteady() const;
 
+    void SetAlreadyAdvectionStep(long);
+    long GetAlreadyAdvectionStep() const;
+
   protected:
     static const std::string _isSteadyTag;
+    static const std::string _alreadyAdvectionStepTag;
 };
 
 } // namespace VAPoR
