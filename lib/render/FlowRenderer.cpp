@@ -133,7 +133,7 @@ int FlowRenderer::_paintGL(bool fast) {
 }
 
 int FlowRenderer::_purePaint(FlowParams *params, bool fast) {
-    _sendColormap(params);
+    _prepareColormap(params);
 
     size_t numOfStreams = _advection.GetNumberOfStreams();
     for (size_t i = 0; i < numOfStreams; i++) {
@@ -257,22 +257,7 @@ int FlowRenderer::_useSteadyVAPORField(const FlowParams *params) {
     if (rv != 0)
         return rv;
 
-    // Step 3: repeat step 2 for the color mapping variable
-    /*
-        Grid* scalarP    = nullptr;
-        bool singleColor = params->UseSingleColor();
-        if( !singleColor )
-        {
-            std::string scalarVar = params->GetColorMapVariableName();
-            if( !scalarVar.empty() )
-            {
-                rv      = _getAGrid( params, currentTS, scalarVar, &scalarP );
-                if( rv != 0 )   return rv;
-            }
-        }
-    */
-
-    // Step 4: create a SteadyVAPORVelocity using these grids, and ask Advection to use it!
+    // Step 3: create a SteadyVAPORVelocity using these grids, and ask Advection to use it!
     flow::SteadyVAPORVelocity *velocity = new flow::SteadyVAPORVelocity();
     velocity->UseGrids(gridU, gridV, gridW);
     velocity->VelocityNameU = varnames[0];
@@ -284,11 +269,6 @@ int FlowRenderer::_useSteadyVAPORField(const FlowParams *params) {
     _genSeedsXY(seeds);
     _advection.UseSeedParticles(seeds);
     _advection.UseVelocity(velocity);
-
-    // Do some advection
-    // int numOfSteps = 200;
-    // for( int i = 0; i < numOfSteps; i++ )
-    //    _advection.Advect( flow::Advection::RK4 );
 
     return 0;
 }
@@ -329,7 +309,7 @@ int FlowRenderer::_getAGrid(const FlowParams *params, int timestep, std::string 
     }
 }
 
-void FlowRenderer::_sendColormap(FlowParams *params) {
+void FlowRenderer::_prepareColormap(FlowParams *params) {
     if (params->UseSingleColor()) {
         float singleColor[4];
         params->GetConstantColor(singleColor);
@@ -363,23 +343,6 @@ void FlowRenderer::_restoreGLState() const {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_1D, 0);
 }
-
-/*
-int
-FlowRenderer::_advectAStep( )
-{
-    int rv =  _advection.Advect( flow::Advection::RK4 );
-
-    if( rv == flow::ADVECT_HAPPENED )
-    {
-        return 0;
-    }
-    else // Error or no advection happened. Stop paint as well.
-    {
-        return rv;
-    }
-}
-*/
 
 #ifndef WIN32
 double FlowRenderer::_getElapsedSeconds(const struct timeval *begin,
