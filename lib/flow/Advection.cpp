@@ -213,7 +213,7 @@ const std::vector<Particle> &Advection::GetStreamAt(size_t i) const {
 }
 
 int Advection::AssignParticleValuesOfAStream(std::vector<float> &valsIn, size_t idx) {
-    if (idx >= _streams.size() || idx < 0)
+    if (idx >= _streams.size())
         return OUT_OF_RANGE;
     if (valsIn.size() != _streams[idx].size())
         return SIZE_MISMATCH;
@@ -227,8 +227,16 @@ int Advection::AssignParticleValuesOfAStream(std::vector<float> &valsIn, size_t 
     return 0;
 }
 
+int Advection::AssignLastParticleValueOfAStream(float newVal, size_t idx) {
+    if (idx >= _streams.size())
+        return OUT_OF_RANGE;
+
+    _streams[idx].back().value = newVal;
+    return 0;
+}
+
 int Advection::AttachParticlePropertiesOfAStream(std::vector<float> &prop, size_t idx) {
-    if (idx >= _streams.size() || idx < 0)
+    if (idx >= _streams.size())
         return OUT_OF_RANGE;
     if (prop.size() != _streams[idx].size())
         return SIZE_MISMATCH;
