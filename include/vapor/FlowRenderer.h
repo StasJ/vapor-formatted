@@ -85,6 +85,9 @@ class RENDER_API FlowRenderer : public Renderer {
     // Use the current color mapping variable to create _colorField.
     int _createColorField(const FlowParams *params);
 
+    // Color the last particle in a stream
+    int _colorLastParticle();
+
 #ifndef WIN32
     double _getElapsedSeconds(const struct timeval *begin, const struct timeval *end) const;
 #endif
