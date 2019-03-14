@@ -92,7 +92,8 @@ class VPathSelector : public VPushButton // QWidget, public Ui_VPathSelector
 
   public:
     VPathSelector(QWidget *parent, std::string labelText = "Label",
-                  std::string filePath = QDir::homePath().toStdString());
+                  std::string filePath = QDir::homePath().toStdString(),
+                  bool multipleFiles = false);
     void SetPath(const std::string &defaultPath);
     std::string GetPath() const;
 
