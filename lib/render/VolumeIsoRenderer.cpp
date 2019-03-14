@@ -24,3 +24,5 @@ VolumeIsoRenderer::VolumeIsoRenderer(const ParamsMgr *pm, std::string &winName,
                      VolumeIsoRenderer::GetClassType(), instName, dataMgr) {}
 
 VolumeIsoRenderer::~VolumeIsoRenderer() {}
+
+bool VolumeIsoRenderer::_usingColorMapData() const { return !GetActiveParams()->UseSingleColor(); }
