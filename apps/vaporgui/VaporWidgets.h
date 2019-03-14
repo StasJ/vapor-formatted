@@ -5,10 +5,6 @@
 #include <QWidget>
 
 #include "Combo.h"
-#include "ui_VCheckBox.h"
-#include "ui_VComboBox.h"
-#include "ui_VPathSelector.h"
-#include "ui_VPushButton.h"
 
 namespace Ui {
 class QSliderEdit;
