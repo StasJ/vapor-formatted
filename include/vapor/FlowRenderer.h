@@ -59,9 +59,9 @@ class RENDER_API FlowRenderer : public Renderer {
     int _genSeedsXY(std::vector<flow::Particle> &seeds) const;
 
     int _purePaint(FlowParams *, bool fast);
-    void _prepareColormap(FlowParams *, bool fast);
+    void _prepareColormap(FlowParams *);
     int _drawAStreamAsLines(const std::vector<flow::Particle> &, const FlowParams *) const;
-    int _drawAStreamBeautifully(const std::vector<flow::Particle> &, const FlowParams *) const;
+    int _drawAStreamAsTubes(const std::vector<flow::Particle> &, const FlowParams *) const;
     void _restoreGLState() const;
 
     int _getAGrid(const FlowParams *params, // Input
@@ -72,7 +72,13 @@ class RENDER_API FlowRenderer : public Renderer {
     // Update values of _cache_* and _state_* member variables.
     void _updateFlowStates(const FlowParams *);
 
-    // A function to query particle properties.
+    // A function to populate particle properties.
+    // If useAsColor == true, then this calculated property will be stored in a field
+    //    of a Particle that will be used for coloring the particle.
+    // If useAsColor == false, then this property is simply kept by the Particle without
+    //    any impact to the visualization.
+    int _populateParticleProperties(const std::string &varname, const FlowParams *params,
+                                    bool useAsColor);
 
 #ifndef WIN32
     double _getElapsedSeconds(const struct timeval *begin, const struct timeval *end) const;
