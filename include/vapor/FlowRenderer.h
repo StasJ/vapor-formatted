@@ -10,6 +10,7 @@
 #include "vapor/FlowParams.h"
 #include "vapor/GLManager.h"
 #include "vapor/Renderer.h"
+#include "vapor/ScalarField.h"
 
 #include <glm/glm.hpp>
 
@@ -32,6 +33,7 @@ class RENDER_API FlowRenderer : public Renderer {
 
     // Member variables
     flow::Advection _advection;
+    flow::ScalarField *_colorField;
     std::vector<float> _colorMap;
     float _colorMapRange[3]; // min, max, and their diff
 
@@ -79,6 +81,9 @@ class RENDER_API FlowRenderer : public Renderer {
     //    any impact to the visualization.
     int _populateParticleProperties(const std::string &varname, const FlowParams *params,
                                     bool useAsColor);
+
+    // Use the current color mapping variable to create _colorField.
+    int _createColorField(const FlowParams *params);
 
 #ifndef WIN32
     double _getElapsedSeconds(const struct timeval *begin, const struct timeval *end) const;
