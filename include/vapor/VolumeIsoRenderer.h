@@ -16,6 +16,8 @@ class RENDER_API VolumeIsoRenderer : public VolumeRenderer {
     ~VolumeIsoRenderer();
 
     static std::string GetClassType() { return ("VolumeIso"); }
+
+    bool _usingColorMapData() const;
 };
 
 }; // namespace VAPoR
