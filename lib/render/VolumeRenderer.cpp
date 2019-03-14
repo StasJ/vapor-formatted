@@ -30,6 +30,7 @@ VolumeRenderer::VolumeRenderer(const ParamsMgr *pm, std::string &winName, std::s
     LUTTexture = NULL;
     depthTexture = NULL;
     algorithm = NULL;
+    lastRenderTime = 100;
 }
 
 VolumeRenderer::~VolumeRenderer() {
@@ -86,8 +87,9 @@ int VolumeRenderer::_initializeGL() {
     }
 
 int VolumeRenderer::_paintGL(bool fast) {
-    if (fast && cache.algorithmName == "Cell Traversal")
+    if (fast && lastRenderTime > 0.1)
         return 0;
+
     VolumeParams *vp = (VolumeParams *)GetActiveParams();
     if (cache.algorithmName != vp->GetAlgorithm()) {
         cache.algorithmName = vp->GetAlgorithm();
@@ -160,7 +162,8 @@ int VolumeRenderer::_paintGL(bool fast) {
 
     void *start = GLManager::BeginTimer();
     glDrawArrays(GL_TRIANGLES, 0, 6);
-    printf("Render time = %f\n", GLManager::EndTimer(start));
+    lastRenderTime = GLManager::EndTimer(start);
+    printf("Render time = %f\n", lastRenderTime);
 
     glDisable(GL_BLEND);
     GL_ERR_BREAK();
