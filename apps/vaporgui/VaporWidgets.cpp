@@ -4,11 +4,6 @@
 #include "FileOperationChecker.h"
 #include "VaporWidgets.h"
 
-#include "ui_VCheckBox.h"
-#include "ui_VComboBox.h"
-#include "ui_VPathSelector.h"
-#include "ui_VPushButton.h"
-
 #include <cassert>
 #include <iostream>
 
