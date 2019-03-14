@@ -4,6 +4,16 @@
 #include "FileOperationChecker.h"
 #include "VaporWidgets.h"
 
+#include <QCheckBox>
+#include <QComboBox>
+#include <QDoubleValidator>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QSpacerItem>
+#include <QWidget>
+
 #include <cassert>
 #include <iostream>
 
