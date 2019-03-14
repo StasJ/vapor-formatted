@@ -59,7 +59,7 @@ class RENDER_API FlowRenderer : public Renderer {
     int _genSeedsXY(std::vector<flow::Particle> &seeds) const;
 
     int _purePaint(FlowParams *, bool fast);
-    void _prepareColormap(FlowParams *);
+    void _prepareColormap(FlowParams *, bool fast);
     int _drawAStreamAsLines(const std::vector<flow::Particle> &, const FlowParams *) const;
     int _drawAStreamBeautifully(const std::vector<flow::Particle> &, const FlowParams *) const;
     void _restoreGLState() const;
@@ -71,6 +71,8 @@ class RENDER_API FlowRenderer : public Renderer {
 
     // Update values of _cache_* and _state_* member variables.
     void _updateFlowStates(const FlowParams *);
+
+    // A function to query particle properties.
 
 #ifndef WIN32
     double _getElapsedSeconds(const struct timeval *begin, const struct timeval *end) const;
