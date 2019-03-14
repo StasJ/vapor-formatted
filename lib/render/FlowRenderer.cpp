@@ -114,15 +114,14 @@ int FlowRenderer::_initializeGL() {
 int FlowRenderer::_paintGL(bool fast) {
     FlowParams *params = dynamic_cast<FlowParams *>(GetActiveParams());
 
-    int rv = _advection.CheckReady();
-    if (rv != 0) {
+    _updateFlowStates(params);
+    if (!_state_velocitiesUpToDate)
         _useSteadyVAPORField(params);
-    }
-
-    _createColorField(params);
+    if (!_state_scalarUpToDate)
+        _useSteadyColorField(params);
 
     // Attempt to do a step of Advection
-    rv = _advection.Advect(flow::Advection::RK4);
+    int rv = _advection.Advect(flow::Advection::RK4);
     _colorLastParticle();
     while (rv == flow::ADVECT_HAPPENED) {
         _purePaint(params, true); // use fast rendering for intermediate results
@@ -217,12 +216,35 @@ void FlowRenderer::_updateFlowStates(const FlowParams *params) {
         _state_scalarUpToDate = false;
     }
     if (_cache_isSteady != params->GetIsSteady()) {
+        _cache_isSteady = params->GetIsSteady();
         _state_velocitiesUpToDate = false;
         _state_scalarUpToDate = false;
     }
+
+    int rv = _advection.CheckReady();
+    if (rv != 0) {
+        _state_velocitiesUpToDate = false;
+        _state_scalarUpToDate = false;
+        return;
+    }
+
+    // Check variable names
+    std::vector<std::string> varnames = params->GetFieldVariableNames();
+    if (varnames.size() == 3) {
+        if ((varnames[0] != _advection.GetVelocityNameU()) ||
+            (varnames[1] != _advection.GetVelocityNameV()) ||
+            (varnames[2] != _advection.GetVelocityNameW()))
+            _state_velocitiesUpToDate = false;
+    }
+
+    if (_colorField) {
+        std::string colorVarName = params->GetColorMapVariableName();
+        if (colorVarName != _colorField->ScalarName)
+            _state_scalarUpToDate = false;
+    }
 }
 
-int FlowRenderer::_createColorField(const FlowParams *params) {
+int FlowRenderer::_useSteadyColorField(const FlowParams *params) {
     // The caller of this function is responsible for checking if
     //   this function is in need to be called.
     //
@@ -318,6 +340,8 @@ int FlowRenderer::_useSteadyVAPORField(const FlowParams *params) {
     _genSeedsXY(seeds);
     _advection.UseSeedParticles(seeds);
     _advection.UseVelocity(velocity);
+
+    _state_velocitiesUpToDate = true;
 
     return 0;
 }
