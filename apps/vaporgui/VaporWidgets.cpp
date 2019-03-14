@@ -98,10 +98,14 @@ bool VCheckBox::GetCheckState() const {
 
 void VCheckBox::_userClickedCheckbox() { emit _checkboxClicked(); }
 
-VPathSelector::VPathSelector(QWidget *parent, std::string labelText, std::string filePath)
+VPathSelector::VPathSelector(QWidget *parent, Flags flags, const std::string &labelText,
+                             const std::string &filePath, QFileMode fileMode)
     : VPushButton(parent, labelText) {
+    _fileMode = fileMode;
+
     _lineEdit = new QLineEdit(this);
     _layout->addWidget(_lineEdit);
+
     SetLabelText(labelText);
     SetPath(filePath);
 
@@ -125,8 +129,7 @@ void VPathSelector::_openFileDialog() {
     QFileDialog::AcceptMode acceptMode = QFileDialog::AcceptOpen;
     fileDialog.setAcceptMode(acceptMode);
 
-    QFileDialog::FileMode fileMode = QFileDialog::ExistingFile;
-    fileDialog.setFileMode(fileMode);
+    fileDialog.setFileMode(_fileMode);
 
     if (fileDialog.exec() != QDialog::Accepted)
         return;
@@ -150,6 +153,7 @@ void VPathSelector::_openFileDialog() {
 void VPathSelector::_setFilePath() {
     std::cout << "setFilePath" << std::endl;
     QString filePath = _lineEdit->text();
+
     bool operable = FileOperationChecker::FileGoodToRead(filePath);
     if (!operable) {
         MSG_ERR(FileOperationChecker::GetLastErrorMessage().toStdString());
