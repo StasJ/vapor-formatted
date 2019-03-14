@@ -48,6 +48,9 @@ class RENDER_API VolumeRenderer : public Renderer {
         int refinement;
         int compression;
 
+        bool useColorMapVar = false;
+        string colorMapVar = "";
+
         MapperFunction *tf = nullptr;
         vector<double> mapRange;
 
