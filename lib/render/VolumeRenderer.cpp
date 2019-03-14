@@ -1,7 +1,6 @@
 #include "vapor/VolumeRenderer.h"
 #include <vapor/VolumeParams.h>
 
-#include <chrono>
 #include <glm/glm.hpp>
 #include <vapor/GLManager.h>
 #include <vapor/MatrixManager.h>
