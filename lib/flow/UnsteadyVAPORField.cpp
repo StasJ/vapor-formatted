@@ -14,8 +14,13 @@ int UnsteadyVAPORField::AddTimeStep(const VGrid *u, const VGrid *v, const VGrid 
     _velArrU.push_back(u);
     _velArrV.push_back(v);
     _velArrW.push_back(w);
-    //_scalarArr.push_back( val );
-    _timestamps.push_back(time);
+    //
+    // The new timestamp should be bigger than the last timestamp
+    if (time >= _timestamps.back())
+        _timestamps.push_back(time);
+    else
+        return OUT_OF_RANGE;
+
     return 0;
 }
 
@@ -29,15 +34,12 @@ void UnsteadyVAPORField::DestroyGrids() {
     for (const auto &p : _velArrW)
         delete p;
     _velArrW.clear();
-    // for( const auto& p : _scalarArr )
-    //    delete p;
-    //_scalarArr.clear();
 }
 
 int UnsteadyVAPORField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &vel) const {
     // First test if we have this time step
     size_t floor;
-    int rv = _locateTimestamp(time, floor);
+    int rv = LocateTimestamp(time, floor);
     if (rv != 0)
         return rv;
 
@@ -76,7 +78,7 @@ UnsteadyVAPORField::GetScalar( float time, const glm::vec3& pos, float& val )con
 {
     // First test if we have this time step
     size_t floor;
-    int rv  = _locateTimestamp( time, floor );
+    int rv  = LocateTimestamp( time, floor );
     if( rv != 0 )
         return rv;
 
@@ -110,7 +112,7 @@ UnsteadyVAPORField::GetScalar( float time, const glm::vec3& pos, float& val )con
 bool UnsteadyVAPORField::InsideVolume(float time, const glm::vec3 &pos) const {
     // First test if we have this time step
     size_t floor;
-    int rv = _locateTimestamp(time, floor);
+    int rv = LocateTimestamp(time, floor);
     if (rv != 0)
         return false;
 
@@ -122,8 +124,6 @@ bool UnsteadyVAPORField::InsideVolume(float time, const glm::vec3 &pos) const {
         return false;
     if (!_velArrW[floor]->InsideGrid(coords))
         return false;
-    // if( (!_scalarArr.empty()) && (!_scalarArr[ floor ]->InsideGrid( coords )) )
-    //    return false;
 
     // If time is larger than _timestamps[floor], we also need to test _timestamps[floor+1]
     if (time > _timestamps[floor]) {
@@ -133,14 +133,12 @@ bool UnsteadyVAPORField::InsideVolume(float time, const glm::vec3 &pos) const {
             return false;
         if (!_velArrW[floor + 1]->InsideGrid(coords))
             return false;
-        // if( (!_scalarArr.empty()) && (!_scalarArr[ floor+1 ]->InsideGrid( coords )) )
-        //    return false;
     }
 
     return true;
 }
 
-int UnsteadyVAPORField::_locateTimestamp(float time, size_t &floor) const {
+int UnsteadyVAPORField::LocateTimestamp(float time, size_t &floor) const {
     if (_timestamps.size() == 0)
         return NOT_CONTAIN_TIME;
     if (_timestamps.size() == 1) {
@@ -181,7 +179,7 @@ size_t UnsteadyVAPORField::_binarySearch(const std::vector<T> &vec, T val, size_
 
 int UnsteadyVAPORField::GetExtents(float time, glm::vec3 &minExt, glm::vec3 &maxExt) const {
     size_t floor;
-    int rv = _locateTimestamp(time, floor);
+    int rv = LocateTimestamp(time, floor);
     if (rv != 0)
         return NOT_CONTAIN_TIME;
 
@@ -208,16 +206,6 @@ int UnsteadyVAPORField::GetExtents(float time, glm::vec3 &minExt, glm::vec3 &max
 
     minExt = glm::min(uMin, glm::min(vMin, wMin));
     maxExt = glm::max(uMax, glm::max(vMax, wMax));
-
-    /*if( _scalarArr.size() > 0 )
-    {
-        _scalarArr[idx]->GetUserExtents( gridMin, gridMax );
-        glm::vec3 sMin( gridMin.at(0),   gridMin.at(1), gridMin.at(2) );
-        glm::vec3 sMax( gridMax.at(0),   gridMax.at(1), gridMax.at(2) );
-
-        minExt = glm::min( minExt, sMin );
-        maxExt = glm::max( maxExt, sMax );
-    }*/
 
     return 0;
 }
