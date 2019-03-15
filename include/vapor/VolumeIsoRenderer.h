@@ -15,7 +15,7 @@ class RENDER_API VolumeIsoRenderer : public VolumeRenderer {
                       std::string &instName, DataMgr *dataMgr);
     ~VolumeIsoRenderer();
 
-    static std::string GetClassType() { return ("VolumeIso"); }
+    static std::string GetClassType() { return ("NEW_IsoSurface"); }
 
     bool _usingColorMapData() const;
 };
