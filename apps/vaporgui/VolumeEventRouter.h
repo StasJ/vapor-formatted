@@ -47,8 +47,8 @@ class VolumeEventRouter : public QTabWidget, public RenderEventRouter {
     void _updateTab();
     virtual string _getDescription() const;
 
-    virtual string _getSmallIconImagePath() const { return ("WireFrame_small.png"); }
-    virtual string _getIconImagePath() const { return ("WireFrame.png"); }
+    virtual string _getSmallIconImagePath() const { return ("DVR_small.png"); }
+    virtual string _getIconImagePath() const { return ("DVR.png"); }
 
   private:
     VolumeEventRouter() {}

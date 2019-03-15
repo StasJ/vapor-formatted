@@ -15,7 +15,7 @@ class RENDER_API VolumeRenderer : public Renderer {
                    DataMgr *dataMgr);
     ~VolumeRenderer();
 
-    static std::string GetClassType() { return ("Volume2"); }
+    static std::string GetClassType() { return ("NEW_Volume"); }
 
   protected:
     int _initializeGL();
