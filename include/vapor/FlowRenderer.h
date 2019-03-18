@@ -66,8 +66,11 @@ class RENDER_API FlowRenderer : public Renderer {
     // Member functions
     //
     int _useSteadyVAPORField(const FlowParams *);
+    int _useSteadyColorField(const FlowParams *);
+    int _useUnsteadyVAPORField(const FlowParams *);
+    int _useUnsteadyColorField(const FlowParams *);
 
-    int _genSeedsXY(std::vector<flow::Particle> &seeds) const;
+    int _genSeedsXY(std::vector<flow::Particle> &seeds, float timeVal) const;
 
     int _purePaint(FlowParams *, bool fast);
     void _prepareColormap(FlowParams *);
@@ -90,9 +93,6 @@ class RENDER_API FlowRenderer : public Renderer {
     //    any impact to the visualization.
     int _populateParticleProperties(const std::string &varname, const FlowParams *params,
                                     bool useAsColor);
-
-    // Use the current color mapping variable to create _colorField.
-    int _useSteadyColorField(const FlowParams *params);
 
     // Color the last particle in a stream
     int _colorLastParticle();
