@@ -35,6 +35,8 @@ class Advection {
     size_t GetNumberOfStreams() const;
     const std::vector<Particle> &GetStreamAt(size_t i) const;
 
+    int GetNumberOfTimesteps() const;
+
     // As part of the functionality of this class, it manages the
     //    particles that it stores.
     //
