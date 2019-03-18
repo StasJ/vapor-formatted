@@ -20,6 +20,8 @@ class VelocityField : public Field {
     virtual int GetVelocity(float time, const glm::vec3 &pos, // input
                             glm::vec3 &vel) const = 0;        // output
 
+    virtual int GetNumberOfTimesteps() const = 0;
+
     // Varuable names for 3 velocity components
     std::string VelocityNameU, VelocityNameV, VelocityNameW;
 };

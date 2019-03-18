@@ -9,14 +9,14 @@
 #include "vapor/VelocityField.h"
 
 namespace flow {
-class UnsteadyVAPORField : public VelocityField {
+class UnsteadyVAPORVelocity : public VelocityField {
 
     // Define a few alias
     using VGrid = VAPoR::Grid;
 
   public:
-    UnsteadyVAPORField();
-    ~UnsteadyVAPORField();
+    UnsteadyVAPORVelocity();
+    ~UnsteadyVAPORVelocity();
 
     int GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &vel) const;
     bool InsideVolume(float time, const glm::vec3 &pos) const;
@@ -25,6 +25,7 @@ class UnsteadyVAPORField : public VelocityField {
     // time step will be returned.
     //
     int GetExtents(float time, glm::vec3 &minExt, glm::vec3 &maxExt) const;
+    int GetNumberOfTimesteps() const;
 
     //
     // Modifiers

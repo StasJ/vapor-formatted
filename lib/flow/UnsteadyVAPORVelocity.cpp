@@ -1,16 +1,15 @@
-#include "vapor/UnsteadyVAPORField.h"
+#include "vapor/UnsteadyVAPORVelocity.h"
 #include "vapor/Particle.h"
 #include <cmath>
 
 using namespace flow;
 
-UnsteadyVAPORField::UnsteadyVAPORField() { IsSteady = false; }
+UnsteadyVAPORVelocity::UnsteadyVAPORVelocity() { IsSteady = false; }
 
 // Destructor
-UnsteadyVAPORField::~UnsteadyVAPORField() { this->DestroyGrids(); }
+UnsteadyVAPORVelocity::~UnsteadyVAPORVelocity() { this->DestroyGrids(); }
 
-int UnsteadyVAPORField::AddTimeStep(const VGrid *u, const VGrid *v, const VGrid *w,
-                                    const VGrid *val, float time) {
+int UnsteadyVAPORVelocity::AddTimeStep(const VGrid *u, const VGrid *v, const VGrid *w, float time) {
     _velArrU.push_back(u);
     _velArrV.push_back(v);
     _velArrW.push_back(w);
@@ -24,7 +23,7 @@ int UnsteadyVAPORField::AddTimeStep(const VGrid *u, const VGrid *v, const VGrid 
     return 0;
 }
 
-void UnsteadyVAPORField::DestroyGrids() {
+void UnsteadyVAPORVelocity::DestroyGrids() {
     for (const auto &p : _velArrU)
         delete p;
     _velArrU.clear();
@@ -36,7 +35,7 @@ void UnsteadyVAPORField::DestroyGrids() {
     _velArrW.clear();
 }
 
-int UnsteadyVAPORField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &vel) const {
+int UnsteadyVAPORVelocity::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &vel) const {
     // First test if we have this time step
     size_t floor;
     int rv = LocateTimestamp(time, floor);
@@ -74,7 +73,7 @@ int UnsteadyVAPORField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 
 
 #if 0
 int
-UnsteadyVAPORField::GetScalar( float time, const glm::vec3& pos, float& val )const
+UnsteadyVAPORVelocity::GetScalar( float time, const glm::vec3& pos, float& val )const
 {
     // First test if we have this time step
     size_t floor;
@@ -109,7 +108,7 @@ UnsteadyVAPORField::GetScalar( float time, const glm::vec3& pos, float& val )con
 }
 #endif
 
-bool UnsteadyVAPORField::InsideVolume(float time, const glm::vec3 &pos) const {
+bool UnsteadyVAPORVelocity::InsideVolume(float time, const glm::vec3 &pos) const {
     // First test if we have this time step
     size_t floor;
     int rv = LocateTimestamp(time, floor);
@@ -138,7 +137,7 @@ bool UnsteadyVAPORField::InsideVolume(float time, const glm::vec3 &pos) const {
     return true;
 }
 
-int UnsteadyVAPORField::LocateTimestamp(float time, size_t &floor) const {
+int UnsteadyVAPORVelocity::LocateTimestamp(float time, size_t &floor) const {
     if (_timestamps.size() == 0)
         return NOT_CONTAIN_TIME;
     if (_timestamps.size() == 1) {
@@ -159,8 +158,8 @@ int UnsteadyVAPORField::LocateTimestamp(float time, size_t &floor) const {
 }
 
 template <typename T>
-size_t UnsteadyVAPORField::_binarySearch(const std::vector<T> &vec, T val, size_t begin,
-                                         size_t end) const {
+size_t UnsteadyVAPORVelocity::_binarySearch(const std::vector<T> &vec, T val, size_t begin,
+                                            size_t end) const {
     if (begin + 1 == end) {
         if (val == vec[end])
             return end;
@@ -177,7 +176,7 @@ size_t UnsteadyVAPORField::_binarySearch(const std::vector<T> &vec, T val, size_
         return _binarySearch(vec, val, middle, end);
 }
 
-int UnsteadyVAPORField::GetExtents(float time, glm::vec3 &minExt, glm::vec3 &maxExt) const {
+int UnsteadyVAPORVelocity::GetExtents(float time, glm::vec3 &minExt, glm::vec3 &maxExt) const {
     size_t floor;
     int rv = LocateTimestamp(time, floor);
     if (rv != 0)
@@ -209,3 +208,5 @@ int UnsteadyVAPORField::GetExtents(float time, glm::vec3 &minExt, glm::vec3 &max
 
     return 0;
 }
+
+int UnsteadyVAPORVelocity::GetNumberOfTimesteps() const { return _timestamps.size(); }
