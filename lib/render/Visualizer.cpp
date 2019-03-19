@@ -194,7 +194,7 @@ int Visualizer::paintEvent(bool fast) {
     _renderColorbars(_getCurrentTimestep());
     GL_ERR_BREAK();
 
-    // _glManager->ShowDepthBuffer();
+    _glManager->ShowDepthBuffer();
 
     glFlush();
 
