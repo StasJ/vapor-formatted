@@ -100,7 +100,7 @@ bool VCheckBox::GetCheckState() const {
 
 void VCheckBox::_userClickedCheckbox() { emit _checkboxClicked(); }
 
-VPathSelector::VPathSelector(QWidget *parent, const std::string &labelText,
+VFileSelector::VFileSelector(QWidget *parent, const std::string &labelText,
                              const std::string &filePath, QFileDialog::FileMode fileMode)
     : VPushButton(parent, labelText) {
     _fileMode = fileMode;
@@ -115,17 +115,15 @@ VPathSelector::VPathSelector(QWidget *parent, const std::string &labelText,
     connect(_lineEdit, SIGNAL(returnPressed()), this, SLOT(_setFilePath()));
 }
 
-std::string VPathSelector::GetPath() const { return _filePath; }
+std::string VFileSelector::GetPath() const { return _filePath; }
 
-void VPathSelector::SetPath(const std::string &path) {
+void VFileSelector::SetPath(const std::string &path) {
     _filePath = path;
     _lineEdit->setText(QString::fromStdString(path));
-    std::cout << "set path to " << _filePath << std::endl;
 }
 
-void VPathSelector::_openFileDialog() {
+void VFileSelector::_openFileDialog() {
     QString title = "Select file containing seed points";
-    std::cout << "GetPath returns " << GetPath() << std::endl;
     QFileDialog fileDialog(this, title, QString::fromStdString(GetPath()));
 
     QFileDialog::AcceptMode acceptMode = QFileDialog::AcceptOpen;
@@ -142,13 +140,13 @@ void VPathSelector::_openFileDialog() {
 
     QString filePath = files[0];
 
-    bool operable;
-    if (_fileMode == QFileDialog::FileMode::ExistingFile)
+    /*bool operable;
+    if ( _fileMode == QFileDialog::FileMode::ExistingFile )
         operable = FileOperationChecker::FileGoodToRead(filePath);
-    if (_fileMode == QFileDialog::FileMode::Directory)
-        operable = FileOperationChecker::DirectoryGoodToRead(filePath);
+    if ( _fileMode == QFileDialog::FileMode::Directory )
+        operable = FileOperationChecker::DirectoryGoodToRead(filePath);*/
 
-    if (!operable) {
+    if (!_isFileOperable(filePath)) {
         MSG_ERR(FileOperationChecker::GetLastErrorMessage().toStdString());
         SetPath(_filePath);
         return;
@@ -157,15 +155,41 @@ void VPathSelector::_openFileDialog() {
     SetPath(filePath.toStdString());
 }
 
-void VPathSelector::_setFilePath() {
-    std::cout << "setFilePath" << std::endl;
+void VFileSelector::_setFilePath() {
     QString filePath = _lineEdit->text();
 
-    bool operable = FileOperationChecker::FileGoodToRead(filePath);
-    if (!operable) {
+    // bool operable = FileOperationChecker::FileGoodToRead(filePath);
+    // if (!operable) {
+    if (!_isFileOperable(filePath)) {
         MSG_ERR(FileOperationChecker::GetLastErrorMessage().toStdString());
         SetPath(_filePath);
         return;
     }
     SetPath(filePath.toStdString());
+}
+
+VFileReader::VFileReader(QWidget *parent, const std::string &labelText, const std::string &filePath,
+                         QFileDialog::FileMode fileMode)
+    : VFileSelector(parent, labelText, filePath, fileMode) {}
+
+bool VFileReader::_isFileOperable(const QString &filePath) const {
+    bool operable = false;
+    if (_fileMode == QFileDialog::FileMode::ExistingFile)
+        operable = FileOperationChecker::FileGoodToRead(filePath);
+    if (_fileMode == QFileDialog::FileMode::Directory)
+        operable = FileOperationChecker::DirectoryGoodToRead(filePath);
+
+    return operable;
+}
+
+VFileWriter::VFileWriter(QWidget *parent, const std::string &labelText, const std::string &filePath,
+                         QFileDialog::FileMode fileMode)
+    : VFileSelector(parent, labelText, filePath, fileMode) {}
+
+bool VFileWriter::_isFileOperable(const QString &filePath) const {
+    bool operable = false;
+    if (_fileMode == QFileDialog::FileMode::ExistingFile)
+        operable = FileOperationChecker::FileGoodToWrite(filePath);
+
+    return operable;
 }

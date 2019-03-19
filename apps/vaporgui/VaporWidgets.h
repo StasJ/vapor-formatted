@@ -83,15 +83,19 @@ class VCheckBox : public VaporWidget {
     void _checkboxClicked();
 };
 
-class VPathSelector : public VPushButton {
+class VFileSelector : public VPushButton {
     Q_OBJECT
 
   public:
-    VPathSelector(QWidget *parent, const std::string &labelText = "Label",
-                  const std::string &filePath = QDir::homePath().toStdString(),
-                  QFileDialog::FileMode fileMode = QFileDialog::FileMode::ExistingFile);
     void SetPath(const std::string &defaultPath);
     std::string GetPath() const;
+
+  protected:
+    VFileSelector(QWidget *parent, const std::string &labelText = "Label",
+                  const std::string &filePath = QDir::homePath().toStdString(),
+                  QFileDialog::FileMode fileMode = QFileDialog::FileMode::ExistingFile);
+
+    QFileDialog::FileMode _fileMode;
 
   private slots:
     void _openFileDialog();
@@ -103,7 +107,32 @@ class VPathSelector : public VPushButton {
   private:
     QLineEdit *_lineEdit;
     std::string _filePath;
-    QFileDialog::FileMode _fileMode;
+
+    virtual bool _isFileOperable(const QString &filePath) const = 0;
+};
+
+class VFileReader : public VFileSelector {
+    Q_OBJECT
+
+  public:
+    VFileReader(QWidget *parent, const std::string &labelText = "Label",
+                const std::string &filePath = QDir::homePath().toStdString(),
+                QFileDialog::FileMode fileMode = QFileDialog::FileMode::ExistingFile);
+
+  private:
+    virtual bool _isFileOperable(const QString &filePath) const;
+};
+
+class VFileWriter : public VFileSelector {
+    Q_OBJECT
+
+  public:
+    VFileWriter(QWidget *parent, const std::string &labelText = "Label",
+                const std::string &filePath = QDir::homePath().toStdString(),
+                QFileDialog::FileMode fileMode = QFileDialog::FileMode::ExistingFile);
+
+  private:
+    virtual bool _isFileOperable(const QString &filePath) const;
 };
 
 #endif // VAPORWIDGETS_H
