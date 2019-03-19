@@ -60,10 +60,7 @@ void VPushButton::SetButtonText(const std::string &text) {
 
 void VPushButton::SetButtonText(const QString &text) { _button->setText(text); }
 
-void VPushButton::_buttonPressed() {
-    _button->setDown(false);
-    emit _pressed();
-}
+void VPushButton::_buttonPressed() { emit _pressed(); }
 
 VComboBox::VComboBox(QWidget *parent, const std::string &labelText)
     : VaporWidget(parent, labelText) {
