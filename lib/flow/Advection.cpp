@@ -12,7 +12,7 @@ Advection::Advection() {
     _upperAngle = 15.0f;
     _lowerAngleCos = glm::cos(glm::radians(_lowerAngle));
     _upperAngleCos = glm::cos(glm::radians(_upperAngle));
-    _advectionComplete = false;
+    //_advectionComplete = false;
 }
 
 // Destructor;
@@ -57,9 +57,18 @@ bool Advection::IsSteady() const {
         return false;
 }
 
-bool Advection::IsAdvectionComplete() const { return _advectionComplete; }
+/*
+bool
+Advection::IsAdvectionComplete() const
+{
+    return _advectionComplete;
+}
 
-void Advection::ToggleAdvectionComplete(bool comp) { _advectionComplete = comp; }
+void
+Advection::ToggleAdvectionComplete( bool comp )
+{
+    _advectionComplete = comp;
+} */
 
 const std::string Advection::GetVelocityNameU() const {
     if (_velocity)
