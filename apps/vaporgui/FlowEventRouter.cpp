@@ -61,18 +61,7 @@ FlowEventRouter::FlowEventRouter(QWidget *parent, ControlExec *ce)
     addTab(qsAnnotation, "Annotations");
 }
 
-FlowEventRouter::~FlowEventRouter() {
-    if (_variables)
-        delete _variables;
-    if (_geometry)
-        delete _geometry;
-    if (_seeding)
-        delete _seeding;
-    if (_appearance)
-        delete _appearance;
-    if (_annotation)
-        delete _annotation;
-}
+FlowEventRouter::~FlowEventRouter() {}
 
 void FlowEventRouter::GetWebHelp(vector<pair<string, string>> &help) const {
     help.clear();
