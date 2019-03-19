@@ -26,7 +26,7 @@ void FlowParams::SetIsSteady(bool steady) {
 }
 
 bool FlowParams::GetIsSteady() const {
-    long rv = GetValueLong(_isSteadyTag, long(true));
+    long rv = GetValueLong(_isSteadyTag, long(false));
     return bool(rv);
 }
 

@@ -254,4 +254,9 @@ void Advection::ClearParticleProperties() {
             part.ClearProperties();
 }
 
-int Advection::GetNumberOfTimesteps() const { return _velocity->GetNumberOfTimesteps(); }
+int Advection::GetNumberOfTimesteps() const {
+    if (_velocity)
+        return _velocity->GetNumberOfTimesteps();
+    else
+        return 0;
+}
