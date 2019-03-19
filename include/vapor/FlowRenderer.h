@@ -84,7 +84,7 @@ class RENDER_API FlowRenderer : public Renderer {
                   Grid **gridpp) const;     // Output
 
     // Update values of _cache_* and _state_* member variables.
-    void _updateFlowStates(const FlowParams *);
+    void _updateFlowCacheAndStates(const FlowParams *);
 
     // A function to populate particle properties.
     // If useAsColor == true, then this calculated property will be stored in a field
