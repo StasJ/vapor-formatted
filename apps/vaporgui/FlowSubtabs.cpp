@@ -4,8 +4,8 @@
 #include "GeometryWidget.h"
 #include "TFWidget.h"
 #include "TransformTable.h"
+#include "VaporWidgets.h"
 #include "VariablesWidget.h"
-//#include "VaporWidgets.h"
 
 QVaporSubtab::QVaporSubtab(QWidget *parent) : QWidget(parent) {
     _layout = new QVBoxLayout(this);
@@ -75,6 +75,12 @@ FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
 
     _pathTest2 = new VPathSelector( this, "directory", "~/", QFileDialog::Directory );
     _layout->addWidget( _pathTest2 );*/
+
+    _pathTest = new VFileReader(this, "readPath", "~/");
+    _layout->addWidget(_pathTest);
+
+    _pathTest2 = new VFileWriter(this, "writePath", "~/");
+    _layout->addWidget(_pathTest2);
 }
 
 void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
