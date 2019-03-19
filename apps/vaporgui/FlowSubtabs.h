@@ -83,6 +83,7 @@ class FlowSeedingSubtab : public QVaporSubtab {
     GeometryWidget *_geometryWidget;
     VPushButton *_pushTest;
     VFileReader *_pathTest;
+    VFileReader *_pathTest1;
     VFileWriter *_pathTest2;
     VComboBox *_comboTest;
     VCheckBox *_checkboxTest;
