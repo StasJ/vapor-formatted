@@ -4,8 +4,8 @@
 #include "GeometryWidget.h"
 #include "TFWidget.h"
 #include "TransformTable.h"
+#include "VaporWidgets.h"
 #include "VariablesWidget.h"
-//#include "VaporWidgets.h"
 
 QVaporSubtab::QVaporSubtab(QWidget *parent) : QWidget(parent) {
     _layout = new QVBoxLayout(this);
@@ -47,34 +47,11 @@ void FlowAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *par
 
 FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
     _geometryWidget = new GeometryWidget(this);
-    _geometryWidget->Reinit((DimFlags)THREED, (VariableFlags)VECTOR
-                            //(GeometryFlags)RAKE_HACK
-    );
+    _geometryWidget->Reinit((DimFlags)THREED, (VariableFlags)VECTOR);
     _layout->addWidget(_geometryWidget);
 
-    /*_pushTest = new VPushButton(this, "testLabel", "testButton");
-    connect( _pushTest, SIGNAL( _pressed() ),
-        this, SLOT( _pushTestPressed()));
-    _layout->addWidget( _pushTest );
-
-    _comboTest = new VComboBox(this);//, "testCombo");
-    _comboTest->AddOption( "foo" );
-    _comboTest->AddOption( "bar" );
-    _comboTest->AddOption( "baz" );
-    connect( _comboTest, SIGNAL( _indexChanged(int) ),
-        this, SLOT( _comboBoxSelected(int) ));
-    _layout->addWidget( _comboTest );
-
-    _checkboxTest = new VCheckBox(this, "testCheckbox");
-    connect( _checkboxTest, SIGNAL( _checkboxClicked() ),
-        this, SLOT( _checkBoxSelected() ) );
-    _layout->addWidget( _checkboxTest );
-
-    _pathTest = new VPathSelector( this, "filePath", "~/" );
-    _layout->addWidget( _pathTest );
-
-    _pathTest2 = new VPathSelector( this, "directory", "~/", QFileDialog::Directory );
-    _layout->addWidget( _pathTest2 );*/
+    _fileReader = new VFileReader(this, "Seed File");
+    _layout->addWidget(_fileReader);
 }
 
 void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -85,8 +62,7 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
 void FlowSeedingSubtab::_pushTestPressed() { cout << "Push button pressed" << endl; }
 
 void FlowSeedingSubtab::_comboBoxSelected(int index) {
-    string option =
-        "*** Need to turn on _comboTest at FlowSubtabs.cpp:107"; //_comboTest->GetCurrentText();
+    string option = "*** Need to turn on _comboTest at FlowSubtabs.cpp:107";
     cout << "Combo selected at index " << index << " for option " << option << endl;
 }
 

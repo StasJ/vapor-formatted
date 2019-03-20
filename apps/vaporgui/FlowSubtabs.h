@@ -20,10 +20,7 @@ class GeometryWidget;
 class CopyRegionWidget;
 class TransformTable;
 class ColorbarWidget;
-class VPushButton;
-class VComboBox;
-class VCheckBox;
-class VPathSelector;
+class VFileReader;
 
 class QVaporSubtab : public QWidget {
     Q_OBJECT
@@ -80,11 +77,7 @@ class FlowSeedingSubtab : public QVaporSubtab {
   private:
     VAPoR::FlowParams *_params;
     GeometryWidget *_geometryWidget;
-    VPushButton *_pushTest;
-    VPathSelector *_pathTest;
-    VPathSelector *_pathTest2;
-    VComboBox *_comboTest;
-    VCheckBox *_checkboxTest;
+    VFileReader *_fileReader;
 };
 
 class FlowGeometrySubtab : public QVaporSubtab {

@@ -103,7 +103,7 @@ void VCheckBox::_userClickedCheckbox() { emit _checkboxClicked(); }
 
 VFileSelector::VFileSelector(QWidget *parent, const std::string &labelText,
                              const std::string &filePath, QFileDialog::FileMode fileMode)
-    : VPushButton(parent, labelText) {
+    : VPushButton(parent, labelText, "Select") {
     _fileMode = fileMode;
 
     _lineEdit = new QLineEdit(this);
@@ -162,9 +162,8 @@ void VFileSelector::_setPathFromLineEdit() {
     SetPath(filePath.toStdString());
 }
 
-VFileReader::VFileReader(QWidget *parent, const std::string &labelText, const std::string &filePath,
-                         QFileDialog::FileMode fileMode)
-    : VFileSelector(parent, labelText, filePath, fileMode) {}
+VFileReader::VFileReader(QWidget *parent, const std::string &labelText, const std::string &filePath)
+    : VFileSelector(parent, labelText, filePath, QFileDialog::FileMode::ExistingFile) {}
 
 bool VFileReader::_isFileOperable(const std::string &filePath) const {
     bool operable = false;
