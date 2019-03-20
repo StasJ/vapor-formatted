@@ -62,6 +62,7 @@ FlowRenderer::FlowRenderer(const ParamsMgr *pm, std::string &winName, std::strin
 
     // Initialize advection states
     _cache_currentTS = 0;
+    _cache_time = 0.0f;
     _cache_refinementLevel = -2;
     _cache_compressionLevel = -2;
     _cache_isSteady = false;
@@ -209,10 +210,8 @@ int FlowRenderer::_drawAStreamAsLines(const std::vector<flow::Particle> &stream,
         bufPtr = buffer;
     } else // In case of unsteady, we use particles up to currentTS
     {
-        std::vector<double> timeCoords = _dataMgr->GetTimeCoordinates();
-        float timestamp = timeCoords.at(_cache_currentTS);
         for (const auto &p : stream) {
-            if (p.time <= timestamp) {
+            if (p.time <= _cache_time) {
                 vec.push_back(p.location.x);
                 vec.push_back(p.location.y);
                 vec.push_back(p.location.z);
@@ -296,7 +295,9 @@ void FlowRenderer::_updateFlowCacheAndStates(const FlowParams *params) {
 
     // Time step is a little tricky...
     if (_cache_currentTS != params->GetCurrentTimestep()) {
+        const auto &timeCoords = _dataMgr->GetTimeCoordinates();
         _cache_currentTS = params->GetCurrentTimestep();
+        _cache_time = timeCoords.at(_cache_currentTS);
         size_t totalNumTS = _cache_currentTS + 1;
         if (_cache_isSteady) {
             _scalarStatus = UpdateStatus::SIMPLE_OUTOFDATE;
