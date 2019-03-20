@@ -56,6 +56,8 @@ FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
 
 void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                                VAPoR::RenderParams *rParams) {
+    // VAPoR::Box* rakeBox = rParams->GetRakeBox();
+    //_geometryWidget->Update(paramsMgr, dataMgr, rParams, rakeBox);
     _geometryWidget->Update(paramsMgr, dataMgr, rParams);
 }
 
