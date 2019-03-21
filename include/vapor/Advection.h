@@ -78,6 +78,7 @@ class Advection {
     float _lowerAngle, _upperAngle;       // Thresholds for step size adjustment
     float _lowerAngleCos, _upperAngleCos; // Cosine values of the threshold angles
     float _baseDeltaT;
+    float _latestAdvectionTime;
 
     // Advection methods here could assume all input is valid.
     int _advectEuler(const Particle &p0, float deltaT, // Input
