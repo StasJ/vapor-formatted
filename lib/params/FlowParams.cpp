@@ -29,16 +29,3 @@ bool FlowParams::GetIsSteady() const {
     long rv = GetValueLong(_isSteadyTag, long(false));
     return bool(rv);
 }
-
-/*
-void
-FlowParams::SetAlreadyAdvectionStep( long i )
-{
-    SetValueLong( _alreadyAdvectionStepTag, "how many step already", i );
-}
-long
-FlowParams::GetAlreadyAdvectionStep( ) const
-{
-    return GetValueLong( _alreadyAdvectionStepTag, 0 );
-}
-*/

@@ -17,15 +17,27 @@ QVaporSubtab::QVaporSubtab(QWidget *parent) : QWidget(parent) {
 FlowVariablesSubtab::FlowVariablesSubtab(QWidget *parent) : QVaporSubtab(parent) {
     _variablesWidget = new VariablesWidget(this);
     _variablesWidget->Reinit((VariableFlags)(VECTOR | COLOR), (DimFlags)(THREED));
-
     _layout->addWidget(_variablesWidget, 0, 0);
+
+    _steady = new VCheckBox(this, "Use Steady Flow");
+    _layout->addWidget(_steady);
+
+    connect(_steady, SIGNAL(_checkboxClicked()), this, _steadyGotClicked());
 }
 
 void FlowVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                                  VAPoR::RenderParams *rParams) {
     _params = dynamic_cast<VAPoR::FlowParams *>(rParams);
     assert(_params);
+
     _variablesWidget->Update(dataMgr, paramsMgr, rParams);
+    bool isSteady = _params->GetIsSteady();
+    _steady->SetCheckState(isSteady);
+}
+
+void FlowVariablesSubtab::_steadyGotClicked() {
+    bool userInput = _steady->GetCheckState();
+    _params->SetIsSteady(userInput);
 }
 
 FlowAppearanceSubtab::FlowAppearanceSubtab(QWidget *parent) : QVaporSubtab(parent) {
