@@ -15,12 +15,13 @@ class VaporWidget : public QWidget {
     Q_OBJECT
 
   public:
-    VaporWidget(QWidget *parent, const std::string &labelText);
-    VaporWidget(QWidget *parent, const QString &labelText);
     void SetLabelText(const std::string &text);
     void SetLabelText(const QString &text);
 
   protected:
+    VaporWidget(QWidget *parent, const std::string &labelText);
+    VaporWidget(QWidget *parent, const QString &labelText);
+
     QLabel *_label;
     QSpacerItem *_spacer;
     QHBoxLayout *_layout;
@@ -55,6 +56,7 @@ class VComboBox : public VaporWidget {
     std::string GetCurrentText() const;
     void AddOption(const std::string &option, int index = 0);
     void RemoveOption(int index);
+    void SetIndex(int index);
 
   private:
     QComboBox *_combo;
@@ -72,6 +74,7 @@ class VCheckBox : public VaporWidget {
   public:
     VCheckBox(QWidget *parent, const std::string &labelText = "Label");
     bool GetCheckState() const;
+    void SetCheckState(bool checkState);
 
   private:
     QCheckBox *_checkbox;
