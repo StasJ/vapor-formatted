@@ -38,7 +38,13 @@ bool SteadyVAPORScalar::InsideVolume(float time, const glm::vec3 &pos) const {
         return true;
 }
 
-void SteadyVAPORScalar::UseGrid(const VGrid *g) { _grid = g; }
+void SteadyVAPORScalar::UseGrid(const VGrid *g) {
+    if (g) {
+        if (_grid)
+            delete _grid;
+        _grid = g;
+    }
+}
 
 int SteadyVAPORScalar::GetExtents(float time, glm::vec3 &minExt, glm::vec3 &maxExt) const {
     if (!_grid)
