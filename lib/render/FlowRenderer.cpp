@@ -116,7 +116,6 @@ int FlowRenderer::_initializeGL() {
 }
 
 int FlowRenderer::_paintGL(bool fast) {
-    std::cout << "paint triggered" << std::endl;
     FlowParams *params = dynamic_cast<FlowParams *>(GetActiveParams());
 
     _updateFlowCacheAndStates(params);
@@ -150,9 +149,11 @@ int FlowRenderer::_paintGL(bool fast) {
             _advectionComplete = false;
             // std::string filename( "seeds.txt" );
             //_advection.OutputStreamsGnuplot( filename );
-        } else if (_velocityStatus == UpdateStatus::MISS_TIMESTEP) {
-            _advectionComplete = false;
         }
+        /*else if( _velocityStatus == UpdateStatus::MISS_TIMESTEP )
+        {
+            _advectionComplete = false;
+        }*/
 
         // Second check the status of scalar field
         if (_scalarStatus == UpdateStatus::SIMPLE_OUTOFDATE) {
@@ -298,7 +299,6 @@ void FlowRenderer::_updateFlowCacheAndStates(const FlowParams *params) {
         const auto &timeCoords = _dataMgr->GetTimeCoordinates();
         _cache_currentTS = params->GetCurrentTimestep();
         _cache_time = timeCoords.at(_cache_currentTS);
-        size_t totalNumTS = _cache_currentTS + 1;
         if (_cache_isSteady) {
             _scalarStatus = UpdateStatus::SIMPLE_OUTOFDATE;
             _velocityStatus = UpdateStatus::SIMPLE_OUTOFDATE;
