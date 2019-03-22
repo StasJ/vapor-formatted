@@ -51,6 +51,7 @@ class FlowVariablesSubtab : public QVaporSubtab {
 
     VCheckBox *_steady;
 
+  private slots:
     // Respond to user input
     void _steadyGotClicked();
 };
