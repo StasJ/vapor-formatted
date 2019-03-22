@@ -30,13 +30,15 @@ class UnsteadyVAPORScalar : public ScalarField {
     //
     // Modifiers
     //
-    void AddGrid(const VGrid *g);
+    void AddGrid(const VGrid *g, float time);
 
   private:
     //
     // These variables keep the steady grids
     //
     std::vector<const VGrid *> _grids;
+
+    std::vector<float> _timestamps; // always in ascending order
 };
 
 }; // namespace flow
