@@ -1,4 +1,5 @@
 #include "SliceSubtabs.h"
+#include <QButtonGroup>
 
 #define MIN_SAMPLES 1
 #define MAX_SAMPLES 2000
@@ -44,7 +45,7 @@ SliceAppearanceSubtab::SliceAppearanceSubtab(QWidget *parent) {
     setupUi(this);
     _TFWidget->Reinit((TFFlags)(SAMPLING));
 
-    _sampleRateWidget->SetLabel(QString::fromAscii("Quality"));
+    _sampleRateWidget->SetLabel(QString("Quality"));
     _sampleRateWidget->SetIntType(true);
     _sampleRateWidget->SetExtents(MIN_QUALITY, MAX_QUALITY);
 
