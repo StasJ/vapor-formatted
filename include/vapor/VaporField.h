@@ -4,6 +4,8 @@
 #include "vapor/DataMgr.h"
 #include "vapor/Field.h"
 #include "vapor/FlowParams.h"
+#include "vapor/Grid.h"
+#include "vapor/Particle.h"
 
 namespace flow {
 class VaporField : public Field {
@@ -24,7 +26,7 @@ class VaporField : public Field {
     //
     // Functions for interaction with VAPOR components
     //
-    void AssignDataManager(const VAPoR::DataMgr *dmgr);
+    void AssignDataManager(VAPoR::DataMgr *dmgr);
     void UpdateParams(const VAPoR::FlowParams *p);
 
     //
@@ -37,7 +39,7 @@ class VaporField : public Field {
   private:
     // Member variables
     std::vector<float> _timestamps; // in ascending order
-    const VAPoR::DataMgr *_datamgr;
+    VAPoR::DataMgr *_datamgr;
     const VAPoR::FlowParams *_params;
 
     // Member functions
@@ -45,9 +47,9 @@ class VaporField : public Field {
     size_t _binarySearch(const std::vector<T> &vec, T val, size_t begin, size_t end) const;
 
     // _getAGrid will use the cached params, _params, to generate grids.
-    int _getAGrid(int timestep,         // Input
-                  std::string &varName, // Input
-                  Grid **gridpp) const; // Output
+    int _getAGrid(int timestep,                // Input
+                  std::string &varName,        // Input
+                  VAPoR::Grid **gridpp) const; // Output
 };
 }; // namespace flow
 

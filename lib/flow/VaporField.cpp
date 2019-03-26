@@ -1,4 +1,4 @@
-#include "vapor/Field.h"
+#include "vapor/VaporField.h"
 
 using namespace flow;
 
@@ -7,7 +7,7 @@ VaporField::VaporField() { _datamgr = nullptr; }
 // Destructor
 VaporField::~VaporField() {}
 
-void VaporField::AssignDataManager(const VAPoR::DataMgr *dmgr) {
+void VaporField::AssignDataManager(VAPoR::DataMgr *dmgr) {
     _datamgr = dmgr;
 
     // Make a copy of the timestamps from the new data manager
@@ -59,13 +59,13 @@ size_t VaporField::_binarySearch(const std::vector<T> &vec, T val, size_t begin,
 
 int VaporField::GetNumberOfTimesteps() const { return _timestamps.size(); }
 
-int VaporField::_getAGrid(int timestep, std::string &varName, Grid **gridpp) const {
+int VaporField::_getAGrid(int timestep, std::string &varName, VAPoR::Grid **gridpp) const {
     std::vector<double> extMin, extMax;
     _params->GetBox()->GetExtents(extMin, extMax);
-    Grid *grid = _dataMgr->GetVariable(timestep, varName, _params->GetRefinementLevel(),
-                                       _params->GetCompressionLevel(), extMin, extMax);
+    VAPoR::Grid *grid = _datamgr->GetVariable(timestep, varName, _params->GetRefinementLevel(),
+                                              _params->GetCompressionLevel(), extMin, extMax);
     if (grid == nullptr) {
-        MyBase::SetErrMsg("Not able to get a grid!");
+        Wasp::MyBase::SetErrMsg("Not able to get a grid!");
         return GRID_ERROR;
     } else {
         *gridpp = grid;
