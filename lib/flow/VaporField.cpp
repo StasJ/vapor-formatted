@@ -76,7 +76,6 @@ bool VaporField::InsideVolume(float time, const glm::vec3 &pos) const {
 int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocity) const {
     const std::vector<double> coords{pos.x, pos.y, pos.z};
     VAPoR::Grid *grid = nullptr;
-    assert(_isReady());
 
     // First make sure the query positions are inside of the volume
     if (!InsideVolume(time, pos))
@@ -132,6 +131,57 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
             float weight =
                 (time - _timestamps[floorTS]) / (_timestamps[floorTS + 1] - _timestamps[floorTS]);
             velocity = glm::mix(floorVelocity, ceilVelocity, weight);
+        }
+    }
+
+    return 0;
+}
+
+int VaporField::GetScalar(float time, const glm::vec3 &pos, float &scalar) const {
+    if (!InsideVolume(time, pos))
+        return OUT_OF_FIELD;
+
+    if (ScalarName.empty())
+        return NO_FIELD_YET;
+    std::string scalarname = ScalarName; // const requirement...
+
+    const std::vector<double> coords{pos.x, pos.y, pos.z};
+    VAPoR::Grid *grid = nullptr;
+
+    if (IsSteady) {
+        size_t currentTS = _params->GetCurrentTimestep();
+        int rv = _getAGrid(currentTS, scalarname, &grid);
+        assert(rv == 0);
+        scalar = grid->GetValue(coords);
+        delete grid;
+        grid = nullptr;
+        // Need to do: examine if velocity contains missing value.
+    } else {
+        // First check if the query time is within range
+        if (time < _timestamps.front() || time > _timestamps.back())
+            return TIME_ERROR;
+
+        // Then we locate the floor time step
+        size_t floorTS;
+        int rv = LocateTimestamp(time, floorTS);
+        assert(rv == 0);
+        rv = _getAGrid(floorTS, scalarname, &grid);
+        assert(rv == 0);
+        float floorScalar = grid->GetValue(coords);
+        delete grid;
+        grid = nullptr;
+
+        if (time == _timestamps[floorTS])
+            scalar = floorScalar;
+        else {
+            rv = _getAGrid(floorTS + 1, scalarname, &grid);
+            assert(rv == 0);
+            float ceilScalar = grid->GetValue(coords);
+            delete grid;
+            grid = nullptr;
+            float weight =
+                (time - _timestamps[floorTS]) / (_timestamps[floorTS + 1] - _timestamps[floorTS]);
+            scalar = glm::mix(floorScalar, ceilScalar, weight);
         }
     }
 
