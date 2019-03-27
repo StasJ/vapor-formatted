@@ -47,6 +47,9 @@ class VaporField : public Field {
     template <typename T>
     size_t _binarySearch(const std::vector<T> &vec, T val, size_t begin, size_t end) const;
 
+    // If all the necessary member variables are properly set?
+    bool _isReady() const;
+
     // _getAGrid will use the cached params, _params, to generate grids.
     int _getAGrid(int timestep,                // Input
                   std::string &varName,        // Input
