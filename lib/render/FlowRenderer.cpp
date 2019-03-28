@@ -66,12 +66,12 @@ FlowRenderer::FlowRenderer(const ParamsMgr *pm, std::string &winName, std::strin
     _cache_refinementLevel = -2;
     _cache_compressionLevel = -2;
     _cache_isSteady = false;
-    _velocityStatus = UpdateStatus::SIMPLE_OUTOFDATE;
-    _scalarStatus = UpdateStatus::SIMPLE_OUTOFDATE;
+    _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
+    _scalarStatus = FlowStatus::SIMPLE_OUTOFDATE;
 
     _advectionComplete = false;
 
-    _colorField = nullptr;
+    //_colorField = nullptr;
 }
 
 // Destructor
@@ -93,6 +93,10 @@ FlowRenderer::~FlowRenderer() {
 }
 
 int FlowRenderer::_initializeGL() {
+    // First prepare the VelocityField
+    _velocityField.AssignDataManager(_dataMgr);
+
+    // Followed by real OpenGL initializations
     ShaderProgram *shader = nullptr;
     if ((shader = _glManager->shaderManager->GetShader("FlowLine")))
         _shader = shader;
@@ -118,53 +122,25 @@ int FlowRenderer::_initializeGL() {
 int FlowRenderer::_paintGL(bool fast) {
     FlowParams *params = dynamic_cast<FlowParams *>(GetActiveParams());
 
+    _velocityField.UpdateParams(params);
     _updateFlowCacheAndStates(params);
 
-    if (_cache_isSteady) {
-        if (_velocityStatus == UpdateStatus::SIMPLE_OUTOFDATE) {
-            _useSteadyVAPORField(params);
-            _advectionComplete = false;
-        }
-        if (_scalarStatus == UpdateStatus::SIMPLE_OUTOFDATE) {
-            _useSteadyColorField(params);
-            _populateParticleProperties(params->GetColorMapVariableName(), params, true);
+    if (_velocityStatus == FlowStatus::SIMPLE_OUTOFDATE) {
+        std::vector<flow::Particle> seeds;
+        _genSeedsXY(seeds, _cache_time);
+        _advection.UseSeedParticles(seeds);
+        _advectionComplete = false;
+    }
+
+    if (!_advectionComplete) {
+        int rv = _advection.Advect(&_velocityField, flow::Advection::RK4);
+        size_t totalSteps = 1, maxSteps = 200;
+        while (rv == flow::ADVECT_HAPPENED && totalSteps < maxSteps) {
+            rv = _advection.Advect(&_velocityField, flow::Advection::RK4);
+            totalSteps++;
         }
 
-        if (!_advectionComplete) {
-            int rv = _advection.Advect(flow::Advection::RK4);
-            _colorLastParticle();
-            size_t totalSteps = 1, maxSteps = 200;
-            while (rv == flow::ADVECT_HAPPENED && totalSteps < maxSteps) {
-                rv = _advection.Advect(flow::Advection::RK4);
-                _colorLastParticle();
-                totalSteps++;
-            }
-
-            _advectionComplete = false;
-        }
-    } else {
-        // First check the status of velocity field
-        if (_velocityStatus == UpdateStatus::SIMPLE_OUTOFDATE) {
-            _useUnsteadyVAPORField(params);
-            _advectionComplete = false;
-            // std::string filename( "seeds.txt" );
-            //_advection.OutputStreamsGnuplot( filename );
-        }
-        // Second check the status of scalar field
-        if (_scalarStatus == UpdateStatus::SIMPLE_OUTOFDATE) {
-        }
-
-        if (!_advectionComplete) {
-            int rv = _advection.Advect(flow::Advection::RK4);
-            //            _colorLastParticle();
-            while (rv == flow::ADVECT_HAPPENED &&
-                   _advection.GetLatestAdvectionTime() <= _cache_time) {
-                rv = _advection.Advect(flow::Advection::RK4);
-                //                _colorLastParticle();
-            }
-
-            _advectionComplete = true;
-        }
+        _advectionComplete = false;
     }
 
     _purePaint(params, fast);
@@ -258,37 +234,38 @@ void FlowRenderer::_updateFlowCacheAndStates(const FlowParams *params) {
     // Check variable names
     std::vector<std::string> varnames = params->GetFieldVariableNames();
     if (varnames.size() == 3) {
-        if ((varnames[0] != _advection.GetVelocityNameU()) ||
-            (varnames[1] != _advection.GetVelocityNameV()) ||
-            (varnames[2] != _advection.GetVelocityNameW()))
-            _velocityStatus = UpdateStatus::SIMPLE_OUTOFDATE;
+        if ((varnames[0] != _velocityField.VelocityNames[0]) ||
+            (varnames[1] != _velocityField.VelocityNames[1]) ||
+            (varnames[2] != _velocityField.VelocityNames[2]))
+            _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
     } else {
         MyBase::SetErrMsg("Missing velocity variable");
         std::cout << "Missing velocity variable" << std::endl;
     }
-    if (_colorField) {
+    /*if( _colorField )
+    {
         std::string colorVarName = params->GetColorMapVariableName();
-        if (colorVarName != _colorField->ScalarName)
-            _scalarStatus = UpdateStatus::SIMPLE_OUTOFDATE;
-    }
+        if( colorVarName != _colorField->ScalarName )
+            _scalarStatus = FlowStatus::SIMPLE_OUTOFDATE;
+    }*/
 
     // Check compression parameters
     if (_cache_refinementLevel != params->GetRefinementLevel()) {
         _cache_refinementLevel = params->GetRefinementLevel();
-        _scalarStatus = UpdateStatus::SIMPLE_OUTOFDATE;
-        _velocityStatus = UpdateStatus::SIMPLE_OUTOFDATE;
+        _scalarStatus = FlowStatus::SIMPLE_OUTOFDATE;
+        _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
     }
     if (_cache_compressionLevel != params->GetCompressionLevel()) {
         _cache_compressionLevel = params->GetCompressionLevel();
-        _scalarStatus = UpdateStatus::SIMPLE_OUTOFDATE;
-        _velocityStatus = UpdateStatus::SIMPLE_OUTOFDATE;
+        _scalarStatus = FlowStatus::SIMPLE_OUTOFDATE;
+        _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
     }
 
     // Check steady/unsteady status
     if (_cache_isSteady != params->GetIsSteady()) {
         _cache_isSteady = params->GetIsSteady();
-        _scalarStatus = UpdateStatus::SIMPLE_OUTOFDATE;
-        _velocityStatus = UpdateStatus::SIMPLE_OUTOFDATE;
+        _scalarStatus = FlowStatus::SIMPLE_OUTOFDATE;
+        _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
     }
 
     // Time step is a little tricky...
@@ -297,19 +274,19 @@ void FlowRenderer::_updateFlowCacheAndStates(const FlowParams *params) {
         _cache_currentTS = params->GetCurrentTimestep();
         _cache_time = timeCoords.at(_cache_currentTS);
         if (_cache_isSteady) {
-            _scalarStatus = UpdateStatus::SIMPLE_OUTOFDATE;
-            _velocityStatus = UpdateStatus::SIMPLE_OUTOFDATE;
+            _scalarStatus = FlowStatus::SIMPLE_OUTOFDATE;
+            _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
         }
         /*
         else if( _advection.GetNumberOfTimesteps() < totalNumTS )
         {
-            _scalarStatus             = UpdateStatus::MISS_TIMESTEP;
-            _velocityStatus           = UpdateStatus::MISS_TIMESTEP;
+            _scalarStatus             = FlowStatus::MISS_TIMESTEP;
+            _velocityStatus           = FlowStatus::MISS_TIMESTEP;
         }
         else
         {
-            _scalarStatus             = UpdateStatus::EXTRA_TIMESTEP;
-            _velocityStatus           = UpdateStatus::EXTRA_TIMESTEP;
+            _scalarStatus             = FlowStatus::EXTRA_TIMESTEP;
+            _velocityStatus           = FlowStatus::EXTRA_TIMESTEP;
         }*/
     }
 
@@ -324,113 +301,138 @@ void FlowRenderer::_updateFlowCacheAndStates(const FlowParams *params) {
     } */
 }
 
-int FlowRenderer::_useSteadyColorField(const FlowParams *params) {
-    // The caller of this function is responsible for checking if
+#if 0
+int
+FlowRenderer::_useSteadyColorField( const FlowParams* params )
+{
+    // The caller of this function is responsible for checking if 
     //   this function is in need to be called.
     //
     std::string colorVarName = params->GetColorMapVariableName();
-    if (colorVarName.empty()) {
+    if( colorVarName.empty() )
+    {
         MyBase::SetErrMsg("Missing color mapping variable");
         return flow::GRID_ERROR;
     }
-
+    
     Grid *grid;
-    int rv = _getAGrid(params, _cache_currentTS, colorVarName, &grid);
-    if (rv != 0)
+    int rv  = _getAGrid( params, _cache_currentTS, colorVarName, &grid );
+    if( rv != 0 )   
         return rv;
 
-    flow::SteadyVAPORScalar *ptr = new flow::SteadyVAPORScalar();
-    ptr->UseGrid(grid);
+    flow::SteadyVAPORScalar* ptr = new flow::SteadyVAPORScalar();
+    ptr->UseGrid( grid );
     ptr->ScalarName = colorVarName;
 
-    if (_colorField)
+    if( _colorField )
         delete _colorField;
     _colorField = ptr;
 
     return 0;
 }
+#endif
 
-int FlowRenderer::_colorLastParticle() {
+/*
+int
+FlowRenderer::_colorLastParticle()
+{
     // The caller of this function is responsible for checking if
     //   this function is in need to be called.
     //
-    if (_colorField == nullptr)
+    if( _colorField == nullptr )
         return flow::NO_FIELD_YET;
 
     size_t numOfStreams = _advection.GetNumberOfStreams();
-    for (size_t i = 0; i < numOfStreams; i++) {
-        const auto &stream = _advection.GetStreamAt(i);
-        const auto &particle = stream.back();
-        float oldValue = particle.value;
-        if (oldValue == 0.0f) // We only calculate its value if it's not been calculated yet.
+    for( size_t i = 0; i < numOfStreams; i++ )
+    {
+        const auto& stream   = _advection.GetStreamAt( i );
+        const auto& particle = stream.back();
+        float oldValue       = particle.value;
+        if( oldValue == 0.0f )  // We only calculate its value if it's not been calculated yet.
         {
             float newVal;
-            int rv = _colorField->GetScalar(particle.time, particle.location, newVal);
-            if (rv == 0) // We have the new value!
-                _advection.AssignLastParticleValueOfAStream(newVal, i);
-            else // Copy the value from previous particle
-                _advection.RepeatLastTwoParticleValuesOfAStream(i);
+            int rv  = _colorField->GetScalar( particle.time, particle.location, newVal );
+            if( rv == 0 )   // We have the new value!
+                _advection.AssignLastParticleValueOfAStream( newVal, i );
+            else            // Copy the value from previous particle
+                _advection.RepeatLastTwoParticleValuesOfAStream( i );
         }
     }
     return 0;
-}
+}*/
 
-int FlowRenderer::_populateParticleProperties(const std::string &varname, const FlowParams *params,
-                                              bool useAsColor) {
-    flow::ScalarField *scalar = nullptr;
-    if (useAsColor)
+/*
+int
+FlowRenderer::_populateParticleProperties( const std::string& varname,
+                                           const FlowParams*  params,
+                                           bool  useAsColor )
+{
+    flow::ScalarField* scalar = nullptr;
+    if( useAsColor )
         scalar = _colorField;
-    else {
+    else
+    {
         std::string name = varname; // Subsequent functions ain't const
-        if (params->GetIsSteady()) {
+        if( params->GetIsSteady() )
+        {
             Grid *grid;
-            int rv = _getAGrid(params, _cache_currentTS, name, &grid);
-            if (rv != 0)
+            int rv  = _getAGrid( params, _cache_currentTS, name, &grid );
+            if( rv != 0 )
                 return rv;
 
-            flow::SteadyVAPORScalar *ptr = new flow::SteadyVAPORScalar();
-            ptr->UseGrid(grid);
+            flow::SteadyVAPORScalar* ptr = new flow::SteadyVAPORScalar();
+            ptr->UseGrid( grid );
             ptr->ScalarName = name;
             scalar = ptr;
-        } else {
+        }
+        else
+        {
             // create an UnsteadyVAPORScalar
         }
     }
 
-    if (scalar == nullptr)
+    if( scalar == nullptr )
         return flow::NO_FIELD_YET;
 
     std::vector<float> properties;
     size_t numOfStreams = _advection.GetNumberOfStreams();
-    for (size_t i = 0; i < numOfStreams; i++) {
-        const auto &stream = _advection.GetStreamAt(i);
+    for( size_t i = 0; i < numOfStreams; i++ )
+    {
+        const auto& stream   = _advection.GetStreamAt( i );
         properties.clear();
         float newVal = 0.0f;
-        for (const auto &p : stream) {
-            scalar->GetScalar(p.time, p.location, newVal);
-            properties.push_back(newVal);
+        for( const auto& p : stream )
+        {
+            scalar->GetScalar( p.time, p.location, newVal );
+            properties.push_back( newVal );
         }
-        if (useAsColor)
-            _advection.AssignParticleValuesOfAStream(properties, i);
+        if( useAsColor )
+            _advection.AssignParticleValuesOfAStream( properties, i );
         else
-            _advection.AttachParticlePropertiesOfAStream(properties, i);
+            _advection.AttachParticlePropertiesOfAStream( properties, i );
     }
 
-    if (scalar != _colorField) // Clean up scalar if it's what we just created
+    if( scalar != _colorField ) // Clean up scalar if it's what we just created
         delete scalar;
 
     return 0;
 }
+*/
 
-int FlowRenderer::_useSteadyVAPORField(const FlowParams *params) {
-    // The caller of this function is responsible for checking if
+#if 0
+int
+FlowRenderer::_useSteadyVAPORField( const FlowParams* params )
+{
+    // The caller of this function is responsible for checking if 
     //   this function is in need to be called.
     //
     // Step 1: retrieve variable names from the params class
     std::vector<std::string> varnames = params->GetFieldVariableNames();
-    assert(varnames.size() == 3); // need to have three components
-    for (auto &s : varnames) {
-        if (s.empty()) {
+    assert( varnames.size() == 3 );  // need to have three components
+    for( auto& s : varnames )
+    {
+        if( s.empty() )
+        {
             MyBase::SetErrMsg("Missing velocity field");
             return flow::GRID_ERROR;
         }
@@ -438,80 +440,84 @@ int FlowRenderer::_useSteadyVAPORField(const FlowParams *params) {
 
     // Step 2: use these variable names to get data grids
     Grid *gridU, *gridV, *gridW;
-    int rv = _getAGrid(params, _cache_currentTS, varnames[0], &gridU);
-    if (rv != 0)
-        return rv;
-    rv = _getAGrid(params, _cache_currentTS, varnames[1], &gridV);
-    if (rv != 0)
-        return rv;
-    rv = _getAGrid(params, _cache_currentTS, varnames[2], &gridW);
-    if (rv != 0)
-        return rv;
+    int rv  = _getAGrid( params, _cache_currentTS, varnames[0], &gridU );
+    if( rv != 0 )   return rv;
+    rv      = _getAGrid( params, _cache_currentTS, varnames[1], &gridV );
+    if( rv != 0 )   return rv;
+    rv      = _getAGrid( params, _cache_currentTS, varnames[2], &gridW );
+    if( rv != 0 )   return rv;
 
     // Step 3: create a SteadyVAPORVelocity using these grids, and ask Advection to use it!
-    flow::SteadyVAPORVelocity *velocity = new flow::SteadyVAPORVelocity();
-    velocity->UseGrids(gridU, gridV, gridW);
+    flow::SteadyVAPORVelocity* velocity = new flow::SteadyVAPORVelocity();
+    velocity->UseGrids( gridU, gridV, gridW );
     velocity->VelocityNameU = varnames[0];
     velocity->VelocityNameV = varnames[1];
     velocity->VelocityNameW = varnames[2];
-
+    
     // Get ready Advection class
     std::vector<flow::Particle> seeds;
-    _genSeedsXY(seeds, 0.0f);
-    _advection.UseSeedParticles(seeds);
-    _advection.UseVelocity(velocity);
+    _genSeedsXY( seeds, 0.0f );
+    _advection.UseSeedParticles( seeds );
+    _advection.UseVelocity( velocity );
 
-    _velocityStatus = UpdateStatus::UPTODATE;
-
+    _velocityStatus = FlowStatus::UPTODATE;
+    
     return 0;
 }
 
-int FlowRenderer::_useUnsteadyVAPORField(const FlowParams *params) {
+int
+FlowRenderer::_useUnsteadyVAPORField( const FlowParams* params )
+{
     // Step 1: collect all variable names
     std::vector<std::string> varnames = params->GetFieldVariableNames();
-    assert(varnames.size() == 3); // need to have three components
-    for (auto &s : varnames) {
-        if (s.empty()) {
+    assert( varnames.size() == 3 );  // need to have three components
+    for( auto& s : varnames )
+    {
+        if( s.empty() )
+        {
             MyBase::SetErrMsg("Missing velocity field");
             return flow::GRID_ERROR;
         }
     }
 
     // Step 2: Create an UnsteadyVAPORVelocity field
-    flow::UnsteadyVAPORVelocity *velocity = new flow::UnsteadyVAPORVelocity();
+    flow::UnsteadyVAPORVelocity* velocity = new flow::UnsteadyVAPORVelocity();
     velocity->VelocityNameU = varnames[0];
     velocity->VelocityNameV = varnames[1];
     velocity->VelocityNameW = varnames[2];
-    const auto &timeCoords = _dataMgr->GetTimeCoordinates();
-    int numOfTimesteps = _dataMgr->GetNumTimeSteps();
-    assert(numOfTimesteps == timeCoords.size());
+    const auto& timeCoords  = _dataMgr->GetTimeCoordinates();
+    int numOfTimesteps      = _dataMgr->GetNumTimeSteps();
+    assert( numOfTimesteps == timeCoords.size() );
 
     Grid *gridU, *gridV, *gridW;
     int rv;
-    for (size_t ts = 0; ts < numOfTimesteps; ts++) {
-        rv = _getAGrid(params, ts, varnames[0], &gridU);
-        if (rv != 0)
-            return rv;
-        rv = _getAGrid(params, ts, varnames[1], &gridV);
-        if (rv != 0)
-            return rv;
-        rv = _getAGrid(params, ts, varnames[2], &gridW);
-        if (rv != 0)
-            return rv;
-        velocity->AddTimeStep(gridU, gridV, gridW, timeCoords[ts]);
+    for( size_t ts = 0; ts < numOfTimesteps; ts++ )
+    {
+        rv      = _getAGrid( params, ts, varnames[0], &gridU );
+        if( rv != 0 )   return rv;
+        rv      = _getAGrid( params, ts, varnames[1], &gridV );
+        if( rv != 0 )   return rv;
+        rv      = _getAGrid( params, ts, varnames[2], &gridW );
+        if( rv != 0 )   return rv;
+        velocity->AddTimeStep( gridU, gridV, gridW, timeCoords[ts] );
     }
 
-    _advection.UseVelocity(velocity);
+    _advection.UseVelocity( velocity );
     std::vector<flow::Particle> seeds;
-    _genSeedsXY(seeds, timeCoords[0]);
-    _advection.UseSeedParticles(seeds);
+    _genSeedsXY( seeds, timeCoords[0] );
+    _advection.UseSeedParticles( seeds );
 
-    _velocityStatus = UpdateStatus::UPTODATE;
+    _velocityStatus = FlowStatus::UPTODATE;
 
     return 0;
 }
 
-int FlowRenderer::_useUnsteadyColorField(const FlowParams *params) { return 0; }
+int
+FlowRenderer::_useUnsteadyColorField( const FlowParams* params )
+{
+    return 0;
+}
+#endif
 
 /*
 int

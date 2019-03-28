@@ -10,7 +10,7 @@
 #include "vapor/FlowParams.h"
 #include "vapor/GLManager.h"
 #include "vapor/Renderer.h"
-#include "vapor/ScalarField.h"
+#include "vapor/VaporField.h"
 
 #include <glm/glm.hpp>
 
@@ -25,7 +25,7 @@ class RENDER_API FlowRenderer : public Renderer {
 
     static std::string GetClassType() { return ("Flow"); }
 
-    enum class UpdateStatus {
+    enum class FlowStatus {
         SIMPLE_OUTOFDATE, // When variable name or compression is out of date,
         UPTODATE          // Everything is up-to-date
     };
@@ -38,7 +38,8 @@ class RENDER_API FlowRenderer : public Renderer {
 
     // Member variables
     flow::Advection _advection;
-    flow::ScalarField *_colorField;
+    flow::VaporField _velocityField;
+    // flow::ScalarField*  _colorField;
     std::vector<float> _colorMap;
     float _colorMapRange[3]; // min, max, and their diff
     bool _advectionComplete;
@@ -49,8 +50,8 @@ class RENDER_API FlowRenderer : public Renderer {
     int _cache_refinementLevel;
     int _cache_compressionLevel;
     bool _cache_isSteady;
-    UpdateStatus _velocityStatus;
-    UpdateStatus _scalarStatus;
+    FlowStatus _velocityStatus;
+    FlowStatus _scalarStatus;
 
     // Member variables for OpenGL
     const GLint _colorMapTexOffset;
@@ -62,11 +63,11 @@ class RENDER_API FlowRenderer : public Renderer {
     //
     // Member functions
     //
-    int _useSteadyVAPORField(const FlowParams *);
-    int _useSteadyColorField(const FlowParams *);
+    // int  _useSteadyVAPORField( const FlowParams* );
+    // int  _useSteadyColorField( const FlowParams* );
 
-    int _useUnsteadyVAPORField(const FlowParams *);
-    int _useUnsteadyColorField(const FlowParams *);
+    // int  _useUnsteadyVAPORField( const FlowParams* );
+    // int  _useUnsteadyColorField( const FlowParams* );
 
     int _genSeedsXY(std::vector<flow::Particle> &seeds, float timeVal) const;
 
