@@ -10,6 +10,7 @@
 namespace VAPoR {
 class ControlExec;
 class MapperFunction;
+class VPushButtonWithDoubleClick;
 } // namespace VAPoR
 
 namespace TFWidget_ {
@@ -211,7 +212,8 @@ class TFWidget_::LoadTFDialog : public QDialog {
     void initializeLayout();
     void configureLayout();
     void connectWidgets();
-    void uncheckAllButtons();
+    void rebuildWidgets();
+    VAPoR::VPushButtonWithDoubleClick makeButton(const QString &path, const QString &file);
 
     CustomFileDialog *_fileDialog;
     QFrame *_checkboxFrame;
@@ -231,7 +233,7 @@ class TFWidget_::LoadTFDialog : public QDialog {
     QCheckBox *_loadDataBoundsCheckbox;
     QButtonGroup *_buttonGroup;
 
-    std::unique_ptr<VAPoR::MapperFunction> _buttonBuilder;
+    std::unique_ptr<VAPoR::MapperFunction> _mapperFnCopy;
     QDir _myDir;
 
     bool _loadOpacityMap;
