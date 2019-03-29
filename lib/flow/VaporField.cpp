@@ -273,3 +273,14 @@ int VaporField::_getAGrid(int timestep, std::string &varName, VAPoR::Grid **grid
         return 0;
     }
 }
+
+VaporField::RichGrid::RichGrid(const VAPoR::Grid *g, size_t currentTS, const std::string &var,
+                               int refLevel, int compLevel, const std::vector<double> &min,
+                               const std::vector<double> &max, VAPoR::DataMgr *dm)
+    : realGrid(g), TS(currentTS), varName(var), refinementLevel(refLevel),
+      compressionLevel(compLevel), extMin(min), extMax(max), mgr(dm) {}
+
+VaporField::RichGrid::~RichGrid() {
+    mgr->UnlockGrid(realGrid);
+    delete realGrid;
+}
