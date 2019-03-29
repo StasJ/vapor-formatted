@@ -245,24 +245,21 @@ int VaporField::_getAGrid(size_t timestep, std::string &varName, const VAPoR::Gr
 
     for (auto it = _recentGrids.cbegin(); it != _recentGrids.cend(); ++it)
         if (it->equals(timestep, varName, refLevel, compLevel, extMin, extMax)) {
-            // Output the underlying grid;
             *gridpp = it->realGrid;
             // Move this node to the front of the list
-            _recentGrids.splice(_recentGrids.cbegin(), _recentGrids, it);
-
+            if (it != _recentGrids.cbegin())
+                _recentGrids.splice(_recentGrids.cbegin(), _recentGrids, it);
             return 0;
         }
 
     // There's no such grid in our cache! Let's ask for it from the data manager,
     // and also keep it in our cache!
-
     VAPoR::Grid *grid =
-        _datamgr->GetVariable(timestep, varName, refLevel, compLevel, extMin, extMax);
+        _datamgr->GetVariable(timestep, varName, refLevel, compLevel, extMin, extMax, true);
     if (grid == nullptr) {
         Wasp::MyBase::SetErrMsg("Not able to get a grid!");
         return GRID_ERROR;
     }
-    // Outout the grid:
     *gridpp = grid;
     // Put it in our cache
     _recentGrids.emplace_front(grid, timestep, varName, refLevel, compLevel, extMin, extMax,
@@ -283,6 +280,7 @@ VaporField::RichGrid::RichGrid(const VAPoR::Grid *g, size_t currentTS, const std
     : realGrid(g), TS(currentTS), varName(var), refinementLevel(refLevel),
       compressionLevel(compLevel), extMin(min), extMax(max), mgr(dm) {}
 
+// Destructor
 VaporField::RichGrid::~RichGrid() {
     if (mgr && realGrid) {
         mgr->UnlockGrid(realGrid);
