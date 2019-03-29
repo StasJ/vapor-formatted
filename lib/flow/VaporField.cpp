@@ -22,12 +22,8 @@ bool VaporField::InsideVolume(float time, const glm::vec3 &pos) {
         {
             int rv = _getAGrid(currentTS, v, &grid);
             assert(rv == 0);
-            if (!grid->InsideGrid(coords)) {
-                delete grid;
+            if (!grid->InsideGrid(coords))
                 return false;
-            }
-            delete grid;
-            grid = nullptr;
         }
     } else // we check two time steps
     {
@@ -46,12 +42,8 @@ bool VaporField::InsideVolume(float time, const glm::vec3 &pos) {
         {
             rv = _getAGrid(floor, v, &grid);
             assert(rv == 0);
-            if (!grid->InsideGrid(coords)) {
-                delete grid;
+            if (!grid->InsideGrid(coords))
                 return false;
-            }
-            delete grid;
-            grid = nullptr;
         }
 
         // If time is larger than _timestamps[floor], we also need to test _timestamps[floor+1]
@@ -60,12 +52,8 @@ bool VaporField::InsideVolume(float time, const glm::vec3 &pos) {
             {
                 rv = _getAGrid(floor + 1, v, &grid);
                 assert(rv == 0);
-                if (!grid->InsideGrid(coords)) {
-                    delete grid;
+                if (!grid->InsideGrid(coords))
                     return false;
-                }
-                delete grid;
-                grid = nullptr;
             }
         }
     }
@@ -88,8 +76,6 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
             int rv = _getAGrid(currentTS, varname, &grid);
             assert(rv == 0);
             velocity[i] = grid->GetValue(coords);
-            delete grid;
-            grid = nullptr;
         }
         // Need to do: examine if velocity contains missing value.
     } else {
@@ -109,8 +95,6 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
             int rv = _getAGrid(floorTS, varname, &grid);
             assert(rv == 0);
             floorVelocity[i] = grid->GetValue(coords);
-            delete grid;
-            grid = nullptr;
         }
         // Need to do: examine if velocity contains missing value.
 
@@ -124,8 +108,6 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
                 int rv = _getAGrid(floorTS + 1, varname, &grid);
                 assert(rv == 0);
                 ceilVelocity[i] = grid->GetValue(coords);
-                delete grid;
-                grid = nullptr;
             }
             // Need to do: examine if velocity contains missing value.
             float weight =
@@ -153,8 +135,6 @@ int VaporField::GetScalar(float time, const glm::vec3 &pos, float &scalar) {
         int rv = _getAGrid(currentTS, scalarname, &grid);
         assert(rv == 0);
         scalar = grid->GetValue(coords);
-        delete grid;
-        grid = nullptr;
         // Need to do: examine if velocity contains missing value.
     } else {
         // First check if the query time is within range
@@ -168,8 +148,6 @@ int VaporField::GetScalar(float time, const glm::vec3 &pos, float &scalar) {
         rv = _getAGrid(floorTS, scalarname, &grid);
         assert(rv == 0);
         float floorScalar = grid->GetValue(coords);
-        delete grid;
-        grid = nullptr;
 
         if (time == _timestamps[floorTS])
             scalar = floorScalar;
@@ -177,8 +155,6 @@ int VaporField::GetScalar(float time, const glm::vec3 &pos, float &scalar) {
             rv = _getAGrid(floorTS + 1, scalarname, &grid);
             assert(rv == 0);
             float ceilScalar = grid->GetValue(coords);
-            delete grid;
-            grid = nullptr;
             float weight =
                 (time - _timestamps[floorTS]) / (_timestamps[floorTS + 1] - _timestamps[floorTS]);
             scalar = glm::mix(floorScalar, ceilScalar, weight);
