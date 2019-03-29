@@ -113,7 +113,7 @@ Advection::GetScalarName() const
 }
 */
 
-int Advection::Advect(const Field *velocity, ADVECTION_METHOD method) {
+int Advection::Advect(Field *velocity, ADVECTION_METHOD method) {
     int ready = CheckReady();
     if (ready != 0)
         return ready;
@@ -163,8 +163,7 @@ int Advection::Advect(const Field *velocity, ADVECTION_METHOD method) {
         return 0;
 }
 
-int Advection::_advectEuler(const Field *velocity, const Particle &p0, float dt,
-                            Particle &p1) const {
+int Advection::_advectEuler(Field *velocity, const Particle &p0, float dt, Particle &p1) const {
     glm::vec3 v0;
     int rv = velocity->GetVelocity(p0.time, p0.location, v0);
     assert(rv == 0);
@@ -173,7 +172,7 @@ int Advection::_advectEuler(const Field *velocity, const Particle &p0, float dt,
     return 0;
 }
 
-int Advection::_advectRK4(const Field *velocity, const Particle &p0, float dt, Particle &p1) const {
+int Advection::_advectRK4(Field *velocity, const Particle &p0, float dt, Particle &p1) const {
     glm::vec3 k1, k2, k3, k4;
     float dt2 = dt * 0.5f;
     int rv;

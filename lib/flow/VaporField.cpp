@@ -2,7 +2,7 @@
 
 using namespace flow;
 
-VaporField::VaporField() {
+VaporField::VaporField() : _recentGridLimit(9) {
     _datamgr = nullptr;
     _params = nullptr;
 }
@@ -10,9 +10,9 @@ VaporField::VaporField() {
 // Destructor
 VaporField::~VaporField() {}
 
-bool VaporField::InsideVolume(float time, const glm::vec3 &pos) const {
+bool VaporField::InsideVolume(float time, const glm::vec3 &pos) {
     const std::vector<double> coords{pos.x, pos.y, pos.z};
-    VAPoR::Grid *grid = nullptr;
+    const VAPoR::Grid *grid = nullptr;
     assert(_isReady());
 
     // In case of steady field, we only check a specific time step
@@ -73,9 +73,9 @@ bool VaporField::InsideVolume(float time, const glm::vec3 &pos) const {
     return true;
 }
 
-int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocity) const {
+int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocity) {
     const std::vector<double> coords{pos.x, pos.y, pos.z};
-    VAPoR::Grid *grid = nullptr;
+    const VAPoR::Grid *grid = nullptr;
 
     // First make sure the query positions are inside of the volume
     if (!InsideVolume(time, pos))
@@ -137,7 +137,7 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
     return 0;
 }
 
-int VaporField::GetScalar(float time, const glm::vec3 &pos, float &scalar) const {
+int VaporField::GetScalar(float time, const glm::vec3 &pos, float &scalar) {
     if (!InsideVolume(time, pos))
         return OUT_OF_FIELD;
 
@@ -146,7 +146,7 @@ int VaporField::GetScalar(float time, const glm::vec3 &pos, float &scalar) const
     std::string scalarname = ScalarName; // const requirement...
 
     const std::vector<double> coords{pos.x, pos.y, pos.z};
-    VAPoR::Grid *grid = nullptr;
+    const VAPoR::Grid *grid = nullptr;
 
     if (IsSteady) {
         size_t currentTS = _params->GetCurrentTimestep();
@@ -258,11 +258,33 @@ size_t VaporField::_binarySearch(const std::vector<T> &vec, T val, size_t begin,
         return _binarySearch(vec, val, middle, end);
 }
 
-int VaporField::GetNumberOfTimesteps() const { return _timestamps.size(); }
+int VaporField::GetNumberOfTimesteps() { return _timestamps.size(); }
 
-int VaporField::_getAGrid(int timestep, std::string &varName, VAPoR::Grid **gridpp) const {
+int VaporField::_getAGrid(size_t timestep, std::string &varName, const VAPoR::Grid **gridpp) {
+    // First check if we have the requested grid in our cache
     std::vector<double> extMin, extMax;
     _params->GetBox()->GetExtents(extMin, extMax);
+    int refLevel = _params->GetRefinementLevel();
+    int compLevel = _params->GetCompressionLevel();
+
+    for (auto it = _recentGrids.cbegin(); it != _recentGrids.cend(); ++it)
+        if (it->equals(timestep, varName, refLevel, compLevel, extMin, extMax)) {
+            // Output the underlying grid;
+            *gridpp = it->realGrid;
+            // Move this node to the front of the list
+            _recentGrids.splice(_recentGrids.cbegin(), _recentGrids, it);
+
+            return 0;
+        }
+
+    /*if( found )
+    {
+        _recentGrids.remove( target )
+        _recentGrids.push_front( target );
+        *gridpp = target.realGrid;
+        return 0;
+    }*/
+
     VAPoR::Grid *grid = _datamgr->GetVariable(timestep, varName, _params->GetRefinementLevel(),
                                               _params->GetCompressionLevel(), extMin, extMax);
     if (grid == nullptr) {
@@ -289,4 +311,14 @@ VaporField::RichGrid::~RichGrid() {
         mgr->UnlockGrid(realGrid);
         delete realGrid;
     }
+}
+
+bool VaporField::RichGrid::equals(size_t currentTS, const std::string &var, int refLevel,
+                                  int compLevel, const std::vector<double> &min,
+                                  const std::vector<double> &max) const {
+    if (currentTS == TS && var == varName && refLevel == refinementLevel &&
+        compLevel == compressionLevel && min == extMin && max == extMax)
+        return true;
+    else
+        return false;
 }
