@@ -240,45 +240,57 @@ const std::vector<Particle> &Advection::GetStreamAt(size_t i) const {
 
 float Advection::GetLatestAdvectionTime() const { return _latestAdvectionTime; }
 
-int Advection::AssignParticleValuesOfAStream(std::vector<float> &valsIn, size_t idx) {
-    if (valsIn.size() != _streams.at(idx).size())
+/*
+int
+Advection::AssignParticleValuesOfAStream( std::vector<float>& valsIn, size_t idx )
+{
+    if( valsIn.size() != _streams.at(idx).size() )
         return SIZE_MISMATCH;
 
     // Now we assign value to each particle
     auto itr = _streams.at(idx).begin();
-    for (auto v : valsIn) {
+    for( auto v : valsIn )
+    {
         (*itr).value = v;
         ++itr;
     }
     return 0;
 }
 
-int Advection::AssignLastParticleValueOfAStream(float newVal, size_t idx) {
+int
+Advection::AssignLastParticleValueOfAStream( float newVal, size_t idx )
+{
     _streams.at(idx).back().value = newVal;
     return 0;
 }
 
-int Advection::RepeatLastTwoParticleValuesOfAStream(size_t idx) {
-    auto &s = _streams.at(idx);
+int
+Advection::RepeatLastTwoParticleValuesOfAStream( size_t idx )
+{
+    auto& s = _streams.at(idx);
     size_t size = s.size();
-    if (size > 1) // At least there are two particles
-        s[size - 1].value = s[size - 2].value;
+    if( size > 1 )  // At least there are two particles
+        s[ size-1 ].value = s[ size-2 ].value;
 
     return 0;
 }
 
-int Advection::AttachParticlePropertiesOfAStream(std::vector<float> &prop, size_t idx) {
-    if (prop.size() != _streams.at(idx).size())
+int
+Advection::AttachParticlePropertiesOfAStream( std::vector<float>& prop, size_t idx )
+{
+    if( prop.size() != _streams.at(idx).size() )
         return SIZE_MISMATCH;
 
     // Now we attach properties to each particle
     auto itr = _streams.at(idx).begin();
-    for (auto v : prop) {
-        (*itr).AttachProperty(v);
+    for( auto v : prop )
+    {
+        (*itr).AttachProperty( v );
         ++itr;
     }
     return 0;
 }
+*/
 
 void Advection::ClearParticleProperties() {
     for (auto &stream : _streams)
