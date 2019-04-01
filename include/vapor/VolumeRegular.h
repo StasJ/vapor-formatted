@@ -17,7 +17,7 @@ class VolumeRegular : public VolumeAlgorithm {
     virtual int LoadSecondaryData(const Grid *grid);
     virtual void DeleteSecondaryData();
     virtual ShaderProgram *GetShader() const;
-    virtual void SetUniforms() const;
+    virtual void SetUniforms(int *nextTextureUnit) const;
 
   protected:
     unsigned int _dataTexture;
@@ -42,7 +42,7 @@ class VolumeRegularIso : public VolumeRegular {
     static std::string GetName() { return "Iso Regular"; }
     static Type GetType() { return Type::Iso; }
     virtual ShaderProgram *GetShader() const;
-    virtual void SetUniforms() const;
+    virtual void SetUniforms(int *nextTextureUnit) const;
 };
 
 } // namespace VAPoR
