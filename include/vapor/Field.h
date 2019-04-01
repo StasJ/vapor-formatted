@@ -18,7 +18,8 @@ class Field {
     //
     // If a given position at a given time is inside of this field
     //
-    virtual bool InsideVolume(float time, const glm::vec3 &pos) = 0;
+    virtual bool InsideVolumeVelocity(float time, const glm::vec3 &pos) = 0;
+    virtual bool InsideVolumeScalar(float time, const glm::vec3 &pos) = 0;
 
     //
     // Retrieve the number of time steps in this field
