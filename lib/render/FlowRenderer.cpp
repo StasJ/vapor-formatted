@@ -122,25 +122,26 @@ int FlowRenderer::_initializeGL() {
 int FlowRenderer::_paintGL(bool fast) {
     FlowParams *params = dynamic_cast<FlowParams *>(GetActiveParams());
 
-    _velocityField.UpdateParams(params);
     _updateFlowCacheAndStates(params);
+    _velocityField.UpdateParams(params);
 
     if (_velocityStatus == FlowStatus::SIMPLE_OUTOFDATE) {
         std::vector<flow::Particle> seeds;
         _genSeedsXY(seeds, _cache_time);
         _advection.UseSeedParticles(seeds);
         _advectionComplete = false;
+        _velocityStatus = FlowStatus::UPTODATE;
     }
 
     if (!_advectionComplete) {
         int rv = _advection.Advect(&_velocityField, flow::Advection::RK4);
-        size_t totalSteps = 1, maxSteps = 200;
+        size_t totalSteps = 1, maxSteps = 70;
         while (rv == flow::ADVECT_HAPPENED && totalSteps < maxSteps) {
             rv = _advection.Advect(&_velocityField, flow::Advection::RK4);
             totalSteps++;
         }
 
-        _advectionComplete = false;
+        _advectionComplete = true;
     }
 
     _purePaint(params, fast);
