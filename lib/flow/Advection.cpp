@@ -1,13 +1,10 @@
-#include <cstdio>
-
 #include "vapor/Advection.h"
+#include <iostream>
 
 using namespace flow;
 
 // Constructor;
 Advection::Advection() : _lowerAngle(3.0f), _upperAngle(15.0f) {
-    //_velocity   = nullptr;
-    _baseDeltaT = 0.01f;
     _lowerAngleCos = glm::cos(glm::radians(_lowerAngle));
     _upperAngleCos = glm::cos(glm::radians(_upperAngle));
     _latestAdvectionTime = 0.0f;
@@ -23,9 +20,13 @@ Advection::~Advection() {
         }*/
 }
 
-void Advection::SetBaseStepSize(float f) { _baseDeltaT = f; }
-
 /*
+void
+Advection::SetBaseStepSize( float f )
+{
+    _baseDeltaT = f;
+}
+
 void
 Advection::UseVelocity( const VelocityField* p )
 {
@@ -113,7 +114,7 @@ Advection::GetScalarName() const
 }
 */
 
-int Advection::Advect(Field *velocity, ADVECTION_METHOD method) {
+int Advection::Advect(Field *velocity, float deltaT, ADVECTION_METHOD method) {
     int ready = CheckReady();
     if (ready != 0)
         return ready;
@@ -125,8 +126,8 @@ int Advection::Advect(Field *velocity, ADVECTION_METHOD method) {
         if (!velocity->InsideVolumeVelocity(p0.time, p0.location))
             continue;
 
-        float dt = _baseDeltaT;
-        float mindt = _baseDeltaT / 20.0f, maxdt = _baseDeltaT * 50.0f;
+        float dt = deltaT;
+        float mindt = deltaT / 20.0f, maxdt = deltaT * 50.0f;
         if (s.size() > 2) // If there are at least 3 particles in the stream,
         {                 // we also adjust *dt*
             const auto &past1 = s[s.size() - 2];
@@ -140,10 +141,10 @@ int Advection::Advect(Field *velocity, ADVECTION_METHOD method) {
         Particle p1;
         int rv;
         switch (method) {
-        case EULER:
+        case ADVECTION_METHOD::EULER:
             rv = _advectEuler(velocity, p0, dt, p1);
             break;
-        case RK4:
+        case ADVECTION_METHOD::RK4:
             rv = _advectRK4(velocity, p0, dt, p1);
             break;
         }

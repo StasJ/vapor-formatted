@@ -14,7 +14,7 @@
 namespace flow {
 class Advection {
   public:
-    enum ADVECTION_METHOD {
+    enum class ADVECTION_METHOD {
         EULER = 0,
         RK4 = 1 // Runge-Kutta 4th order
     };
@@ -24,14 +24,13 @@ class Advection {
     ~Advection();
 
     // Major action function
-    // int  Advect( ADVECTION_METHOD method = RK4 );
-    int Advect(Field *velocityField, ADVECTION_METHOD method = RK4);
+    int Advect(Field *velocityField, float deltaT, ADVECTION_METHOD method = ADVECTION_METHOD::RK4);
 
     // TODO: this function needs to be thought through.
     int CalculateParticleProperty(const Field *scalarField);
 
     // Set advection basics
-    void SetBaseStepSize(float deltaT);
+    // void SetBaseStepSize(  float deltaT );
     // void UseVelocity( const VelocityField* p );
     void UseSeedParticles(std::vector<Particle> &seeds);
 
@@ -81,7 +80,6 @@ class Advection {
     std::vector<std::vector<Particle>> _streams;
     const float _lowerAngle, _upperAngle; // Thresholds for step size adjustment
     float _lowerAngleCos, _upperAngleCos; // Cosine values of the threshold angles
-    float _baseDeltaT;
     float _latestAdvectionTime;
 
     // Advection methods here could assume all input is valid.
