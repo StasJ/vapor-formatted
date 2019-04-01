@@ -61,8 +61,7 @@ FlowRenderer::FlowRenderer(const ParamsMgr *pm, std::string &winName, std::strin
     _colorMapTexId = 0;
 
     // Initialize advection states
-    _cache_currentTS = 0;
-    _cache_time = 0.0f;
+    _cache_currentTS = -1;
     _cache_refinementLevel = -2;
     _cache_compressionLevel = -2;
     _cache_isSteady = false;
@@ -127,8 +126,11 @@ int FlowRenderer::_paintGL(bool fast) {
 
     if (_velocityStatus == FlowStatus::SIMPLE_OUTOFDATE) {
         std::vector<flow::Particle> seeds;
-        _genSeedsXY(seeds, _cache_time);
+        _genSeedsXY(seeds, _cache_timestamps.at(0));
         _advection.UseSeedParticles(seeds);
+        _advectionComplete = false;
+        _velocityStatus = FlowStatus::UPTODATE;
+    } else if (_velocityStatus == FlowStatus::TIME_STEP_OFD) {
         _advectionComplete = false;
         _velocityStatus = FlowStatus::UPTODATE;
     }
@@ -186,7 +188,7 @@ int FlowRenderer::_drawAStreamAsLines(const std::vector<flow::Particle> &stream,
     } else // In case of unsteady, we use particles up to currentTS
     {
         for (const auto &p : stream) {
-            if (p.time <= _cache_time) {
+            if (p.time <= _cache_timestamps.at(_cache_currentTS)) {
                 vec.push_back(p.location.x);
                 vec.push_back(p.location.y);
                 vec.push_back(p.location.z);
@@ -271,12 +273,14 @@ void FlowRenderer::_updateFlowCacheAndStates(const FlowParams *params) {
 
     // Time step is a little tricky...
     if (_cache_currentTS != params->GetCurrentTimestep()) {
-        const auto &timeCoords = _dataMgr->GetTimeCoordinates();
         _cache_currentTS = params->GetCurrentTimestep();
-        _cache_time = timeCoords.at(_cache_currentTS);
+        _cache_timestamps = _dataMgr->GetTimeCoordinates();
         if (_cache_isSteady) {
             _scalarStatus = FlowStatus::SIMPLE_OUTOFDATE;
             _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
+        } else {
+            _scalarStatus = FlowStatus::TIME_STEP_OFD;
+            _velocityStatus = FlowStatus::TIME_STEP_OFD;
         }
         /*
         else if( _advection.GetNumberOfTimesteps() < totalNumTS )
