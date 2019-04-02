@@ -286,19 +286,10 @@ void FlowRenderer::_updateFlowCacheAndStates(const FlowParams *params) {
     }
 
     // Check velocity multipliers
-    const auto &vmult = params->GetVelocityMultiplier();
-    bool equal = true;
-    if (_cache_velocityMultipliers.size() != 3)
-        equal = false;
-    else {
-        for (int i = 0; i < 3; i++)
-            if (_cache_velocityMultipliers[i] != float(vmult[i]))
-                equal = false;
-    }
-    if (equal == false) {
-        _cache_velocityMultipliers.resize(3);
-        for (int i = 0; i < 3; i++)
-            _cache_velocityMultipliers[i] = float(vmult[i]);
+    const auto &mult = params->GetVelocityMultiplier();
+    glm::vec3 multVec(mult[0], mult[1], mult[2]);
+    if (_cache_velocityMultipliers != multVec) {
+        _cache_velocityMultipliers = multVec;
         _colorStatus = FlowStatus::SIMPLE_OUTOFDATE;
         _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
     }
