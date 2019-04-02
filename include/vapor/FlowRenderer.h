@@ -49,6 +49,7 @@ class RENDER_API FlowRenderer : public Renderer {
     // A few variables to keep the current advection states
     size_t _cache_currentTS;
     std::vector<double> _cache_timestamps;
+    std::vector<float> _cache_velocityMultipliers;
     int _cache_refinementLevel;
     int _cache_compressionLevel;
     bool _cache_isSteady;
