@@ -38,6 +38,9 @@ FlowVariablesSubtab::FlowVariablesSubtab(QWidget *parent) : QVaporSubtab(parent)
     connect(_xMultiplier, SIGNAL(returnPressed()), this, SLOT(_velocityMultiplierChanged()));
     connect(_yMultiplier, SIGNAL(returnPressed()), this, SLOT(_velocityMultiplierChanged()));
     connect(_zMultiplier, SIGNAL(returnPressed()), this, SLOT(_velocityMultiplierChanged()));
+    connect(_xMultiplier, SIGNAL(editingFinished()), this, SLOT(_velocityMultiplierChanged()));
+    connect(_yMultiplier, SIGNAL(editingFinished()), this, SLOT(_velocityMultiplierChanged()));
+    connect(_zMultiplier, SIGNAL(editingFinished()), this, SLOT(_velocityMultiplierChanged()));
 }
 
 void FlowVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
