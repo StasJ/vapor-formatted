@@ -3,7 +3,7 @@
 using namespace VAPoR;
 
 const std::string FlowParams::_isSteadyTag = "isSteadyTag";
-// const std::string FlowParams::_alreadyAdvectionStepTag = "alreadyAdvectionStepTag";
+const std::string FlowParams::_velocityMultiplierTag = "velocityMultiplierTag";
 
 static RenParamsRegistrar<FlowParams> registrar(FlowParams::GetClassType());
 
@@ -28,4 +28,13 @@ void FlowParams::SetIsSteady(bool steady) {
 bool FlowParams::GetIsSteady() const {
     long rv = GetValueLong(_isSteadyTag, long(false));
     return bool(rv);
+}
+
+std::vector<double> FlowParams::GetVelocityMultiplier() const {
+    std::vector<double> defaultVec(3, 1.0);
+    return GetValueDoubleVec(_velocityMultiplierTag, defaultVec);
+}
+
+void FlowParams::SetVelocityMultiplier(const std::vector<double> &coeffs) {
+    SetValueDoubleVec(_velocityMultiplierTag, "velocity multipliers", coeffs);
 }

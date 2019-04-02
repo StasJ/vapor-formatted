@@ -53,7 +53,7 @@ FlowRenderer::FlowRenderer(const ParamsMgr *pm, std::string &winName, std::strin
                            std::string &instName, DataMgr *dataMgr)
     : Renderer(pm, winName, dataSetName, FlowParams::GetClassType(), FlowRenderer::GetClassType(),
                instName, dataMgr),
-      _colorMapTexOffset(0), _velocityField(9), _colorField(3) {
+      _velocityField(9), _colorField(3), _colorMapTexOffset(0) {
     // Initialize OpenGL states
     _shader = nullptr;
     _vertexArrayId = 0;
