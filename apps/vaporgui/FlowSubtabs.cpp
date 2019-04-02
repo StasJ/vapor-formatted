@@ -44,10 +44,16 @@ void FlowVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *para
                                  VAPoR::RenderParams *rParams) {
     _params = dynamic_cast<VAPoR::FlowParams *>(rParams);
     assert(_params);
-
     _variablesWidget->Update(dataMgr, paramsMgr, rParams);
+
+    // Update custom widgets
     bool isSteady = _params->GetIsSteady();
     _steady->SetCheckState(isSteady);
+
+    const auto &vec = _params->GetVelocityMultiplier();
+    _xMultiplier->setText(QString::number(vec.at(0), 'f', 3));
+    _yMultiplier->setText(QString::number(vec.at(1), 'f', 3));
+    _zMultiplier->setText(QString::number(vec.at(2), 'f', 3));
 }
 
 void FlowVariablesSubtab::_steadyGotClicked() {
@@ -56,7 +62,20 @@ void FlowVariablesSubtab::_steadyGotClicked() {
 }
 
 void FlowVariablesSubtab::_velocityMultiplierChanged() {
-    std::cout << "return pressed" << std::endl;
+    std::vector<double> input(3, 1.0);
+    bool ok;
+    double d;
+    d = _xMultiplier->text().toDouble(&ok);
+    if (ok) // We don't need this verification once the line edit has its own validator
+        input[0] = d;
+    d = _yMultiplier->text().toDouble(&ok);
+    if (ok)
+        input[1] = d;
+    d = _zMultiplier->text().toDouble(&ok);
+    if (ok)
+        input[2] = d;
+
+    _params->SetVelocityMultiplier(input);
 }
 
 //
