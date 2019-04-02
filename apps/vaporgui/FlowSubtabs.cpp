@@ -14,6 +14,9 @@ QVaporSubtab::QVaporSubtab(QWidget *parent) : QWidget(parent) {
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
 }
 
+//
+//================================
+//
 FlowVariablesSubtab::FlowVariablesSubtab(QWidget *parent) : QVaporSubtab(parent) {
     _variablesWidget = new VariablesWidget(this);
     _variablesWidget->Reinit((VariableFlags)(VECTOR | COLOR), (DimFlags)(THREED));
@@ -22,7 +25,19 @@ FlowVariablesSubtab::FlowVariablesSubtab(QWidget *parent) : QVaporSubtab(parent)
     _steady = new VCheckBox(this, "Use Steady Flow");
     _layout->addWidget(_steady);
 
+    _xMultiplier = new QLineEdit(this);
+    _layout->addWidget(_xMultiplier);
+
+    _yMultiplier = new QLineEdit(this);
+    _layout->addWidget(_yMultiplier);
+
+    _zMultiplier = new QLineEdit(this);
+    _layout->addWidget(_zMultiplier);
+
     connect(_steady, SIGNAL(_checkboxClicked()), this, SLOT(_steadyGotClicked()));
+    connect(_xMultiplier, SIGNAL(returnPressed()), this, SLOT(_velocityMultiplierChanged()));
+    connect(_yMultiplier, SIGNAL(returnPressed()), this, SLOT(_velocityMultiplierChanged()));
+    connect(_zMultiplier, SIGNAL(returnPressed()), this, SLOT(_velocityMultiplierChanged()));
 }
 
 void FlowVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -40,6 +55,13 @@ void FlowVariablesSubtab::_steadyGotClicked() {
     _params->SetIsSteady(userInput);
 }
 
+void FlowVariablesSubtab::_velocityMultiplierChanged() {
+    std::cout << "return pressed" << std::endl;
+}
+
+//
+//================================
+//
 FlowAppearanceSubtab::FlowAppearanceSubtab(QWidget *parent) : QVaporSubtab(parent) {
     _TFWidget = new TFWidget(this);
     _TFWidget->Reinit((TFFlags)(SAMPLING | CONSTANT_COLOR));
@@ -57,6 +79,9 @@ void FlowAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *par
     _TFWidget->Update(dataMgr, paramsMgr, rParams);
 }
 
+//
+//================================
+//
 FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
     _geometryWidget = new GeometryWidget(this);
     _geometryWidget->Reinit((DimFlags)THREED, (VariableFlags)VECTOR);
@@ -85,6 +110,9 @@ void FlowSeedingSubtab::_checkBoxSelected() {
     cout << "Checkbox is checked? " << checked << endl;
 }
 
+//
+//================================
+//
 FlowGeometrySubtab::FlowGeometrySubtab(QWidget *parent) : QVaporSubtab(parent) {
     _geometryWidget = new GeometryWidget(this);
     _copyRegionWidget = new CopyRegionWidget(this);
@@ -108,6 +136,9 @@ void FlowGeometrySubtab::Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dat
     _transformTable->Update(rParams->GetTransform());
 }
 
+//
+//================================
+//
 FlowAnnotationSubtab::FlowAnnotationSubtab(QWidget *parent) : QVaporSubtab(parent) {
     _colorbarWidget = new ColorbarWidget(this);
     _layout->addWidget(_colorbarWidget, 0, 0);
