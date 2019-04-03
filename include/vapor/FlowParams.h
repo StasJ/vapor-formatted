@@ -25,8 +25,8 @@ class PARAMS_API FlowParams : public RenderParams {
     void SetIsSteady(bool steady);
     bool GetIsSteady() const;
 
-    std::vector<double> GetVelocityMultiplier() const;
-    void SetVelocityMultiplier(const std::vector<double> &coeffs);
+    double GetVelocityMultiplier() const;
+    void SetVelocityMultiplier(double);
 
   protected:
     static const std::string _isSteadyTag;

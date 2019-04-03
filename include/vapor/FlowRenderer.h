@@ -52,7 +52,7 @@ class RENDER_API FlowRenderer : public Renderer {
     int _cache_refinementLevel;
     int _cache_compressionLevel;
     bool _cache_isSteady;
-    glm::vec3 _cache_velocityMultipliers;
+    float _cache_velocityMltp;
     FlowStatus _velocityStatus;
     FlowStatus _colorStatus;
 

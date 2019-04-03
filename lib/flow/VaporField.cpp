@@ -120,7 +120,7 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
         return OUT_OF_FIELD;
 
     // Retrieve the velocity multiplier from params
-    const auto &mult = _params->GetVelocityMultiplier();
+    const float mult = _params->GetVelocityMultiplier();
 
     if (IsSteady) {
         size_t currentTS = _params->GetCurrentTimestep();
@@ -128,7 +128,7 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
             auto varname = VelocityNames[i];
             int rv = _getAGrid(currentTS, varname, &grid);
             assert(rv == 0);
-            velocity[i] = grid->GetValue(coords) * float(mult[i]);
+            velocity[i] = grid->GetValue(coords) * mult;
         }
         // Need to do: examine if velocity contains missing value.
     } else {
@@ -151,11 +151,9 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
         }
         // Need to do: examine if floorVelocity contains missing value.
 
-        glm::vec3 multVec(mult[0], mult[1], mult[2]);
-
         // Find the velocity values at the ceiling time step
         if (time == _timestamps[floorTS])
-            velocity = floorVelocity * multVec;
+            velocity = floorVelocity * mult;
         else {
             for (int i = 0; i < 3; i++) {
                 auto varname = VelocityNames[i];
@@ -166,7 +164,7 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
             // Need to do: examine if velocity contains missing value.
             float weight =
                 (time - _timestamps[floorTS]) / (_timestamps[floorTS + 1] - _timestamps[floorTS]);
-            velocity = glm::mix(floorVelocity, ceilVelocity, weight) * multVec;
+            velocity = glm::mix(floorVelocity, ceilVelocity, weight) * mult;
         }
     }
 

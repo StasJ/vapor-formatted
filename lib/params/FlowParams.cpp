@@ -30,11 +30,10 @@ bool FlowParams::GetIsSteady() const {
     return bool(rv);
 }
 
-std::vector<double> FlowParams::GetVelocityMultiplier() const {
-    std::vector<double> defaultVec(3, 1.0);
-    return GetValueDoubleVec(_velocityMultiplierTag, defaultVec);
+double FlowParams::GetVelocityMultiplier() const {
+    return GetValueDouble(_velocityMultiplierTag, 1.0);
 }
 
-void FlowParams::SetVelocityMultiplier(const std::vector<double> &coeffs) {
-    SetValueDoubleVec(_velocityMultiplierTag, "velocity multipliers", coeffs);
+void FlowParams::SetVelocityMultiplier(double coeff) {
+    SetValueDouble(_velocityMultiplierTag, "velocity multiplier", coeff);
 }
