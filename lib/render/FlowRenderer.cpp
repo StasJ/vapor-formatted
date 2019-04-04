@@ -150,9 +150,9 @@ int FlowRenderer::_paintGL(bool fast) {
 
         // The expected number of steps in total based on deltaT.
         size_t maxSteps = size_t(float(_cache_timestamps.size()) / deltaT);
-        int rv = _advection.Advect(&_velocityField, deltaT);
+        int rv = _advection.AdvectOneStep(&_velocityField, deltaT);
         for (size_t i = 0; i < maxSteps && rv == flow::ADVECT_HAPPENED; i++) {
-            rv = _advection.Advect(&_velocityField, deltaT);
+            rv = _advection.AdvectOneStep(&_velocityField, deltaT);
         }
 
         _advectionComplete = true;
