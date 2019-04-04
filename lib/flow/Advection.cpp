@@ -174,7 +174,7 @@ int Advection::AdvectTillTime(Field *velocity, float deltaT, float targetT,
     bool happened = false;
     for (auto &s : _streams) // Process one stream at a time
     {
-        auto &p0 = s.back(); // Start from the last particle in this stream
+        Particle p0 = s.back(); // Start from the last particle in this stream
         while (p0.time < targetT) {
             if (!velocity->InsideVolumeVelocity(p0.time, p0.location))
                 break;
@@ -202,7 +202,7 @@ int Advection::AdvectTillTime(Field *velocity, float deltaT, float targetT,
                 break;
             }
             if (rv != 0) // Advection wasn't successful for some reason...
-                continue;
+                break;
             else // Advection successful, keep the new particle.
             {
                 happened = true;
@@ -210,7 +210,7 @@ int Advection::AdvectTillTime(Field *velocity, float deltaT, float targetT,
                 if (p1.time > _latestAdvectionTime)
                     _latestAdvectionTime = p1.time;
 
-                p0 = s.back();
+                p0 = p1;
             }
         }
     }
