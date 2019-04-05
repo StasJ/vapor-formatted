@@ -58,11 +58,17 @@ class FlowVariablesSubtab : public QVaporSubtab {
 
     VCheckBox *_steady;
 
+    // Sam's attempt to add more widgets
+    //   TODO: add validator/mask so that only positive integers are accepted
+    QLineEdit *_steadyNumOfSteps;
+
   private slots:
     // Respond to user input
     void _steadyGotClicked();
 
     void _velocityMultiplierChanged();
+
+    void _steadyNumOfStepsChanged();
 };
 
 //

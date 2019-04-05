@@ -28,9 +28,13 @@ class PARAMS_API FlowParams : public RenderParams {
     double GetVelocityMultiplier() const;
     void SetVelocityMultiplier(double);
 
+    int GetSteadyNumOfSteps() const;
+    void SetSteadyNumOfSteps(int);
+
   protected:
     static const std::string _isSteadyTag;
     static const std::string _velocityMultiplierTag;
+    static const std::string _steadyNumOfStepsTag;
 };
 
 } // namespace VAPoR
