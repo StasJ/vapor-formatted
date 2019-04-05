@@ -27,7 +27,7 @@ class RENDER_API FlowRenderer : public Renderer {
 
     enum class FlowStatus {
         SIMPLE_OUTOFDATE, // When variable name or compression is out of date,
-        TIME_STEP_OFD,    // When the current time step is out of date
+        TIME_STEP_OOD,    // Existing particles are good, but need to advect more
         UPTODATE          // Everything is up-to-date
     };
 
@@ -42,17 +42,19 @@ class RENDER_API FlowRenderer : public Renderer {
     flow::VaporField _velocityField;
     flow::VaporField _colorField;
     std::vector<float> _colorMap;
+    std::vector<double> _timestamps;
     float _colorMapRange[3]; // min, max, and their diff
     bool _advectionComplete;
     bool _coloringComplete;
 
     // A few variables to keep the current advection states
-    size_t _cache_currentTS;
-    std::vector<double> _cache_timestamps;
     int _cache_refinementLevel;
     int _cache_compressionLevel;
-    bool _cache_isSteady;
     float _cache_velocityMltp;
+    bool _cache_isSteady;
+    int _cache_steadyNumOfSteps;
+    size_t _cache_currentTS;
+
     FlowStatus _velocityStatus;
     FlowStatus _colorStatus;
 
@@ -66,12 +68,6 @@ class RENDER_API FlowRenderer : public Renderer {
     //
     // Member functions
     //
-    // int  _useSteadyVAPORField( const FlowParams* );
-    // int  _useSteadyColorField( const FlowParams* );
-
-    // int  _useUnsteadyVAPORField( const FlowParams* );
-    // int  _useUnsteadyColorField( const FlowParams* );
-
     int _genSeedsXY(std::vector<flow::Particle> &seeds, float timeVal) const;
 
     int _purePaint(FlowParams *, bool fast);

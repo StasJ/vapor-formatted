@@ -65,13 +65,13 @@ FlowRenderer::FlowRenderer(const ParamsMgr *pm, std::string &winName, std::strin
     _cache_refinementLevel = -2;
     _cache_compressionLevel = -2;
     _cache_isSteady = false;
+    _cache_steadyNumOfSteps = 0;
+    _cache_velocityMltp = 1.0;
     _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
     _colorStatus = FlowStatus::SIMPLE_OUTOFDATE;
 
     _advectionComplete = false;
     _coloringComplete = false;
-
-    //_colorField = nullptr;
 }
 
 // Destructor
@@ -96,6 +96,7 @@ int FlowRenderer::_initializeGL() {
     // First prepare the VelocityField
     _velocityField.AssignDataManager(_dataMgr);
     _colorField.AssignDataManager(_dataMgr);
+    _timestamps = _dataMgr->GetTimeCoordinates();
 
     // Followed by real OpenGL initializations
     ShaderProgram *shader = nullptr;
@@ -129,11 +130,11 @@ int FlowRenderer::_paintGL(bool fast) {
 
     if (_velocityStatus == FlowStatus::SIMPLE_OUTOFDATE) {
         std::vector<flow::Particle> seeds;
-        _genSeedsXY(seeds, _cache_timestamps.at(0));
+        _genSeedsXY(seeds, _timestamps.at(0));
         _advection.UseSeedParticles(seeds);
         _advectionComplete = false;
         _velocityStatus = FlowStatus::UPTODATE;
-    } else if (_velocityStatus == FlowStatus::TIME_STEP_OFD) {
+    } else if (_velocityStatus == FlowStatus::TIME_STEP_OOD) {
         _advectionComplete = false;
         _velocityStatus = FlowStatus::UPTODATE;
     }
@@ -144,9 +145,9 @@ int FlowRenderer::_paintGL(bool fast) {
     }
 
     if (!_advectionComplete) {
-        float deltaT = 0.05;              // For only 1 timestep case
-        if (_cache_timestamps.size() > 1) // For multiple timestep case
-            deltaT *= _cache_timestamps[1] - _cache_timestamps[0];
+        float deltaT = 0.05;        // For only 1 timestep case
+        if (_timestamps.size() > 1) // For multiple timestep case
+            deltaT *= _timestamps[1] - _timestamps[0];
 
         int rv = flow::ADVECT_HAPPENED;
 
@@ -162,7 +163,7 @@ int FlowRenderer::_paintGL(bool fast) {
          * This scheme is used for unsteady flow */
         else {
             for (int i = 1; i <= _cache_currentTS && rv == flow::ADVECT_HAPPENED; i++) {
-                rv = _advection.AdvectTillTime(&_velocityField, deltaT, _cache_timestamps.at(i));
+                rv = _advection.AdvectTillTime(&_velocityField, deltaT, _timestamps.at(i));
             }
         }
 
@@ -202,21 +203,27 @@ int FlowRenderer::_drawAStreamAsLines(const std::vector<flow::Particle> &stream,
     std::vector<float> vec;
     const float *bufPtr = nullptr;
 
-    if (_cache_isSteady) // In case of steady flow, we render all available particles
-    {
+    // In case of steady flow, we render up to _cache_steadyNumOfSteps + 1.
+    if (_cache_isSteady) {
+        size_t numOfStep = params->GetSteadyNumOfSteps();
         numOfPart = stream.size();
+        numOfPart = numOfPart < numOfStep + 1 ? numOfPart : numOfStep + 1;
         float *buffer = new float[4 * numOfPart];
-        size_t offset = 0;
+        size_t i = 0;
         for (const auto &p : stream) {
-            std::memcpy(buffer + offset, glm::value_ptr(p.location), sizeof(glm::vec3));
-            offset += 3;
-            buffer[offset++] = p.value;
+            if (i < numOfPart) {
+                std::memcpy(buffer + i * 4, glm::value_ptr(p.location), sizeof(glm::vec3));
+                buffer[i * 4 + 3] = p.value;
+                i++;
+            } else
+                break;
         }
         bufPtr = buffer;
-    } else // In case of unsteady, we use particles up to currentTS
-    {
+    }
+    // In case of unsteady, we use particles up to currentTS
+    else {
         for (const auto &p : stream) {
-            if (p.time <= _cache_timestamps.at(_cache_currentTS)) {
+            if (p.time <= _timestamps.at(_cache_currentTS)) {
                 vec.push_back(p.location.x);
                 vec.push_back(p.location.y);
                 vec.push_back(p.location.z);
@@ -262,22 +269,26 @@ int FlowRenderer::_drawAStreamAsLines(const std::vector<flow::Particle> &stream,
 }
 
 void FlowRenderer::_updateFlowCacheAndStates(const FlowParams *params) {
+    /* Strategy:
+     * First, compare parameters that if changed, they would put both steady and unsteady
+     *   streams out of date.
+     * Second, branch into steady and unsteady cases, and deal with them separately.
+     */
+
     // Check variable names
+    // If names not the same, entire stream is out of date
+    // Note: variable names are kept in VaporFields.
     std::vector<std::string> varnames = params->GetFieldVariableNames();
-    if (varnames.size() == 3) {
-        if ((varnames[0] != _velocityField.VelocityNames[0]) ||
-            (varnames[1] != _velocityField.VelocityNames[1]) ||
-            (varnames[2] != _velocityField.VelocityNames[2]))
-            _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
-    } else {
-        MyBase::SetErrMsg("Missing velocity variable");
-        std::cout << "Missing velocity variable" << std::endl;
-    }
+    if ((varnames.at(0) != _velocityField.VelocityNames[0]) ||
+        (varnames.at(1) != _velocityField.VelocityNames[1]) ||
+        (varnames.at(2) != _velocityField.VelocityNames[2]))
+        _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
     std::string colorVarName = params->GetColorMapVariableName();
     if (colorVarName != _colorField.ScalarName)
         _colorStatus = FlowStatus::SIMPLE_OUTOFDATE;
 
     // Check compression parameters
+    // If these parameters not the same, entire stream is out of date
     if (_cache_refinementLevel != params->GetRefinementLevel()) {
         _cache_refinementLevel = params->GetRefinementLevel();
         _colorStatus = FlowStatus::SIMPLE_OUTOFDATE;
@@ -289,14 +300,8 @@ void FlowRenderer::_updateFlowCacheAndStates(const FlowParams *params) {
         _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
     }
 
-    // Check steady/unsteady status
-    if (_cache_isSteady != params->GetIsSteady()) {
-        _cache_isSteady = params->GetIsSteady();
-        _colorStatus = FlowStatus::SIMPLE_OUTOFDATE;
-        _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
-    }
-
-    // Check velocity multipliers
+    // Check velocity multiplier
+    // If the multiplier is changed, then the entire stream is out of date
     const float mult = params->GetVelocityMultiplier();
     if (_cache_velocityMltp != mult) {
         _cache_velocityMltp = mult;
@@ -304,30 +309,80 @@ void FlowRenderer::_updateFlowCacheAndStates(const FlowParams *params) {
         _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
     }
 
-    // Time step is a little tricky...
-    if (_cache_currentTS != params->GetCurrentTimestep()) {
-        _cache_currentTS = params->GetCurrentTimestep();
-        _cache_timestamps = _dataMgr->GetTimeCoordinates();
-        if (_cache_isSteady) {
+    /* Now we branch into steady and unsteady cases, and treat them separately */
+    if (params->GetIsSteady()) {
+        if (_cache_isSteady) // steady state isn't changed
+        {
+            if (params->GetSteadyNumOfSteps() > _cache_steadyNumOfSteps) {
+                if (_colorStatus == FlowStatus::UPTODATE)
+                    _colorStatus = FlowStatus::TIME_STEP_OOD;
+                if (_velocityStatus == FlowStatus::UPTODATE)
+                    _velocityStatus = FlowStatus::TIME_STEP_OOD;
+            }
+            _cache_steadyNumOfSteps = params->GetSteadyNumOfSteps();
+
+            if (_cache_currentTS != params->GetCurrentTimestep()) {
+                _cache_currentTS = params->GetCurrentTimestep();
+                _colorStatus = FlowStatus::SIMPLE_OUTOFDATE;
+                _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
+            }
+        } else // switched from unsteady to steady. Everything is out of date in this case.
+        {
+            _cache_isSteady = true;
+            _cache_steadyNumOfSteps = params->GetSteadyNumOfSteps();
+            _cache_currentTS = params->GetCurrentTimestep();
             _colorStatus = FlowStatus::SIMPLE_OUTOFDATE;
             _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
-        } else { // !! Only apply status "TIME_STEP_OFD" if the old status is "UPTODATE" !!
-            if (_colorStatus == FlowStatus::UPTODATE)
-                _colorStatus = FlowStatus::TIME_STEP_OFD;
-            if (_velocityStatus == FlowStatus::UPTODATE)
-                _velocityStatus = FlowStatus::TIME_STEP_OFD;
+        }
+    } else // unsteady flow
+    {
+        if (!_cache_isSteady) // unsteady state isn't changed
+        {
+            if (_cache_currentTS < params->GetCurrentTimestep()) {
+                if (_colorStatus == FlowStatus::UPTODATE)
+                    _colorStatus = FlowStatus::TIME_STEP_OOD;
+                if (_velocityStatus == FlowStatus::UPTODATE)
+                    _velocityStatus = FlowStatus::TIME_STEP_OOD;
+            }
+            _cache_currentTS = params->GetCurrentTimestep();
+            _cache_steadyNumOfSteps = params->GetSteadyNumOfSteps();
+        } else // switched from steady to unsteady
+        {
+            _cache_isSteady = false;
+            _cache_steadyNumOfSteps = params->GetSteadyNumOfSteps();
+            _cache_currentTS = params->GetCurrentTimestep();
+            _colorStatus = FlowStatus::SIMPLE_OUTOFDATE;
+            _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
         }
     }
 
-    /* I'm not sure if this piece of code is necessary
-     *
-    int rv  = _advection.CheckReady();
-    if( rv != 0 )
+#if 0
+    // Check steady/unsteady status
+    if( _cache_isSteady != params->GetIsSteady() )
     {
-        _state_velocitiesUpToDate = false;
-        _state_scalarUpToDate     = false;
-        return;
-    } */
+        _cache_isSteady           = params->GetIsSteady();
+        _colorStatus              = FlowStatus::SIMPLE_OUTOFDATE;
+        _velocityStatus           = FlowStatus::SIMPLE_OUTOFDATE;
+    }
+
+    // Time step is a little tricky...
+    if( _cache_currentTS != params->GetCurrentTimestep() )
+    {
+        _cache_currentTS  = params->GetCurrentTimestep();
+        if( _cache_isSteady )
+        {
+            _colorStatus          = FlowStatus::SIMPLE_OUTOFDATE;
+            _velocityStatus       = FlowStatus::SIMPLE_OUTOFDATE;
+        }
+        else
+        {   // !! Only apply status "TIME_STEP_OOD" if the old status is "UPTODATE" !!
+            if( _colorStatus     == FlowStatus::UPTODATE )
+                _colorStatus      = FlowStatus::TIME_STEP_OOD;
+            if( _velocityStatus  == FlowStatus::UPTODATE )
+                _velocityStatus   = FlowStatus::TIME_STEP_OOD;
+        }
+    }
+#endif
 }
 
 #if 0
