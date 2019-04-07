@@ -1,5 +1,6 @@
 #include "vapor/GLManager.h"
 #include "vapor/LegacyGL.h"
+#include "vapor/STLUtils.h"
 #include "vapor/glutil.h"
 #include <chrono>
 
@@ -41,6 +42,22 @@ void GLManager::PixelCoordinateSystemPop() {
     mm->MatrixModeProjection();
     mm->PopMatrix();
     mm->MatrixModeModelView();
+}
+
+GLManager::Vendor GLManager::GetVendor() {
+    string vendorString((const char *)glGetString(GL_VENDOR));
+    vendorString = STLUtils::ToLower(vendorString);
+
+    if (STLUtils::Contains(vendorString, "intel"))
+        return Vendor::Intel;
+    if (STLUtils::Contains(vendorString, "nvidia"))
+        return Vendor::Nvidia;
+    if (STLUtils::Contains(vendorString, "amd"))
+        return Vendor::AMD;
+    if (STLUtils::Contains(vendorString, "mesa"))
+        return Vendor::Mesa;
+
+    return Vendor::Other;
 }
 
 void GLManager::GetGLVersion(int *major, int *minor) {
