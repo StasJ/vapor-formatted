@@ -21,9 +21,11 @@ class VaporField : public Field {
     virtual bool InsideVolumeVelocity(float time, const glm::vec3 &pos);
     virtual bool InsideVolumeScalar(float time, const glm::vec3 &pos);
     virtual int GetVelocity(float time, const glm::vec3 &pos, // input
-                            glm::vec3 &vel);                  // output
-    virtual int GetScalar(float time, const glm::vec3 &pos,   // input
-                          float &val);                        // output
+                            glm::vec3 &vel,                   // output
+                            bool checkInsideVolume = true);
+    virtual int GetScalar(float time, const glm::vec3 &pos, // input
+                          float &val,                       // output
+                          bool checkInsideVolume = true);
     virtual int GetNumberOfTimesteps();
 
     //
