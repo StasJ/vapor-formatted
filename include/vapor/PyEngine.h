@@ -1,6 +1,6 @@
-#include <Python.h>
 #include <vapor/DC.h>
 #include <vapor/DataMgr.h>
+#include <vapor/MyPython.h>
 #include <vector>
 
 #pragma once
