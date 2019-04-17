@@ -129,10 +129,6 @@ int FlowRenderer::_paintGL(bool fast) {
     _velocityField.UpdateParams(params);
     _colorField.UpdateParams(params);
 
-    // retrieve something from the velocity field
-    glm::vec3 position(0.0), vel;
-    _velocityField.GetVelocity(_timestamps.at(0), position, vel);
-
     if (_velocityStatus == FlowStatus::SIMPLE_OUTOFDATE) {
         std::vector<flow::Particle> seeds;
         _genSeedsXY(seeds, _timestamps.at(0));
@@ -145,9 +141,15 @@ int FlowRenderer::_paintGL(bool fast) {
         _velocityStatus = FlowStatus::UPTODATE;
     }
 
-    if (!params->UseSingleColor() && _colorStatus == FlowStatus::SIMPLE_OUTOFDATE) {
-        _coloringComplete = false;
-        _colorStatus = FlowStatus::UPTODATE;
+    if (!params->UseSingleColor()) {
+        if (_colorStatus == FlowStatus::SIMPLE_OUTOFDATE) {
+            _advection.ResetParticleValues();
+            _coloringComplete = false;
+            _colorStatus = FlowStatus::UPTODATE;
+        } else if (_colorStatus == FlowStatus::TIME_STEP_OOD) {
+            _coloringComplete = false;
+            _colorStatus = FlowStatus::UPTODATE;
+        }
     }
 
     if (!_advectionComplete) {
@@ -162,16 +164,11 @@ int FlowRenderer::_paintGL(bool fast) {
         if (params->GetIsSteady()) {
             size_t actualSteps = 0;
             int numOfSteps = params->GetSteadyNumOfSteps();
-            struct timeval startT, finishT;
-            gettimeofday(&startT, NULL);
             for (size_t i = _steadyTotalSteps; i < numOfSteps && rv == flow::ADVECT_HAPPENED; i++) {
                 rv = _advection.AdvectOneStep(&_velocityField, deltaT);
                 _steadyTotalSteps++;
                 actualSteps++;
             }
-            gettimeofday(&finishT, NULL);
-            std::cout << "Advection execution steps: " << actualSteps << std::endl;
-            std::cout << "Using time: " << _getElapsedSeconds(&startT, &finishT) << std::endl;
 
         }
 
@@ -187,7 +184,7 @@ int FlowRenderer::_paintGL(bool fast) {
     }
 
     if (!_coloringComplete) {
-        int rv = _advection.CalculateParticleProperty(&_colorField, true);
+        int rv = _advection.CalculateParticleValues(&_colorField, true);
         _coloringComplete = true;
     }
 
@@ -462,7 +459,7 @@ FlowRenderer::_populateParticleProperties( const std::string& varname,
 */
 
 int FlowRenderer::_genSeedsXY(std::vector<flow::Particle> &seeds, float timeVal) const {
-    int numX = 5, numY = 5;
+    int numX = 10, numY = 10;
     std::vector<double> extMin, extMax;
     FlowParams *params = dynamic_cast<FlowParams *>(GetActiveParams());
     params->GetBox()->GetExtents(extMin, extMax);
