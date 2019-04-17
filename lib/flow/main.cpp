@@ -36,14 +36,37 @@ int main(int argc, char **argv) {
 
         std::string filename( "streams.dat" );
         a.OutputStreamsGnuplot( filename );
+
+        Particle p;
+        int numOfProp = 10;
+        for( int i = 0; i < numOfProp; i++ )
+            p.AttachProperty( float(i) );
+
+        for( int i = 0; i < p.GetNumOfProperties(); i++ )
+        {
+            std::cout << p.RetrieveProperty( i ) << std::endl;
+        }
     */
 
-    Particle p;
-    int numOfProp = 10;
-    for (int i = 0; i < numOfProp; i++)
-        p.AttachProperty(float(i));
-
-    for (int i = 0; i < p.GetNumOfProperties(); i++) {
-        std::cout << p.RetrieveProperty(i) << std::endl;
+    std::string line("  0.01,  1.0,1.1, 2.2,oijoi, ");
+    line.push_back(',');
+    size_t start = 0;
+    size_t end = line.find(',');
+    std::vector<float> values;
+    while (end != std::string::npos && values.size() < 4) {
+        auto str = line.substr(start, end - start);
+        float val;
+        try {
+            val = std::stof(str);
+        } catch (const std::invalid_argument &e) {
+            std::cout << "bad conversion" << std::endl;
+            break;
+        }
+        values.push_back(val);
+        start = end + 1;
+        end = line.find(',', start);
     }
+
+    for (auto e : values)
+        std::cout << e << std::endl;
 }
