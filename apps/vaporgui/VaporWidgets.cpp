@@ -12,6 +12,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QSpacerItem>
+#include <QSpinBox>
 #include <QWidget>
 
 #include <cassert>
@@ -40,6 +41,44 @@ void VaporWidget::SetLabelText(const std::string &text) {
 }
 
 void VaporWidget::SetLabelText(const QString &text) { _label->setText(text); }
+
+VSpinBox::VSpinBox(QWidget *parent, const std::string &labelText, int defaultValue)
+    : VaporWidget(parent, labelText) {
+    _spinBox = new QSpinBox(this);
+    _spinBox->setFocusPolicy(Qt::NoFocus);
+    _layout->addWidget(_spinBox);
+
+    SetLabelText(QString::fromStdString(labelText));
+    SetValue(defaultValue);
+
+    connect(_spinBox, SIGNAL(valueChanged(int)), this, SLOT(_changed(int)));
+}
+
+void VSpinBox::_changed(int value) { emit _valueChanged(value); }
+
+void VSpinBox::SetMaximum(int maximum) { _spinBox->setMaximum(maximum); }
+
+void VSpinBox::SetMinimum(int minimum) { _spinBox->setMinimum(minimum); }
+
+void VSpinBox::SetValue(int value) { _spinBox->setValue(value); }
+
+VLineEdit::VLineEdit(QWidget *parent, const std::string &labelText, const std::string &editText)
+    : VaporWidget(parent, labelText) {
+    _edit = new QLineEdit(this);
+    _edit->setFocusPolicy(Qt::NoFocus);
+    _layout->addWidget(_edit);
+
+    SetLabelText(QString::fromStdString(labelText));
+    SetEditText(QString::fromStdString(editText));
+
+    connect(_edit, SIGNAL(returnPressed()), this, SLOT(_returnPressed()));
+}
+
+void VLineEdit::SetEditText(const std::string &text) { SetEditText(QString::fromStdString(text)); }
+
+void VLineEdit::SetEditText(const QString &text) { _edit->setText(text); }
+
+void VLineEdit::_returnPressed() { emit _pressed(); }
 
 VPushButton::VPushButton(QWidget *parent, const std::string &labelText,
                          const std::string &buttonText)
@@ -82,6 +121,8 @@ void VComboBox::AddOption(const std::string &option, int index) {
 
 void VComboBox::RemoveOption(int index = 0) { _combo->removeItem(index); }
 
+void VComboBox::SetIndex(int index) { _combo->setCurrentIndex(index); }
+
 VCheckBox::VCheckBox(QWidget *parent, const std::string &labelText)
     : VaporWidget(parent, labelText) {
     _checkbox = new QCheckBox("", this);
@@ -99,11 +140,18 @@ bool VCheckBox::GetCheckState() const {
         return false;
 }
 
+void VCheckBox::SetCheckState(bool checkState) {
+    if (checkState)
+        _checkbox->setCheckState(Qt::Checked);
+    else
+        _checkbox->setCheckState(Qt::Unchecked);
+}
+
 void VCheckBox::_userClickedCheckbox() { emit _checkboxClicked(); }
 
 VFileSelector::VFileSelector(QWidget *parent, const std::string &labelText,
                              const std::string &filePath, QFileDialog::FileMode fileMode)
-    : VPushButton(parent, labelText) {
+    : VPushButton(parent, labelText, "Select") {
     _fileMode = fileMode;
 
     _lineEdit = new QLineEdit(this);
@@ -162,9 +210,8 @@ void VFileSelector::_setPathFromLineEdit() {
     SetPath(filePath.toStdString());
 }
 
-VFileReader::VFileReader(QWidget *parent, const std::string &labelText, const std::string &filePath,
-                         QFileDialog::FileMode fileMode)
-    : VFileSelector(parent, labelText, filePath, fileMode) {}
+VFileReader::VFileReader(QWidget *parent, const std::string &labelText, const std::string &filePath)
+    : VFileSelector(parent, labelText, filePath, QFileDialog::FileMode::ExistingFile) {}
 
 bool VFileReader::_isFileOperable(const std::string &filePath) const {
     bool operable = false;
@@ -188,4 +235,25 @@ bool VFileWriter::_isFileOperable(const std::string &filePath) const {
     }
 
     return operable;
+}
+
+VTabWidget::VTabWidget(QWidget *parent, const std::string &firstTabName) : QTabWidget(parent) {
+    AddTab(firstTabName);
+}
+
+void VTabWidget::AddTab(const std::string &tabName) {
+    QWidget *container = new QWidget;
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->setSpacing(0);
+    layout->setContentsMargins(0, 0, 0, 0);
+    container->setLayout(layout);
+
+    addTab(container, QString::fromStdString(tabName));
+}
+
+void VTabWidget::DeleteTab(int index) { removeTab(index); }
+
+void VTabWidget::AddWidget(QWidget *inputWidget, int index) {
+    QWidget *target = widget(index);
+    target->layout()->addWidget(inputWidget);
 }
