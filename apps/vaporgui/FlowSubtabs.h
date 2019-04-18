@@ -24,6 +24,11 @@ class TransformTable;
 class ColorbarWidget;
 class VFileReader;
 class VCheckBox;
+class VComboBox;
+class VLineEdit;
+class VSpinBox;
+class VTabWidget;
+class QSliderEdit;
 
 class QVaporSubtab : public QWidget {
     Q_OBJECT
@@ -85,6 +90,13 @@ class FlowAppearanceSubtab : public QVaporSubtab {
 
   private:
     VAPoR::FlowParams *_params;
+
+    VComboBox *_shapeCombo;
+    VComboBox *_colorCombo;
+    VSpinBox *_lifeSpinBox;
+    QSliderEdit *_smoothnessSliderEdit;
+    VSpinBox *_sizeSpinBox;
+
     TFWidget *_TFWidget;
 };
 
@@ -104,11 +116,50 @@ class FlowSeedingSubtab : public QVaporSubtab {
     void _pushTestPressed();
     void _comboBoxSelected(int index);
     void _checkBoxSelected();
+    void _configureRakeOptions();
 
   private:
     VAPoR::FlowParams *_params;
     GeometryWidget *_geometryWidget;
+
+    VTabWidget *_seedSettingsTab;
+    VComboBox *_distributionCombo;
+    VSpinBox *_randomCountSpinBox;
+    VComboBox *_biasVariableCombo;
+    QSliderEdit *_biasSliderEdit;
+    VSpinBox *_xDistributionSpinBox;
+    VSpinBox *_yDistributionSpinBox;
+    VSpinBox *_zDistributionSpinBox;
     VFileReader *_fileReader;
+};
+
+//
+//================================
+//
+class FlowIntegrationSubtab : public QVaporSubtab {
+
+    Q_OBJECT
+
+  public:
+    FlowIntegrationSubtab(QWidget *parent);
+
+    void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
+
+  protected slots:
+    void _configureIntegrationOptions();
+
+  private:
+    VAPoR::FlowParams *_params;
+    VTabWidget *_integrationSettingsTab;
+    VComboBox *_integrationTypeCombo;
+    VComboBox *_directionCombo;
+    VCheckBox *_periodicBoundaryComboX;
+    VCheckBox *_periodicBoundaryComboY;
+    VCheckBox *_periodicBoundaryComboZ;
+    VLineEdit *_multiplierLineEdit;
+    VSpinBox *_startSpinBox;
+    VSpinBox *_endSpinBox;
+    VSpinBox *_intervalSpinBox;
 };
 
 //

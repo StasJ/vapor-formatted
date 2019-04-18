@@ -12,6 +12,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QSpacerItem>
+#include <QSpinBox>
 #include <QWidget>
 
 #include <cassert>
@@ -40,6 +41,44 @@ void VaporWidget::SetLabelText(const std::string &text) {
 }
 
 void VaporWidget::SetLabelText(const QString &text) { _label->setText(text); }
+
+VSpinBox::VSpinBox(QWidget *parent, const std::string &labelText, int defaultValue)
+    : VaporWidget(parent, labelText) {
+    _spinBox = new QSpinBox(this);
+    _spinBox->setFocusPolicy(Qt::NoFocus);
+    _layout->addWidget(_spinBox);
+
+    SetLabelText(QString::fromStdString(labelText));
+    SetValue(defaultValue);
+
+    connect(_spinBox, SIGNAL(valueChanged(int)), this, SLOT(_changed(int)));
+}
+
+void VSpinBox::_changed(int value) { emit _valueChanged(value); }
+
+void VSpinBox::SetMaximum(int maximum) { _spinBox->setMaximum(maximum); }
+
+void VSpinBox::SetMinimum(int minimum) { _spinBox->setMinimum(minimum); }
+
+void VSpinBox::SetValue(int value) { _spinBox->setValue(value); }
+
+VLineEdit::VLineEdit(QWidget *parent, const std::string &labelText, const std::string &editText)
+    : VaporWidget(parent, labelText) {
+    _edit = new QLineEdit(this);
+    _edit->setFocusPolicy(Qt::NoFocus);
+    _layout->addWidget(_edit);
+
+    SetLabelText(QString::fromStdString(labelText));
+    SetEditText(QString::fromStdString(editText));
+
+    connect(_edit, SIGNAL(returnPressed()), this, SLOT(_returnPressed()));
+}
+
+void VLineEdit::SetEditText(const std::string &text) { SetEditText(QString::fromStdString(text)); }
+
+void VLineEdit::SetEditText(const QString &text) { _edit->setText(text); }
+
+void VLineEdit::_returnPressed() { emit _pressed(); }
 
 VPushButton::VPushButton(QWidget *parent, const std::string &labelText,
                          const std::string &buttonText)
@@ -196,4 +235,25 @@ bool VFileWriter::_isFileOperable(const std::string &filePath) const {
     }
 
     return operable;
+}
+
+VTabWidget::VTabWidget(QWidget *parent, const std::string &firstTabName) : QTabWidget(parent) {
+    AddTab(firstTabName);
+}
+
+void VTabWidget::AddTab(const std::string &tabName) {
+    QWidget *container = new QWidget;
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->setSpacing(0);
+    layout->setContentsMargins(0, 0, 0, 0);
+    container->setLayout(layout);
+
+    addTab(container, QString::fromStdString(tabName));
+}
+
+void VTabWidget::DeleteTab(int index) { removeTab(index); }
+
+void VTabWidget::AddWidget(QWidget *inputWidget, int index) {
+    QWidget *target = widget(index);
+    target->layout()->addWidget(inputWidget);
 }
