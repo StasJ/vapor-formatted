@@ -3,7 +3,6 @@
 #include <new>
 #include <sstream>
 #include <vapor/DataMgrUtils.h>
-#include <vapor/MyPython.h>
 #include <vapor/PyEngine.h>
 #include <vapor/utils.h>
 #include <vector>
