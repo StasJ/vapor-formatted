@@ -23,6 +23,8 @@ class CopyRegionWidget;
 class TransformTable;
 class ColorbarWidget;
 class VFileReader;
+class VFileWriter;
+class VPushButton;
 class VCheckBox;
 class VComboBox;
 class VLineEdit;
@@ -91,9 +93,10 @@ class FlowAppearanceSubtab : public QVaporSubtab {
   private:
     VAPoR::FlowParams *_params;
 
+    VTabWidget *_streamlineAppearanceTab;
     VComboBox *_shapeCombo;
     VComboBox *_colorCombo;
-    VSpinBox *_lifeSpinBox;
+    VSpinBox *_lengthSpinBox;
     QSliderEdit *_smoothnessSliderEdit;
     VSpinBox *_sizeSpinBox;
 
@@ -131,6 +134,7 @@ class FlowSeedingSubtab : public QVaporSubtab {
     VSpinBox *_yDistributionSpinBox;
     VSpinBox *_zDistributionSpinBox;
     VFileReader *_fileReader;
+    VFileWriter *_exportGeometryDialog;
 };
 
 //
@@ -151,6 +155,7 @@ class FlowIntegrationSubtab : public QVaporSubtab {
   private:
     VAPoR::FlowParams *_params;
     VTabWidget *_integrationSettingsTab;
+    VPushButton *_integrateButton;
     VComboBox *_integrationTypeCombo;
     VComboBox *_directionCombo;
     VCheckBox *_periodicBoundaryComboX;
