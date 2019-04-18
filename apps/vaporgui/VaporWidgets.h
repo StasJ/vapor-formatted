@@ -101,13 +101,13 @@ class VLineEdit : public VaporWidget {
     std::string GetEditText() const;
 
   signals:
-    void _pressed();
+    void _editingFinished();
 
   protected:
     QLineEdit *_edit;
 
   private slots:
-    void _returnPressed();
+    void _finished();
 };
 
 //
