@@ -72,6 +72,8 @@ VComboBox::VComboBox(QWidget *parent, const std::string &labelText)
 
 void VComboBox::_userIndexChanged(int index) { emit _indexChanged(index); }
 
+int VComboBox::GetNumOfItems() const { return _combo->count(); }
+
 int VComboBox::GetCurrentIndex() const { return _combo->currentIndex(); }
 
 std::string VComboBox::GetCurrentText() const { return _combo->currentText().toStdString(); }

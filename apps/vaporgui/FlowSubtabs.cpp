@@ -1,11 +1,4 @@
 #include "FlowSubtabs.h"
-#include "ColorbarWidget.h"
-#include "CopyRegionWidget.h"
-#include "GeometryWidget.h"
-#include "TFWidget.h"
-#include "TransformTable.h"
-#include "VaporWidgets.h"
-#include "VariablesWidget.h"
 
 QVaporSubtab::QVaporSubtab(QWidget *parent) : QWidget(parent) {
     _layout = new QVBoxLayout(this);
@@ -61,14 +54,14 @@ void FlowVariablesSubtab::_steadyGotClicked() {
 void FlowVariablesSubtab::_velocityMultiplierChanged() {
     bool ok;
     double d = _velocityMltp->text().toDouble(&ok);
-    if (ok) // We don't need this verification once the line edit has its own validator
+    if (ok) // Scott: this verification is no longer needed once the line edit has its own validator
         _params->SetVelocityMultiplier(d);
 }
 
 void FlowVariablesSubtab::_steadyNumOfStepsChanged() {
     bool ok;
     int i = _steadyNumOfSteps->text().toInt(&ok);
-    if (ok) // We don't need this verification once the line edit has its own validator
+    if (ok) // Scott: this verification is no longer needed once the line edit has its own validator
         _params->SetSteadyNumOfSteps(i);
 }
 
@@ -100,27 +93,46 @@ FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
     _geometryWidget->Reinit((DimFlags)THREED, (VariableFlags)VECTOR);
     _layout->addWidget(_geometryWidget);
 
+    _seedGenMode = new VComboBox(this, "Seed Generation Mode");
+    // Index numbers are in agreement with what's in FlowRenderer.h
+    _seedGenMode->AddOption("Programatically", 0);
+    _seedGenMode->AddOption("From a List", 1);
+    _layout->addWidget(_seedGenMode);
+    connect(_seedGenMode, SIGNAL(_indexChanged(int)), this, SLOT(_seedGenModeChanged(int)));
+
     _fileReader = new VFileReader(this, "Seed File");
     _layout->addWidget(_fileReader);
+    connect(_fileReader, SIGNAL(_pathChanged()), this, SLOT(_fileReaderChanged()));
 }
 
 void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
-                               VAPoR::RenderParams *rParams) {
-    // VAPoR::Box* rakeBox = rParams->GetRakeBox();
-    //_geometryWidget->Update(paramsMgr, dataMgr, rParams, rakeBox);
-    _geometryWidget->Update(paramsMgr, dataMgr, rParams);
+                               VAPoR::RenderParams *params) {
+    _params = dynamic_cast<VAPoR::FlowParams *>(params);
+
+    // VAPoR::Box* rakeBox = params->GetRakeBox();
+    //_geometryWidget->Update(paramsMgr, dataMgr, params, rakeBox);
+    _geometryWidget->Update(paramsMgr, dataMgr, params);
+
+    long idx = _params->GetSeedGenMode();
+    if (idx >= 0 && idx < _seedGenMode->GetNumOfItems())
+        _seedGenMode->SetIndex(idx);
+    else
+        _seedGenMode->SetIndex(0);
+
+    // Scott to implement this functionality
+    // _fileReader->UpdateDisplayText( _params->GetSeedInputFilename() );
 }
 
-void FlowSeedingSubtab::_pushTestPressed() { cout << "Push button pressed" << endl; }
-
-void FlowSeedingSubtab::_comboBoxSelected(int index) {
-    string option = "*** Need to turn on _comboTest at FlowSubtabs.cpp:107";
-    cout << "Combo selected at index " << index << " for option " << option << endl;
+void FlowSeedingSubtab::_seedGenModeChanged(int newIdx) {
+    _params->SetSeedGenMode(newIdx);
+    std::cout << newIdx << std::endl;
 }
 
-void FlowSeedingSubtab::_checkBoxSelected() {
-    bool checked = 0; //_checkboxTest->GetCheckState();
-    cout << "Checkbox is checked? " << checked << endl;
+void FlowSeedingSubtab::_fileReaderChanged() {
+    // Scott: needs to ask FileSelector actually emit a signal
+    std::string filename = _fileReader->GetPath();
+    _params->SetSeedInputFilename(filename);
+    std::cout << filename << std::endl;
 }
 
 //
