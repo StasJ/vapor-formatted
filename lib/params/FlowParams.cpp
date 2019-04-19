@@ -6,6 +6,7 @@ const std::string FlowParams::_isSteadyTag = "isSteadyTag";
 const std::string FlowParams::_velocityMultiplierTag = "velocityMultiplierTag";
 const std::string FlowParams::_steadyNumOfStepsTag = "steadyNumOfStepsTag";
 const std::string FlowParams::_seedGenModeTag = "seedGenModeTag";
+const std::string FlowParams::_seedInputFilenameTag = "seedInputFilenameTag";
 
 static RenParamsRegistrar<FlowParams> registrar(FlowParams::GetClassType());
 
@@ -50,4 +51,12 @@ long FlowParams::GetSeedGenMode() const { return GetValueLong(_seedGenModeTag, 0
 
 void FlowParams::SetSeedGenMode(long i) {
     SetValueLong(_seedGenModeTag, "which mode do we use to generate seeds", i);
+}
+
+std::string FlowParams::GetSeedInputFilename() const {
+    return GetValueString(_seedInputFilenameTag, "");
+}
+
+void FlowParams::SetSeedInputFilename(std::string &name) {
+    SetValueString(_seedInputFilenameTag, "filename for input seeding list", name);
 }
