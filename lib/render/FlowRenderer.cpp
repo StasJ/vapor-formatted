@@ -137,8 +137,10 @@ int FlowRenderer::_paintGL(bool fast) {
             std::vector<flow::Particle> seeds;
             _genSeedsXY(seeds, _timestamps.at(0));
             _advection.UseSeedParticles(seeds);
+            //_advection.OutputStreamsGnuplot( "/Users/shaomeng/seeds.txt" );
         } else if (_cache_seedGenMode == 1) {
-            rv = _advection.InputStreamsGnuplot(params->GetSeedInputFilename());
+            // rv = _advection.InputStreamsGnuplot( params->GetSeedInputFilename() );
+            rv = _advection.InputStreamsGnuplot("/Users/shaomeng/seeds.txt");
             if (rv != 0) {
                 MyBase::SetErrMsg("Input seed list wrong!");
                 return flow::FILE_ERROR;

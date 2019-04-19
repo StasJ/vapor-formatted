@@ -123,10 +123,7 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
     // _fileReader->UpdateDisplayText( _params->GetSeedInputFilename() );
 }
 
-void FlowSeedingSubtab::_seedGenModeChanged(int newIdx) {
-    _params->SetSeedGenMode(newIdx);
-    std::cout << newIdx << std::endl;
-}
+void FlowSeedingSubtab::_seedGenModeChanged(int newIdx) { _params->SetSeedGenMode(newIdx); }
 
 void FlowSeedingSubtab::_fileReaderChanged() {
     // Scott: needs to ask FileSelector actually emit a signal
