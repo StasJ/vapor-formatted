@@ -75,13 +75,13 @@ class VDoubleSpinBox : public VaporWidget {
     double GetValue() const;
 
   signals:
-    void _valueChanged(double);
+    void _valueChanged();
 
   protected:
     QDoubleSpinBox *_spinBox;
 
   private slots:
-    void _changed(double);
+    void _changed();
 };
 
 //
