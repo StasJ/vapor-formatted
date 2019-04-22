@@ -93,7 +93,7 @@ class VLineEdit : public VaporWidget {
 
   public:
     VLineEdit(QWidget *parent, const std::string &labelText = "Label",
-              const std::string &buttonText = "");
+              const std::string &editText = "");
 
     void SetEditText(const std::string &text);
     void SetEditText(const QString &text);
@@ -107,7 +107,10 @@ class VLineEdit : public VaporWidget {
     QLineEdit *_edit;
 
   private slots:
-    void _finished();
+    void _returnPressed();
+
+  private:
+    std::string _text;
 };
 
 //
@@ -146,6 +149,7 @@ class VComboBox : public VaporWidget {
     void AddOption(const std::string &option, int index = 0);
     void RemoveOption(int index);
     void SetIndex(int index);
+    int GetNumOfItems() const;
 
   private:
     QComboBox *_combo;
