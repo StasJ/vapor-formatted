@@ -56,6 +56,9 @@ class VSpinBox : public VaporWidget {
 
   private slots:
     void _changed();
+
+  private:
+    int _value;
 };
 
 //
@@ -82,6 +85,9 @@ class VDoubleSpinBox : public VaporWidget {
 
   private slots:
     void _changed();
+
+  private:
+    double _value;
 };
 
 //
@@ -94,10 +100,11 @@ class VLineEdit : public VaporWidget {
   public:
     VLineEdit(QWidget *parent, const std::string &labelText = "Label",
               const std::string &editText = "");
+    ~VLineEdit();
 
     void SetEditText(const std::string &text);
     void SetEditText(const QString &text);
-    void SetValidator(const QValidator *v);
+    void SetValidator(QValidator *v);
     std::string GetEditText() const;
 
   signals:
@@ -105,6 +112,13 @@ class VLineEdit : public VaporWidget {
 
   protected:
     QLineEdit *_edit;
+
+    // If we assign a validator to the QLineEdit, the QLineEdit will not emit
+    // the returnPressed() signal with invalid input.  However we do want this
+    // signal to be emitted with invalid input, so we can change it to the
+    // previous value.  Therefore, we perform validation within the VLineEdit,
+    // not the QLineEdit.
+    QValidator *_validator;
 
   private slots:
     void _returnPressed();
@@ -191,6 +205,8 @@ class VFileSelector : public VPushButton {
   public:
     void SetPath(const std::string &defaultPath);
     void SetPath(const QString &defaultPath);
+    void SetFileFilter(const std::string &filter);
+    void SetFileFilter(const QString &filter);
     std::string GetPath() const;
 
   protected:
@@ -210,6 +226,7 @@ class VFileSelector : public VPushButton {
   private:
     QLineEdit *_lineEdit;
     std::string _filePath;
+    std::string _filter;
 
     virtual bool _isFileOperable(const std::string &filePath) const = 0;
 };
