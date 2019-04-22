@@ -166,11 +166,14 @@ void VFileSelector::_openFileDialog() {
 
     SetPath(filePath.toStdString());
     _button->setDown(false);
+
+    emit _pathChanged();
 }
 
 void VFileSelector::_setPathFromLineEdit() {
     QString filePath = _lineEdit->text();
     SetPath(filePath.toStdString());
+    emit _pathChanged();
 }
 
 VFileReader::VFileReader(QWidget *parent, const std::string &labelText, const std::string &filePath)
