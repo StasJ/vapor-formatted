@@ -137,10 +137,8 @@ int FlowRenderer::_paintGL(bool fast) {
             std::vector<flow::Particle> seeds;
             _genSeedsXY(seeds, _timestamps.at(0));
             _advection.UseSeedParticles(seeds);
-            //_advection.OutputStreamsGnuplot( "/Users/shaomeng/seeds.txt" );
         } else if (_cache_seedGenMode == 1) {
-            // rv = _advection.InputStreamsGnuplot( params->GetSeedInputFilename() );
-            rv = _advection.InputStreamsGnuplot("/Users/shaomeng/seeds.txt");
+            rv = _advection.InputStreamsGnuplot(params->GetSeedInputFilename());
             if (rv != 0) {
                 MyBase::SetErrMsg("Input seed list wrong!");
                 return flow::FILE_ERROR;
@@ -490,7 +488,7 @@ FlowRenderer::_populateParticleProperties( const std::string& varname,
 */
 
 int FlowRenderer::_genSeedsXY(std::vector<flow::Particle> &seeds, float timeVal) const {
-    int numX = 10, numY = 10;
+    int numX = 8, numY = 8;
     std::vector<double> extMin, extMax;
     FlowParams *params = dynamic_cast<FlowParams *>(GetActiveParams());
     params->GetBox()->GetExtents(extMin, extMax);
