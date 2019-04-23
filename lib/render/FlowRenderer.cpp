@@ -175,6 +175,8 @@ int FlowRenderer::_paintGL(bool fast) {
         /* Advection scheme 1: advect a maximum number of steps.
          * This scheme is used for steady flow */
         if (params->GetIsSteady()) {
+            if (params->GetFlowDirection() == 1) // backward integration
+                deltaT *= -1.0f;
             size_t actualSteps = 0;
             int numOfSteps = params->GetSteadyNumOfSteps();
             for (size_t i = _steadyTotalSteps; i < numOfSteps && rv == flow::ADVECT_HAPPENED; i++) {
