@@ -47,7 +47,6 @@ VSpinBox::VSpinBox(QWidget *parent, const std::string &labelText, int defaultVal
     _spinBox = new QSpinBox(this);
     _layout->addWidget(_spinBox);
 
-    SetLabelText(QString::fromStdString(labelText));
     SetValue(defaultValue);
 
     connect(_spinBox, SIGNAL(editingFinished()), this, SLOT(_changed()));
@@ -74,7 +73,6 @@ VDoubleSpinBox::VDoubleSpinBox(QWidget *parent, const std::string &labelText, do
     _spinBox = new QDoubleSpinBox(this);
     _layout->addWidget(_spinBox);
 
-    SetLabelText(QString::fromStdString(labelText));
     SetValue(defaultValue);
 
     connect(_spinBox, SIGNAL(editingFinished()), this, SLOT(_changed()));
@@ -105,7 +103,6 @@ VLineEdit::VLineEdit(QWidget *parent, const std::string &labelText, const std::s
     _edit = new QLineEdit(this);
     _layout->addWidget(_edit);
 
-    SetLabelText(QString::fromStdString(labelText));
     SetEditText(QString::fromStdString(editText));
 
     connect(_edit, SIGNAL(returnPressed()), this, SLOT(_returnPressed()));
@@ -157,7 +154,6 @@ VPushButton::VPushButton(QWidget *parent, const std::string &labelText,
     _button = new QPushButton(this);
     _layout->addWidget(_button);
 
-    SetLabelText(QString::fromStdString(labelText));
     SetButtonText(QString::fromStdString(buttonText));
 
     connect(_button, SIGNAL(pressed()), this, SLOT(_buttonPressed()));
@@ -220,14 +216,20 @@ void VCheckBox::SetCheckState(bool checkState) {
 void VCheckBox::_userClickedCheckbox() { emit _checkboxClicked(); }
 
 VFileSelector::VFileSelector(QWidget *parent, const std::string &labelText,
-                             const std::string &filePath, QFileDialog::FileMode fileMode)
-    : VPushButton(parent, labelText, "Select"), _filePath(filePath), _filter("") {
+                             const std::string &buttonText, const std::string &filePath,
+                             QFileDialog::FileMode fileMode)
+    : VPushButton(parent, labelText, buttonText), _filePath(filePath) {
     _fileMode = fileMode;
 
     _lineEdit = new QLineEdit(this);
     _layout->addWidget(_lineEdit);
 
-    SetLabelText(labelText);
+    _fileDialog =
+        new QFileDialog(this, QString::fromStdString(labelText), QString::fromStdString(GetPath()));
+    QFileDialog::AcceptMode acceptMode = QFileDialog::AcceptOpen;
+    _fileDialog->setAcceptMode(acceptMode);
+    _fileDialog->setFileMode(_fileMode);
+
     _lineEdit->setText(QString::fromStdString(filePath));
 
     connect(_button, SIGNAL(pressed()), this, SLOT(_openFileDialog()));
@@ -250,25 +252,31 @@ void VFileSelector::SetPath(const std::string &path) {
 
 void VFileSelector::SetFileFilter(const QString &filter) { SetFileFilter(filter.toStdString()); }
 
-void VFileSelector::SetFileFilter(const std::string &filter) { _filter = filter; }
+void VFileSelector::SetFileFilter(const std::string &filter) {
+    _fileDialog->setNameFilter(QString::fromStdString(filter));
+}
 
 void VFileSelector::_openFileDialog() {
-    QString title = "Select file containing seed points";
-    QFileDialog fileDialog(this, title, QString::fromStdString(GetPath()));
+    /*QString title = "Select file containing seed points";
+    QFileDialog _fileDialog(
+        this,
+        title,
+        QString::fromStdString( GetPath() )
+    );
 
-    fileDialog.setNameFilter(QString::fromStdString(_filter));
+    _fileDialog.setNameFilter( QString::fromStdString(_filter) );
 
     QFileDialog::AcceptMode acceptMode = QFileDialog::AcceptOpen;
-    fileDialog.setAcceptMode(acceptMode);
+    _fileDialog.setAcceptMode( acceptMode );
 
-    fileDialog.setFileMode(_fileMode);
+    _fileDialog.setFileMode( _fileMode );*/
 
-    if (fileDialog.exec() != QDialog::Accepted) {
+    if (_fileDialog->exec() != QDialog::Accepted) {
         _button->setDown(false);
         return;
     }
 
-    QStringList files = fileDialog.selectedFiles();
+    QStringList files = _fileDialog->selectedFiles();
     if (files.size() != 1) {
         _button->setDown(false);
         return;
@@ -288,8 +296,9 @@ void VFileSelector::_setPathFromLineEdit() {
     emit _pathChanged();
 }
 
-VFileReader::VFileReader(QWidget *parent, const std::string &labelText, const std::string &filePath)
-    : VFileSelector(parent, labelText, filePath, QFileDialog::FileMode::ExistingFile) {}
+VFileReader::VFileReader(QWidget *parent, const std::string &labelText,
+                         const std::string &buttonText, const std::string &filePath)
+    : VFileSelector(parent, labelText, buttonText, filePath, QFileDialog::FileMode::ExistingFile) {}
 
 bool VFileReader::_isFileOperable(const std::string &filePath) const {
     bool operable = false;
@@ -303,8 +312,9 @@ bool VFileReader::_isFileOperable(const std::string &filePath) const {
     return operable;
 }
 
-VFileWriter::VFileWriter(QWidget *parent, const std::string &labelText, const std::string &filePath)
-    : VFileSelector(parent, labelText, filePath) {}
+VFileWriter::VFileWriter(QWidget *parent, const std::string &labelText,
+                         const std::string &buttonText, const std::string &filePath)
+    : VFileSelector(parent, labelText, buttonText, filePath) {}
 
 bool VFileWriter::_isFileOperable(const std::string &filePath) const {
     bool operable = false;

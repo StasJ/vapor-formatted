@@ -7,6 +7,7 @@
 #include "ui_SliceGeometryGUI.h"
 #include "ui_SliceVariablesGUI.h"
 
+#include "VaporWidgets.h"
 #include <vapor/SliceParams.h>
 
 namespace VAPoR {
@@ -27,9 +28,26 @@ class SliceVariablesSubtab : public QWidget, public Ui_SliceVariablesGUI {
 
   private slots:
     void _setDefaultSampleRate();
+    void spinComboChanged() { cout << "spin " << spinBox->GetValue() << endl; }
+    void dSpinComboChanged() { cout << "dspin " << dSpinBox->GetValue() << endl; }
+    void editChanged() { cout << "edit " << edit->GetEditText() << endl; }
+    void veditChanged() { cout << "vedit " << vedit->GetEditText() << endl; }
+    void readFile() { cout << "read " << reader->GetPath() << endl; }
+    void readFileFilter() { cout << "readFilt " << readerFilter->GetPath() << endl; }
+    void writeFile() { cout << "write " << writer->GetPath() << endl; }
+    void writeFileFilter() { cout << "writeFilt " << writerFilter->GetPath() << endl; }
 
   private:
     VAPoR::SliceParams *_params;
+
+    VSpinBox *spinBox;
+    VDoubleSpinBox *dSpinBox;
+    VLineEdit *edit;
+    VLineEdit *vedit;
+    VFileReader *reader;
+    VFileReader *readerFilter;
+    VFileWriter *writer;
+    VFileWriter *writerFilter;
 };
 
 class SliceAppearanceSubtab : public QWidget, public Ui_SliceAppearanceGUI {
