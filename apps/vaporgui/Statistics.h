@@ -23,7 +23,6 @@
 #ifndef STATISTICS_H
 #define STATISTICS_H
 
-#include "RangeController.h"
 #include "ui_errMsg.h"
 #include "ui_statsWindow.h"
 #include <RangeCombos.h>
