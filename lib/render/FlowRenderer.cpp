@@ -68,6 +68,7 @@ FlowRenderer::FlowRenderer(const ParamsMgr *pm, std::string &winName, std::strin
     _cache_steadyNumOfSteps = 0;
     _cache_velocityMltp = 1.0;
     _cache_seedGenMode = 0;
+    _cache_flowDirection = 0;
 
     _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
     _colorStatus = FlowStatus::SIMPLE_OUTOFDATE;
@@ -376,9 +377,16 @@ void FlowRenderer::_updateFlowCacheAndStates(const FlowParams *params) {
             _colorStatus = FlowStatus::SIMPLE_OUTOFDATE;
             _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
         }
+
+        if (_cache_flowDirection != params->GetFlowDirection()) {
+            _cache_flowDirection = params->GetFlowDirection();
+            _colorStatus = FlowStatus::SIMPLE_OUTOFDATE;
+            _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
+        }
     }
-    /* in case of unsteady flow */
-    else {
+
+    else /* in case of unsteady flow */
+    {
         if (!_cache_isSteady) // unsteady state isn't changed
         {
             if (_cache_currentTS < params->GetCurrentTimestep()) {
