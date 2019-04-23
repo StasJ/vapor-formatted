@@ -101,13 +101,17 @@ class FlowSeedingSubtab : public QVaporSubtab {
     // Respond to user input
     void _seedGenModeChanged(int newIdx);
     void _fileReaderChanged();
+    void _flowDirectionChanged(int newIdx);
 
   private:
     VAPoR::FlowParams *_params;
 
     GeometryWidget *_geometryWidget;
+
     VComboBox *_seedGenMode;
     VFileReader *_fileReader;
+
+    VComboBox *_flowDirection;
 };
 
 //
