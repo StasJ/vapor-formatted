@@ -1,3 +1,4 @@
+#include <cassert>
 #include <vapor/Texture.h>
 #include <vapor/glutil.h>
 

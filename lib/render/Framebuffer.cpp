@@ -1,3 +1,4 @@
+#include <cassert>
 #include <vapor/Framebuffer.h>
 #include <vapor/glutil.h>
 
