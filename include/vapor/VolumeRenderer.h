@@ -1,7 +1,9 @@
 #pragma once
 
 #include <glm/fwd.hpp>
+#include <vapor/Framebuffer.h>
 #include <vapor/Renderer.h>
+#include <vapor/Texture.h>
 #include <vapor/VolumeAlgorithm.h>
 
 namespace VAPoR {
@@ -39,11 +41,9 @@ class RENDER_API VolumeRenderer : public Renderer {
     unsigned int _VBO = 0;
     unsigned int _VAOChunked = 0;
     unsigned int _VBOChunked = 0;
-    unsigned int _framebuffer = 0;
-    unsigned int _framebufferTexture = 0;
-    unsigned int _framebufferDepthTexture = 0;
-    unsigned int _LUTTexture;
-    unsigned int _depthTexture;
+    Texture1D _LUTTexture;
+    Texture2D _depthTexture;
+    Framebuffer _framebuffer;
 
     int _nChunks = 64;
     double _lastRenderTime;
