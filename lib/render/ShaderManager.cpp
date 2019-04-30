@@ -3,6 +3,7 @@
 #include "vapor/glutil.h"
 #include <vapor/ResourcePath.h>
 #include <vapor/STLUtils.h>
+#include <vapor/Shader.h>
 
 using namespace VAPoR;
 using namespace Wasp;
