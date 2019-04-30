@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <vapor/Grid.h>
+#include <vapor/NonCopyableMixin.h>
 #include <vapor/ShaderManager.h>
 #include <vector>
 
@@ -11,7 +12,7 @@ namespace VAPoR {
 struct GLManager;
 class VolumeAlgorithmFactory;
 
-class VolumeAlgorithm {
+class VolumeAlgorithm : private NonCopyableMixin {
   public:
     enum class Type { Any, DVR, Iso };
 
