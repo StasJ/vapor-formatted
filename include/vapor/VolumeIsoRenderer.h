@@ -17,7 +17,8 @@ class RENDER_API VolumeIsoRenderer : public VolumeRenderer {
 
     static std::string GetClassType() { return ("NEW_IsoSurface"); }
 
-    bool _usingColorMapData() const;
+    virtual bool _usingColorMapData() const;
+    virtual void _setShaderUniforms(const ShaderProgram *shader) const;
     virtual std::string _getDefaultAlgorithmForGrid(const Grid *grid) const;
 };
 
