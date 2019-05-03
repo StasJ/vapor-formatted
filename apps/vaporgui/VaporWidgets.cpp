@@ -250,7 +250,7 @@ void VFileSelector::SetPath(const std::string &path) {
     _lineEdit->setText(QString::fromStdString(path));
 }
 
-void VFileSelector::SetFileFilter(const QString &filter) { SetFileFilter(filter.toStdString()); }
+void VFileSelector::SetFileFilter(const QString &filter) { _fileDialog->setNameFilter(filter); }
 
 void VFileSelector::SetFileFilter(const std::string &filter) {
     _fileDialog->setNameFilter(QString::fromStdString(filter));
