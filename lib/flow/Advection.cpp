@@ -389,6 +389,13 @@ const std::vector<Particle> &Advection::GetStreamAt(size_t i) const {
     return _streams.at(i);
 }
 
+size_t Advection::GetMaxNumOfSteps() const {
+    size_t num = 0;
+    for (const auto &s : _streams)
+        num = s.size() > num ? s.size() : num;
+    return num;
+}
+
 /*
 int
 Advection::AssignParticleValuesOfAStream( std::vector<float>& valsIn, size_t idx )
