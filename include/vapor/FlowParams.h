@@ -37,6 +37,9 @@ class PARAMS_API FlowParams : public RenderParams {
     std::string GetSeedInputFilename() const;
     void SetSeedInputFilename(std::string &);
 
+    std::string GetFlowlineOutputFilename() const;
+    void SetFlowlineOutputFilename(std::string &);
+
     long GetFlowDirection() const;
     void SetFlowDirection(long);
 
@@ -46,6 +49,7 @@ class PARAMS_API FlowParams : public RenderParams {
     static const std::string _steadyNumOfStepsTag;
     static const std::string _seedGenModeTag;
     static const std::string _seedInputFilenameTag;
+    static const std::string _flowlineOutputFilenameTag;
     static const std::string _flowDirectionTag;
 };
 

@@ -101,6 +101,7 @@ class FlowSeedingSubtab : public QVaporSubtab {
     // Respond to user input
     void _seedGenModeChanged(int newIdx);
     void _fileReaderChanged();
+    void _fileWriterChanged();
     void _flowDirectionChanged(int newIdx);
 
   private:
@@ -110,6 +111,7 @@ class FlowSeedingSubtab : public QVaporSubtab {
 
     VComboBox *_seedGenMode;
     VFileReader *_fileReader;
+    VFileWriter *_fileWriter;
 
     VComboBox *_flowDirection;
 };
