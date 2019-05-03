@@ -76,6 +76,8 @@ FlowRenderer::FlowRenderer(const ParamsMgr *pm, std::string &winName, std::strin
 
     _advectionComplete = false;
     _coloringComplete = false;
+
+    _2ndAdvection = nullptr;
 }
 
 // Destructor
@@ -93,6 +95,11 @@ FlowRenderer::~FlowRenderer() {
     if (_colorMapTexId) {
         glDeleteTextures(1, &_colorMapTexId);
         _colorMapTexId = 0;
+    }
+
+    if (_2ndAdvection) {
+        delete _2ndAdvection;
+        _2ndAdvection = nullptr;
     }
 }
 
@@ -138,12 +145,16 @@ int FlowRenderer::_paintGL(bool fast) {
             std::vector<flow::Particle> seeds;
             _genSeedsXY(seeds, _timestamps.at(0));
             _advection.UseSeedParticles(seeds);
+            if (_2ndAdvection) // bi-directional advection
+                _2ndAdvection->UseSeedParticles(seeds);
         } else if (_cache_seedGenMode == 1) {
             rv = _advection.InputStreamsGnuplot(params->GetSeedInputFilename());
             if (rv != 0) {
                 MyBase::SetErrMsg("Input seed list wrong!");
                 return flow::FILE_ERROR;
             }
+            if (_2ndAdvection) // bi-directional advection
+                _2ndAdvection->InputStreamsGnuplot(params->GetSeedInputFilename());
         }
 
         _advectionComplete = false;
@@ -159,6 +170,8 @@ int FlowRenderer::_paintGL(bool fast) {
             _advection.ResetParticleValues();
             _coloringComplete = false;
             _colorStatus = FlowStatus::UPTODATE;
+            if (_2ndAdvection) // bi-directional advection
+                _2ndAdvection->ResetParticleValues();
         } else if (_colorStatus == FlowStatus::TIME_STEP_OOD) {
             _coloringComplete = false;
             _colorStatus = FlowStatus::UPTODATE;
@@ -175,6 +188,7 @@ int FlowRenderer::_paintGL(bool fast) {
         /* Advection scheme 1: advect a maximum number of steps.
          * This scheme is used for steady flow */
         if (params->GetIsSteady()) {
+            /* If the advection is single-directional */
             if (params->GetFlowDirection() == 1) // backward integration
                 deltaT *= -1.0f;
             size_t actualSteps = 0;
@@ -183,6 +197,14 @@ int FlowRenderer::_paintGL(bool fast) {
                 rv = _advection.AdvectOneStep(&_velocityField, deltaT);
                 _steadyTotalSteps++;
                 actualSteps++;
+            }
+
+            /* If the advection is bi-directional */
+            if (_2ndAdvection) {
+                assert(deltaT > 0.0f);
+                float deltaT2 = deltaT * -1.0f;
+                rv = flow::ADVECT_HAPPENED;
+                actualSteps = 0;
             }
 
         }
@@ -381,9 +403,13 @@ void FlowRenderer::_updateFlowCacheAndStates(const FlowParams *params) {
         }
 
         if (_cache_flowDirection != params->GetFlowDirection()) {
-            _cache_flowDirection = params->GetFlowDirection();
             _colorStatus = FlowStatus::SIMPLE_OUTOFDATE;
             _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
+            _cache_flowDirection = params->GetFlowDirection();
+            if (_cache_flowDirection == 2 && !_2ndAdvection)
+                _2ndAdvection = new flow::Advection();
+            if (_cache_flowDirection != 2 && _2ndAdvection)
+                delete _2ndAdvection;
         }
     }
 
