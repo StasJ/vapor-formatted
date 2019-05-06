@@ -161,7 +161,8 @@ int main(int argc, char **argv) {
     typedef nanoflann::KDTreeSingleIndexAdaptor<
         nanoflann::L2_Simple_Adaptor<float, PointCloud<float>>, PointCloud<float>, 3>
         my_kd_tree_t;
-    my_kd_tree_t kd_index(3, cloud, nanoflann::KDTreeSingleIndexAdaptorParams(8 /* max leaf */));
+    my_kd_tree_t kd_index(3 /* dimension */, cloud,
+                          nanoflann::KDTreeSingleIndexAdaptorParams(8 /* max leaf */));
     gettimeofday(&start, NULL);
     kd_index.buildIndex();
     gettimeofday(&end, NULL);
