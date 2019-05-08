@@ -119,9 +119,11 @@ class FlowSeedingSubtab : public QVaporSubtab {
     void _pushTestPressed();
     void _comboBoxSelected(int index);
     void _checkBoxSelected();
-    void _configureRakeOptions();
+    void _configureRakeType();
 
   private:
+    VAPoR::DataMgr *_dataMgr;
+    VAPoR::ParamsMgr *_paramsMgr;
     VAPoR::FlowParams *_params;
     GeometryWidget *_geometryWidget;
 
@@ -150,12 +152,19 @@ class FlowIntegrationSubtab : public QVaporSubtab {
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
 
   protected slots:
-    void _configureIntegrationOptions();
+    void _configureIntegrationType();
+
+  private slots:
+    void _multiplierChanged();
 
   private:
+    void _initialize();
+
+    VAPoR::DataMgr *_dataMgr;
+    VAPoR::ParamsMgr *_paramsMgr;
     VAPoR::FlowParams *_params;
     VTabWidget *_integrationSettingsTab;
-    VPushButton *_integrateButton;
+    VLineEdit *_integrationLengthEdit;
     VComboBox *_integrationTypeCombo;
     VComboBox *_directionCombo;
     VCheckBox *_periodicBoundaryComboX;
@@ -164,7 +173,10 @@ class FlowIntegrationSubtab : public QVaporSubtab {
     VLineEdit *_multiplierLineEdit;
     VSpinBox *_startSpinBox;
     VSpinBox *_endSpinBox;
+    VSpinBox *_lifespanSpinBox;
     VSpinBox *_intervalSpinBox;
+
+    bool _initialized;
 };
 
 //
