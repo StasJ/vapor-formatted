@@ -222,8 +222,7 @@ VFileSelector::VFileSelector(QWidget *parent, const std::string &labelText,
 
     _fileDialog =
         new QFileDialog(this, QString::fromStdString(labelText), QString::fromStdString(GetPath()));
-    // QFileDialog::AcceptMode acceptMode = QFileDialog::AcceptOpen;
-    //_fileDialog->setAcceptMode( acceptMode );
+
     _fileMode = fileMode;
     _fileDialog->setFileMode(_fileMode);
 
