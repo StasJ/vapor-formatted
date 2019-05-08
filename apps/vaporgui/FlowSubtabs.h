@@ -9,6 +9,13 @@
 
 #include <QLineEdit>
 
+#include "ColorbarWidget.h"
+#include "CopyRegionWidget.h"
+#include "GeometryWidget.h"
+#include "TFWidget.h"
+#include "TransformTable.h"
+#include "VariablesWidget.h"
+
 namespace VAPoR {
 class ControlExec;
 class RenderParams;
@@ -72,9 +79,7 @@ class FlowVariablesSubtab : public QVaporSubtab {
   private slots:
     // Respond to user input
     void _steadyGotClicked();
-
     void _velocityMultiplierChanged();
-
     void _steadyNumOfStepsChanged();
 };
 
@@ -115,18 +120,29 @@ class FlowSeedingSubtab : public QVaporSubtab {
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
 
+<<<<<<< HEAD
   protected slots:
     void _pushTestPressed();
     void _comboBoxSelected(int index);
     void _checkBoxSelected();
     void _configureRakeType();
+=======
+  private slots:
+    // Respond to user input
+    void _seedGenModeChanged(int newIdx);
+    void _fileReaderChanged();
+    void _fileWriterChanged();
+    void _flowDirectionChanged(int newIdx);
+>>>>>>> flow
 
   private:
     VAPoR::DataMgr *_dataMgr;
     VAPoR::ParamsMgr *_paramsMgr;
     VAPoR::FlowParams *_params;
+
     GeometryWidget *_geometryWidget;
 
+<<<<<<< HEAD
     VTabWidget *_seedSettingsTab;
     VComboBox *_distributionCombo;
     VSpinBox *_randomCountSpinBox;
@@ -177,6 +193,13 @@ class FlowIntegrationSubtab : public QVaporSubtab {
     VSpinBox *_intervalSpinBox;
 
     bool _initialized;
+=======
+    VComboBox *_seedGenMode;
+    VFileReader *_fileReader;
+    VFileWriter *_fileWriter;
+
+    VComboBox *_flowDirection;
+>>>>>>> flow
 };
 
 //

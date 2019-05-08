@@ -175,6 +175,8 @@ VComboBox::VComboBox(QWidget *parent, const std::string &labelText)
 
 void VComboBox::_userIndexChanged(int index) { emit _indexChanged(index); }
 
+int VComboBox::GetNumOfItems() const { return _combo->count(); }
+
 int VComboBox::GetCurrentIndex() const { return _combo->currentIndex(); }
 
 std::string VComboBox::GetCurrentText() const { return _combo->currentText().toStdString(); }
@@ -248,7 +250,7 @@ void VFileSelector::SetPath(const std::string &path) {
     _lineEdit->setText(QString::fromStdString(path));
 }
 
-void VFileSelector::SetFileFilter(const QString &filter) { SetFileFilter(filter.toStdString()); }
+void VFileSelector::SetFileFilter(const QString &filter) { _fileDialog->setNameFilter(filter); }
 
 void VFileSelector::SetFileFilter(const std::string &filter) {
     _fileDialog->setNameFilter(QString::fromStdString(filter));

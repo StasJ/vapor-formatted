@@ -32,7 +32,17 @@ class Advection {
     // Advect as many steps as necessary to reach a certain time: targetT.
     int AdvectTillTime(Field *velocityField, float deltaT, float targetT,
                        ADVECTION_METHOD method = ADVECTION_METHOD::RK4);
-    int CalculateParticleProperty(Field *scalarField, bool useAsColor);
+    // Retrieve field values of a particle based on its location, and put the result in
+    // the "value" field or the "properties" field of a particle
+    //   If "skipNonZero" is true, then this function only overwrites zeros.
+    //   Otherwise, it will overwrite values anyway.
+    int CalculateParticleValues(Field *scalarField, bool skipNonZero);
+    int CalculateParticleProperties(Field *scalarField);
+
+    // Reset all particle values to zero
+    void ResetParticleValues();
+    // Clear all existing properties of a particle
+    void ClearParticleProperties();
 
     // Set advection basics
     void UseSeedParticles(const std::vector<Particle> &seeds);
@@ -40,7 +50,9 @@ class Advection {
     // Retrieve the resulting particles as "streams."
     size_t GetNumberOfStreams() const;
     const std::vector<Particle> &GetStreamAt(size_t i) const;
-    float GetLatestAdvectionTime() const;
+
+    // Retrieve the maximum number of steps
+    size_t GetMaxNumOfSteps() const;
 
     // As part of the functionality of this class, it manages the
     //    particles that it stores.
@@ -56,9 +68,6 @@ class Advection {
     //
     // 4) this function calls Particle::AttachProperty() function for a stream
     // int  AttachParticlePropertiesOfAStream( std::vector<float>& properties, size_t idx );
-    //
-    // 5) this function calls Particle::ClearProperties() function
-    void ClearParticleProperties();
 
     //
     // Output a file that could be plotted by gnuplot
@@ -82,7 +91,6 @@ class Advection {
     std::vector<std::vector<Particle>> _streams;
     const float _lowerAngle, _upperAngle; // Thresholds for step size adjustment
     float _lowerAngleCos, _upperAngleCos; // Cosine values of the threshold angles
-    float _latestAdvectionTime;
 
     // Advection methods here could assume all input is valid.
     int _advectEuler(Field *, const Particle &, float deltaT, // Input
