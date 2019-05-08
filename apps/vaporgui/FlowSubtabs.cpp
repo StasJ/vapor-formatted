@@ -100,7 +100,8 @@ FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
     _layout->addWidget(_seedGenMode);
     connect(_seedGenMode, SIGNAL(_indexChanged(int)), this, SLOT(_seedGenModeChanged(int)));
 
-    _fileReader = new VFileReader(this, "Seed File");
+    _fileReader = new VFileReader(this, "Input Seed File");
+    _fileReader->SetFileFilter(QString::fromAscii("*.txt"));
     _layout->addWidget(_fileReader);
     connect(_fileReader, SIGNAL(_pathChanged()), this, SLOT(_fileReaderChanged()));
 
@@ -111,6 +112,10 @@ FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
     _flowDirection->AddOption("Bi-Directional", 2);
     _layout->addWidget(_flowDirection);
     connect(_flowDirection, SIGNAL(_indexChanged(int)), this, SLOT(_flowDirectionChanged(int)));
+
+    _fileWriter = new VFileWriter(this, "Output Flow Lines");
+    _layout->addWidget(_fileWriter);
+    connect(_fileWriter, SIGNAL(_pathChanged()), this, SLOT(_fileWriterChanged()));
 }
 
 void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -126,8 +131,11 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
         _seedGenMode->SetIndex(idx);
     else
         _seedGenMode->SetIndex(0);
+
     if (!_params->GetSeedInputFilename().empty())
         _fileReader->SetPath(_params->GetSeedInputFilename());
+    if (!_params->GetFlowlineOutputFilename().empty())
+        _fileWriter->SetPath(_params->GetFlowlineOutputFilename());
 }
 
 void FlowSeedingSubtab::_seedGenModeChanged(int newIdx) { _params->SetSeedGenMode(newIdx); }
@@ -135,6 +143,12 @@ void FlowSeedingSubtab::_seedGenModeChanged(int newIdx) { _params->SetSeedGenMod
 void FlowSeedingSubtab::_fileReaderChanged() {
     std::string filename = _fileReader->GetPath();
     _params->SetSeedInputFilename(filename);
+}
+
+void FlowSeedingSubtab::_fileWriterChanged() {
+    std::string filename = _fileWriter->GetPath();
+    _params->SetFlowlineOutputFilename(filename);
+    std::cout << filename << std::endl;
 }
 
 void FlowSeedingSubtab::_flowDirectionChanged(int newIdx) { _params->SetFlowDirection(newIdx); }
