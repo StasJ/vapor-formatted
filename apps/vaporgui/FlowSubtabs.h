@@ -120,20 +120,17 @@ class FlowSeedingSubtab : public QVaporSubtab {
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
 
-<<<<<<< HEAD
-  protected slots:
-    void _pushTestPressed();
-    void _comboBoxSelected(int index);
-    void _checkBoxSelected();
-    void _configureRakeType();
-=======
   private slots:
-    // Respond to user input
+    void _configureRakeType();
     void _seedGenModeChanged(int newIdx);
-    void _fileReaderChanged();
-    void _fileWriterChanged();
-    void _flowDirectionChanged(int newIdx);
->>>>>>> flow
+
+    /*
+    private slots:
+        // Respond to user input
+        void _fileReaderChanged();
+        void _fileWriterChanged();
+        void _flowDirectionChanged( int newIdx );
+    */
 
   private:
     VAPoR::DataMgr *_dataMgr;
@@ -142,7 +139,6 @@ class FlowSeedingSubtab : public QVaporSubtab {
 
     GeometryWidget *_geometryWidget;
 
-<<<<<<< HEAD
     VTabWidget *_seedSettingsTab;
     VComboBox *_distributionCombo;
     VSpinBox *_randomCountSpinBox;
@@ -172,6 +168,7 @@ class FlowIntegrationSubtab : public QVaporSubtab {
 
   private slots:
     void _multiplierChanged();
+    void _integrationDirectionChanged(int index);
 
   private:
     void _initialize();
@@ -193,13 +190,14 @@ class FlowIntegrationSubtab : public QVaporSubtab {
     VSpinBox *_intervalSpinBox;
 
     bool _initialized;
-=======
-    VComboBox *_seedGenMode;
-    VFileReader *_fileReader;
-    VFileWriter *_fileWriter;
 
-    VComboBox *_flowDirection;
->>>>>>> flow
+    /*
+        VComboBox*              _seedGenMode;
+        VFileReader*            _fileReader;
+        VFileWriter*            _fileWriter;
+
+        VComboBox*              _flowDirection;
+    */
 };
 
 //
