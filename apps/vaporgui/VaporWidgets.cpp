@@ -219,15 +219,13 @@ VFileSelector::VFileSelector(QWidget *parent, const std::string &labelText,
                              const std::string &buttonText, const std::string &filePath,
                              QFileDialog::FileMode fileMode)
     : VPushButton(parent, labelText, buttonText), _filePath(filePath) {
-    _fileMode = fileMode;
-
     _lineEdit = new QLineEdit(this);
     _layout->addWidget(_lineEdit);
 
     _fileDialog =
         new QFileDialog(this, QString::fromStdString(labelText), QString::fromStdString(GetPath()));
-    QFileDialog::AcceptMode acceptMode = QFileDialog::AcceptOpen;
-    _fileDialog->setAcceptMode(acceptMode);
+
+    _fileMode = fileMode;
     _fileDialog->setFileMode(_fileMode);
 
     _lineEdit->setText(QString::fromStdString(filePath));
@@ -304,14 +302,17 @@ bool VFileReader::_isFileOperable(const std::string &filePath) const {
 
 VFileWriter::VFileWriter(QWidget *parent, const std::string &labelText,
                          const std::string &buttonText, const std::string &filePath)
-    : VFileSelector(parent, labelText, buttonText, filePath) {}
+    : VFileSelector(parent, labelText, buttonText, filePath) {
+    QFileDialog::AcceptMode acceptMode = QFileDialog::AcceptSave;
+    _fileDialog->setAcceptMode(acceptMode);
+    _fileMode = QFileDialog::AnyFile;
+    _fileDialog->setFileMode(_fileMode);
+}
 
 bool VFileWriter::_isFileOperable(const std::string &filePath) const {
     bool operable = false;
-    if (_fileMode == QFileDialog::FileMode::ExistingFile) {
-        operable = FileOperationChecker::FileGoodToWrite(QString::fromStdString(filePath));
-    }
-
+    QString qFilePath = QString::fromStdString(filePath);
+    operable = FileOperationChecker::FileGoodToWrite(qFilePath);
     return operable;
 }
 
