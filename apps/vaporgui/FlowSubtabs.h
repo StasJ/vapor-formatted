@@ -121,8 +121,10 @@ class FlowSeedingSubtab : public QVaporSubtab {
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
 
   private slots:
+    void _seedInputFileChanged();
     void _configureRakeType();
-    void _seedGenModeChanged(int newIdx);
+    //    void _seedGenModeChanged( int newIdx );
+    void _exportGeometryPathChanged();
 
     /*
     private slots:
@@ -148,7 +150,7 @@ class FlowSeedingSubtab : public QVaporSubtab {
     VSpinBox *_yDistributionSpinBox;
     VSpinBox *_zDistributionSpinBox;
     VFileReader *_fileReader;
-    VFileWriter *_exportGeometryDialog;
+    VFileWriter *_exportGeometryWriter;
 };
 
 //
@@ -168,7 +170,8 @@ class FlowIntegrationSubtab : public QVaporSubtab {
 
   private slots:
     void _multiplierChanged();
-    void _integrationDirectionChanged(int index);
+    void _integrationDirectionChanged();
+    void _integrationLengthChanged();
 
   private:
     void _initialize();

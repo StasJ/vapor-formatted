@@ -69,7 +69,8 @@ void FlowVariablesSubtab::_steadyNumOfStepsChanged() {
 //
 //================================
 //
-FlowAppearanceSubtab::FlowAppearanceSubtab(QWidget *parent) : QVaporSubtab(parent) {
+FlowAppearanceSubtab::FlowAppearanceSubtab(QWidget *parent)
+    : QVaporSubtab(parent), _params(nullptr) {
     _streamlineAppearanceTab = new VTabWidget(this, "Streamline Appearance Settings");
 
     _shapeCombo = new VComboBox(this, "Integration type");
@@ -134,6 +135,8 @@ FlowIntegrationSubtab::FlowIntegrationSubtab(QWidget *parent)
 
     _integrationLengthEdit = new VLineEdit(this, "Integration Length/Steps/Multiplier");
     _integrationSettingsTab->AddWidget(_integrationLengthEdit);
+    connect(_integrationLengthEdit, SIGNAL(_editingFinished()), this,
+            SLOT(_integrationLengthChanged()));
 
     _directionCombo = new VComboBox(this, "Integration direction");
     _directionCombo->AddOption("Forward", 0);
@@ -161,6 +164,15 @@ FlowIntegrationSubtab::FlowIntegrationSubtab(QWidget *parent)
 
     _configureIntegrationType();
     _layout->addWidget(_integrationSettingsTab);
+}
+
+void FlowIntegrationSubtab::_integrationLengthChanged() {
+    long value = stod(_integrationLengthEdit->GetEditText());
+    std::cout << "integration length edit changed to " << value << std::endl;
+    _params->SetSteadyNumOfSteps(value);
+    std::cout << "integration length params changed to " << _params->GetSteadyNumOfSteps()
+              << std::endl;
+    std::cout << std::endl;
 }
 
 void FlowIntegrationSubtab::_integrationDirectionChanged() {
@@ -237,12 +249,33 @@ void FlowIntegrationSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *pa
         _initialize();
         _initialized = true;
     }
+
+    bool isSteady = _params->GetIsSteady();
+    if (isSteady)
+        _integrationTypeCombo->SetIndex(0);
+    else
+        _integrationTypeCombo->SetIndex(1);
+
+    // Do we really want to use magic numbers for these?
+    // I think that storing strings would make the code more readable.
+    // -Scott
+    int paramsValue = _params->GetFlowDirection();
+    if (paramsValue == 0)
+        _directionCombo->SetIndex(0);
+    if (paramsValue == 1)
+        _directionCombo->SetIndex(1);
+    if (paramsValue == 2)
+        _directionCombo->SetIndex(2);
+
+    double multiplier = _params->GetVelocityMultiplier();
+    _multiplierLineEdit->SetEditText(std::to_string(multiplier));
 }
 
 //
 //================================
 //
-FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
+FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent)
+    : QVaporSubtab(parent), _dataMgr(nullptr), _paramsMgr(nullptr), _params(nullptr) {
     _seedSettingsTab = new VTabWidget(this, "Seed Distribution Settings");
     _distributionCombo = new VComboBox(this, "Seed distribution type");
     _distributionCombo->AddOption("Gridded", 0);
@@ -272,6 +305,7 @@ FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
     _fileReader = new VFileReader(this, "Seed File");
     _seedSettingsTab->AddWidget(_fileReader);
     _layout->addWidget(_seedSettingsTab);
+    connect(_fileReader, SIGNAL(_pathChanged()), this, SLOT(_seedInputFileChanged()));
 
     // Rake region selector
     _geometryWidget = new GeometryWidget(this);
@@ -280,9 +314,11 @@ FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
 
     _configureRakeType();
 
-    _exportGeometryDialog =
+    _exportGeometryWriter =
         new VFileWriter(this, "Export geometry", "Select", QDir::homePath().toStdString());
-    _layout->addWidget(_exportGeometryDialog);
+    _layout->addWidget(_exportGeometryWriter);
+    connect(_exportGeometryWriter, SIGNAL(_pathChanged()), this,
+            SLOT(_exportGeometryWriterChanged()));
 
     /*
         _seedGenMode = new VComboBox( this, "Seed Generation Mode" );
@@ -329,6 +365,11 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
     else if (genMode == 1)
         _distributionCombo->SetIndex(2);
 
+    string file = _params->GetSeedInputFilename();
+    _fileReader->SetPath(file);
+
+    file = _params->GetFlowlineOutputFilename();
+    _exportGeometryWriter->SetPath(file);
     /*
         long idx = _params->GetSeedGenMode();
         if( idx >= 0 && idx < _seedGenMode->GetNumOfItems() )
@@ -343,9 +384,25 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
     */
 }
 
+void FlowSeedingSubtab::_exportGeometryPathChanged() {
+    string path = _exportGeometryWriter->GetPath();
+    std::cout << "Geometry path dialog set " << path << std::endl;
+    _params->SetFlowlineOutputFilename(path);
+    std::cout << "Geometry path params set " << _params->GetFlowlineOutputFilename() << std::endl;
+    std::cout << std::endl;
+}
+
+void FlowSeedingSubtab::_seedInputFileChanged() {
+    string file = _fileReader->GetPath();
+    std::cout << "Input seed file changed to " << file << std::endl;
+    _params->SetSeedInputFilename(file);
+    std::cout << "Input seed params changed to " << _params->GetSeedInputFilename() << endl;
+    std::cout << std::endl;
+}
+
 void FlowSeedingSubtab::_configureRakeType() {
-    // FlowParams specifies its rake type numerically.  We need to set the
-    // appropriate value from the following list:
+    // FlowParams specifies its rake type with magic numbers.  We need to set
+    // the appropriate value from the following list:
     //  0 - programmatical
     //  1 - list of seeds
     //  2 - uniform
@@ -401,7 +458,7 @@ void FlowSeedingSubtab::_configureRakeType() {
 
     if (_params != nullptr) {
         _params->SetSeedGenMode(paramsValue);
-        std::cout << "Distribution param set to " << paramsValue << std::endl;
+        std::cout << "Distribution param set to " << _params->GetSeedGenMode() << std::endl;
     }
     std::cout << std::endl;
 }
@@ -438,7 +495,7 @@ FlowSeedingSubtab::_flowDirectionChanged( int newIdx )
 //
 //================================
 //
-FlowGeometrySubtab::FlowGeometrySubtab(QWidget *parent) : QVaporSubtab(parent) {
+FlowGeometrySubtab::FlowGeometrySubtab(QWidget *parent) : QVaporSubtab(parent), _params(nullptr) {
     _geometryWidget = new GeometryWidget(this);
     _copyRegionWidget = new CopyRegionWidget(this);
     _transformTable = new TransformTable(this);
