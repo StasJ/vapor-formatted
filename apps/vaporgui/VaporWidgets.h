@@ -104,6 +104,10 @@ class VLineEdit : public VaporWidget {
 
     void SetEditText(const std::string &text);
     void SetEditText(const QString &text);
+    void SetExtents(int min, int max);
+    void SetExtents(double min, double max);
+    void SetIntType();
+    void SetDoubleType();
     void SetValidator(QValidator *v);
     std::string GetEditText() const;
 
