@@ -314,7 +314,7 @@ int VDCNetCDF::GetPath(string varname, size_t ts, string &path, size_t &file_ts,
             max_ts = numts;
         if (max_ts == 0) {
             idx = ts;
-            file_ts = ts;
+            file_ts = 0;
             max_ts = 1;
         } else {
             idx = ts / max_ts;
