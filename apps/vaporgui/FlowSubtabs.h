@@ -3,6 +3,7 @@
 
 #include "Flags.h"
 
+#include <QPushButton>
 #include <QVBoxLayout>
 #include <QWidget>
 #include <vapor/FlowParams.h>
@@ -103,6 +104,7 @@ class FlowSeedingSubtab : public QVaporSubtab {
     void _fileReaderChanged();
     void _fileWriterChanged();
     void _flowDirectionChanged(int newIdx);
+    void _outputButtonClicked();
 
   private:
     VAPoR::FlowParams *_params;
@@ -112,6 +114,7 @@ class FlowSeedingSubtab : public QVaporSubtab {
     VComboBox *_seedGenMode;
     VFileReader *_fileReader;
     VFileWriter *_fileWriter;
+    QPushButton *_outputButton;
 
     VComboBox *_flowDirection;
 };

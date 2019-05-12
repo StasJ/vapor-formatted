@@ -308,8 +308,12 @@ float Advection::_calcAdjustFactor(const Particle &p2, const Particle &p1,
         return 1.0f;
 }
 
-int Advection::OutputStreamsGnuplot(const std::string &filename) const {
-    FILE *f = std::fopen(filename.c_str(), "w");
+int Advection::OutputStreamsGnuplot(const std::string &filename, bool append) const {
+    FILE *f = nullptr;
+    if (append)
+        f = std::fopen(filename.c_str(), "a");
+    else
+        f = std::fopen(filename.c_str(), "w");
     if (f == nullptr)
         return FILE_ERROR;
 
@@ -347,7 +351,7 @@ int Advection::InputStreamsGnuplot(const std::string &filename) {
             continue;
 
         // Now try to parse numbers separated by comma
-        line.push_back(',');
+        line.push_back(','); // append a comma to the very end of the line
         std::vector<float> values;
         size_t start = 0;
         size_t end = line.find(',');
@@ -357,7 +361,8 @@ int Advection::InputStreamsGnuplot(const std::string &filename) {
             try {
                 val = std::stof(str);
             } catch (const std::invalid_argument &e) {
-                break;
+                ifs.close();
+                return FILE_ERROR;
             }
             values.push_back(val);
             start = end + 1;
