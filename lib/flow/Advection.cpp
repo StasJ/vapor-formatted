@@ -309,11 +309,15 @@ float Advection::_calcAdjustFactor(const Particle &p2, const Particle &p1,
 }
 
 int Advection::OutputStreamsGnuplot(const std::string &filename, bool append) const {
+    if (filename.empty())
+        return FILE_ERROR;
+
     FILE *f = nullptr;
-    if (append)
+    if (append) {
         f = std::fopen(filename.c_str(), "a");
-    else
+    } else {
         f = std::fopen(filename.c_str(), "w");
+    }
     if (f == nullptr)
         return FILE_ERROR;
 

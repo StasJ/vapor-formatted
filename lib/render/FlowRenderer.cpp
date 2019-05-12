@@ -138,11 +138,15 @@ int FlowRenderer::_paintGL(bool fast) {
     if (params->GetNeedFlowlineOutput()) {
         rv = _advection.OutputStreamsGnuplot(params->GetFlowlineOutputFilename());
         if (rv != 0) {
-            MyBase::SetErrMsg("Input seed list wrong!");
+            MyBase::SetErrMsg("Output flow lines wrong!");
             return flow::FILE_ERROR;
         }
         if (_2ndAdvection) // bi-directional advection
-            _2ndAdvection->OutputStreamsGnuplot(params->GetSeedInputFilename(), true);
+        {
+            rv = _2ndAdvection->OutputStreamsGnuplot(params->GetFlowlineOutputFilename(), true);
+        }
+
+        params->SetNeedFlowlineOutput(false);
     }
 
     _updateFlowCacheAndStates(params);

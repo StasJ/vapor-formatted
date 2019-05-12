@@ -123,10 +123,7 @@ FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
     connect(_outputButton, SIGNAL(clicked()), this, SLOT(_outputButtonClicked()));
 }
 
-void FlowSeedingSubtab::_outputButtonClicked() {
-    std::cerr << "button clicked" << std::endl;
-    _params->SetNeedFlowlineOutput(true);
-}
+void FlowSeedingSubtab::_outputButtonClicked() { _params->SetNeedFlowlineOutput(true); }
 
 void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                                VAPoR::RenderParams *params) {

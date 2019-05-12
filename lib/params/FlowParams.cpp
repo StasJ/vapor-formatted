@@ -32,7 +32,7 @@ void FlowParams::SetIsSteady(bool steady) {
 }
 
 bool FlowParams::GetIsSteady() const {
-    long rv = GetValueLong(_isSteadyTag, long(false));
+    long rv = GetValueLong(_isSteadyTag, long(true));
     return bool(rv);
 }
 
@@ -46,14 +46,14 @@ bool FlowParams::GetNeedFlowlineOutput() const {
 }
 
 double FlowParams::GetVelocityMultiplier() const {
-    return GetValueDouble(_velocityMultiplierTag, 1.0);
+    return GetValueDouble(_velocityMultiplierTag, 0.001);
 }
 
 void FlowParams::SetVelocityMultiplier(double coeff) {
     SetValueDouble(_velocityMultiplierTag, "velocity multiplier", coeff);
 }
 
-long FlowParams::GetSteadyNumOfSteps() const { return GetValueLong(_steadyNumOfStepsTag, 0); }
+long FlowParams::GetSteadyNumOfSteps() const { return GetValueLong(_steadyNumOfStepsTag, 2); }
 
 void FlowParams::SetSteadyNumOfSteps(long i) {
     SetValueLong(_steadyNumOfStepsTag, "num of steps for a steady integration", i);
