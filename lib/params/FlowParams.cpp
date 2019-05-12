@@ -54,7 +54,7 @@ void FlowParams::SetVelocityMultiplier(double coeff) {
     SetValueDouble(_velocityMultiplierTag, "velocity multiplier", coeff);
 }
 
-long FlowParams::GetSteadyNumOfSteps() const { return GetValueLong(_steadyNumOfStepsTag, 2); }
+long FlowParams::GetSteadyNumOfSteps() const { return GetValueLong(_steadyNumOfStepsTag, 100); }
 
 void FlowParams::SetSteadyNumOfSteps(long i) {
     SetValueLong(_steadyNumOfStepsTag, "num of steps for a steady integration", i);
