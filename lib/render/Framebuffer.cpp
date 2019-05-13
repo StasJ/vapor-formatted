@@ -1,5 +1,6 @@
 #include <cassert>
 #include <vapor/Framebuffer.h>
+#include <vapor/MyBase.h>
 #include <vapor/glutil.h>
 
 using namespace VAPoR;
@@ -33,7 +34,38 @@ int Framebuffer::Generate() {
 bool Framebuffer::Initialized() const { return _id; }
 
 bool Framebuffer::IsComplete() const {
-    return Initialized() && glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
+    return Initialized() && GetStatus() == GL_FRAMEBUFFER_COMPLETE;
+}
+
+int Framebuffer::GetStatus() const { return glCheckFramebufferStatus(GL_FRAMEBUFFER); }
+
+const char *Framebuffer::GetStatusString() const {
+    switch (GetStatus()) {
+    case GL_FRAMEBUFFER_COMPLETE:
+        return "GL_FRAMEBUFFER_COMPLETE";
+    case GL_FRAMEBUFFER_UNDEFINED:
+        return "GL_FRAMEBUFFER_UNDEFINED";
+    case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+        return "GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT";
+    case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+        return "GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT";
+    case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+        return "GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER";
+    case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+        return "GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER";
+    case GL_FRAMEBUFFER_UNSUPPORTED:
+        return "GL_FRAMEBUFFER_UNSUPPORTED";
+    case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+        return "GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE";
+    case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+        return "GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS";
+    case GL_INVALID_ENUM:
+        return "GL_INVALID_ENUM";
+    case GL_INVALID_OPERATION:
+        return "GL_INVALID_OPERATION";
+    default:
+        return "Unknown GL enum";
+    }
 }
 
 void Framebuffer::Bind() {
@@ -45,6 +77,9 @@ void Framebuffer::UnBind() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 
 void Framebuffer::SetSize(int width, int height) {
     assert(Initialized());
+
+    width = width <= 0 ? 1 : width;
+    height = height <= 0 ? 1 : height;
 
     if (width != _width || height != _height) {
         _width = width;
@@ -59,9 +94,10 @@ void Framebuffer::SetSize(int width, int height) {
 
 int Framebuffer::MakeRenderTarget() {
     Bind();
-    assert(IsComplete());
     if (!IsComplete()) {
+        Wasp::MyBase::SetErrMsg("Incomplete framebuffer: %s\n", GetStatusString());
         UnBind();
+        assert(false);
         return -1;
     }
 
