@@ -61,7 +61,7 @@ ShaderProgram *ShaderManager::GetShader(const std::string &key) {
     for (auto &pair : _dependencyModifiedTimes[key]) {
         long mtime = FileUtils::GetFileModifiedTime(pair.first);
         if (mtime > pair.second) {
-            printf("Reload \"%s\"\n", pair.first.c_str());
+            //            printf("Reload \"%s\"\n", pair.first.c_str());
             pair.second = mtime;
             reload = true;
         }
@@ -92,7 +92,7 @@ SmartShaderProgram ShaderManager::GetSmartShader(const std::string &name) {
 #include <vapor/GLManager.h>
 
 int ShaderManager::LoadResourceByKey(const std::string &key) {
-    printf("Begin Compile %s\n", key.c_str());
+    //    printf("Begin Compile %s\n", key.c_str());
     void *t = GLManager::BeginTimer();
 
     if (HasResource(key)) {
@@ -114,7 +114,7 @@ int ShaderManager::LoadResourceByKey(const std::string &key) {
         return -1;
     }
     AddResource(key, program);
-    printf("End Compile %f\n", GLManager::EndTimer(t));
+    //    printf("End Compile %f\n", GLManager::EndTimer(t));
     return 1;
 }
 
