@@ -62,7 +62,7 @@ class VaporField : public Field {
                     const std::vector<double> &min, const std::vector<double> &max) const;
     };
 
-  private:
+  protected:
     // Member variables
     std::vector<float> _timestamps; // in ascending order
     VAPoR::DataMgr *_datamgr;

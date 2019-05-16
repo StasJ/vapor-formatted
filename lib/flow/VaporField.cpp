@@ -2,6 +2,7 @@
 
 using namespace flow;
 
+// Constructor
 VaporField::VaporField() : _recentGridLimit(12) {
     _datamgr = nullptr;
     _params = nullptr;
