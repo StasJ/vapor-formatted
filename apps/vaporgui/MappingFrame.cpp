@@ -36,7 +36,6 @@
 #include <vapor/ContourParams.h>
 #include <vapor/ControlExecutive.h>
 #include <vapor/DataMgrUtils.h>
-#include <vapor/IsoSurfaceParams.h>
 #include <vapor/MapperFunction.h>
 #include <vapor/OpacityMap.h>
 #include <vapor/VolumeIsoParams.h>
@@ -483,19 +482,15 @@ bool MappingFrame::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, RenderParams *
         // Synchronize sliders with isovalues
         vector<double> isovals;
         ContourParams *cp;
-        IsoSurfaceParams *ip;
         VolumeIsoParams *vp;
 
         // This should probably be rethought
         // Maybe we need an IsoParams base class?
         cp = dynamic_cast<ContourParams *>(rParams);
-        ip = dynamic_cast<IsoSurfaceParams *>(rParams);
         vp = dynamic_cast<VolumeIsoParams *>(rParams);
 
         if (cp)
             isovals = cp->GetContourValues(_variableName);
-        else if (ip)
-            isovals = ip->GetIsoValues();
         else if (vp)
             isovals = vp->GetIsoValues();
         else
@@ -1306,13 +1301,10 @@ int MappingFrame::drawIsoSlider() {
 int MappingFrame::drawIsolineSliders() {
     // std::vector<bool> enabledIsoValues(true, _isolineSliders.size());
     std::vector<bool> enabledIsoValues(_isolineSliders.size(), true);
-    IsoSurfaceParams *ip = dynamic_cast<IsoSurfaceParams *>(_rParams);
     VolumeIsoParams *vp = dynamic_cast<VolumeIsoParams *>(_rParams);
 
     if (vp != NULL)
         enabledIsoValues = vp->GetEnabledIsoValues();
-    else if (ip != NULL)
-        enabledIsoValues = ip->GetEnabledIsoValueFlags();
 
     for (int i = 0; i < _isolineSliders.size(); i++) {
         if (enabledIsoValues[i] == true) {
@@ -2438,7 +2430,6 @@ void MappingFrame::setIsolineSlider(int index) {
     float max = xWorldToData(iSlider->maxValue());
 
     emit startChange("Slide Isoline value slider");
-    IsoSurfaceParams *iParams = dynamic_cast<IsoSurfaceParams *>(_rParams);
     VolumeIsoParams *vParams = dynamic_cast<VolumeIsoParams *>(_rParams);
 
     // If _rParams is not an IsoSurfaceParams, then it's a ContourParams.
@@ -2450,10 +2441,6 @@ void MappingFrame::setIsolineSlider(int index) {
         vector<double> isovals = vParams->GetIsoValues();
         isovals[index] = (0.5 * (max + min));
         vParams->SetIsoValues(isovals);
-    } else if (iParams) {
-        vector<double> isovals = iParams->GetIsoValues();
-        isovals[index] = (0.5 * (max + min));
-        iParams->SetIsoValues(isovals);
     } else {
         Update(_dataMgr, _paramsMgr, _rParams);
         updateGL();
