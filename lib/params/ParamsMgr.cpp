@@ -298,7 +298,13 @@ ViewpointParams *ParamsMgr::CreateVisualizerParamsInstance(string winName) {
 
     ViewpointParams *vpParams = get_vp_params(winName);
     if (!vpParams) {
-        vpParams = make_vp_params(winName);
+        std::vector<string> winNames = GetVisualizerNames();
+        if (winNames.size()) {
+            ViewpointParams *copyParams = GetViewpointParams(winNames.front());
+            vpParams = new ViewpointParams(*copyParams);
+            _viewpointParamsMap[winName] = vpParams;
+        } else
+            vpParams = make_vp_params(winName);
     }
     assert(vpParams != NULL);
 
