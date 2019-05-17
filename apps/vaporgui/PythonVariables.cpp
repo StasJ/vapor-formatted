@@ -35,6 +35,9 @@ using namespace PythonVariables_;
 PythonVariables::PythonVariables(QWidget *parent) : QDialog(parent), Ui_PythonVariablesGUI() {
     setupUi(this);
 
+    _importScriptButton->hide();
+    _exportScriptButton->hide();
+
     setWindowTitle("Derived variables with Python");
 
     _script = "";
