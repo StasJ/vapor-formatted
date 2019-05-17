@@ -98,8 +98,12 @@ class Advection {
     // If the advection is performed in a periodic fashion along one or more dimensions.
     // These variables are **not** intended to be decided by Advection, but by someone
     // who's more knowledgeable about the field.
-    bool _isPeriodic[3]; // is it periodic in X, Y, Z dimensions ?
-    glm::vec2 _periodicBounds[3];
+    bool _isPeriodic[3];          // is it periodic in X, Y, Z dimensions ?
+    glm::vec2 _periodicBounds[3]; // periodic boundaries in X, Y, Z dimensions
+
+    // Adjust input "val" according to the bound specified by min and max.
+    // Returns the value after adjustment.
+    float _applyPeriodic(float val, float min, float max) const;
 };
 }; // namespace flow
 
