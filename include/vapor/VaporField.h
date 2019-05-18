@@ -62,6 +62,11 @@ class VaporField : public Field {
                     const std::vector<double> &min, const std::vector<double> &max) const;
     };
 
+    //
+    // Returns the intersection domain of 3 velocity variables
+    //
+    void GetFirstStepVelocityIntersection(glm::vec3 &minxyz, glm::vec3 &maxxyz);
+
   protected:
     // Member variables
     std::vector<float> _timestamps; // in ascending order
