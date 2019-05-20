@@ -22,7 +22,6 @@
 #include "FileOperationChecker.h"
 #include "RenderEventRouter.h"
 #include "TwoDSubtabs.h"
-#include "vapor/DVRParams.h"
 #include "vapor/RenderParams.h"
 #include "vapor/ResourcePath.h"
 #include "vapor/TwoDDataParams.h"
