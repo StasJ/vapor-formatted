@@ -44,9 +44,13 @@ VolumeRenderer::VolumeRenderer(const ParamsMgr *pm, std::string &winName, std::s
         VolumeParams *vp = (VolumeParams *)GetActiveParams();
         Grid *grid = _dataMgr->GetVariable(vp->GetCurrentTimestep(), vp->GetVariableName(),
                                            vp->GetRefinementLevel(), vp->GetCompressionLevel());
-        string algorithmName = _getDefaultAlgorithmForGrid(grid);
-        vp->SetAlgorithm(algorithmName);
-        delete grid;
+        if (grid) {
+            string algorithmName = _getDefaultAlgorithmForGrid(grid);
+            vp->SetAlgorithm(algorithmName);
+            delete grid;
+        } else {
+            vp->SetAlgorithm(VolumeRegular::GetName());
+        }
     }
 }
 
@@ -341,6 +345,8 @@ int VolumeRenderer::_loadData() {
 
     Grid *grid =
         _dataMgr->GetVariable(_cache.ts, _cache.var, _cache.refinement, _cache.compression);
+    if (!grid)
+        return -1;
 
     if (_needToSetDefaultAlgorithm()) {
         RP->SetAlgorithm(_getDefaultAlgorithmForGrid(grid));
@@ -365,6 +371,8 @@ int VolumeRenderer::_loadSecondaryData() {
     if (_cache.useColorMapVar) {
         Grid *grid = _dataMgr->GetVariable(_cache.ts, _cache.colorMapVar, _cache.refinement,
                                            _cache.compression);
+        if (!grid)
+            return -1;
         int ret = _algorithm->LoadSecondaryData(grid);
         delete grid;
         return ret;
