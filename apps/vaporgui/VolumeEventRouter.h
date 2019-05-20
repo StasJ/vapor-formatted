@@ -6,7 +6,7 @@
 #include "VolumeSubtabs.h"
 #include "vapor/VolumeParams.h"
 #include "vapor/VolumeRenderer.h"
-#include <qobject.h>
+#include <QObject>
 #include <vapor/MyBase.h>
 
 QT_USE_NAMESPACE
