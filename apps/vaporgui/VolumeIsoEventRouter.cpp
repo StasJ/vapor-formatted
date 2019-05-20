@@ -7,10 +7,8 @@
 #include "VariablesWidget.h"
 #include "vapor/VolumeIsoParams.h"
 #include "vapor/VolumeRenderer.h"
-#include <QFileDialog>
-#include <qcolordialog.h>
-#include <qlineedit.h>
-#include <qscrollarea.h>
+#include <QLineEdit>
+#include <QScrollArea>
 #include <string>
 #include <vapor/glutil.h>
 #include <vector>
