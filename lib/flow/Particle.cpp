@@ -70,7 +70,7 @@ int Particle::GetNumOfProperties() const {
     return count;
 }
 
-void Particle::SetSpecialState(bool isSpecial) {
+void Particle::SetSpecial(bool isSpecial) {
     // give time value a nan to indicate the "special state."
     if (isSpecial)
         time = std::nanf("1");
@@ -78,4 +78,4 @@ void Particle::SetSpecialState(bool isSpecial) {
         time = 0.0f;
 }
 
-bool Particle::GetSpecialState() const { return std::isnan(time); }
+bool Particle::IsSpecial() const { return (std::isnan(time)); }

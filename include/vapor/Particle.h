@@ -41,8 +41,8 @@ class Particle {
     int GetNumOfProperties() const;
 
     // A particle could be set to be at a special state.
-    void SetSpecialState(bool isSpecial);
-    bool GetSpecialState() const;
+    void SetSpecial(bool isSpecial);
+    bool IsSpecial() const;
 
   private:
     std::forward_list<float>
