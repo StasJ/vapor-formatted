@@ -23,6 +23,10 @@ void Advection::UseSeedParticles(const std::vector<Particle> &seeds) {
     _streams.resize(seeds.size());
     for (size_t i = 0; i < seeds.size(); i++)
         _streams[i].push_back(seeds[i]);
+
+    _separatorCount.resize(seeds.size());
+    for (auto &e : _separatorCount)
+        e = 0;
 }
 
 int Advection::CheckReady() const {
@@ -286,9 +290,11 @@ int Advection::OutputStreamsGnuplot(const std::string &filename, bool append) co
 
     std::fprintf(f, "%s\n", "# X-position      Y-position      Z-position     Time     Value");
     for (const auto &s : _streams) {
-        for (const auto &p : s)
-            std::fprintf(f, "%f, %f, %f, %f, %f\n", p.location.x, p.location.y, p.location.z,
-                         p.time, p.value);
+        for (const auto &p : s) {
+            if (!p.IsSpecial())
+                std::fprintf(f, "%f, %f, %f, %f, %f\n", p.location.x, p.location.y, p.location.z,
+                             p.time, p.value);
+        }
         std::fprintf(f, "\n\n");
     }
     std::fclose(f);
@@ -362,10 +368,14 @@ const std::vector<Particle> &Advection::GetStreamAt(size_t i) const {
 }
 
 size_t Advection::GetMaxNumOfSteps() const {
-    size_t num = 0;
-    for (const auto &s : _streams)
-        num = s.size() > num ? s.size() : num;
-    return num;
+    size_t max = 0;
+    size_t idx = 0;
+    for (const auto &s : _streams) {
+        size_t num = s.size() - _separatorCount[idx];
+        max = max > num ? max : num;
+        idx++;
+    }
+    return max;
 }
 
 void Advection::ClearParticleProperties() {
