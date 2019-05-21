@@ -836,7 +836,6 @@ VAPoR::ViewpointParams *NavigationEventRouter::_getActiveParams() const {
 }
 
 void NavigationEventRouter::_makeTransformsConsistent() const {
-    return;
     ViewpointParams *activeVPParams = _getActiveParams();
     if (activeVPParams == NULL)
         return;
@@ -882,6 +881,8 @@ void NavigationEventRouter::_makeTransformsConsistent() const {
                  << endl;
         }
     }
+
+    paramsMgr->EndSaveStateGroup();
 }
 
 void NavigationEventRouter::_setViewpointParams(const vector<double> &modelview,

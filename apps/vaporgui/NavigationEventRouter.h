@@ -82,8 +82,6 @@ class NavigationEventRouter : public QWidget, public Ui_NavigationTab, public Ev
 
     VAPoR::ViewpointParams *_getActiveParams() const;
 
-    void _makeTransformsConsistent() const;
-
     void _setViewpointParams(const vector<double> &modelview, const vector<double> &center) const;
 
     void _setViewpointParams(const double center[3], const double posvec[3], const double dirvec[3],
@@ -102,6 +100,8 @@ class NavigationEventRouter : public QWidget, public Ui_NavigationTab, public Ev
     void CenterSubRegion();
 
   private slots:
+    void _makeTransformsConsistent() const;
+
     void setCameraChanged();
     void setCameraLatLonChanged();
     void setLightChanged();
