@@ -174,6 +174,8 @@ void TransformTable::ScaleChanged(int row, int col) {
 
     Transform *t = itr->second;
     t->SetScales(scales);
+
+    emit TransformChanged();
 }
 
 void TransformTable::TranslationChanged(int row, int col) {
@@ -195,6 +197,8 @@ void TransformTable::TranslationChanged(int row, int col) {
 
     Transform *t = itr->second;
     t->SetTranslations(translations);
+
+    emit TransformChanged();
 }
 
 void TransformTable::RotationChanged(int row, int col) {
@@ -216,6 +220,8 @@ void TransformTable::RotationChanged(int row, int col) {
 
     Transform *t = itr->second;
     t->SetRotations(rotations);
+
+    emit TransformChanged();
 }
 
 void TransformTable::OriginChanged(int row, int col) {
@@ -237,4 +243,6 @@ void TransformTable::OriginChanged(int row, int col) {
 
     Transform *t = itr->second;
     t->SetOrigin(origins);
+
+    emit TransformChanged();
 }
