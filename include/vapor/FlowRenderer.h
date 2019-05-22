@@ -54,6 +54,7 @@ class RENDER_API FlowRenderer : public Renderer {
     bool _cache_isSteady;
     long _cache_steadyNumOfSteps;
     size_t _cache_currentTS;
+    bool _cache_periodic[3];
 
     // A few different modes to generate advection seeds:
     //   0 - programmatical
@@ -103,7 +104,7 @@ class RENDER_API FlowRenderer : public Renderer {
     // Update values of _cache_* and _state_* member variables.
     void _updateFlowCacheAndStates(const FlowParams *);
 
-    void _updatePeriodicity(flow::Advection *advc, const FlowParams *params);
+    void _updatePeriodicity(flow::Advection *advc);
 
     // A function to populate particle properties.
     // If useAsColor == true, then this calculated property will be stored in a field
