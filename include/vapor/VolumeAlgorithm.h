@@ -25,6 +25,8 @@ class VolumeAlgorithmFactory;
 class VolumeAlgorithm : private NonCopyableMixin {
   public:
     enum class Type { Any, DVR, Iso };
+    bool normalize = false;
+    float normalizeMin, normalizeMax;
 
     VolumeAlgorithm(GLManager *gl);
     virtual ~VolumeAlgorithm() {}

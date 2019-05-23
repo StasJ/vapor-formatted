@@ -42,6 +42,23 @@ VolumeAppearanceSubtab::VolumeAppearanceSubtab(QWidget *parent) {
     _shininessWidget->SetLabel(QString::fromAscii("Shininess"));
     _shininessWidget->SetExtents(1.0, 100.0);
     _shininessWidget->SetIntType(true);
+
+    QFrame *item = new QFrame;
+    QHBoxLayout *layout = new QHBoxLayout;
+    layout->setMargin(0);
+    item->setLayout(layout);
+
+    QLabel *label = new QLabel("Normalize");
+    QSpacerItem *spacer = new QSpacerItem(108, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+    QCheckBox *box = new QCheckBox;
+
+    connect(box, SIGNAL(stateChanged(int)), this, SLOT(on_memoryCheckbox_stateChanged(int)));
+
+    layout->addWidget(label);
+    layout->addItem(spacer);
+    layout->addWidget(box);
+
+    _raytracingFrame->layout()->addWidget(item);
 }
 
 void VolumeAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -98,6 +115,10 @@ void VolumeAppearanceSubtab::on__samplingRateComboBox_currentIndexChanged(const 
     if (!text.isEmpty()) {
         _params->SetSamplingMultiplier(GetSamplingRateForQString(text));
     }
+}
+
+void VolumeAppearanceSubtab::on_memoryCheckbox_stateChanged(int state) {
+    _params->SetValueLong("normalize", "normalize", (bool)state);
 }
 
 void VolumeAppearanceSubtab::on__lightingCheckBox_toggled(bool checked) {
