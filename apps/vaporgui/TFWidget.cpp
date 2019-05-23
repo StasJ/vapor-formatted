@@ -22,7 +22,6 @@
 #include "FileOperationChecker.h"
 #include "RenderEventRouter.h"
 #include "TwoDSubtabs.h"
-#include "vapor/DVRParams.h"
 #include "vapor/RenderParams.h"
 #include "vapor/ResourcePath.h"
 #include "vapor/TwoDDataParams.h"
@@ -56,6 +55,7 @@ TFWidget::TFWidget(QWidget *parent) : QWidget(parent), Ui_TFWidgetGUI() {
     _secondaryHistoRangeChanged = false;
     _discreteColormap = false;
     _isOpacityIntegrated = false;
+    _wasOpacitySliderReleased = false;
     _mainVarName = "";
     _secondaryVarName = "";
 
@@ -74,6 +74,8 @@ TFWidget::TFWidget(QWidget *parent) : QWidget(parent), Ui_TFWidgetGUI() {
     _secondaryMaxSliderEdit->SetLabel(QString::fromAscii("Max"));
     _secondaryMaxSliderEdit->SetIntType(false);
     _secondaryMaxSliderEdit->SetExtents(0.f, 1.f);
+
+    _opacitySlider->setRange(0, 1000);
 
     _cLevel = 0;
     _refLevel = 0;
@@ -743,6 +745,7 @@ void TFWidget::connectWidgets() {
     connect(_mappingFrame, SIGNAL(updateParams()), this, SLOT(setRange()));
     connect(_mappingFrame, SIGNAL(endChange()), this, SLOT(setRange()));
     connect(_opacitySlider, SIGNAL(valueChanged(int)), this, SLOT(opacitySliderChanged(int)));
+    connect(_opacitySlider, SIGNAL(sliderReleased()), this, SLOT(opacitySliderReleased()));
     connect(_colorSelectButton, SIGNAL(pressed()), this, SLOT(setSingleColor()));
     connect(_useConstColorCheckbox, SIGNAL(stateChanged(int)), this,
             SLOT(setUsingSingleColor(int)));
@@ -752,6 +755,7 @@ void TFWidget::connectWidgets() {
     connect(_secondaryMappingFrame, SIGNAL(endChange()), this, SLOT(setSecondaryRange()));
     connect(_secondaryOpacitySlider, SIGNAL(valueChanged(int)), this,
             SLOT(opacitySliderChanged(int)));
+    connect(_secondaryOpacitySlider, SIGNAL(sliderReleased()), this, SLOT(opacitySliderReleased()));
     connect(_updateSecondaryHistoButton, SIGNAL(pressed()), this,
             SLOT(updateSecondaryMappingFrame()));
     connect(_autoUpdateSecondaryHistoCheckbox, SIGNAL(stateChanged(int)), this,
@@ -771,6 +775,10 @@ void TFWidget::connectWidgets() {
 void TFWidget::emitTFChange() { emit emitChange(); }
 
 void TFWidget::opacitySliderChanged(int value) {
+    if (!_wasOpacitySliderReleased)
+        return;
+    _wasOpacitySliderReleased = false;
+
     bool mainTF = true;
     if (COLORMAP_VAR_IS_IN_TF2)
         mainTF = false;
@@ -780,6 +788,8 @@ void TFWidget::opacitySliderChanged(int value) {
     tf->setOpacityScale(convertSliderValueToOpacity(value));
     emit emitChange();
 }
+
+void TFWidget::opacitySliderReleased() { _wasOpacitySliderReleased = true; }
 
 void TFWidget::setRange() {
     float min = _mappingFrame->getMinEditBound();
@@ -999,16 +1009,16 @@ string TFWidget::getTFVariableName(bool mainTF = true) {
 
 int TFWidget::convertOpacityToSliderValue(float opacity) const {
     if (IsOpacityIntegrated())
-        return 100 * sqrtf(opacity);
+        return 1000 * powf(opacity, 1 / 4.f);
     else
-        return 100 * opacity;
+        return 1000 * opacity;
 }
 
 float TFWidget::convertSliderValueToOpacity(int value) const {
     if (IsOpacityIntegrated())
-        return powf(value / 100.f, 2);
+        return powf(value / 1000.f, 4);
     else
-        return value / 100.f;
+        return value / 1000.f;
 }
 
 bool TFWidget::IsOpacityIntegrated() const { return _isOpacityIntegrated; }
