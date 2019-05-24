@@ -48,6 +48,11 @@ bool readOK(vector<size_t> dims, size_t start[], size_t count[]) {
     return (true);
 }
 
+bool tvmap_cmp(NetCDFCollection::TimeVaryingVar::tvmap_t a,
+               NetCDFCollection::TimeVaryingVar::tvmap_t b) {
+    return (a._time < b._time);
+};
+
 }; // namespace
 
 NetCDFCollection::NetCDFCollection() {
@@ -178,6 +183,11 @@ int NetCDFCollection::Initialize(const vector<string> &files, const vector<strin
                 continue;
             }
         }
+    }
+
+    for (auto itr = _variableList.begin(); itr != _variableList.end(); ++itr) {
+        TimeVaryingVar &tvvref = itr->second;
+        tvvref.Sort();
     }
 
     return (0);
@@ -1762,13 +1772,6 @@ NetCDFCollection::TimeVaryingVar::TimeVaryingVar() {
     _time_varying = false;
 }
 
-namespace VAPoR {
-bool tvmap_cmp(NetCDFCollection::TimeVaryingVar::tvmap_t a,
-               NetCDFCollection::TimeVaryingVar::tvmap_t b) {
-    return (a._time < b._time);
-};
-} // namespace VAPoR
-
 int NetCDFCollection::TimeVaryingVar::Insert(const NetCDFSimple *netcdf,
                                              const NetCDFSimple::Variable &variable, string file,
                                              const vector<string> &time_dimnames,
@@ -1852,11 +1855,6 @@ int NetCDFCollection::TimeVaryingVar::Insert(const NetCDFSimple *netcdf,
         local_ts++;
     }
 
-    //
-    // Sort variable by time
-    //
-    std::sort(_tvmaps.begin(), _tvmaps.end(), tvmap_cmp);
-
     return (0);
 }
 
@@ -1924,6 +1922,14 @@ bool NetCDFCollection::TimeVaryingVar::GetMissingValue(string attname, double &m
 
     mv = vec[0];
     return (true);
+}
+
+void NetCDFCollection::TimeVaryingVar::Sort() {
+
+    //
+    // Sort variable by time
+    //
+    std::sort(_tvmaps.begin(), _tvmaps.end(), tvmap_cmp);
 }
 
 NetCDFCollection::fileHandle::fileHandle() {
