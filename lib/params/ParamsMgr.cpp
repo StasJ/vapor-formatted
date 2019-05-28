@@ -982,7 +982,17 @@ ViewpointParams *ParamsMgr::make_vp_params(string winName) {
 
         vpParams = new ViewpointParams(&_ssave, node);
     } else {
-        vpParams = new ViewpointParams(&_ssave);
+        // Visualizers must be consistent amongst themselves, so
+        // if another visualizer exists, copy it
+        std::vector<string> visNames = GetVisualizerNames();
+        if (visNames.size()) {
+            ViewpointParams *copyParams = GetViewpointParams(visNames.front());
+            vpParams = new ViewpointParams(*copyParams);
+        }
+        // Otherwise just make a fresh copy
+        else
+            vpParams = new ViewpointParams(&_ssave);
+
         vpParams->SetParent(windowSep);
     }
 

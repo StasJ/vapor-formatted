@@ -34,17 +34,20 @@ class PARAMS_API FlowParams : public RenderParams {
     long GetSeedGenMode() const;
     void SetSeedGenMode(long);
 
+    void SetNeedFlowlineOutput(bool);
+    bool GetNeedFlowlineOutput() const;
+
+    long GetFlowDirection() const;
+    void SetFlowDirection(long);
+
     std::string GetSeedInputFilename() const;
     void SetSeedInputFilename(std::string &);
 
     std::string GetFlowlineOutputFilename() const;
     void SetFlowlineOutputFilename(std::string &);
 
-    void SetNeedFlowlineOutput(bool);
-    bool GetNeedFlowlineOutput() const;
-
-    long GetFlowDirection() const;
-    void SetFlowDirection(long);
+    std::vector<bool> GetPeriodic() const;
+    void SetPeriodic(std::vector<bool>);
 
   protected:
     static const std::string _isSteadyTag;
@@ -55,6 +58,7 @@ class PARAMS_API FlowParams : public RenderParams {
     static const std::string _flowlineOutputFilenameTag;
     static const std::string _flowDirectionTag;
     static const std::string _needFlowlineOutputTag;
+    static const std::string _periodicTag;
 };
 
 } // namespace VAPoR

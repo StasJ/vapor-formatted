@@ -3,6 +3,7 @@
 
 #include "Flags.h"
 
+#include <QPushButton>
 #include <QVBoxLayout>
 #include <QWidget>
 #include <vapor/FlowParams.h>
@@ -76,11 +77,16 @@ class FlowVariablesSubtab : public QVaporSubtab {
     //   TODO: add validator/mask so that only positive integers are accepted
     QLineEdit *_steadyNumOfSteps;
 
+    VCheckBox *_periodicX;
+    VCheckBox *_periodicY;
+    VCheckBox *_periodicZ;
+
   private slots:
     // Respond to user input
     void _steadyGotClicked();
     void _velocityMultiplierChanged();
     void _steadyNumOfStepsChanged();
+    void _periodicClicked();
 };
 
 //
@@ -133,6 +139,7 @@ class FlowSeedingSubtab : public QVaporSubtab {
         void _fileWriterChanged();
         void _flowDirectionChanged( int newIdx );
     */
+    void _outputButtonClicked();
 
   private:
     VAPoR::DataMgr *_dataMgr;
@@ -198,6 +205,7 @@ class FlowIntegrationSubtab : public QVaporSubtab {
         VComboBox*              _seedGenMode;
         VFileReader*            _fileReader;
         VFileWriter*            _fileWriter;
+        QPushButton*            _outputButton;
 
         VComboBox*              _flowDirection;
     */
