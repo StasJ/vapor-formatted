@@ -359,6 +359,7 @@ void VizWin::_mousePressEventNavigate(QMouseEvent *e) {
 // We record the position of the click.
 //
 void VizWin::mousePressEvent(QMouseEvent *e) {
+
     if (_mouseClicked)
         return;
 
@@ -440,8 +441,10 @@ void VizWin::_mouseReleaseEventNavigate(QMouseEvent *e) {
  * then we note the displacement
  */
 void VizWin::mouseReleaseEvent(QMouseEvent *e) {
-    if (_buttonNum == 0)
+    if (_buttonNum == 0) {
+        _mouseClicked = false;
         return;
+    }
 
     _mouseClicked = false;
 
