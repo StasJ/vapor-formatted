@@ -216,6 +216,7 @@ class VFileSelector : public VPushButton {
                   QFileDialog::FileMode fileMode = QFileDialog::FileMode::ExistingFile);
 
     QFileDialog::FileMode _fileMode;
+    QFileDialog *_fileDialog;
 
   private slots:
     void _openFileDialog();
@@ -226,7 +227,6 @@ class VFileSelector : public VPushButton {
 
   private:
     QLineEdit *_lineEdit;
-    QFileDialog *_fileDialog;
     std::string _filePath;
 
     virtual bool _isFileOperable(const std::string &filePath) const = 0;

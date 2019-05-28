@@ -54,6 +54,7 @@ class RENDER_API FlowRenderer : public Renderer {
     bool _cache_isSteady;
     long _cache_steadyNumOfSteps;
     size_t _cache_currentTS;
+    bool _cache_periodic[3];
 
     // A few different modes to generate advection seeds:
     //   0 - programmatical
@@ -88,10 +89,9 @@ class RENDER_API FlowRenderer : public Renderer {
     //
     int _genSeedsXY(std::vector<flow::Particle> &seeds, float timeVal) const;
 
-    int _purePaint(FlowParams *, bool fast);
+    int _renderFromAnAdvection(const flow::Advection *, FlowParams *, bool fast);
     void _prepareColormap(FlowParams *);
-    int _drawAStreamAsLines(const std::vector<flow::Particle> &, const FlowParams *) const;
-    int _drawAStreamAsTubes(const std::vector<flow::Particle> &, const FlowParams *) const;
+    int _drawLineSegs(const float *buf, size_t numOfParts, bool singleColor) const;
     void _restoreGLState() const;
 
     int _getAGrid(const FlowParams *params, // Input
@@ -101,6 +101,8 @@ class RENDER_API FlowRenderer : public Renderer {
 
     // Update values of _cache_* and _state_* member variables.
     void _updateFlowCacheAndStates(const FlowParams *);
+
+    void _updatePeriodicity(flow::Advection *advc);
 
     // A function to populate particle properties.
     // If useAsColor == true, then this calculated property will be stored in a field

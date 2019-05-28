@@ -10,6 +10,7 @@ const std::string FlowParams::_seedInputFilenameTag = "seedInputFilenameTag";
 const std::string FlowParams::_flowlineOutputFilenameTag = "flowlineOutputFilenameTag";
 const std::string FlowParams::_flowDirectionTag = "flowDirectionTag";
 const std::string FlowParams::_needFlowlineOutputTag = "needFlowlineOutputTag";
+const std::string FlowParams::_periodicTag = "periodicTag";
 
 static RenParamsRegistrar<FlowParams> registrar(FlowParams::GetClassType());
 
@@ -32,7 +33,7 @@ void FlowParams::SetIsSteady(bool steady) {
 }
 
 bool FlowParams::GetIsSteady() const {
-    long rv = GetValueLong(_isSteadyTag, long(false));
+    long rv = GetValueLong(_isSteadyTag, long(true));
     return bool(rv);
 }
 
@@ -46,14 +47,14 @@ bool FlowParams::GetNeedFlowlineOutput() const {
 }
 
 double FlowParams::GetVelocityMultiplier() const {
-    return GetValueDouble(_velocityMultiplierTag, 1.0);
+    return GetValueDouble(_velocityMultiplierTag, 0.01);
 }
 
 void FlowParams::SetVelocityMultiplier(double coeff) {
     SetValueDouble(_velocityMultiplierTag, "velocity multiplier", coeff);
 }
 
-long FlowParams::GetSteadyNumOfSteps() const { return GetValueLong(_steadyNumOfStepsTag, 0); }
+long FlowParams::GetSteadyNumOfSteps() const { return GetValueLong(_steadyNumOfStepsTag, 100); }
 
 void FlowParams::SetSteadyNumOfSteps(long i) {
     SetValueLong(_steadyNumOfStepsTag, "num of steps for a steady integration", i);
@@ -86,4 +87,24 @@ long FlowParams::GetFlowDirection() const { return GetValueLong(_flowDirectionTa
 void FlowParams::SetFlowDirection(long i) {
     SetValueLong(_flowDirectionTag, "does flow integration go forward, backward, or bi-directional",
                  i);
+}
+
+std::vector<bool> FlowParams::GetPeriodic() const {
+    std::vector<long> tmp(3, 0);
+    auto longs = GetValueLongVec(_periodicTag, tmp);
+    std::vector<bool> bools(3, false);
+    for (int i = 0; i < 3; i++)
+        if (longs[i] != 0)
+            bools[i] = true;
+
+    return bools;
+}
+
+void FlowParams::SetPeriodic(std::vector<bool> bools) {
+    std::vector<long> longs(3, 0);
+    for (int i = 0; i < 3; i++)
+        if (bools[i])
+            longs[i] = 1;
+
+    SetValueLongVec(_periodicTag, "any axis is periodic", longs);
 }
