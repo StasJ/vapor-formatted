@@ -66,27 +66,29 @@ class FlowVariablesSubtab : public QVaporSubtab {
     VAPoR::FlowParams *_params;
     VariablesWidget *_variablesWidget;
 
-    // Sam's attempt to add more widgets
-    //   TODO: add validator/mask so that only numerical input
-    //   between 0.001 and 1000 are valid.
-    QLineEdit *_velocityMltp;
+    /*
+        // Sam's attempt to add more widgets
+        //   TODO: add validator/mask so that only numerical input
+        //   between 0.001 and 1000 are valid.
+        QLineEdit*          _velocityMltp;
 
-    VCheckBox *_steady;
+        VCheckBox*          _steady;
 
-    // Sam's attempt to add more widgets
-    //   TODO: add validator/mask so that only positive integers are accepted
-    QLineEdit *_steadyNumOfSteps;
+        // Sam's attempt to add more widgets
+        //   TODO: add validator/mask so that only positive integers are accepted
+        QLineEdit*          _steadyNumOfSteps;
 
-    VCheckBox *_periodicX;
-    VCheckBox *_periodicY;
-    VCheckBox *_periodicZ;
+        VCheckBox*          _periodicX;
+        VCheckBox*          _periodicY;
+        VCheckBox*          _periodicZ;
 
-  private slots:
-    // Respond to user input
-    void _steadyGotClicked();
-    void _velocityMultiplierChanged();
-    void _steadyNumOfStepsChanged();
-    void _periodicClicked();
+    private slots:
+        // Respond to user input
+        void _steadyGotClicked();
+        void _velocityMultiplierChanged();
+        void _steadyNumOfStepsChanged();
+        void _periodicClicked();
+    */
 };
 
 //
@@ -131,15 +133,8 @@ class FlowSeedingSubtab : public QVaporSubtab {
     void _configureRakeType();
     //    void _seedGenModeChanged( int newIdx );
     void _exportGeometryPathChanged();
-
-    /*
-    private slots:
-        // Respond to user input
-        void _fileReaderChanged();
-        void _fileWriterChanged();
-        void _flowDirectionChanged( int newIdx );
-    */
-    void _outputButtonClicked();
+    void _seedpointReaderPathChanged();
+    void _exportButtonClicked();
 
   private:
     VAPoR::DataMgr *_dataMgr;
@@ -156,8 +151,10 @@ class FlowSeedingSubtab : public QVaporSubtab {
     VSpinBox *_xDistributionSpinBox;
     VSpinBox *_yDistributionSpinBox;
     VSpinBox *_zDistributionSpinBox;
-    VFileReader *_fileReader;
+    VFileReader *_seedpointFileReader;
     VFileWriter *_exportGeometryWriter;
+    VPushButton *_exportGeometryButton;
+    QPushButton *_outputButton;
 };
 
 //
@@ -179,6 +176,7 @@ class FlowIntegrationSubtab : public QVaporSubtab {
     void _multiplierChanged();
     void _integrationDirectionChanged();
     void _integrationLengthChanged();
+    void _periodicityChanged();
 
   private:
     void _initialize();
@@ -200,15 +198,6 @@ class FlowIntegrationSubtab : public QVaporSubtab {
     VSpinBox *_intervalSpinBox;
 
     bool _initialized;
-
-    /*
-        VComboBox*              _seedGenMode;
-        VFileReader*            _fileReader;
-        VFileWriter*            _fileWriter;
-        QPushButton*            _outputButton;
-
-        VComboBox*              _flowDirection;
-    */
 };
 
 //
