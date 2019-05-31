@@ -24,9 +24,9 @@
 #pragma warning(disable : 4251 4100)
 #endif
 #include "GL/glew.h"
+#include "vapor/VAssert.h"
 #include <QMdiArea>
 #include <QMdiSubWindow>
-#include <cassert>
 #include <fstream>
 #include <iostream>
 #include <qapplication.h>

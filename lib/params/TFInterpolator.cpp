@@ -16,7 +16,7 @@
 //		A class to interpolate transfer function values
 //		Currently only supports linear interpolation
 //
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <cmath>
 #include <iostream>
 #include <vapor/TFInterpolator.h>

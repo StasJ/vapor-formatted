@@ -1,8 +1,8 @@
 #include "vapor/Font.h"
 #include "vapor/GLManager.h"
 #include "vapor/ShaderManager.h"
+#include "vapor/VAssert.h"
 #include "vapor/glutil.h"
-#include <cassert>
 #include <glm/glm.hpp>
 
 using namespace VAPoR;

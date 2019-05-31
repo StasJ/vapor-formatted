@@ -19,7 +19,7 @@
 //		Supports time-varying extents.
 //
 
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <cfloat>
 #include <vapor/Box.h>
 #include <vector>

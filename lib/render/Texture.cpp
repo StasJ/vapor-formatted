@@ -1,4 +1,4 @@
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <vapor/Texture.h>
 #include <vapor/glutil.h>
 

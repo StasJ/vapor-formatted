@@ -24,10 +24,10 @@
 #include "GUIStateParams.h"
 #include "SettingsParams.h"
 #include "vapor/ControlExecutive.h"
+#include "vapor/VAssert.h"
 #include <QLineEdit>
 #include <QObject>
 #include <QSlider>
-#include <cassert>
 
 #ifdef WIN32
 // Annoying unreferenced formal parameter warning

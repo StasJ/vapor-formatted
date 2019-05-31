@@ -24,10 +24,10 @@
 #include "Flags.h"
 #include "GUIStateParams.h"
 
+#include "vapor/VAssert.h"
 #include <QFileDialog>
 #include <QMouseEvent>
 #include <algorithm>
-#include <cassert>
 #include <cmath>
 #include <cstdio>
 #include <fstream>

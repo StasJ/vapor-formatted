@@ -20,7 +20,7 @@
  * -------------------------------------------------------------------------
  */
 
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <cmath>
 #include <vapor/WaveFiltCoif.h>
 

@@ -1,8 +1,8 @@
 #include "vapor/LegacyGL.h"
 #include "vapor/GLManager.h"
 #include "vapor/ShaderProgram.h"
+#include "vapor/VAssert.h"
 #include "vapor/glutil.h"
-#include <cassert>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 

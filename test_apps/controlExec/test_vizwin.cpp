@@ -17,11 +17,11 @@
 //		This is the QGLWidget that performs OpenGL rendering (using associated Visualizer)
 //		Plus supports mouse event reporting
 //
+#include "vapor/VAssert.h"
 #include <QCloseEvent>
 #include <QFocusEvent>
 #include <QMouseEvent>
 #include <QResizeEvent>
-#include <cassert>
 #include <vapor/glutil.h> // Must be included first!!!
 
 #include "test_vizwin.h"

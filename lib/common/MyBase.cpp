@@ -1,4 +1,4 @@
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <cctype>
 #include <cerrno>
 #include <cstdarg>

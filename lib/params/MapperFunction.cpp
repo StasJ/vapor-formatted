@@ -22,8 +22,8 @@
 #ifdef WIN32
 #pragma warning(disable : 4251 4100)
 #endif
+#include "vapor/VAssert.h"
 #include <algorithm>
-#include <cassert>
 #include <fstream>
 #include <iostream>
 #include <sstream>

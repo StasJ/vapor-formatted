@@ -19,8 +19,8 @@
 //		the visualizer to activate.
 //
 #include "VizSelectCombo.h"
+#include "vapor/VAssert.h"
 #include <QToolBar>
-#include <cassert>
 #include <qcombobox.h>
 #include <qtooltip.h>
 #include <string>

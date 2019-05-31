@@ -12,7 +12,7 @@
  * separate directories in the output geotiff file.
  */
 
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>

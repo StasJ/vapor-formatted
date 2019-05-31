@@ -1,6 +1,6 @@
 #include "vapor/glutil.h"
 
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <stdio.h>
 #include <time.h>
 

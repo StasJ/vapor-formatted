@@ -16,7 +16,7 @@
 //
 //	Description:	Implements the Manip class and some of its subclasses
 
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <cmath>
 #include <iomanip>
 #include <iostream>

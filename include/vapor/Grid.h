@@ -1,7 +1,7 @@
 #ifndef _Grid_
 #define _Grid_
 
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <iostream>
 #include <memory>
 #include <ostream>

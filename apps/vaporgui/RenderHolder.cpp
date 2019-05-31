@@ -21,11 +21,11 @@
 #include "VizSelectCombo.h"
 #include "qdialog.h"
 #include "ui_NewRendererDialog.h"
+#include "vapor/VAssert.h"
 #include <QCheckBox>
 #include <QList>
 #include <QStringList>
 #include <QTableWidget>
-#include <cassert>
 #include <qcombobox.h>
 #include <qpushbutton.h>
 #include <sstream>

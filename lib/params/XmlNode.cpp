@@ -19,8 +19,8 @@
 //
 //	Description:
 //
+#include "vapor/VAssert.h"
 #include <algorithm>
-#include <cassert>
 #include <cctype>
 #include <expat.h>
 #include <fstream>
