@@ -27,6 +27,7 @@
 #include "AnimationParams.h"
 #include "GUIStateParams.h"
 #include "SettingsParams.h"
+#include "vapor/VAssert.h"
 #include <QActionGroup>
 #include <QComboBox>
 #include <QIcon>
@@ -34,7 +35,6 @@
 #include <QLineEdit>
 #include <QPaintEvent>
 #include <QWidgetAction>
-#include <cassert>
 #include <qmainwindow.h>
 #include <qstring.h>
 #include <qvariant.h>

@@ -14,11 +14,11 @@
 //
 //----------------------------------------------------------------------------
 
+#include "vapor/VAssert.h"
 #include <QContextMenuEvent>
 #include <QMenu>
 #include <QMouseEvent>
 #include <QToolTip>
-#include <cassert>
 #include <cmath>
 #include <iostream>
 #include <qaction.h>

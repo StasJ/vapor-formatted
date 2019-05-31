@@ -37,7 +37,7 @@
 //		$VAPOR_HOME/bin/amr_ex test.vdf
 //
 //
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <cstdio>
 #include <iostream>
 #include <sstream>

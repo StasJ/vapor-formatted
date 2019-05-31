@@ -1,6 +1,6 @@
 #include "vapor/NetCDFCpp.h"
 #include "vapor/MatWaveBase.h"
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <iterator>
 #include <sstream>
 

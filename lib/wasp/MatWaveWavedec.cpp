@@ -1,6 +1,6 @@
 
+#include "vapor/VAssert.h"
 #include <algorithm>
-#include <cassert>
 #include <cmath>
 #include <iostream>
 #include <vapor/MatWaveWavedec.h>

@@ -18,7 +18,7 @@
 //		This is an abstract class for all the tabbed panel rendering params classes.
 //		Supports functionality common to all the tabbed panel render params.
 //
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <cstring>
 #include <iostream>
 #include <sstream>

@@ -1,8 +1,8 @@
 #include "vapor/VDCNetCDF.h"
 #include "vapor/CFuncs.h"
 #include "vapor/FileUtils.h"
+#include "vapor/VAssert.h"
 #include "vapor/Version.h"
-#include <cassert>
 #include <map>
 #include <netcdf.h>
 #include <sstream>

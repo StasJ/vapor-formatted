@@ -1,7 +1,7 @@
 #pragma once
 
 #include "vapor/MyBase.h"
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <map>
 #include <string>
 

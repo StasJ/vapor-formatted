@@ -31,13 +31,13 @@
 #include "vapor/FileUtils.h"
 #include "vapor/GLManager.h"
 #include "vapor/LegacyGL.h"
+#include "vapor/VAssert.h"
 #include "vapor/Visualizer.h"
 #include <QCloseEvent>
 #include <QFocusEvent>
 #include <QIcon>
 #include <QMouseEvent>
 #include <QResizeEvent>
-#include <cassert>
 #include <glm/gtc/type_ptr.hpp>
 #include <vapor/ControlExecutive.h>
 #include <vapor/ImageParams.h>

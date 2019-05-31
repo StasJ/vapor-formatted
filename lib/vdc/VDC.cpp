@@ -1,5 +1,5 @@
 #include "vapor/VDC.h"
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <cfloat>
 #include <sstream>
 

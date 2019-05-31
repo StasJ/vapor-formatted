@@ -16,8 +16,8 @@
 //
 //  Description:    Implements the StatisticsParams class.
 //
+#include "vapor/VAssert.h"
 #include <StatisticsParams.h>
-#include <cassert>
 #include <cstring>
 #include <iostream>
 #include <sstream>

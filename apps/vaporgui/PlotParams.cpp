@@ -17,7 +17,7 @@
 //  Description:    Implements the PlotParams class.
 //
 #include "PlotParams.h"
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <iostream>
 #include <sstream>
 #include <string>

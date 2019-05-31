@@ -1,8 +1,8 @@
 #include "vapor/WASP.h"
 #include "vapor/Compressor.h"
 #include "vapor/MatWaveBase.h"
+#include "vapor/VAssert.h"
 #include "vapor/utils.h"
-#include <cassert>
 #include <iterator>
 #include <sstream>
 #include <sys/stat.h>

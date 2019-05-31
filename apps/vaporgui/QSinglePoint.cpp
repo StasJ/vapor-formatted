@@ -2,7 +2,7 @@
 #include "ui_QSinglePoint.h"
 
 // for debug
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <iostream>
 
 QSinglePoint::QSinglePoint(QWidget *parent) : QWidget(parent), _ui(new Ui::QSinglePoint) {

@@ -20,8 +20,8 @@
 #pragma warning(disable : 4251 4100)
 #endif
 
+#include "vapor/VAssert.h"
 #include <algorithm>
-#include <cassert>
 #include <cfloat>
 #include <iostream>
 

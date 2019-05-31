@@ -14,8 +14,8 @@
 //
 //	Date:		September, 2013
 //
+#include "vapor/VAssert.h"
 #include <algorithm>
-#include <cassert>
 #include <cmath>
 #include <limits>
 #include <vapor/glutil.h> // Must be included first!!!

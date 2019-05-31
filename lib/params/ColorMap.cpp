@@ -6,8 +6,8 @@
 //
 //----------------------------------------------------------------------------
 
+#include "vapor/VAssert.h"
 #include <algorithm>
-#include <cassert>
 #include <iostream>
 #include <sstream>
 #include <vapor/ColorMap.h>

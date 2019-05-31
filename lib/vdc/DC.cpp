@@ -1,5 +1,5 @@
 #include "vapor/DC.h"
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <sstream>
 
 using namespace VAPoR;

@@ -20,7 +20,7 @@
 //		It is a base class for Params, MapperFunction and other classes
 //		that retain their state in xml nodes
 //
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <functional>
 #include <string>
 #include <vapor/ParamsBase.h>

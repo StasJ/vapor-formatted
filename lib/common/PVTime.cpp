@@ -38,7 +38,7 @@
 // consequential damages, so this exclusion and limitation may not apply
 // to You.
 
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <cerrno>
 #include <cstdarg>
 #include <cstdio>

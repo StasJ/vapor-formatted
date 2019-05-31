@@ -18,7 +18,7 @@
 //		Used to control parameters of a color bar.
 //
 
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <vapor/ColorbarPbase.h>
 #include <vector>
 

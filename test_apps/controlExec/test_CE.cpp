@@ -1,6 +1,6 @@
 #include "test_vizwin.h"
+#include "vapor/VAssert.h"
 #include <QGLWidget>
-#include <cassert>
 #include <cstdio>
 #include <iostream>
 #include <qapplication.h>
