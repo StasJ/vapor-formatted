@@ -53,7 +53,6 @@ const string StringType = "String";
 
 namespace {
 
-#ifndef NDEBUG
 bool isValidXMLElement(string s) {
     if (s.empty())
         return (false);
@@ -71,7 +70,6 @@ bool isValidXMLElement(string s) {
 
     return (true);
 }
-#endif
 
 string escapeStr(string s) {
     string eS;
