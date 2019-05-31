@@ -48,12 +48,12 @@ bool readOK(vector<size_t> dims, size_t start[], size_t count[]) {
     return (true);
 }
 
-bool tvmap_cmp(NetCDFCollection::TimeVaryingVar::tvmap_t a,
-               NetCDFCollection::TimeVaryingVar::tvmap_t b) {
-    return (a._time < b._time);
-};
-
 }; // namespace
+
+bool VAPoR::tvmap_cmp(NetCDFCollection::TimeVaryingVar::tvmap_t &a,
+                      NetCDFCollection::TimeVaryingVar::tvmap_t &b) {
+    return (a._time < b._time);
+}
 
 NetCDFCollection::NetCDFCollection() {
     _variableList.clear();
