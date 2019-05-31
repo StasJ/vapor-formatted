@@ -318,7 +318,8 @@ size_t DC::Mesh::GetTopologyDim() const {
         return (3);
         break;
     default:
-        assert(0 && "Invalid mesh type");
+        assert(false);
+        return (0);
         break;
     }
 }
