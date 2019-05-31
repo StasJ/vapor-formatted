@@ -32,16 +32,16 @@ CurvilinearGrid::CurvilinearGrid(const vector<size_t> &dims, const vector<size_t
                                  const KDTreeRG *kdtree)
     : StructuredGrid(dims, bs, blks) {
 
-    assert(dims.size() == 2 || dims.size() == 3);
-    assert(bs.size() == dims.size());
+    VAssert(dims.size() == 2 || dims.size() == 3);
+    VAssert(bs.size() == dims.size());
 
     // Only support 2D X & Y coordinates currently. I.e. only support
     // "layered" curvilinear grids
     //
-    assert(xrg.GetDimensions().size() == 2);
-    assert(yrg.GetDimensions().size() == 2);
-    assert(kdtree->GetDimensions().size() == 2);
-    assert(zcoords.size() == 0 || zcoords.size() == dims[2]);
+    VAssert(xrg.GetDimensions().size() == 2);
+    VAssert(yrg.GetDimensions().size() == 2);
+    VAssert(kdtree->GetDimensions().size() == 2);
+    VAssert(zcoords.size() == 0 || zcoords.size() == dims[2]);
 
     _curvilinearGrid(xrg, yrg, RegularGrid(), zcoords, kdtree);
 }
@@ -52,16 +52,16 @@ CurvilinearGrid::CurvilinearGrid(const vector<size_t> &dims, const vector<size_t
                                  const KDTreeRG *kdtree)
     : StructuredGrid(dims, bs, blks) {
 
-    assert(dims.size() == 3);
-    assert(bs.size() == dims.size());
+    VAssert(dims.size() == 3);
+    VAssert(bs.size() == dims.size());
 
     // Only support 2D X & Y coordinates currently. I.e. only support
     // "layered" curvilinear grids
     //
-    assert(xrg.GetDimensions().size() == 2);
-    assert(yrg.GetDimensions().size() == 2);
-    assert(zrg.GetDimensions().size() == 3);
-    assert(kdtree->GetDimensions().size() == 2);
+    VAssert(xrg.GetDimensions().size() == 2);
+    VAssert(yrg.GetDimensions().size() == 2);
+    VAssert(zrg.GetDimensions().size() == 3);
+    VAssert(kdtree->GetDimensions().size() == 2);
 
     _curvilinearGrid(xrg, yrg, zrg, vector<double>(), kdtree);
 
@@ -73,15 +73,15 @@ CurvilinearGrid::CurvilinearGrid(const vector<size_t> &dims, const vector<size_t
                                  const RegularGrid &yrg, const KDTreeRG *kdtree)
     : StructuredGrid(dims, bs, blks) {
 
-    assert(dims.size() == 2);
-    assert(bs.size() == dims.size());
+    VAssert(dims.size() == 2);
+    VAssert(bs.size() == dims.size());
 
     // Only support 2D X & Y coordinates currently. I.e. only support
     // "layered" curvilinear grids
     //
-    assert(xrg.GetDimensions().size() == 2);
-    assert(yrg.GetDimensions().size() == 2);
-    assert(kdtree->GetDimensions().size() == 2);
+    VAssert(xrg.GetDimensions().size() == 2);
+    VAssert(yrg.GetDimensions().size() == 2);
+    VAssert(kdtree->GetDimensions().size() == 2);
 
     _curvilinearGrid(xrg, yrg, RegularGrid(), vector<double>(), kdtree);
 }
@@ -112,7 +112,7 @@ void CurvilinearGrid::GetBoundingBox(const std::vector<size_t> &min, const std::
     ClampIndex(cMax);
 
     for (int i = 0; i < cMin.size(); i++) {
-        assert(cMin[i] <= cMax[i]);
+        VAssert(cMin[i] <= cMax[i]);
     }
 
     minu.clear();
@@ -158,10 +158,10 @@ void CurvilinearGrid::_getEnclosingRegionHelper(const std::vector<double> &minu,
                                                 const std::vector<double> &maxu,
                                                 std::vector<size_t> &min,
                                                 std::vector<size_t> &max) const {
-    assert(minu.size() == 3);
-    assert(minu.size() == maxu.size());
-    assert(min.size() == 3);
-    assert(min.size() == max.size());
+    VAssert(minu.size() == 3);
+    VAssert(minu.size() == maxu.size());
+    VAssert(min.size() == 3);
+    VAssert(min.size() == max.size());
 
     if (_terrainFollowing) {
         vector<size_t> dims = GetDimensions();
@@ -239,7 +239,7 @@ void CurvilinearGrid::GetEnclosingRegion(const std::vector<double> &minu,
     vector<double> cMaxu = maxu;
     ClampCoord(cMaxu);
 
-    assert(cMinu.size() == cMaxu.size());
+    VAssert(cMinu.size() == cMaxu.size());
 
     // Initialize voxels coords to full grid
     //
@@ -346,8 +346,8 @@ void CurvilinearGrid::GetUserCoordinates(const size_t indices[], double coords[]
 void CurvilinearGrid::_getIndicesHelper(const std::vector<double> &coords,
                                         std::vector<size_t> &indices) const {
 
-    assert(coords.size() == 3);
-    assert(indices.size() == 2);
+    VAssert(coords.size() == 3);
+    VAssert(indices.size() == 2);
 
     int rc;
     size_t kFound = 0;
@@ -689,10 +689,10 @@ float CurvilinearGrid::GetValueLinear(const std::vector<double> &coords) const {
     // along XY plane
     //
     vector<size_t> dims = GetDimensions();
-    assert(i < dims[0] - 1);
-    assert(j < dims[1] - 1);
+    VAssert(i < dims[0] - 1);
+    VAssert(j < dims[1] - 1);
     if (dims.size() > 2)
-        assert(k < dims[2]);
+        VAssert(k < dims[2]);
 
     float v0s[] = {AccessIJK(i, j, k), AccessIJK(i + 1, j, k), AccessIJK(i + 1, j + 1, k),
                    AccessIJK(i, j + 1, k)};
@@ -834,7 +834,7 @@ bool CurvilinearGrid::_insideGridHelperTerrain(double x, double y, double z, con
     if (rc != 0)
         return (false); // Must be above or below grid
 
-    assert(k < nz - 1);
+    VAssert(k < nz - 1);
 
     float z0 = zcoords[k];
     float z1 = zcoords[k + 1];
@@ -868,7 +868,7 @@ bool CurvilinearGrid::_insideGrid(double x, double y, double z, size_t &i, size_
     //
     vector<size_t> indices;
     _kdtree->Nearest(coordu, indices);
-    assert(indices.size() == 2);
+    VAssert(indices.size() == 2);
 
     vector<size_t> dims = StructuredGrid::GetDimensions();
 

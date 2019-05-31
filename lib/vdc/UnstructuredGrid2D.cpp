@@ -34,11 +34,11 @@ UnstructuredGrid2D::UnstructuredGrid2D(const std::vector<size_t> &vertexDims,
                        faceOnFace, location, maxVertexPerFace, maxFacePerVertex),
       _xug(xug), _yug(yug), _zug(zug), _kdtree(kdtree) {
 
-    assert(xug.GetDimensions() == GetDimensions());
-    assert(yug.GetDimensions() == GetDimensions());
-    assert(zug.GetDimensions() == GetDimensions() || zug.GetDimensions().size() == 0);
+    VAssert(xug.GetDimensions() == GetDimensions());
+    VAssert(yug.GetDimensions() == GetDimensions());
+    VAssert(zug.GetDimensions() == GetDimensions() || zug.GetDimensions().size() == 0);
 
-    assert(location == NODE);
+    VAssert(location == NODE);
 }
 
 vector<size_t> UnstructuredGrid2D::GetCoordDimensions(size_t dim) const {
@@ -92,7 +92,7 @@ void UnstructuredGrid2D::GetBoundingBox(const vector<size_t> &min, const vector<
     vector<size_t> cMax = max;
     ClampIndex(cMax);
 
-    assert(cMin.size() == cMax.size());
+    VAssert(cMin.size() == cMax.size());
 
     int ncoords = GetGeometryDim();
     minu = vector<double>(ncoords, 0.0);
@@ -131,7 +131,7 @@ void UnstructuredGrid2D::GetEnclosingRegion(const vector<double> &minu, const ve
     vector<double> cMaxu = maxu;
     ClampCoord(cMaxu);
 
-    assert(0 && "Not implemented");
+    VAssert(0 && "Not implemented");
 }
 
 void UnstructuredGrid2D::GetUserCoordinates(const size_t indices[], double coords[]) const {
@@ -220,7 +220,7 @@ float UnstructuredGrid2D::GetValueNearestNeighbor(const std::vector<double> &coo
 
     vector<size_t> vertex_indices;
     _kdtree->Nearest(cCoords, vertex_indices);
-    assert(vertex_indices.size() == 1);
+    VAssert(vertex_indices.size() == 1);
 
     return (GetValueAtIndex(vertex_indices));
 }
@@ -246,7 +246,7 @@ float UnstructuredGrid2D::GetValueLinear(const std::vector<double> &coords) cons
         delete[] lambda;
         return (GetMissingValue());
     }
-    assert(face < GetCellDimensions()[0]);
+    VAssert(face < GetCellDimensions()[0]);
 
     const int *ptr = _vertexOnFace + (face * _maxVertexPerFace);
 
@@ -355,7 +355,7 @@ bool UnstructuredGrid2D::_insideGrid(const vector<double> &coords, size_t &face,
 bool UnstructuredGrid2D::_insideGridFaceCentered(const vector<double> &coords, size_t &face,
                                                  vector<size_t> &nodes, double *lambda,
                                                  int &nlambda) const {
-    assert(0 && "Not supported");
+    VAssert(0 && "Not supported");
     return false;
 }
 
@@ -364,7 +364,7 @@ bool UnstructuredGrid2D::_insideGridNodeCentered(const vector<double> &coords, s
                                                  int &nlambda) const {
     nodes.clear();
 
-    assert(coords.size() == 2);
+    VAssert(coords.size() == 2);
 
     double pt[] = {coords[0], coords[1]};
 
@@ -372,10 +372,10 @@ bool UnstructuredGrid2D::_insideGridNodeCentered(const vector<double> &coords, s
     //
     vector<size_t> vertex_indices;
     _kdtree->Nearest(coords, vertex_indices);
-    assert(vertex_indices.size() == 1);
+    VAssert(vertex_indices.size() == 1);
 
     vector<size_t> dims = GetDimensions();
-    assert(vertex_indices[0] < dims[0]);
+    VAssert(vertex_indices[0] < dims[0]);
 
     const int *ptr = _faceOnVertex + (vertex_indices[0] * _maxFacePerVertex);
     long offset = GetCellOffset();

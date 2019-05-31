@@ -888,7 +888,7 @@ int PythonVariables::_checkForDuplicateNames(std::vector<string> names, string n
 }
 
 void PythonVariables::InitControlExec(VAPoR::ControlExec *ce) {
-    assert(ce);
+    VAssert(ce);
     _controlExec = ce;
 }
 

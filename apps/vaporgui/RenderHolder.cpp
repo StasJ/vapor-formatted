@@ -147,9 +147,9 @@ RenderHolder::RenderHolder(QWidget *parent, ControlExec *ce, const vector<QWidge
                            const vector<string> &iconPaths, const vector<string> &smallIconPaths)
     : QWidget(parent), Ui_LeftPanel() {
 
-    assert(widgets.size() == widgetNames.size());
-    assert(widgets.size() == iconPaths.size());
-    assert(widgets.size() == smallIconPaths.size());
+    VAssert(widgets.size() == widgetNames.size());
+    VAssert(widgets.size() == iconPaths.size());
+    VAssert(widgets.size() == smallIconPaths.size());
 
     setupUi(this);
 
@@ -272,7 +272,7 @@ void RenderHolder::_deleteRenderer() {
 
     int rc =
         _controlExec->ActivateRender(activeViz, dataSetName, rendererType, rendererName, false);
-    assert(rc == 0);
+    VAssert(rc == 0);
 
     _controlExec->RemoveRenderer(activeViz, dataSetName, rendererType, rendererName, false);
 
@@ -389,11 +389,11 @@ void RenderHolder::_copyInstanceTo(int item) {
 
     string dataSetName, dummy1, dummy2;
     bool status = _controlExec->RenderLookup(activeRenderInst, dummy1, dataSetName, dummy2);
-    assert(status);
+    VAssert(status);
 
     RenderParams *rParams =
         _controlExec->GetRenderParams(activeViz, dataSetName, activeRenderClass, activeRenderInst);
-    assert(rParams);
+    VAssert(rParams);
 
     string rendererName = uniqueName(activeRenderInst);
 
@@ -556,11 +556,11 @@ void RenderHolder::Update() {
 
             string dataSetName, dummy1, dummy2;
             bool status = _controlExec->RenderLookup(rendererName, dummy1, dataSetName, dummy2);
-            assert(status);
+            VAssert(status);
 
             RenderParams *rParams =
                 _controlExec->GetRenderParams(activeViz, dataSetName, className, rendererName);
-            assert(rParams);
+            VAssert(rParams);
 
             string enabled = rParams->IsEnabled() ? "1" : "0";
             tableValues.push_back(rendererName);
