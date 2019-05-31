@@ -24,6 +24,7 @@
 #include <unistd.h>
 #endif
 
+#include "vapor/VAssert.h"
 #include <vapor/MyPython.h>
 #include <vapor/ResourcePath.h>
 
