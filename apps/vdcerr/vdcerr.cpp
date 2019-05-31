@@ -93,7 +93,7 @@ float *read_vdc_volume(string metafile, size_t dims[3], bool &has_missing, float
     size_t slice_size = dims[0] * dims[1];
     float *buf = new float[slice_size * dims[2]];
     float *bufptr = buf;
-    assert(buf != NULL);
+    VAssert(buf != NULL);
 
     for (int z = 0; z < dims[2]; z++) {
 
@@ -122,7 +122,7 @@ float *read_raw_volume(string file, const size_t dims[3]) {
     size_t slice_size = dims[0] * dims[1];
     float *buf = new float[slice_size * dims[2]];
     float *bufptr = buf;
-    assert(buf != NULL);
+    VAssert(buf != NULL);
 
     for (int z = 0; z < dims[2]; z++) {
 

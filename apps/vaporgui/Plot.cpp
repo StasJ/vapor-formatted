@@ -124,7 +124,7 @@ void Plot::Update() {
     GUIStateParams *guiParams =
         dynamic_cast<GUIStateParams *>(_paramsMgr->GetParams(GUIStateParams::GetClassType()));
     std::string currentDatasetName = guiParams->GetPlotDatasetName();
-    assert(currentDatasetName != "" && currentDatasetName != "NULL");
+    VAssert(currentDatasetName != "" && currentDatasetName != "NULL");
     int currentIdx = -1;
     for (int i = 0; i < dmNames.size(); i++)
         if (currentDatasetName == dmNames[i]) {
@@ -258,7 +258,7 @@ void Plot::Update() {
     // Update time dimension
     spaceTabTimeSelector->SetValue(plotParams->GetCurrentTimestep());
     std::vector<long> range = plotParams->GetMinMaxTS();
-    assert(range.size() > 0);
+    VAssert(range.size() > 0);
     timeTabTimeRange->SetValue((double)range[0], (double)range[1]);
 
     // Update number of samples
@@ -318,7 +318,7 @@ void Plot::_removeVarChanged(int index) {
             rmIdx = i;
             break;
         }
-    assert(rmIdx != -1);
+    VAssert(rmIdx != -1);
     vars.erase(vars.begin() + rmIdx);
     plotParams->SetAuxVariableNames(vars);
 }
@@ -326,7 +326,7 @@ void Plot::_removeVarChanged(int index) {
 void Plot::_spaceModeP1Changed() {
     std::vector<double> pt, pt2;
     spaceTabP1->GetCurrentPoint(pt);
-    assert(pt.size() == 2 || pt.size() == 3);
+    VAssert(pt.size() == 2 || pt.size() == 3);
 
     VAPoR::PlotParams *plotParams = this->_getCurrentPlotParams();
     plotParams->SetPoint1(pt);
@@ -355,7 +355,7 @@ void Plot::_spaceModeP1Changed() {
 void Plot::_spaceModeP2Changed() {
     std::vector<double> pt, pt1;
     spaceTabP2->GetCurrentPoint(pt);
-    assert(pt.size() == 2 || pt.size() == 3);
+    VAssert(pt.size() == 2 || pt.size() == 3);
 
     VAPoR::PlotParams *plotParams = this->_getCurrentPlotParams();
     plotParams->SetPoint2(pt);
@@ -393,7 +393,7 @@ void Plot::_timeModePointChanged() {
 
     std::vector<double> currentPoint;
     timeTabSinglePoint->GetCurrentPoint(currentPoint);
-    assert(currentPoint.size() == 2 || currentPoint.size() == 3);
+    VAssert(currentPoint.size() == 2 || currentPoint.size() == 3);
 
     plotParams->SetSinglePoint(currentPoint);
 }
@@ -436,7 +436,7 @@ VAPoR::DataMgr *Plot::_getCurrentDataMgr() const {
     GUIStateParams *guiParams =
         dynamic_cast<GUIStateParams *>(_paramsMgr->GetParams(GUIStateParams::GetClassType()));
     std::string currentDatasetName = guiParams->GetPlotDatasetName();
-    assert(currentDatasetName != "" && currentDatasetName != "NULL");
+    VAssert(currentDatasetName != "" && currentDatasetName != "NULL");
 
     return (_dataStatus->GetDataMgr(currentDatasetName));
 }
@@ -631,7 +631,7 @@ void Plot::_invokePython(const QString &outFile, const std::vector<std::string> 
     PyObject *pArgs = NULL;
     PyObject *pValue = NULL;
     Wasp::MyPython::Instance()->Initialize();
-    assert(Py_IsInitialized());
+    VAssert(Py_IsInitialized());
 
     pName = PyString_FromString("plot");
     pModule = PyImport_Import(pName);
@@ -651,24 +651,24 @@ void Plot::_invokePython(const QString &outFile, const std::vector<std::string> 
 
         // Set the 2nd argument: variable names
         PyObject *pListOfStrings = PyList_New(enabledVars.size());
-        assert(pListOfStrings);
+        VAssert(pListOfStrings);
         for (int i = 0; i < enabledVars.size(); i++) {
             pValue = PyString_FromString(enabledVars[i].c_str());
             int rt = PyList_SetItem(pListOfStrings, i, pValue); // pValue is stolen!
-            assert(rt == 0);
+            VAssert(rt == 0);
         }
         PyTuple_SetItem(pArgs, 1, pListOfStrings); // pListOfStrings is stolen!
 
         // Set the 3rd argument: sequence values (Y axis)
         PyObject *pListOfLists = PyList_New(sequences.size());
-        assert(pListOfLists);
+        VAssert(pListOfLists);
         for (int i = 0; i < sequences.size(); i++) // for each sequence
         {
             PyObject *pList = PyList_New(sequences[i].size());
-            assert(pList);
+            VAssert(pList);
             for (int j = 0; j < sequences[i].size(); j++) {
                 int rt = PyList_SetItem(pList, j, PyFloat_FromDouble(sequences[i][j]));
-                assert(rt == 0);
+                VAssert(rt == 0);
             }
             PyList_SetItem(pListOfLists, i, pList);
         }
@@ -676,10 +676,10 @@ void Plot::_invokePython(const QString &outFile, const std::vector<std::string> 
 
         // Set the 4th argument: X axis values
         PyObject *pListOfFloats = PyList_New(xValues.size());
-        assert(pListOfFloats);
+        VAssert(pListOfFloats);
         for (int i = 0; i < xValues.size(); i++) {
             int rt = PyList_SetItem(pListOfFloats, i, PyFloat_FromDouble(xValues[i]));
-            assert(rt == 0);
+            VAssert(rt == 0);
         }
         PyTuple_SetItem(pArgs, 3, pListOfFloats);
 

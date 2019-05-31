@@ -424,7 +424,7 @@ void MapperFunction::hsvToRgb(float *hsv, float *rgb) {
         rgb[2] = b;
         break;
     default:
-        assert(0);
+        VAssert(0);
     }
     return;
 }

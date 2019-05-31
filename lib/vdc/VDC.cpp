@@ -31,7 +31,7 @@ void _compute_bs(size_t ndims, const vector<size_t> &default_bs, vector<size_t> 
         }
     }
 
-    assert(ndims == bs.size());
+    VAssert(ndims == bs.size());
 }
 
 void _compute_periodic(const vector<string> &dim_names, const vector<bool> &default_periodic,
@@ -187,7 +187,7 @@ int VDC::DefineDimension(string name, size_t length) {
 }
 
 int VDC::DefineDimension(string name, size_t length, int axis) {
-    assert(axis >= 0 && axis <= 3);
+    VAssert(axis >= 0 && axis <= 3);
 
     int rc = DefineDimension(name, length);
 
@@ -268,7 +268,7 @@ vector<string> VDC::_GetDataVarDimNames(const DataVar &dvar, bool &time_varying)
     string mesh = dvar.GetMeshName();
 
     map<string, Mesh>::const_iterator itr = _meshes.find(mesh);
-    assert(itr != _meshes.end());
+    VAssert(itr != _meshes.end());
 
     dim_names = itr->second.GetDimNames();
 
@@ -280,10 +280,10 @@ vector<string> VDC::_GetDataVarDimNames(const DataVar &dvar, bool &time_varying)
 
     std::map<string, DC::CoordVar>::const_iterator itr1;
     itr1 = _coordVars.find(time_coord_var);
-    assert(itr1 != _coordVars.end());
+    VAssert(itr1 != _coordVars.end());
 
     vector<string> dimvec = _GetCoordVarDimNames(itr1->second, time_varying);
-    assert(dimvec.size() == 1);
+    VAssert(dimvec.size() == 1);
 
     dim_names.push_back(dimvec[0]);
 
@@ -317,7 +317,7 @@ int VDC::_DefineImplicitCoordVars(vector<string> dim_names, vector<string> coord
         }
 
         int axis = itr->second.GetAxis();
-        assert(axis >= 0 && axis <= 3);
+        VAssert(axis >= 0 && axis <= 3);
 
         coord_vars_out[axis] = name;
     }
@@ -415,7 +415,7 @@ int VDC::DefineCoordVarUniform(string varname, vector<string> dim_names, string 
     if (rc < 0)
         return (-1);
 
-    assert(_coordVars.find(varname) != _coordVars.end());
+    VAssert(_coordVars.find(varname) != _coordVars.end());
 
     _coordVars[varname].SetUniform(true);
 
@@ -453,7 +453,7 @@ bool VDC::getBaseVarInfo(string varname, DC::BaseVar &var) const {
 }
 
 void VDC::_DefineMesh(string meshname, vector<string> dim_names, vector<string> coord_vars) {
-    assert(dim_names.size() == coord_vars.size());
+    VAssert(dim_names.size() == coord_vars.size());
 
     _meshes[meshname] = DC::Mesh(meshname, dim_names, coord_vars);
 }
@@ -489,7 +489,7 @@ int VDC::_DefineDataVar(string varname, vector<string> dim_names, vector<string>
     for (int i = 0; i < dim_names.size(); i++) {
         Dimension dimension;
         VDC::getDimension(dim_names[i], dimension);
-        assert(!dimension.GetName().empty());
+        VAssert(!dimension.GetName().empty());
         dimensions.push_back(dimension);
     }
 
@@ -681,7 +681,7 @@ bool VDC::getAtt(string varname, string attname, vector<double> &values) const {
 
     if (varname.empty() && (_atts.find(attname) != _atts.end())) {
         map<string, Attribute>::const_iterator itr = _atts.find(attname);
-        assert(itr != _atts.end());
+        VAssert(itr != _atts.end());
         const Attribute &attr = itr->second;
         attr.GetValues(values);
     } else if (_dataVars.find(varname) != _dataVars.end()) {
@@ -715,7 +715,7 @@ bool VDC::getAtt(string varname, string attname, vector<long> &values) const {
 
     if (varname.empty() && (_atts.find(attname) != _atts.end())) {
         map<string, Attribute>::const_iterator itr = _atts.find(attname);
-        assert(itr != _atts.end());
+        VAssert(itr != _atts.end());
         const Attribute &attr = itr->second;
         attr.GetValues(values);
     } else if (_dataVars.find(varname) != _dataVars.end()) {
@@ -748,7 +748,7 @@ bool VDC::getAtt(string varname, string attname, string &values) const {
 
     if (varname.empty() && (_atts.find(attname) != _atts.end())) {
         map<string, Attribute>::const_iterator itr = _atts.find(attname);
-        assert(itr != _atts.end());
+        VAssert(itr != _atts.end());
         const Attribute &attr = itr->second;
         attr.GetValues(values);
     } else if (_dataVars.find(varname) != _dataVars.end()) {
@@ -958,7 +958,7 @@ int VDC::EndDefine() {
 
         vector<DC::Dimension> dimensions;
         bool ok = GetVarDimensions(_newUniformVars[i], false, dimensions);
-        assert(ok);
+        VAssert(ok);
 
         if (dimensions.size() != 1)
             continue;
@@ -1087,8 +1087,8 @@ bool VDC::_ValidCompressionBlock(vector<size_t> bs, string wname, vector<size_t>
 //
 bool VDC::_valid_dims(const vector<DC::Dimension> &dims0, const vector<size_t> &bs0,
                       const vector<DC::Dimension> &dims1, const vector<size_t> &bs1) const {
-    assert(dims0.size() == bs0.size());
-    assert(dims1.size() == bs1.size());
+    VAssert(dims0.size() == bs0.size());
+    VAssert(dims1.size() == bs1.size());
 
     for (int i = 0; i < dims0.size(); i++) {
 
@@ -1133,7 +1133,7 @@ bool VDC::_valid_mask_var(string varname, vector<DC::Dimension> dimensions, vect
     //
     vector<DC::Dimension> mdimensions;
     bool ok = GetVarDimensions(maskvar, false, mdimensions);
-    assert(ok);
+    VAssert(ok);
 
     while (dimensions.size() > mdimensions.size())
         dimensions.pop_back();
@@ -1215,7 +1215,7 @@ bool VDC::_ValidDefineDataVar(string varname, vector<string> dim_names, vector<s
         int axis = -1;
         for (int i = 0; i < coord_vars.size(); i++) {
             itr = _coordVars.find(coord_vars[i]);
-            assert(itr != _coordVars.end()); // already checked for existance
+            VAssert(itr != _coordVars.end()); // already checked for existance
             if (itr->second.GetAxis() <= axis) {
                 SetErrMsg("Dimensions must be ordered X, Y, Z, T");
                 return (false);

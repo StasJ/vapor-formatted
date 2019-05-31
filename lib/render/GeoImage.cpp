@@ -38,8 +38,8 @@ void myTiffErrHandler(const char *module, const char *fmt, va_list ap) {
 }; // namespace
 
 GeoImage::GeoImage(int pixelsize, int nbands) : _pixelsize(pixelsize), _nbands(nbands) {
-    assert(pixelsize = 8);
-    assert(nbands = 4);
+    VAssert(pixelsize = 8);
+    VAssert(nbands = 4);
     _tif = NULL;
     _path.clear();
 }
@@ -110,7 +110,7 @@ void GeoImage::TiffClose() {
 // Return dimensions of image at selected directory number
 //
 int GeoImage::TiffGetImageDimensions(int dirnum, size_t &width, size_t &height) const {
-    assert(_tif != NULL);
+    VAssert(_tif != NULL);
     width = 0;
     height = 0;
 
@@ -137,7 +137,7 @@ int GeoImage::TiffGetImageDimensions(int dirnum, size_t &width, size_t &height) 
 // Read the indicated TIFF image and return it as a 2D texture.
 //
 int GeoImage::TiffReadImage(int dirnum, unsigned char *texture) const {
-    assert(_tif != NULL);
+    VAssert(_tif != NULL);
 
     uint32 *texuint32 = (uint32 *)texture;
 
@@ -179,7 +179,7 @@ int GeoImage::TiffReadImage(int dirnum, unsigned char *texture) const {
             return (-1);
 
         buf = _TIFFmalloc(TIFFScanlineSize(_tif));
-        assert(buf != NULL);
+        VAssert(buf != NULL);
 
         unsigned char *charArray = (unsigned char *)buf;
         int scanlength = TIFFScanlineSize(_tif) / 2;
