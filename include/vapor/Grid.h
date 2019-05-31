@@ -597,7 +597,7 @@ class VDF_API Grid {
     //! zero vector
     //
     virtual void SetMinAbs(const std::vector<size_t> &minAbs) {
-        assert(minAbs.size() == GetDimensions().size());
+        VAssert(minAbs.size() == GetDimensions().size());
         _minAbs = _minAbs;
     }
 

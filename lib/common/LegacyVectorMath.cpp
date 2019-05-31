@@ -1,5 +1,5 @@
 #define INCLUDE_DEPRECATED_LEGACY_VECTOR_MATH
-#include <VAssert.h>
+#include "vapor/VAssert.h"
 #include <cmath>
 #include <float.h>
 #include <string>

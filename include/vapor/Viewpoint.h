@@ -40,7 +40,7 @@ class PARAMS_API Viewpoint : public ParamsBase {
                            double viewDir[3]) const;
 
     void SetRotationCenter(const std::vector<double> &v) {
-        assert(v.size() == 3);
+        VAssert(v.size() == 3);
         SetValueDoubleVec(_rotationCenterTag, "Camera rotation center", v);
     }
 
