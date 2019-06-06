@@ -60,6 +60,8 @@ NavigationEventRouter::NavigationEventRouter(QWidget *parent, ControlExec *ce)
     : QWidget(parent), Ui_NavigationTab(), EventRouter(ce, ViewpointParams::GetClassType()) {
     setupUi(this);
 
+    futureFeaturesTab->hide();
+
     // Not implemented
     //
     camPosLat->setEnabled(false);
