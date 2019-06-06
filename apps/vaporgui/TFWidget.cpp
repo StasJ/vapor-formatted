@@ -54,6 +54,7 @@ TFWidget::TFWidget(QWidget *parent) : QWidget(parent), Ui_TFWidgetGUI() {
     _mainHistoRangeChanged = false;
     _secondaryHistoRangeChanged = false;
     _discreteColormap = false;
+    _isOpacitySupported = true;
     _isOpacityIntegrated = false;
     _wasOpacitySliderReleased = false;
     _mainVarName = "";
@@ -1019,6 +1020,17 @@ float TFWidget::convertSliderValueToOpacity(int value) const {
         return powf(value / 1000.f, 4);
     else
         return value / 1000.f;
+}
+
+bool TFWidget::IsOpacitySupported() const { return _isOpacitySupported; }
+
+void TFWidget::SetOpacitySupported(bool value) {
+    if (!value && !_opacitySlider->isHidden())
+        _opacitySlider->hide();
+    if (value && _opacitySlider->isHidden())
+        _opacitySlider->show();
+
+    _isOpacitySupported = value;
 }
 
 bool TFWidget::IsOpacityIntegrated() const { return _isOpacityIntegrated; }
