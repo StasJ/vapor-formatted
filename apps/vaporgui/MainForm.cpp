@@ -1984,7 +1984,6 @@ void MainForm::captureSingleTiff() {
 
 void MainForm::captureSingleImage(string filter, string defaultSuffix) {
     showCitationReminder();
-    SettingsParams *sP = GetSettingsParams();
     auto imageDir = QDir::homePath();
 
     QFileDialog fileDialog(this, "Specify single image capture file name", imageDir,
@@ -2012,9 +2011,6 @@ void MainForm::captureSingleImage(string filter, string defaultSuffix) {
 
     string file = fileInfo.absoluteFilePath().toStdString();
     string filepath = fileInfo.path().toStdString();
-
-    // Save the path for future captures
-    sP->SetImageDir(filepath);
 
     // Turn on "image capture mode" in the current active visualizer
     GUIStateParams *p = GetStateParams();
@@ -2176,7 +2172,6 @@ void MainForm::captureTiffSequence() {
 // Then start file saving mode.
 void MainForm::startAnimCapture(string filter, string defaultSuffix) {
     showCitationReminder();
-    SettingsParams *sP = GetSettingsParams();
     auto imageDir = QDir::homePath();
 
     QFileDialog fileDialog(this, "Specify image sequence file name", imageDir,
@@ -2203,8 +2198,6 @@ void MainForm::startAnimCapture(string filter, string defaultSuffix) {
         fileName = fileInfo.absolutePath() + "/" + fileInfo.baseName();
     }
 
-    // Save the path for future captures
-    sP->SetImageDir(fileInfo.absolutePath().toStdString());
     QString fileBaseName = fileInfo.baseName();
 
     int posn;
