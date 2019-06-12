@@ -106,7 +106,6 @@ class MainForm : public QMainWindow {
     QAction *_navigationAction;
     QAction *_editUndoAction;
     QAction *_editRedoAction;
-    QAction *_editUndoRedoClearAction;
     QLineEdit *_timeStepEdit;
     QIntValidator *_timeStepEditValidator;
 
@@ -319,7 +318,6 @@ class MainForm : public QMainWindow {
     void fileExit();
     void undo();
     void redo();
-    void clear();
     void helpAbout();
     void loadData(string fileName = "");
     void closeData(string fileName = "");
