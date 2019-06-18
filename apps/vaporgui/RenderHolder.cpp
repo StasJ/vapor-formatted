@@ -26,11 +26,14 @@
 #include <QList>
 #include <QStringList>
 #include <QTableWidget>
+#include <SettingsParams.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
 #include <sstream>
 #include <vapor/ControlExecutive.h>
 #include <vapor/ParamsMgr.h>
+#include <vapor/VolumeIsoRenderer.h>
+#include <vapor/VolumeRenderer.h>
 
 using namespace VAPoR;
 
@@ -199,6 +202,45 @@ void RenderHolder::_initializeNewRendererDialog(vector<string> datasetNames) {
     }
 }
 
+void RenderHolder::_showIntelDriverWarning(const string &rendererType) {
+    if (GLManager::GetVendor() != GLManager::Vendor::Intel)
+        return;
+    if (rendererType != VolumeRenderer::GetClassType() &&
+        rendererType != VolumeIsoRenderer::GetClassType())
+        return;
+
+    ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
+    SettingsParams *sp = (SettingsParams *)paramsMgr->GetParams(SettingsParams::GetClassType());
+    if (sp->GetDontShowIntelDriverWarning())
+        return;
+
+    // Qt will automatically delete this for us apparently
+    QCheckBox *dontShowAgain = new QCheckBox("Don't show again");
+    dontShowAgain->blockSignals(true);
+
+    QMessageBox warning;
+    warning.setIcon(QMessageBox::Warning);
+    warning.setText("Warning");
+    warning.setInformativeText(
+        "Regular grid renderer is used by default. "
+        "If your data is non-regular, it can result in an image that misrepresents your data. "
+        "\n\n"
+        "To get correct results for non-regular data, select the curvilinear grid rendering "
+        "algorithm. "
+        "This can be changed under the renderer's Apperance tab under the transfer function "
+        "editor. "
+        "\n\n"
+        "Your computer uses an Intel GPU which has poor support for the curvilinear renderer. "
+        "It could potentially result in Vapor hanging or crashing. "
+        "In this case, we recommend you use a computer with an AMD or Nvidia GPU. ");
+    warning.addButton(dontShowAgain, QMessageBox::ActionRole);
+    warning.addButton(QMessageBox::Ok);
+    warning.exec();
+
+    if (dontShowAgain->checkState() == Qt::Checked)
+        sp->SetDontShowIntelDriverWarning(true);
+}
+
 void RenderHolder::_showNewRendererDialog() {
     ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
     vector<string> dataSetNames = paramsMgr->GetDataMgrNames();
@@ -209,6 +251,7 @@ void RenderHolder::_showNewRendererDialog() {
     }
 
     string rendererType = _newRendererDialog->GetSelectedRenderer();
+    _showIntelDriverWarning(rendererType);
 
     int selection = _newRendererDialog->dataMgrCombo->currentIndex();
     string dataSetName = dataSetNames[selection];
