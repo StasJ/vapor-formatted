@@ -235,7 +235,7 @@ GeometryWidget::~GeometryWidget() {
 }
 
 void GeometryWidget::updateRangeLabels(std::vector<double> minExt, std::vector<double> maxExt) {
-    assert(minExt.size() == maxExt.size());
+    VAssert(minExt.size() == maxExt.size());
 
     if (minExt.size() < 1)
         return;
@@ -336,7 +336,7 @@ bool GeometryWidget::getVariableExtents(std::vector<double> &minFullExts,
 void GeometryWidget::updateBoxCombos(std::vector<double> &minFullExt,
                                      std::vector<double> &maxFullExt) {
 
-    assert(minFullExt.size() == maxFullExt.size());
+    VAssert(minFullExt.size() == maxFullExt.size());
     if (minFullExt.size() < 2)
         return;
 
@@ -374,9 +374,9 @@ void GeometryWidget::updateBoxCombos(std::vector<double> &minFullExt,
 
 void GeometryWidget::Update(ParamsMgr *paramsMgr, DataMgr *dataMgr, RenderParams *rParams,
                             Box *box) {
-    assert(paramsMgr);
-    assert(dataMgr);
-    assert(rParams);
+    VAssert(paramsMgr);
+    VAssert(dataMgr);
+    VAssert(rParams);
 
     _paramsMgr = paramsMgr;
     _dataMgr = dataMgr;

@@ -31,13 +31,13 @@
 #include "vapor/FileUtils.h"
 #include "vapor/GLManager.h"
 #include "vapor/LegacyGL.h"
+#include "vapor/VAssert.h"
 #include "vapor/Visualizer.h"
 #include <QCloseEvent>
 #include <QFocusEvent>
 #include <QIcon>
 #include <QMouseEvent>
 #include <QResizeEvent>
-#include <cassert>
 #include <glm/gtc/type_ptr.hpp>
 #include <vapor/ControlExecutive.h>
 #include <vapor/ImageParams.h>
@@ -334,7 +334,7 @@ void VizWin::_mousePressEventNavigate(QMouseEvent *e) {
 
     double posvec[3], upvec[3], dirvec[3];
     bool status = vParams->ReconstructCamera(m, posvec, upvec, dirvec);
-    assert(status);
+    VAssert(status);
 
     // Set trackball from current ViewpointParams matrix;
     //
@@ -440,8 +440,10 @@ void VizWin::_mouseReleaseEventNavigate(QMouseEvent *e) {
  * then we note the displacement
  */
 void VizWin::mouseReleaseEvent(QMouseEvent *e) {
-    if (_buttonNum == 0)
+    if (_buttonNum == 0) {
+        _mouseClicked = false;
         return;
+    }
 
     _mouseClicked = false;
 

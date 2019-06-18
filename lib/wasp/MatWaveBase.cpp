@@ -1,4 +1,4 @@
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <cmath>
 #include <iostream>
 #include <vapor/MatWaveBase.h>

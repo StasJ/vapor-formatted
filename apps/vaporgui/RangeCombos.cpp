@@ -1,5 +1,5 @@
+#include "vapor/VAssert.h"
 #include <QtGui>
-#include <cassert>
 #include <iostream>
 
 using namespace std;

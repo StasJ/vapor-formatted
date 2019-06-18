@@ -123,10 +123,7 @@ class VDF_API UnstructuredGrid : public Grid {
     static std::string GetClassType() { return ("Unstructured"); }
     std::string GetType() const override { return (GetClassType()); }
 
-    //! \copydoc Grid::GetCellNodes()
-    //!
-    virtual bool GetCellNodes(const std::vector<size_t> &cindices,
-                              std::vector<std::vector<size_t>> &nodes) const override;
+    bool GetCellNodes(const size_t cindices[], size_t nodes[], int &n) const override;
 
     //! \copydoc Grid::GetCellNeighbors()
     //!
@@ -171,7 +168,7 @@ class VDF_API UnstructuredGrid : public Grid {
     void SetBoundaryID(size_t v) { _boundaryID = v; }
 
     virtual void ClampCoord(std::vector<double> &coords) const override {
-        assert(coords.size() >= GetGeometryDim());
+        VAssert(coords.size() >= GetGeometryDim());
         while (coords.size() > GetGeometryDim()) {
             coords.pop_back();
         }

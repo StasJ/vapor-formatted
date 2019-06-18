@@ -24,9 +24,9 @@
 #pragma warning(disable : 4251 4100)
 #endif
 #include "GL/glew.h"
+#include "vapor/VAssert.h"
 #include <QMdiArea>
 #include <QMdiSubWindow>
-#include <cassert>
 #include <fstream>
 #include <iostream>
 #include <qapplication.h>
@@ -71,8 +71,8 @@ string make_viz_name(vector<string> currentNames) {
 VizWinMgr::VizWinMgr(QWidget *parent, QMdiArea *mdiArea, ControlExec *ce) : QObject(parent) {
 
     _parent = parent;
-    assert(mdiArea);
-    assert(ce);
+    VAssert(mdiArea);
+    VAssert(ce);
 
     _mdiArea = mdiArea;
     _controlExec = ce;
@@ -244,7 +244,7 @@ vector<string> VizWinMgr::_getVisualizerNames() const {
 // Method to enable closing of a vizWin
 void VizWinMgr::_killViz(string vizName) {
 
-    assert(_vizWindow.find(vizName) != _vizWindow.end());
+    VAssert(_vizWindow.find(vizName) != _vizWindow.end());
 
     _mdiArea->removeSubWindow(_vizMdiWin[vizName]);
 
@@ -282,12 +282,13 @@ void VizWinMgr::_vizAboutToDisappear(string vizName) {
         return;
 
     std::map<string, QMdiSubWindow *>::iterator itr2 = _vizMdiWin.find(vizName);
-    assert(itr2 != _vizMdiWin.end());
+    VAssert(itr2 != _vizMdiWin.end());
 
     GUIStateParams *p = _getStateParams();
     string activeViz = p->GetActiveVizName();
 
     itr->second->makeCurrent();
+    _controlExec->RemoveAllRenderers(vizName, true);
     _controlExec->RemoveVisualizer(vizName);
 
     // disconnect all signals from window
@@ -340,8 +341,8 @@ void VizWinMgr::Shutdown() {
     for (int i = 0; i < vizNames.size(); i++) {
         _killViz(vizNames[i]);
     }
-    assert(_vizMdiWin.empty());
-    assert(_vizWindow.empty());
+    VAssert(_vizMdiWin.empty());
+    VAssert(_vizWindow.empty());
 
     _initialized = false;
 }
@@ -377,8 +378,8 @@ void VizWinMgr::Reinit() {
 
     vector<double> minExts, maxExts;
     dataStatus->GetActiveExtents(paramsMgr, ts, minExts, maxExts);
-    assert(minExts.size() == 3);
-    assert(maxExts.size() == 3);
+    VAssert(minExts.size() == 3);
+    VAssert(maxExts.size() == 3);
 
     double scale[3];
     scale[0] = scale[1] = scale[2] = max(maxExts[0] - minExts[0], (maxExts[1] - minExts[1]));

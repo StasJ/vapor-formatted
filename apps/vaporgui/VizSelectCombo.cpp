@@ -19,8 +19,8 @@
 //		the visualizer to activate.
 //
 #include "VizSelectCombo.h"
+#include "vapor/VAssert.h"
 #include <QToolBar>
-#include <cassert>
 #include <qcombobox.h>
 #include <qtooltip.h>
 #include <string>
@@ -47,7 +47,7 @@ void VizSelectCombo::AddWindow(const QString &winName) {
 
     // First look to find the right place; insert it in a gap if necessary.
 
-    assert(count() >= 1); // Last item is always CreateNewStr
+    VAssert(count() >= 1); // Last item is always CreateNewStr
 
     // Insert in alphabetical order, but leave CreateNewStr in
     // last position

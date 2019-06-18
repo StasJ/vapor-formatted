@@ -1,5 +1,5 @@
+#include "vapor/VAssert.h"
 #include <algorithm>
-#include <cassert>
 #include <iostream>
 #include <map>
 #include <stdio.h>
@@ -406,7 +406,7 @@ int DCWRF::closeVariable(int fd) {
 template <class T>
 int DCWRF::_readRegionTemplate(int fd, const vector<size_t> &min, const vector<size_t> &max,
                                T *region) {
-    assert(min.size() == max.size());
+    VAssert(min.size() == max.size());
 
     WRFFileObject *w = (WRFFileObject *)_fileTable.GetEntry(fd);
 
@@ -834,7 +834,7 @@ DerivedCoordVar_Staggered *DCWRF::_makeDerivedHorizontal(NetCDFCollection *ncdfc
 }
 
 int DCWRF::_InitHorizontalCoordinatesHelper(NetCDFCollection *ncdfc, string name, int axis) {
-    assert(axis == 0 || axis == 1);
+    VAssert(axis == 0 || axis == 1);
 
     DerivedCoordVar_Staggered *derivedVar = NULL;
 
@@ -1019,7 +1019,7 @@ int DCWRF::_InitDimensions(NetCDFCollection *ncdfc) {
     //
     vector<string> dimnames = ncdfc->GetDimNames();
     vector<size_t> dimlens = ncdfc->GetDims();
-    assert(dimnames.size() == dimlens.size());
+    VAssert(dimnames.size() == dimlens.size());
 
     // WRF files use reserved names for dimensions. The time dimension
     // is always named "Time", etc.

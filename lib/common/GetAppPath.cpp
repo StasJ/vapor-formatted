@@ -3,7 +3,6 @@
 //
 #include "vapor/CMakeConfig.h"
 #include "vapor/FileUtils.h"
-#include <cassert>
 #include <cctype>
 #include <iostream>
 #include <sstream>

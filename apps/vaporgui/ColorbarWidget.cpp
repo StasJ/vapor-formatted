@@ -97,9 +97,9 @@ void ColorbarWidget::fontDigitsChanged(int digits) { _cbPbase->SetNumDigits(digi
 void ColorbarWidget::numTicksChanged(int numTicks) { _cbPbase->SetNumTicks(numTicks); }
 
 void ColorbarWidget::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, RenderParams *rParams) {
-    assert(paramsMgr);
-    assert(dataMgr);
-    assert(rParams);
+    VAssert(paramsMgr);
+    VAssert(dataMgr);
+    VAssert(rParams);
 
     _paramsMgr = paramsMgr;
     _dataMgr = dataMgr;

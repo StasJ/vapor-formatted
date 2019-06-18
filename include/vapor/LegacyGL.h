@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vapor/ShaderProgram.h"
+#include <glm/fwd.hpp>
 #include <vector>
 
 #ifdef GL_QUADS

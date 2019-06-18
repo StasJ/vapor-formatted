@@ -27,8 +27,8 @@
 #ifndef ERRORREPORTER_H
 #define ERRORREPORTER_H
 
+#include "vapor/VAssert.h"
 #include <QMessageBox>
-#include <cassert>
 #include <string>
 #include <vector>
 

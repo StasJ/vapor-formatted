@@ -90,11 +90,6 @@ class SettingsParams : public VAPoR::ParamsBase {
     string GetDefaultMetadataDir() const;
     void SetDefaultMetadataDir(string dir);
 
-    string GetImageDir() const;
-    void SetImageDir(string dir);
-    string GetDefaultImageDir() const;
-    void SetDefaultImageDir(string dir);
-
     string GetTFDir() const;
     void SetTFDir(string dir);
     string GetDefaultTFDir() const;
@@ -115,6 +110,9 @@ class SettingsParams : public VAPoR::ParamsBase {
 
     string GetFontFile() const;
     void SetFontFile(string file);
+
+    bool GetDontShowIntelDriverWarning() const;
+    void SetDontShowIntelDriverWarning(bool b);
 
     string GetCurrentPrefsPath() const;
     void SetCurrentPrefsPath(string pth);
@@ -143,8 +141,6 @@ class SettingsParams : public VAPoR::ParamsBase {
     static const string _defaultSessionDirTag;
     static const string _metadataDirTag;
     static const string _defaultMetadataDirTag;
-    static const string _imageDirTag;
-    static const string _defaultImageDirTag;
     static const string _tfDirTag;
     static const string _defaultTfDirTag;
     static const string _flowDirTag;
@@ -161,6 +157,7 @@ class SettingsParams : public VAPoR::ParamsBase {
     static const string _sessionAutoSaveEnabledTag;
     static const string _fontFileTag;
     static const string _fontSizeTag;
+    static const string _dontShowIntelDriverWarningTag;
 
     void _init();
     bool _loadFromSettingsFile();
