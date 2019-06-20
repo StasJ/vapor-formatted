@@ -25,6 +25,7 @@
 #include <map>
 #include <vapor/AnnotationRenderer.h>
 #include <vapor/DataStatus.h>
+#include <vapor/Framebuffer.h>
 #include <vapor/ParamsMgr.h>
 #include <vapor/Renderer.h>
 
@@ -208,6 +209,7 @@ class RENDER_API Visualizer : public MyBase {
     string _winName;
     GLManager *_glManager;
     AnnotationRenderer *_vizFeatures;
+    Framebuffer _framebuffer;
 
     bool _insideGLContext; // This is only to make sure we don't call certain functions when they
                            // are not supposed to be called. In some situations this variable will
