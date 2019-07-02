@@ -37,7 +37,4 @@ VolumeIsoParams::~VolumeIsoParams() {
 string VolumeIsoParams::GetDefaultAlgorithmName() const { return "Iso Regular"; }
 
 // Set everything to default values
-void VolumeIsoParams::_init() {
-    SetDiagMsg("VolumeParams::_init()");
-    SetUseSingleColor(true);
-}
+void VolumeIsoParams::_init() { SetDiagMsg("VolumeParams::_init()"); }
