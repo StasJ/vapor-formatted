@@ -249,7 +249,7 @@ class PARAMS_API RenderParams : public ParamsBase {
 
     //! Indicate if a single (constant) color is being used
     //! \return true if constant single color is used
-    bool UseSingleColor() const { return (0 != GetValueLong(_useSingleColorTag, (int)false)); }
+    bool UseSingleColor() const;
 
     //! Specify the variable being used for color mapping
     //! \param[in] string varName. If any \p varName is "0" it
@@ -265,9 +265,7 @@ class PARAMS_API RenderParams : public ParamsBase {
 
     //! Turn on or off the use of single constant color (versus color map)
     //! \param[in] val true will enable constant color
-    void SetUseSingleColor(bool val) {
-        SetValueLong(_useSingleColorTag, "enable/disable use single color", (long)val);
-    }
+    void SetUseSingleColor(bool val);
 
     //! Specify a constant color
     //!
@@ -345,6 +343,8 @@ class PARAMS_API RenderParams : public ParamsBase {
   protected:
     DataMgr *_dataMgr;
     int _maxDim;
+
+    virtual bool GetUseSingleColorDefault() const { return false; }
 
   private:
     void _init();
