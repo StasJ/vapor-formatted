@@ -364,6 +364,8 @@ int Advection::InputStreamsGnuplot(const std::string &filename) {
         size_t start = 0;
         size_t end = line.find(',');
         while (end != std::string::npos && values.size() < 4) {
+            // Here we read in first 3 or 4 values of the line.
+            // Additional values are discarded.
             auto str = line.substr(start, end - start);
             float val;
             try {
