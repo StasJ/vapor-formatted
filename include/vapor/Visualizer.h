@@ -23,10 +23,13 @@
 #pragma once
 
 #include <map>
+#include <set>
 #include <vapor/AnnotationRenderer.h>
 #include <vapor/DataStatus.h>
+#include <vapor/OSPRay.h>
 #include <vapor/ParamsMgr.h>
 #include <vapor/Renderer.h>
+#include <vapor/Texture.h>
 
 namespace VAPoR {
 
@@ -219,6 +222,19 @@ class RENDER_API Visualizer : public MyBase {
 
     vector<Renderer *> _renderers;
     vector<Renderer *> _renderersToDestroy;
+
+    bool _needToRenderOSPRay() const;
+    int _renderOSPRay();
+    std::set<Renderer *> _renderersInWorld;
+    OSPRenderer _renderer = nullptr;
+    OSPCamera _camera = nullptr;
+    OSPLight _ambient = nullptr;
+    OSPLight _cameraSpotlight = nullptr;
+    OSPModel _world = nullptr;
+    OSPFrameBuffer _framebuffer = nullptr;
+    osp::vec2i _framebufferSize = {0};
+    Texture2D _texture;
+    unsigned int _VAO, _VBO;
 };
 
 }; // namespace VAPoR

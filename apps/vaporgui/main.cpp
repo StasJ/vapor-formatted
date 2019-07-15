@@ -27,6 +27,7 @@
 #include <qapplication.h>
 #include <qfont.h>
 #include <vapor/CMakeConfig.h>
+#include <vapor/OSPRay.h>
 #include <vapor/ResourcePath.h>
 #ifdef WIN32
 #include "Windows.h"
@@ -72,6 +73,9 @@ FILE *OpenLog(string path_var) {
 
 QApplication *app;
 int main(int argc, char **argv) {
+
+    OSPInitStatus = ospInit(&argc, (const char **)argv);
+    OSPInitStatusMessage = ospDeviceGetLastErrorMsg(ospGetCurrentDevice());
 
     // Install our own message handler.
     // Needed for SGI to avoid dithering:
@@ -178,5 +182,8 @@ int main(int argc, char **argv) {
         fclose(diagfp);
     if (errfp)
         fclose(errfp);
+
+    if (OSPRayInitialized())
+        ospShutdown();
     exit(estatus);
 }

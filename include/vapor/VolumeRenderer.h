@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/fwd.hpp>
+#include <ospray/ospray.h>
 #include <vapor/Framebuffer.h>
 #include <vapor/Renderer.h>
 #include <vapor/Texture.h>
@@ -79,8 +80,28 @@ class RENDER_API VolumeRenderer : public Renderer {
 
         std::string algorithmName = "";
 
+        bool useOSPRay;
         bool needsUpdate;
     } _cache;
+
+    bool _needToLoadData();
+    MapperFunction *_needToLoadTF();
+
+  public:
+    int OSPRayUpdate(OSPModel world);
+    void OSPRayDelete(OSPModel world);
+
+  protected:
+    OSPGeometry sphere = nullptr;
+    OSPVolume _volume = nullptr;
+    OSPTransferFunction _tf = nullptr;
+
+    int OSPRayLoadData(OSPModel world);
+    int OSPRayLoadDataRegular(OSPModel world, Grid *grid);
+    int OSPRayLoadDataStructured(OSPModel world, Grid *grid);
+    int OSPRayLoadTF();
+    glm::vec3 _getTotalScaling() const;
+    glm::vec3 _getOrigin() const;
 };
 
 }; // namespace VAPoR
