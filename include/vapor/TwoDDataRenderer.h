@@ -53,6 +53,7 @@ class RENDER_API TwoDDataRenderer : public TwoDRenderer {
   protected:
     int _initializeGL();
 
+    int _loadTF();
     int _paintGL(bool fast);
 
     int GetMesh(DataMgr *dataMgr, GLfloat **verts, GLfloat **normals, GLsizei &nverts,
@@ -147,6 +148,7 @@ class RENDER_API TwoDDataRenderer : public TwoDRenderer {
 
     GLuint _cMapTexID;
     GLfloat *_colormap;
+    vector<double> _colormapRange;
     size_t _colormapsize;
 
     bool _gridStateDirty() const;

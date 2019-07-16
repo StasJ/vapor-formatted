@@ -111,6 +111,8 @@ class RENDER_API TwoDRenderer : public Renderer {
     //! \copydoc Renderer::_initializeGL()
     virtual int _initializeGL();
 
+    int _generateMesh();
+
     //! \copydoc Renderer::_paintGL()
     virtual int _paintGL(bool fast);
 
@@ -171,6 +173,10 @@ class RENDER_API TwoDRenderer : public Renderer {
     void _renderMeshUnAligned();
     void _renderMeshAligned();
     void _computeTexCoords(GLfloat *tcoords, size_t w, size_t h) const;
+
+  public:
+    int OSPRayUpdate(OSPModel world);
+    void OSPRayDelete(OSPModel world);
 };
 }; // namespace VAPoR
 
