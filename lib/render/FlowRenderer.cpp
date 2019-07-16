@@ -272,26 +272,14 @@ int FlowRenderer::_renderFromAnAdvection(const flow::Advection *adv, FlowParams 
             size_t totalPart = 0;
             for (size_t i = 0; i < stream.size() && totalPart <= numOfPart; i++) {
                 const auto &p = stream[i];
-                if (!p.IsSpecial()) // p isn't a separator
-                {
-                    vec.push_back(p.location.x);
-                    vec.push_back(p.location.y);
-                    vec.push_back(p.location.z);
-                    vec.push_back(p.value);
-                    totalPart++;
-                } else // p is a separator
-                {
-                    _drawLineSegs(vec.data(), vec.size() / 4, singleColor);
-                    vec.clear();
-                }
+                _particleHelper1(vec, p, singleColor);
             } // Finish processing a stream
-
             if (!vec.empty()) {
-                _drawLineSegs(vec.data(), vec.size() / 4, singleColor);
+                _drawALineSeg(vec.data(), vec.size() / 4, singleColor);
                 vec.clear();
             }
         }  // Finish processing all streams
-    } else // Unsteady flow (only forward direction)
+    } else // Unsteady flow (only occurs with forward direction)
     {
         std::vector<float> vec;
         for (size_t s = 0; s < numOfStreams; s++) {
@@ -301,21 +289,10 @@ int FlowRenderer::_renderFromAnAdvection(const flow::Advection *adv, FlowParams 
                 if (p.time > _timestamps.at(_cache_currentTS))
                     break;
 
-                if (!p.IsSpecial()) // p isn't a separator
-                {
-                    vec.push_back(p.location.x);
-                    vec.push_back(p.location.y);
-                    vec.push_back(p.location.z);
-                    vec.push_back(p.value);
-                } else // p is a separator
-                {
-                    _drawLineSegs(vec.data(), vec.size() / 4, singleColor);
-                    vec.clear();
-                }
+                _particleHelper1(vec, p, singleColor);
             } // Finish processing a stream
-
             if (!vec.empty()) {
-                _drawLineSegs(vec.data(), vec.size() / 4, singleColor);
+                _drawALineSeg(vec.data(), vec.size() / 4, singleColor);
                 vec.clear();
             }
         } // Finish processing all streams
@@ -324,7 +301,22 @@ int FlowRenderer::_renderFromAnAdvection(const flow::Advection *adv, FlowParams 
     return 0;
 }
 
-int FlowRenderer::_drawLineSegs(const float *buf, size_t numOfParts, bool singleColor) const {
+void FlowRenderer::_particleHelper1(std::vector<float> &vec, const flow::Particle &p,
+                                    bool singleColor) const {
+    if (!p.IsSpecial()) // p isn't a separator
+    {
+        vec.push_back(p.location.x);
+        vec.push_back(p.location.y);
+        vec.push_back(p.location.z);
+        vec.push_back(p.value);
+    } else // p is a separator
+    {
+        _drawALineSeg(vec.data(), vec.size() / 4, singleColor);
+        vec.clear();
+    }
+}
+
+int FlowRenderer::_drawALineSeg(const float *buf, size_t numOfParts, bool singleColor) const {
     // Make some OpenGL function calls
     glm::mat4 modelview = _glManager->matrixManager->GetModelViewMatrix();
     glm::mat4 projection = _glManager->matrixManager->GetProjectionMatrix();
