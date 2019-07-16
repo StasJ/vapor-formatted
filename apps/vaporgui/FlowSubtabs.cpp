@@ -113,9 +113,11 @@ void FlowAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *par
 //================================
 //
 FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
-    _geometryWidget = new GeometryWidget(this);
-    _geometryWidget->Reinit((DimFlags)THREED, (VariableFlags)VECTOR);
-    _layout->addWidget(_geometryWidget);
+    /*
+    _geometryWidget   = new GeometryWidget(this);
+    _geometryWidget->Reinit( (DimFlags)THREED, (VariableFlags)VECTOR);
+    _layout->addWidget( _geometryWidget );
+    */
 
     _seedGenMode = new VComboBox(this, "Seed Generation Mode");
     /* Index numbers are in agreement with what's in FlowRenderer.h */
@@ -155,7 +157,7 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
 
     // VAPoR::Box* rakeBox = params->GetRakeBox();
     //_geometryWidget->Update(paramsMgr, dataMgr, params, rakeBox);
-    _geometryWidget->Update(paramsMgr, dataMgr, params);
+    //_geometryWidget->Update(paramsMgr, dataMgr, params );
 
     long idx = _params->GetSeedGenMode();
     if (idx >= 0 && idx < _seedGenMode->GetNumOfItems())

@@ -114,7 +114,7 @@ class FlowSeedingSubtab : public QVaporSubtab {
   private:
     VAPoR::FlowParams *_params;
 
-    GeometryWidget *_geometryWidget;
+    // GeometryWidget*         _geometryWidget;
 
     VComboBox *_seedGenMode;
     VFileReader *_fileReader;
