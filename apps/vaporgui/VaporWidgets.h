@@ -7,7 +7,6 @@ class QComboBox;
 class QCheckBox;
 class QPushButton;
 class QLineEdit;
-class QValidator;
 class QSpacerItem;
 class QHBoxLayout;
 class QSpinBox;
@@ -108,7 +107,7 @@ class VLineEdit : public VaporWidget {
     void SetExtents(double min, double max);
     void SetIntType();
     void SetDoubleType();
-    void SetValidator(QValidator *v);
+    // void SetValidator( QValidator* v );
     std::string GetEditText() const;
 
   signals:
@@ -122,7 +121,7 @@ class VLineEdit : public VaporWidget {
     // signal to be emitted with invalid input, so we can change it to the
     // previous value.  Therefore, we perform validation within the VLineEdit,
     // not the QLineEdit.
-    QValidator *_validator;
+    // QValidator* _validator;
 
   private slots:
     void _relaySignal();
