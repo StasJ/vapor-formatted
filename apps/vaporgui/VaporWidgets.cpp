@@ -97,9 +97,7 @@ void VDoubleSpinBox::SetDecimals(int decimals) { _spinBox->setDecimals(decimals)
 double VDoubleSpinBox::GetValue() const { return _value; }
 
 VLineEdit::VLineEdit(QWidget *parent, const std::string &labelText, const std::string &editText)
-    : VaporWidget(parent, labelText)
-//    _validator( nullptr )
-{
+    : VaporWidget(parent, labelText), _validator(nullptr) {
     _text = editText;
 
     _edit = new QLineEdit(this);
@@ -111,15 +109,13 @@ VLineEdit::VLineEdit(QWidget *parent, const std::string &labelText, const std::s
 }
 
 VLineEdit::~VLineEdit() {
-    //    if (_validator != nullptr) {
-    //        delete _validator;
-    //        _validator = nullptr;
-    //    }
+    if (_validator != nullptr) {
+        delete _validator;
+        _validator = nullptr;
+    }
 }
 
-// void VLineEdit::SetValidator( QValidator* v ) {
-//    _validator = v;
-//}
+void VLineEdit::SetValidator(QValidator *v) { _validator = v; }
 
 void VLineEdit::SetEditText(const std::string &text) { SetEditText(QString::fromStdString(text)); }
 
@@ -134,19 +130,18 @@ std::string VLineEdit::GetEditText() const { return _text; }
 
 void VLineEdit::_returnPressed() {
     QString text = _edit->text();
-    //    if ( _validator != nullptr ) {
-    //        int i=0;
-    //        const QValidator::State state = _validator->validate( text, i );
-    //
-    //        if ( state == QValidator::Acceptable )
-    //            _text = _edit->text().toStdString();
-    //
-    //        _edit->setText( QString::fromStdString( _text ) );
-    //    }
-    //    else {
-    _edit->setText(text);
-    _text = text.toStdString();
-    //    }
+    if (_validator != nullptr) {
+        int i = 0;
+        const QValidator::State state = _validator->validate(text, i);
+
+        if (state == QValidator::Acceptable)
+            _text = _edit->text().toStdString();
+
+        _edit->setText(QString::fromStdString(_text));
+    } else {
+        _edit->setText(text);
+        _text = text.toStdString();
+    }
 
     emit _editingFinished();
 }
