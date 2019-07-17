@@ -123,7 +123,7 @@ void VLineEdit::SetExtents(int min, int max) {
     //    QIntValidator* val = qobject_cast<QIntValidator*>(_validator);
     //    assert( val );
 
-    val->setRange(min, max);
+    //    val->setRange( min, max );
 }
 
 void VLineEdit::SetExtents(double min, double max) {
@@ -132,7 +132,7 @@ void VLineEdit::SetExtents(double min, double max) {
     //    QDoubleValidator* val = qobject_cast<QDoubleValidator*>(_validator);
     //    assert( val );
 
-    val->setRange(min, max);
+    //    val->setRange( min, max );
 }
 
 void VLineEdit::SetIntType() {
