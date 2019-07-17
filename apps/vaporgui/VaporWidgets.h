@@ -133,7 +133,7 @@ class VLineEdit : public VaporWidget {
     // QValidator* _validator;
 
   private slots:
-    void _relaySignal();
+    void _returnPressed();
 
   private:
     std::string _text;
