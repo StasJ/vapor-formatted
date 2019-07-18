@@ -262,6 +262,7 @@ int Visualizer::_renderOSPRay() {
 
     if (!_renderer) {
         _renderer = ospNewRenderer("scivis");
+        ospSet1b(_renderer, "oneSidedLighting", false);
     }
     if (!_camera) {
         _camera = ospNewCamera("perspective");
@@ -335,7 +336,7 @@ int Visualizer::_renderOSPRay() {
         size.x = width;
         size.y = height;
         _framebuffer =
-            ospNewFrameBuffer(size, OSP_FB_SRGBA, OSP_FB_COLOR | /*OSP_FB_DEPTH |*/ OSP_FB_ACCUM);
+            ospNewFrameBuffer(size, OSP_FB_RGBA8, OSP_FB_COLOR | /*OSP_FB_DEPTH |*/ OSP_FB_ACCUM);
         _framebufferSize = size;
     }
 

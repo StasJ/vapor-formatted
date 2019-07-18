@@ -178,6 +178,8 @@ class RENDER_API TwoDDataRenderer : public TwoDRenderer {
     int _getOrientation(DataMgr *dataMgr, string varname);
 
     void _clearCache() { _tex_state.clear(); }
+
+    int OSPRayUpdate(OSPModel world);
 };
 }; // namespace VAPoR
 

@@ -43,21 +43,8 @@ VolumeAppearanceSubtab::VolumeAppearanceSubtab(QWidget *parent) {
     _shininessWidget->SetExtents(1.0, 100.0);
     _shininessWidget->SetIntType(true);
 
-    QFrame *item = new QFrame;
-    QHBoxLayout *layout = new QHBoxLayout;
-    layout->setMargin(0);
-    item->setLayout(layout);
-
-    QLabel *label = new QLabel("OSPRay");
-    QSpacerItem *spacer = new QSpacerItem(108, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-    _osprayCheckBox = new QCheckBox();
-    connect(_osprayCheckBox, SIGNAL(clicked(bool)), this, SLOT(ospray_clicked(bool)));
-
-    layout->addWidget(label);
-    layout->addItem(spacer);
-    layout->addWidget(_osprayCheckBox);
-
-    _raytracingFrame->layout()->addWidget(item);
+    _osprayCheckBox = new OSPRayEnableCheckbox(this);
+    _raytracingFrame->layout()->addWidget(_osprayCheckBox);
 }
 
 void VolumeAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -67,6 +54,7 @@ void VolumeAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *p
     VAssert(vp);
 
     _TFWidget->Update(dataMgr, paramsMgr, rParams);
+    _osprayCheckBox->Update(rParams);
 
     // ---------------------------
     // Raytracing Parameters
@@ -91,10 +79,6 @@ void VolumeAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *p
     _samplingRateComboBox->setCurrentIndex(_samplingRateComboBox->findText(
         GetQStringForSamplingRate(_params->GetSamplingMultiplier())));
     _samplingRateComboBox->blockSignals(false);
-
-    _osprayCheckBox->blockSignals(true);
-    _osprayCheckBox->setChecked(vp->GetValueLong("ospray", false));
-    _osprayCheckBox->blockSignals(false);
 
     // ---------------------------
     // Lighting Parameters

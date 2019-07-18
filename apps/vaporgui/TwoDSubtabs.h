@@ -2,6 +2,7 @@
 #define TWODSUBTABS_H
 
 #include "Flags.h"
+#include "OSPRayEnableCheckbox.h"
 #include "ui_TwoDAnnotationGUI.h"
 #include "ui_TwoDAppearanceGUI.h"
 #include "ui_TwoDGeometryGUI.h"
@@ -34,15 +35,21 @@ class TwoDAppearanceSubtab : public QWidget, public Ui_TwoDAppearanceGUI {
 
     Q_OBJECT
 
+    OSPRayEnableCheckbox *_osprayEnable;
+
   public:
     TwoDAppearanceSubtab(QWidget *parent) {
         setupUi(this);
         _TFWidget->Reinit((TFFlags)(0));
+        _osprayEnable = new OSPRayEnableCheckbox(this);
+        //        verticalLayout->addWidget(_osprayEnable);
+        _TFWidget->_tabWidget->widget(0)->layout()->addWidget(_osprayEnable);
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                 VAPoR::RenderParams *rParams) {
         _TFWidget->Update(dataMgr, paramsMgr, rParams);
+        _osprayEnable->Update(rParams);
     }
 };
 
