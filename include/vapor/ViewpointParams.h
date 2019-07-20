@@ -156,7 +156,11 @@ class PARAMS_API ViewpointParams : public ParamsBase {
     void GetWindowSize(size_t &width, size_t &height) const;
 
     void SetFOV(float v);
-    double GetFOV() const;
+    float GetFOV() const;
+    void SetFarClip(float v);
+    float GetFarClip() const;
+    void SetNearClip(float v);
+    float GetNearClip() const;
     void SetOrthoProjectionSize(float f);
     double GetOrthoProjectionSize() const;
 
@@ -292,6 +296,8 @@ class PARAMS_API ViewpointParams : public ParamsBase {
     static const string m_windowSizeTag;
     static const string m_stretchFactorsTag;
     static const string m_fieldOfView;
+    static const string m_nearClip;
+    static const string m_farClip;
     static const string _orthoProjectionSizeTag;
     static const string _projectionTypeTag;
 
