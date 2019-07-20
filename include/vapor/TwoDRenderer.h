@@ -187,6 +187,8 @@ class RENDER_API TwoDRenderer : public Renderer {
     OSPMaterial _material = nullptr;
     OSPTexture _ospColorTexture = nullptr;
     OSPTexture _ospOpacityTexture = nullptr;
+
+    bool _hasMissingData = false;
 };
 }; // namespace VAPoR
 
