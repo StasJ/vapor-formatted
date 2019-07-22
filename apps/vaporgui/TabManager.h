@@ -183,6 +183,9 @@ class TabManager : public QTabWidget {
     static const string _renderersTabName;
     static const string _navigationTabName;
     static const string _settingsTabName;
+#ifdef OSPRAY_EVENT_ROUTER
+    static const string _osprayTabName;
+#endif
 
     VAPoR::ControlExec *_controlExec;
     RenderHolder *_renderHolder;
