@@ -15,6 +15,7 @@ class QSpinBox;
 class QDoubleSpinBox;
 
 #include <QTabWidget>
+#include <cmath>
 
 //
 // ====================================
