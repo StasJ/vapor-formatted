@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QCheckBox>
+#include <QGroupBox>
 #include <QLineEdit>
 #include <QWidget>
 #include <vapor/ParamsBase.h>
@@ -42,4 +43,11 @@ class ParamsWidgetNumber : public ParamsWidget {
 
   private slots:
     void valueChangedSlot();
+};
+
+class ParamsWidgetGroup : public QGroupBox {
+    Q_OBJECT
+
+  public:
+    ParamsWidgetGroup(const std::string &title);
 };
