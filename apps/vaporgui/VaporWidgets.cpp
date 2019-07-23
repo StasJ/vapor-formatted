@@ -13,6 +13,7 @@
 #include <QSlider>
 #include <QSpacerItem>
 #include <QSpinBox>
+#include <QVBoxLayout>
 #include <QValidator>
 #include <QWidget>
 
@@ -96,6 +97,70 @@ void VDoubleSpinBox::SetValue(double value) { _spinBox->setValue(value); }
 void VDoubleSpinBox::SetDecimals(int decimals) { _spinBox->setDecimals(decimals); }
 
 double VDoubleSpinBox::GetValue() const { return _value; }
+
+//
+// ====================================
+//
+VRange::VRange(QWidget *parent, float min, float max) : QWidget(parent) {
+    _layout = new QVBoxLayout(this);
+
+    _minSlider = new VSlider(this, "Min", min, max);
+    _maxSlider = new VSlider(this, "Max", min, max);
+    connect(_minSlider, SIGNAL(_valueChanged()), this, SLOT(_respondMinSlider()));
+    connect(_maxSlider, SIGNAL(_valueChanged()), this, SLOT(_respondMaxSlider()));
+
+    _layout->addWidget(_minSlider);
+    _layout->addWidget(_maxSlider);
+}
+
+VRange::~VRange() {}
+
+void VRange::SetRange(float min, float max) {
+    VAssert(max > min);
+    _minSlider->SetRange(min, max);
+    _maxSlider->SetRange(min, max);
+}
+
+void VRange::SetCurrentValMin(float min) {
+    /* _minSlider will only respond if min is within a valid range. */
+    _minSlider->SetCurrentValue(min);
+    _adjustMaxToMin();
+}
+
+void VRange::SetCurrentValMax(float max) {
+    /* _maxSlider will only respond if min is within a valid range. */
+    _maxSlider->SetCurrentValue(max);
+    _adjustMinToMax();
+}
+
+void VRange::GetCurrentValRange(float &rangeMin, float &rangeMax) {
+    rangeMin = _minSlider->GetCurrentValue();
+    rangeMax = _maxSlider->GetCurrentValue();
+}
+
+void VRange::_adjustMaxToMin() {
+    float newMin = _minSlider->GetCurrentValue();
+    float oldMax = _maxSlider->GetCurrentValue();
+    if (newMin > oldMax)
+        _maxSlider->SetCurrentValue(newMin);
+}
+
+void VRange::_adjustMinToMax() {
+    float newMax = _maxSlider->GetCurrentValue();
+    float oldMin = _minSlider->GetCurrentValue();
+    if (newMax < oldMin)
+        _minSlider->SetCurrentValue(newMax);
+}
+
+void VRange::_respondMinSlider() {
+    _adjustMaxToMin();
+    emit _rangeChanged();
+}
+
+void VRange::_respondMaxSlider() {
+    _adjustMinToMax();
+    emit _rangeChanged();
+}
 
 //
 // ====================================
