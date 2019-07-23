@@ -107,6 +107,7 @@ class FlowSeedingSubtab : public QVaporSubtab {
     void _outputButtonClicked();
 
     void _catchASignal();
+    void _catch2Signal();
 
   private:
     VAPoR::FlowParams *_params;
@@ -121,6 +122,7 @@ class FlowSeedingSubtab : public QVaporSubtab {
     VComboBox *_flowDirection;
 
     VSlider *_slider1;
+    VRange *_range1;
 };
 
 //
