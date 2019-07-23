@@ -7,12 +7,12 @@ class QComboBox;
 class QCheckBox;
 class QPushButton;
 class QLineEdit;
+class QSlider;
 class QSpacerItem;
 class QHBoxLayout;
 class QSpinBox;
 class QDoubleSpinBox;
 
-#include <QSlider>
 #include <QTabWidget>
 
 //
@@ -157,10 +157,6 @@ class VSlider : public VaporWidget {
     float _min, _max, _currentVal, _qsliderStepSize;
     QSlider *_qslider;
     QLineEdit *_qedit;
-
-    /* Adjust widget displays based on _currentVal.
-       _currentVal should be validated before calling this function */
-    void _updateWidgetDisplay();
 };
 
 //

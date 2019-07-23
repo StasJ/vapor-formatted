@@ -108,6 +108,7 @@ VSlider::VSlider(QWidget *parent, const std::string &label, float min, float max
     _currentVal = (_min + _max) / 2.0f;
 
     _qslider = new QSlider(this);
+    _qslider->setOrientation(Qt::Horizontal);
     /* QSlider will always have its range in integers from 0 to 100, and step size 0.01. */
     _qslider->setMinimum(0);
     _qslider->setMaximum(100);
@@ -119,7 +120,10 @@ VSlider::VSlider(QWidget *parent, const std::string &label, float min, float max
     connect(_qedit, SIGNAL(editingFinished()), this, SLOT(_respondQLineEdit()));
     _layout->addWidget(_qedit);
 
-    this->_updateWidgetDisplay();
+    /* update widget display */
+    float perc = (_currentVal - _min) / (_max - _min) * 100.0f;
+    _qslider->setValue(std::lround(perc));
+    _qedit->setText(QString::number(_currentVal, 'f', 3));
 }
 
 VSlider::~VSlider() {}
@@ -133,7 +137,9 @@ void VSlider::SetRange(float min, float max) {
        Otherwise, re-assign the middle point to _currentVal */
     if (_currentVal < min || _currentVal > max) {
         _currentVal = (min + max) / 2.0f;
-        this->_updateWidgetDisplay();
+        float perc = (_currentVal - _min) / (_max - _min) * 100.0f;
+        _qslider->setValue(std::lround(perc));
+        _qedit->setText(QString::number(_currentVal, 'f', 3));
     }
 }
 
@@ -141,7 +147,9 @@ void VSlider::SetCurrentValue(float val) {
     /* Only respond if val is within range */
     if (val >= _min && val <= _max) {
         _currentVal = val;
-        _updateWidgetDisplay();
+        float perc = (_currentVal - _min) / (_max - _min) * 100.0f;
+        _qslider->setValue(std::lround(perc));
+        _qedit->setText(QString::number(_currentVal, 'f', 3));
     }
 }
 
@@ -171,7 +179,12 @@ void VSlider::_respondQLineEdit() {
     try {
         newval = std::stof(newtext);
     } catch (const std::invalid_argument &e) {
-        std::cerr << "bad input: " << newtext << std::endl;
+        _qedit->setText(QString::number(_currentVal, 'f', 3));
+        return;
+    }
+
+    /* Now validate the input is within range */
+    if (newval < _min || newval > _max) {
         _qedit->setText(QString::number(_currentVal, 'f', 3));
         return;
     }
@@ -182,12 +195,6 @@ void VSlider::_respondQLineEdit() {
     _qslider->setValue(std::lround(perc));
 
     emit _valueChanged();
-}
-
-void VSlider::_updateWidgetDisplay() {
-    float perc = (_currentVal - _min) / (_max - _min) * 100.0f;
-    _qslider->setValue(std::lround(perc));
-    _qedit->setText(QString::number(_currentVal, 'f', 3));
 }
 
 //
