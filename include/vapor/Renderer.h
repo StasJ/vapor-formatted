@@ -277,6 +277,8 @@ class RENDER_API Renderer : public RendererBase {
     void _applyDatasetTransform();
     glm::mat4 _getRendererTransformMatrix() const;
     void _applyRendererTransform();
+    glm::mat4 _getModelMatrix() const;
+    void _applyModelMatrix();
 
     //! All OpenGL rendering is performed in the pure virtual paintGL method.
     virtual int _paintGL(bool fast) = 0;
