@@ -46,6 +46,8 @@ class OSPRayParams : public VAPoR::ParamsBase {
     static const string _numThreadsTag;
     static const string _aoSamplesTag;
     static const string _samplesPerPixelTag;
+    static const string _ambientIntensity;
+    static const string _spotlightIntensity;
 
   private:
     void _init();
