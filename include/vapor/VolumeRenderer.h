@@ -95,7 +95,6 @@ class RENDER_API VolumeRenderer : public Renderer {
     OSPGeometry sphere = nullptr;
     OSPVolume _volume = nullptr;
     OSPTransferFunction _tf = nullptr;
-    glm::mat4 _ospCoordTransform;
 
     int OSPRayLoadData(OSPModel world);
     int OSPRayLoadDataRegular(OSPModel world, Grid *grid);
@@ -103,6 +102,10 @@ class RENDER_API VolumeRenderer : public Renderer {
     int OSPRayLoadTF();
     glm::vec3 _getTotalScaling() const;
     glm::vec3 _getOrigin() const;
+
+    struct OSPCache {
+        glm::mat4 coordTransform;
+    } _ospCache;
 };
 
 }; // namespace VAPoR
