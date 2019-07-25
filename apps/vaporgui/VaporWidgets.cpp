@@ -123,35 +123,35 @@ void VRange::SetRange(float min, float max) {
     _maxSlider->SetRange(min, max);
 }
 
-void VRange::SetCurrentValMin(float min) {
-    /* _minSlider will only respond if min is within a valid range. */
-    _minSlider->SetCurrentValue(min);
+void VRange::SetCurrentValLow(float low) {
+    /* _minSlider will only respond if low is within a valid range. */
+    _minSlider->SetCurrentValue(low);
     _adjustMaxToMin();
 }
 
-void VRange::SetCurrentValMax(float max) {
-    /* _maxSlider will only respond if min is within a valid range. */
-    _maxSlider->SetCurrentValue(max);
+void VRange::SetCurrentValHigh(float high) {
+    /* _maxSlider will only respond if high is within a valid range. */
+    _maxSlider->SetCurrentValue(high);
     _adjustMinToMax();
 }
 
-void VRange::GetCurrentValRange(float &rangeMin, float &rangeMax) {
-    rangeMin = _minSlider->GetCurrentValue();
-    rangeMax = _maxSlider->GetCurrentValue();
+void VRange::GetCurrentValRange(float &low, float &high) {
+    low = _minSlider->GetCurrentValue();
+    high = _maxSlider->GetCurrentValue();
 }
 
 void VRange::_adjustMaxToMin() {
-    float newMin = _minSlider->GetCurrentValue();
-    float oldMax = _maxSlider->GetCurrentValue();
-    if (newMin > oldMax)
-        _maxSlider->SetCurrentValue(newMin);
+    float low = _minSlider->GetCurrentValue();
+    float high = _maxSlider->GetCurrentValue();
+    if (low > high)
+        _maxSlider->SetCurrentValue(low);
 }
 
 void VRange::_adjustMinToMax() {
-    float newMax = _maxSlider->GetCurrentValue();
-    float oldMin = _minSlider->GetCurrentValue();
-    if (newMax < oldMin)
-        _minSlider->SetCurrentValue(newMax);
+    float high = _maxSlider->GetCurrentValue();
+    float min = _minSlider->GetCurrentValue();
+    if (high < min)
+        _minSlider->SetCurrentValue(high);
 }
 
 void VRange::_respondMinSlider() {
