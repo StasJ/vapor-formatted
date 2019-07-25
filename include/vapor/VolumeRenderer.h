@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glm/fwd.hpp>
+#include <glm/glm.hpp>
 #include <ospray/ospray.h>
 #include <vapor/Framebuffer.h>
 #include <vapor/Renderer.h>
@@ -95,6 +95,7 @@ class RENDER_API VolumeRenderer : public Renderer {
     OSPGeometry sphere = nullptr;
     OSPVolume _volume = nullptr;
     OSPTransferFunction _tf = nullptr;
+    glm::mat4 _ospCoordTransform;
 
     int OSPRayLoadData(OSPModel world);
     int OSPRayLoadDataRegular(OSPModel world, Grid *grid);
