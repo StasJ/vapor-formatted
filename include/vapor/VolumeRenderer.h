@@ -1,8 +1,8 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include <ospray/ospray.h>
 #include <vapor/Framebuffer.h>
+#include <vapor/OSPRay.h>
 #include <vapor/Renderer.h>
 #include <vapor/Texture.h>
 #include <vapor/VolumeAlgorithm.h>
@@ -100,6 +100,7 @@ class RENDER_API VolumeRenderer : public Renderer {
     int OSPRayLoadData(OSPModel world);
     int OSPRayLoadDataRegular(OSPModel world, Grid *grid);
     int OSPRayLoadDataStructured(OSPModel world, Grid *grid);
+    int OSPRayLoadDataUnstructured(OSPModel world, Grid *grid);
     int OSPRayLoadTF();
     glm::vec3 _getTotalScaling() const;
     glm::vec3 _getOrigin() const;
