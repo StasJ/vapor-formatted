@@ -2,6 +2,7 @@
 
 #include "Flags.h"
 #include "OSPRayEnableCheckbox.h"
+#include "ParamsWidgets.h"
 #include "ui_VolumeAnnotationGUI.h"
 #include "ui_VolumeAppearanceGUI.h"
 #include "ui_VolumeGeometryGUI.h"
@@ -59,6 +60,7 @@ class VolumeAppearanceSubtab : public QWidget, public Ui_VolumeAppearanceGUI {
   private:
     VAPoR::VolumeParams *_params;
     OSPRayEnableCheckbox *_osprayCheckBox;
+    ParamsWidgetTabGroup *_osprayGroup;
 };
 
 class VolumeGeometrySubtab : public QWidget, public Ui_VolumeGeometryGUI {

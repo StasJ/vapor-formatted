@@ -3,8 +3,10 @@
 #include <QCheckBox>
 #include <QGroupBox>
 #include <QLineEdit>
+#include <QTabWidget>
 #include <QWidget>
 #include <vapor/ParamsBase.h>
+#include <vector>
 
 class ParamsWidget : public QWidget {
     Q_OBJECT
@@ -54,6 +56,8 @@ class ParamsWidgetFloat : public ParamsWidget {
     ParamsWidgetFloat(const std::string &tag, const std::string &label = "");
     void Update(VAPoR::ParamsBase *p);
 
+    ParamsWidgetFloat *SetRange(float min, float max);
+
   private slots:
     void valueChangedSlot();
 };
@@ -68,4 +72,16 @@ class ParamsWidgetGroup : public QGroupBox {
 
   protected:
     void changeEvent(QEvent *event);
+};
+
+class ParamsWidgetTabGroup : public QTabWidget {
+    Q_OBJECT
+
+    QWidget *_tab() const;
+    std::vector<ParamsWidget *> _widgets;
+
+  public:
+    ParamsWidgetTabGroup(const std::string &title);
+    void Update(VAPoR::ParamsBase *p);
+    void Add(ParamsWidget *widget);
 };

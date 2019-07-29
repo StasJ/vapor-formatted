@@ -110,7 +110,8 @@ int VolumeRenderer::_paintGL(bool fast) {
     if (fast && _wasTooSlowForFastRender())
         return 0;
 
-    CheckCache(_cache.useOSPRay, GetActiveParams()->GetValueLong("ospray", false));
+    CheckCache(_cache.useOSPRay,
+               GetActiveParams()->GetValueLong(RenderParams::OSPRayEnabledTag, false));
     if (_initializeAlgorithm() < 0)
         return -1;
     if (_loadData() < 0)
@@ -525,7 +526,7 @@ bool VolumeRenderer::_needToSetDefaultAlgorithm() const {
 
 int VolumeRenderer::OSPRayUpdate(OSPModel world) {
     VolumeParams *vp = (VolumeParams *)GetActiveParams();
-    CheckCache(_cache.useOSPRay, vp->GetValueLong("ospray", false));
+    CheckCache(_cache.useOSPRay, vp->GetValueLong(RenderParams::OSPRayEnabledTag, false));
 
     _initializeAlgorithm();
     if (OSPRayLoadData(world) < 0)
@@ -534,11 +535,14 @@ int VolumeRenderer::OSPRayUpdate(OSPModel world) {
         return -1;
 
     ospSet1b(_volume, "singleShade", false);
-    ospSet1b(_volume, "gradientShadingEnabled", vp->GetLightingEnabled());
+    ospSet1b(_volume, "gradientShadingEnabled",
+             vp->GetValueLong(VolumeParams::OSPRayLightingEnabledTag, true));
     float samplingRate = vp->GetValueDouble(VolumeParams::OSPRaySamplingRateTag, 1);
     ospSet1f(_volume, "samplingRate", samplingRate);
     ospSet1f(_volume, "adaptiveMaxSamplingRate",
              samplingRate * OSPRAY_ADAPTIVE_SAMPLING_MULTIPLIER);
+    float specular = vp->GetValueDouble(VolumeParams::OSPRaySpecularTag, 0);
+    ospSet3f(_volume, "specular", specular, specular, specular);
 
     glm::vec3 dataMin, dataMax, userMin, userMax;
     _getExtents(&dataMin, &dataMax, &userMin, &userMax);

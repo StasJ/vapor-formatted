@@ -377,6 +377,9 @@ class PARAMS_API RenderParams : public ParamsBase {
     static const string _currentTimestepTag;
 
     string _findVarStartingWithLetter(std::vector<string> searchVars, char letter);
+
+  public:
+    static const string OSPRayEnabledTag;
 };
 
 //////////////////////////////////////////////////////////////////////////
