@@ -606,7 +606,7 @@ int VolumeRenderer::OSPRayLoadDataRegular(OSPModel world, Grid *grid) {
 
     if (!_volume) {
         _volume = ospNewVolume("block_bricked_volume");
-        ospAddVolume(world, _volume);
+        OSPRayAddObjectToWorld(world);
 
         sphere = ospNewGeometry("spheres");
         float sphereData[4] = {dataMin.x, dataMin.y, dataMin.z, 0};
@@ -654,7 +654,7 @@ int VolumeRenderer::OSPRayLoadDataRegular(OSPModel world, Grid *grid) {
 
 int VolumeRenderer::OSPRayLoadDataStructured(OSPModel world, Grid *grid) {
     _volume = ospNewVolume("unstructured_volume");
-    ospAddVolume(world, _volume);
+    OSPRayAddObjectToWorld(world);
 
     const vector<size_t> dims = grid->GetDimensions();
     const int VW = dims[0], VH = dims[1], VD = dims[2];
@@ -743,7 +743,7 @@ int VolumeRenderer::OSPRayLoadDataStructured(OSPModel world, Grid *grid) {
 
 int VolumeRenderer::OSPRayLoadDataUnstructured(OSPModel world, Grid *grid) {
     _volume = ospNewVolume("unstructured_volume");
-    ospAddVolume(world, _volume);
+    OSPRayAddObjectToWorld(world);
 
     auto cellEnd = grid->ConstCellEnd();
     size_t maxNodes = grid->GetMaxVertexPerCell();
@@ -896,6 +896,8 @@ int VolumeRenderer::OSPRayLoadTF() {
 
     return 0;
 }
+
+void VolumeRenderer::OSPRayAddObjectToWorld(OSPModel world) { ospAddVolume(world, _volume); }
 
 glm::vec3 VolumeRenderer::_getTotalScaling() const {
     Transform *datasetTransform =
