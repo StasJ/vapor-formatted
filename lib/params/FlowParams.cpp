@@ -71,7 +71,7 @@ std::string FlowParams::GetSeedInputFilename() const {
     return GetValueString(_seedInputFilenameTag, "");
 }
 
-void FlowParams::SetSeedInputFilename(std::string &name) {
+void FlowParams::SetSeedInputFilename(const std::string &name) {
     SetValueString(_seedInputFilenameTag, "filename for input seeding list", name);
 }
 
@@ -79,7 +79,7 @@ std::string FlowParams::GetFlowlineOutputFilename() const {
     return GetValueString(_flowlineOutputFilenameTag, "");
 }
 
-void FlowParams::SetFlowlineOutputFilename(std::string &name) {
+void FlowParams::SetFlowlineOutputFilename(const std::string &name) {
     SetValueString(_flowlineOutputFilenameTag, "filename for output flow lines", name);
 }
 
@@ -101,7 +101,7 @@ std::vector<bool> FlowParams::GetPeriodic() const {
     return bools;
 }
 
-void FlowParams::SetPeriodic(std::vector<bool> bools) {
+void FlowParams::SetPeriodic(const std::vector<bool> &bools) {
     std::vector<long> longs(3, 0);
     for (int i = 0; i < 3; i++)
         if (bools[i])
@@ -110,14 +110,24 @@ void FlowParams::SetPeriodic(std::vector<bool> bools) {
     SetValueLongVec(_periodicTag, "any axis is periodic", longs);
 }
 
-std::vector<double> FlowParams::GetRake() const {
-    std::vector<double> tmp(6, 0.0);
+std::vector<float> FlowParams::GetRake() const {
+    const long rakeSize = 6;
+    std::vector<double> tmp(rakeSize, 0.0);
     auto doubles = GetValueDoubleVec(_rakeTag, tmp);
-    VAssert(doubles.size() == 6);
-    return doubles;
+    VAssert(doubles.size() == rakeSize);
+
+    std::vector<float> floats(rakeSize, 0.0f);
+    for (int i = 0; i < rakeSize; i++)
+        floats[i] = doubles[i];
+    return floats;
 }
 
-void FlowParams::SetRake(std::vector<double> doubles) {
-    VAssert(doubles.size() == 6);
+void FlowParams::SetRake(const std::vector<float> &rake) {
+    const long rakeSize = 6;
+    VAssert(rake.size() == rakeSize);
+    std::vector<double> doubles(rakeSize, 0.0);
+    for (int i = 0; i < rakeSize; i++)
+        doubles[i] = rake[i];
+
     SetValueDoubleVec(_rakeTag, "rake boundaries", doubles);
 }
