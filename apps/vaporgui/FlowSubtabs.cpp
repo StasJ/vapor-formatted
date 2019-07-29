@@ -216,11 +216,13 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
 
     /* Update rake values */
     auto rakeVals = _params->GetRake();
-    // In case the user hasn't set the rake, set the current value to be the rake extents.
-    //   Otherwise, apply the actual rake values.
-    if (std::isnan(rakeVals[0]))
+    /* In case the user hasn't set the rake, set the current value to be the rake extents,
+       plus update the params.
+       Otherwise, apply the actual rake values. */
+    if (std::isnan(rakeVals[0])) {
         _rake->SetCurrentValues(range);
-    else
+        _params->SetRake(range);
+    } else
         _rake->SetCurrentValues(rakeVals);
 
     /* Update input and output file names */
