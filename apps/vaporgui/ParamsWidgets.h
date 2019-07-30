@@ -3,6 +3,7 @@
 #include <QCheckBox>
 #include <QGroupBox>
 #include <QLineEdit>
+#include <QPushButton>
 #include <QTabWidget>
 #include <QWidget>
 #include <vapor/ParamsBase.h>
@@ -60,6 +61,22 @@ class ParamsWidgetFloat : public ParamsWidget {
 
   private slots:
     void valueChangedSlot();
+};
+
+class ParamsWidgetColor : public ParamsWidget {
+    Q_OBJECT
+
+    QPushButton *_button = nullptr;
+
+  public:
+    ParamsWidgetColor(const std::string &tag, const std::string &label = "");
+    void Update(VAPoR::ParamsBase *p);
+
+    static QColor VectorToQColor(const std::vector<double> &v);
+    static std::vector<double> QColorToVector(const QColor &c);
+
+  private slots:
+    void pressed();
 };
 
 class ParamsWidgetGroup : public QGroupBox {

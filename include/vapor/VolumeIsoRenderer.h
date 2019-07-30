@@ -44,6 +44,7 @@ class RENDER_API VolumeIsoRenderer : public VolumeRenderer {
     void OSPRayAddObjectToWorld(OSPModel world);
     void OSPRayRemoveObjectFromWorld(OSPModel world);
 
+    OSPMaterial _ospMaterial = nullptr;
     OSPGeometry _ospIsoSurfaces = nullptr;
 };
 
