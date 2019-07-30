@@ -500,6 +500,14 @@ int FlowRenderer::_genSeedsXY(std::vector<flow::Particle> &seeds, float timeVal)
     return 0;
 }
 
+/* int
+FlowRenderer::_genSeedRakeUniform( std::vector<flow::Particle>& seeds,
+                                   float timeVal ) const
+{
+    FlowParams* params = dynamic_cast<FlowParams*>( GetActiveParams() );
+    auto rakeRange     = params->GetRake();
+} */
+
 int FlowRenderer::_getAGrid(const FlowParams *params, int timestep, std::string &varName,
                             Grid **gridpp) const {
     std::vector<double> extMin, extMax;
