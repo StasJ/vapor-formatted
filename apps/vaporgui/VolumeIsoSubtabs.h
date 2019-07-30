@@ -5,6 +5,7 @@
 #include "ui_VolumeIsoGeometryGUI.h"
 #include "ui_VolumeIsoVariablesGUI.h"
 
+#include "ParamsWidgets.h"
 #include "vapor/VolumeIsoParams.h"
 
 namespace VAPoR {
@@ -62,6 +63,7 @@ class VolumeIsoAppearanceSubtab : public QWidget, public Ui_VolumeIsoAppearanceG
 
   private:
     VAPoR::VolumeIsoParams *_params;
+    ParamsWidgetTabGroup *_osprayGroup;
 };
 
 class VolumeIsoGeometrySubtab : public QWidget, public Ui_VolumeIsoGeometryGUI {
