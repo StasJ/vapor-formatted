@@ -124,7 +124,8 @@ void VolumeIsoRenderer::OSPRayDelete(OSPModel world) {
 int VolumeIsoRenderer::OSPRayLoadTF() {
     RenderParams *rp = GetActiveParams();
     if (!rp->UseSingleColor())
-        return VolumeRenderer::OSPRayLoadTF();
+        if (VolumeRenderer::OSPRayLoadTF() < 0)
+            return -1;
 
     MapperFunction *tf = _needToLoadTF();
     if (!tf)
@@ -143,10 +144,11 @@ int VolumeIsoRenderer::OSPRayLoadTF() {
         ospSetObject(_volume, "transferFunction", _tf);
     }
 
-    float colors[3];
+    float colors[3] = {1.0f};
     float opacities[1];
 
-    rp->GetConstantColor(colors);
+    if (rp->UseSingleColor())
+        rp->GetConstantColor(colors);
     opacities[0] = rp->GetConstantOpacity();
 
     OSPData colorData = ospNewData(1, OSP_FLOAT3, colors);
