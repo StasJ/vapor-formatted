@@ -27,6 +27,7 @@
 #include "AnimationParams.h"
 #include "GUIStateParams.h"
 #include "SettingsParams.h"
+#include "vapor/VAssert.h"
 #include <QActionGroup>
 #include <QComboBox>
 #include <QIcon>
@@ -34,7 +35,6 @@
 #include <QLineEdit>
 #include <QPaintEvent>
 #include <QWidgetAction>
-#include <cassert>
 #include <qmainwindow.h>
 #include <qstring.h>
 #include <qvariant.h>
@@ -106,7 +106,6 @@ class MainForm : public QMainWindow {
     QAction *_navigationAction;
     QAction *_editUndoAction;
     QAction *_editRedoAction;
-    QAction *_editUndoRedoClearAction;
     QLineEdit *_timeStepEdit;
     QIntValidator *_timeStepEditValidator;
 
@@ -253,22 +252,22 @@ class MainForm : public QMainWindow {
     }
 
     GUIStateParams *GetStateParams() const {
-        assert(_paramsMgr != NULL);
+        VAssert(_paramsMgr != NULL);
         return ((GUIStateParams *)_paramsMgr->GetParams(GUIStateParams::GetClassType()));
     }
 
     SettingsParams *GetSettingsParams() const {
-        assert(_paramsMgr != NULL);
+        VAssert(_paramsMgr != NULL);
         return ((SettingsParams *)_paramsMgr->GetParams(SettingsParams::GetClassType()));
     }
 
     AnimationParams *GetAnimationParams() const {
-        assert(_paramsMgr != NULL);
+        VAssert(_paramsMgr != NULL);
         return ((AnimationParams *)_paramsMgr->GetParams(AnimationParams::GetClassType()));
     }
 
     /*MiscParams *GetMiscParams() const {
-       assert(_paramsMgr != NULL);
+       VAssert(_paramsMgr != NULL);
        return ((MiscParams *)
            _paramsMgr->GetParams(MiscParams::GetClassType())
        );
@@ -280,6 +279,8 @@ class MainForm : public QMainWindow {
     void updateMenus();
     void update();
     virtual void undoRedoHelper(bool undo);
+    static bool doesQStringContainNonASCIICharacter(const QString &s);
+    static int checkQStringContainsNonASCIICharacter(const QString &s);
     std::vector<string> myGetOpenFileNames(string prompt, string dir, string filter, bool multi);
 
     void closeDataHelper(string dataSetName);
@@ -319,7 +320,6 @@ class MainForm : public QMainWindow {
     void fileExit();
     void undo();
     void redo();
-    void clear();
     void helpAbout();
     void loadData(string fileName = "");
     void closeData(string fileName = "");

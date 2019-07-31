@@ -1,7 +1,7 @@
 #include "QSliderEdit.h"
 #include "ui_QSliderEdit.h"
 
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <cmath>
 #include <iostream>
 

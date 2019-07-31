@@ -1,4 +1,4 @@
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <cstdio>
 #include <iomanip>
 #include <iostream>
@@ -144,7 +144,7 @@ void test_datamgr(vector<string> files) {
 
     DC::DataVar datavar;
     rc = datamgr.GetDataVarInfo(inputVarName, datavar);
-    assert(rc >= 0);
+    VAssert(rc >= 0);
 
     vector<string> inputVarNames = {inputVarName};
     vector<string> outputVarNames = {outputVarName};
@@ -213,7 +213,7 @@ void test_controlexec_copy(vector<string> files) {
 
     DC::DataVar datavar;
     rc = dataMgr->GetDataVarInfo(inputVarName, datavar);
-    assert(rc >= 0);
+    VAssert(rc >= 0);
 
     vector<string> inputVarNames = {inputVarName};
     vector<string> outputVarNames = {outputVarName};
@@ -293,7 +293,7 @@ void test_controlexec_coord(vector<string> files) {
 
     DC::DataVar datavar;
     rc = dataMgr->GetDataVarInfo(inputVarName, datavar);
-    assert(rc >= 0);
+    VAssert(rc >= 0);
 
     vector<string> inputVarNames = {inputVarName};
     vector<string> outputVarNames = {outputVarName};
@@ -371,7 +371,7 @@ void test_controlexec_add(vector<string> files) {
 
     DC::DataVar datavar;
     rc = dataMgr->GetDataVarInfo(inputVarNames[0], datavar);
-    assert(rc >= 0);
+    VAssert(rc >= 0);
 
     vector<string> outputMeshNames = {datavar.GetMeshName()};
 

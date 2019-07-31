@@ -1,4 +1,4 @@
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <cmath>
 #include <iostream>
 #include <vector>
@@ -20,14 +20,14 @@ KDTreeRG::KDTreeRG(const Grid &xg, const Grid &yg)
 KDTreeRG::~KDTreeRG() {}
 
 void KDTreeRG::Nearest(const vector<float> &coordu, vector<size_t> &coord) const {
-    assert(coordu.size() == 2); // 3D case isn't supported yet
+    VAssert(coordu.size() == 2); // 3D case isn't supported yet
 
     size_t ret_index;
     float dist_sqr;
     nanoflann::KNNResultSet<float, size_t> resultSet(1);
     resultSet.init(&ret_index, &dist_sqr);
     bool rt = _kdtree.findNeighbors(resultSet, coordu.data(), nanoflann::SearchParams());
-    assert(rt);
+    VAssert(rt);
 
     // De-serialize the linear offset and put it back in vector form
     coord.clear();
@@ -42,14 +42,14 @@ KDTreeRGSubset::KDTreeRGSubset() {
 
 KDTreeRGSubset::KDTreeRGSubset(const KDTreeRG *kdtreerg, const vector<size_t> &min,
                                const vector<size_t> &max) {
-    assert(min.size() == max.size());
+    VAssert(min.size() == max.size());
 
     vector<size_t> dims = kdtreerg->GetDimensions();
-    assert(min.size() == dims.size());
+    VAssert(min.size() == dims.size());
 
     for (int i = 0; i < dims.size(); i++) {
-        assert(min[i] <= max[i]);
-        assert(max[i] < dims[i]);
+        VAssert(min[i] <= max[i]);
+        VAssert(max[i] < dims[i]);
     }
 
     _kdtree = kdtreerg; // shallow copy
@@ -61,7 +61,7 @@ KDTreeRGSubset::KDTreeRGSubset(const KDTreeRG *kdtreerg, const vector<size_t> &m
 // The origin is given by min
 //
 void KDTreeRGSubset::Nearest(const vector<float> &coordu, vector<size_t> &coord) const {
-    assert(coordu.size() == _min.size());
+    VAssert(coordu.size() == _min.size());
 
     coord.clear();
 
