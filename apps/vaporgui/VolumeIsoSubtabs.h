@@ -5,6 +5,7 @@
 #include "ui_VolumeIsoGeometryGUI.h"
 #include "ui_VolumeIsoVariablesGUI.h"
 
+#include "OSPRayEnableCheckbox.h"
 #include "ParamsWidgets.h"
 #include "vapor/VolumeIsoParams.h"
 
@@ -44,7 +45,6 @@ class VolumeIsoAppearanceSubtab : public QWidget, public Ui_VolumeIsoAppearanceG
     void on__castingModeComboBox_currentIndexChanged(const QString &text);
     void on__samplingRateComboBox_currentIndexChanged(const QString &text);
 
-    void on__lightingCheckBox_toggled(bool checked);
     void on__ambientWidget_valueChanged(double value);
     void on__diffuseWidget_valueChanged(double value);
     void on__specularWidget_valueChanged(double value);
@@ -63,6 +63,7 @@ class VolumeIsoAppearanceSubtab : public QWidget, public Ui_VolumeIsoAppearanceG
 
   private:
     VAPoR::VolumeIsoParams *_params;
+    OSPRayEnableCheckbox *_osprayCheckBox;
     ParamsWidgetTabGroup *_osprayGroup;
 };
 
