@@ -32,10 +32,14 @@ OSPRayEventRouter::OSPRayEventRouter(QWidget *parent, ControlExec *ce)
     ParamsWidgetGroup *group = new ParamsWidgetGroup("Global Config");
 
     _addParamsWidget(
-        group, new ParamsWidgetNumber(OSPRayParams::_aoSamplesTag, "Ambient Occlusion Samples"));
-    _addParamsWidget(group, new ParamsWidgetNumber(OSPRayParams::_samplesPerPixelTag));
-    _addParamsWidget(group, new ParamsWidgetFloat(OSPRayParams::_ambientIntensity));
-    _addParamsWidget(group, new ParamsWidgetFloat(OSPRayParams::_spotlightIntensity));
+        group, (new ParamsWidgetNumber(OSPRayParams::_aoSamplesTag, "Ambient Occlusion Samples"))
+                   ->SetRange(0, 1000));
+    _addParamsWidget(group,
+                     (new ParamsWidgetNumber(OSPRayParams::_samplesPerPixelTag))->SetRange(1, 100));
+    _addParamsWidget(group,
+                     (new ParamsWidgetFloat(OSPRayParams::_ambientIntensity))->SetRange(0, 1));
+    _addParamsWidget(group,
+                     (new ParamsWidgetFloat(OSPRayParams::_spotlightIntensity))->SetRange(0, 1));
 
     layout->addWidget(group);
     layout->addStretch();
