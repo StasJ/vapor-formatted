@@ -46,6 +46,7 @@ class RENDER_API VolumeIsoRenderer : public VolumeRenderer {
 
     OSPMaterial _ospMaterial = nullptr;
     OSPGeometry _ospIsoSurfaces = nullptr;
+    OSPTexture _ospColormapVolumeTexture = nullptr;
 };
 
 }; // namespace VAPoR

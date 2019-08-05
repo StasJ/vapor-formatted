@@ -85,6 +85,7 @@ class RENDER_API VolumeRenderer : public Renderer {
     } _cache;
 
     bool _needToLoadData();
+    bool _needToLoadSecondaryData();
     MapperFunction *_needToLoadTF();
 
   public:
@@ -93,10 +94,13 @@ class RENDER_API VolumeRenderer : public Renderer {
 
   protected:
     OSPVolume _volume = nullptr;
+    OSPVolume _colormappingVolume = nullptr;
     OSPTransferFunction _tf = nullptr;
+    OSPTransferFunction _colormappingTF = nullptr;
 
     bool OSPRayNeedToLoadData();
     int OSPRayLoadData(OSPModel world);
+    int OSPRayLoadSecondaryData(OSPModel world);
 
     static OSPVolume OSPRayCreateVolumeFromGrid(const Grid *grid, const glm::mat4 &transform);
     static OSPVolume OSPRayCreateVolumeFromRegularGrid(const Grid *grid,
@@ -106,6 +110,7 @@ class RENDER_API VolumeRenderer : public Renderer {
     static OSPVolume OSPRayCreateVolumeFromUnstructuredGrid(const Grid *grid,
                                                             const glm::mat4 &transform);
     virtual int OSPRayLoadTF();
+    static int OSPRayLoadTF(OSPVolume volume, OSPTransferFunction *ospTF, MapperFunction *vTF);
     virtual void OSPRayAddObjectToWorld(OSPModel world);
     virtual void OSPRayRemoveObjectFromWorld(OSPModel world);
     glm::vec3 _getTotalScaling() const;
