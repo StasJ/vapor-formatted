@@ -5,6 +5,7 @@
 #include "ui_VolumeAppearanceGUI.h"
 #include "ui_VolumeGeometryGUI.h"
 #include "ui_VolumeVariablesGUI.h"
+#include <TFEditor.h>
 #include <vapor/MapperFunction.h>
 #include <vapor/VolumeParams.h>
 
@@ -23,6 +24,7 @@ class VolumeVariablesSubtab : public QWidget, public Ui_VolumeVariablesGUI {
     VolumeVariablesSubtab(QWidget *parent) {
         setupUi(this);
         _variablesWidget->Reinit((VariableFlags)(SCALAR), (DimFlags)(THREED));
+        ((QVBoxLayout *)layout())->insertWidget(1, tf = new TFEditor);
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
@@ -31,6 +33,7 @@ class VolumeVariablesSubtab : public QWidget, public Ui_VolumeVariablesGUI {
 
   private:
     VAPoR::VolumeParams *_volumeParams;
+    TFEditor *tf;
 };
 
 class VolumeAppearanceSubtab : public QWidget, public Ui_VolumeAppearanceGUI {
