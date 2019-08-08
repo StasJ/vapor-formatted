@@ -62,6 +62,10 @@ class ControlPointList {
 
     void Add(const glm::vec2 &v, const int i) { _points.insert(_points.begin() + i, v); }
 
+    void Add(const glm::vec2 &v, const LineIterator &line) {
+        _points.insert(_points.begin() + line.i, v);
+    }
+
     int Size() const { return _points.size(); }
     int SizeLines() const { return Size() + 1; }
 
@@ -94,6 +98,8 @@ class TFFunctionEditor : public QWidget {
     glm::vec2 _dragOffset;
     glm::vec2 m;
 
-    QPointF NDCToPixel(const glm::vec2 &v) const;
+    glm::vec2 NDCToPixel(const glm::vec2 &v) const;
+    QPointF QNDCToPixel(const glm::vec2 &v) const;
     glm::vec2 PixelToNDC(const QPointF &p) const;
+    glm::vec2 PixelToNDC(const glm::vec2 &p) const;
 };
