@@ -1,7 +1,9 @@
 #include "TFFunctionEditor.h"
 #include <QPaintEvent>
+#include <QPainter>
 #include <glm/glm.hpp>
 
+using namespace VAPoR;
 using glm::clamp;
 using glm::vec2;
 using std::vector;
@@ -32,13 +34,29 @@ float DistanceToLine(vec2 a, vec2 b, vec2 p) {
 
 TFFunctionEditor::TFFunctionEditor() {
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
-
+    this->setFrameStyle(QFrame::Box);
+    _controlPoints.Add(vec2(0, 0));
     _controlPoints.Add(vec2(0.2, 0.5));
     _controlPoints.Add(vec2(0.5, 0.8));
 }
 
 void TFFunctionEditor::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
-                              VAPoR::RenderParams *rParams) {}
+                              VAPoR::RenderParams *rp) {
+    _renderParams = rp;
+
+    MapperFunction *mf = rp->GetMapperFunc(rp->GetVariableName());
+    int n = mf->getNumOpacityMaps();
+    printf("# opacity maps = %i\n", n);
+
+    OpacityMap *om = mf->GetOpacityMap(0);
+
+    vector<double> cp = om->GetControlPoints();
+    _controlPoints.Resize(cp.size() / 2);
+    for (int i = 0; i < cp.size(); i += 2) {
+        _controlPoints[i / 2].y = cp[i];
+        _controlPoints[i / 2].x = cp[i + 1];
+    }
+}
 
 QSize TFFunctionEditor::minimumSizeHint() const { return QSize(100, 100); }
 
@@ -46,8 +64,11 @@ QSize TFFunctionEditor::minimumSizeHint() const { return QSize(100, 100); }
 #define PADDING (CONTROL_POINT_RADIUS + 1.0f)
 
 void TFFunctionEditor::paintEvent(QPaintEvent *event) {
+    QFrame::paintEvent(event);
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
+    //    p.setViewport(10, 10, 30, 30);
+    //    p.setWindow(10, 10, 30, 30);
 
     //    p.fillRect(event->rect(), QBrush(QColor(64, 32, 64)));
 
@@ -57,7 +78,8 @@ void TFFunctionEditor::paintEvent(QPaintEvent *event) {
         for (auto it = cp.BeginLines(); it != cp.EndLines(); ++it) {
             p.drawLine(QNDCToPixel(it.a()), QNDCToPixel(it.b()));
 
-            p.drawEllipse(qvec2(Project(NDCToPixel(it.a()), NDCToPixel(it.b()), m)), 2, 2);
+            //            p.drawEllipse(qvec2(Project(NDCToPixel(it.a()), NDCToPixel(it.b()), m)),
+            //            2, 2);
         }
 
         QPen pen(Qt::darkGray, 0.8);
@@ -82,7 +104,11 @@ void TFFunctionEditor::mousePressEvent(QMouseEvent *event) {
     }
 }
 
-void TFFunctionEditor::mouseReleaseEvent(QMouseEvent *event) { _isDraggingControl = false; }
+void TFFunctionEditor::mouseReleaseEvent(QMouseEvent *event) {
+    if (_isDraggingControl)
+        opacityChanged();
+    _isDraggingControl = false;
+}
 
 void TFFunctionEditor::mouseMoveEvent(QMouseEvent *event) {
     vec2 mouse = qvec2(event->pos());
@@ -109,6 +135,7 @@ void TFFunctionEditor::mouseDoubleClickEvent(QMouseEvent *event) {
     auto controlPointIt = findSelectedControlPoint(mouse);
     if (controlPointIt != cp.EndPoints()) {
         cp.Remove(controlPointIt);
+        opacityChanged();
         update();
         return;
     }
@@ -119,11 +146,26 @@ void TFFunctionEditor::mouseDoubleClickEvent(QMouseEvent *event) {
 
         if (DistanceToLine(a, b, mouse) <= CONTROL_POINT_RADIUS) {
             cp.Add(PixelToNDC(Project(a, b, mouse)), it);
-            break;
+            opacityChanged();
+            update();
+            return;
         }
     }
+}
 
-    update();
+void TFFunctionEditor::opacityChanged() {
+    MapperFunction *mf = _renderParams->GetMapperFunc(_renderParams->GetVariableName());
+    int n = mf->getNumOpacityMaps();
+    printf("# opacity maps = %i\n", n);
+
+    OpacityMap *om = mf->GetOpacityMap(0);
+
+    vector<double> cp(_controlPoints.Size() * 2);
+    for (int i = 0; i < _controlPoints.Size(); i++) {
+        cp[i * 2] = _controlPoints[i].y;
+        cp[i * 2 + 1] = _controlPoints[i].x;
+    }
+    om->SetControlPoints(cp);
 }
 
 bool TFFunctionEditor::controlPointContainsPixel(const vec2 &cp, const vec2 &pixel) const {
