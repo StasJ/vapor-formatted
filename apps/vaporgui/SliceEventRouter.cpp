@@ -5,6 +5,7 @@
 
 #include "SliceEventRouter.h"
 #include "EventRouter.h"
+#include "ParamsWidgets.h"
 #include "VariablesWidget.h"
 #include "vapor/SliceParams.h"
 #include "vapor/SliceRenderer.h"
@@ -25,6 +26,18 @@ static RenderEventRouterRegistrar<SliceEventRouter> registrar(SliceEventRouter::
 
 SliceEventRouter::SliceEventRouter(QWidget *parent, ControlExec *ce)
     : QTabWidget(parent), RenderEventRouter(ce, SliceParams::GetClassType()) {
+    _testTab = new QWidget(this);
+    _testTab->setLayout(new QVBoxLayout);
+    QScrollArea *sa = new QScrollArea(this);
+
+    _sb = new PSpinBox(this, "testTag", "testDesc", "testLabel", 0, 100, 5);
+    _testTab->layout()->addWidget(_sb);
+
+    sa->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    sa->setWidget(_testTab);
+    sa->adjustSize();
+    addTab(sa, "ParamsWidgets");
+
     _variables = new SliceVariablesSubtab(this);
     QScrollArea *qsvar = new QScrollArea(this);
     qsvar->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

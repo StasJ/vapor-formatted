@@ -2,6 +2,7 @@
 #define SLICEEVENTROUTER_H
 
 #include "GL/glew.h"
+#include "ParamsWidgets.h"
 #include "RenderEventRouter.h"
 #include "SliceSubtabs.h"
 #include "VariablesWidget.h"
@@ -42,6 +43,9 @@ class SliceEventRouter : public QTabWidget, public RenderEventRouter {
     //
     static string GetClassType() { return (VAPoR::SliceRenderer::GetClassType()); }
     string GetType() const { return GetClassType(); }
+
+    QWidget *_testTab;
+    PSpinBox *_sb;
 
   protected:
     void _updateTab();
