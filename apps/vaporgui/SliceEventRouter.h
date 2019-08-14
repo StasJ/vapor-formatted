@@ -45,7 +45,12 @@ class SliceEventRouter : public QTabWidget, public RenderEventRouter {
     string GetType() const { return GetClassType(); }
 
     QWidget *_testTab;
-    PSpinBox *_sb;
+    PSpinBox *_psb;
+    PSpinBox *_psb2;
+    VSpinBox *_vsb;
+    PSlider *_psl;
+    PSlider *_psl2;
+    PRange *_prange;
 
   protected:
     void _updateTab();
