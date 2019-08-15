@@ -34,11 +34,6 @@ class TFColorWidget : public QFrame {
 
     bool controlPointContainsPixel(const glm::vec2 &cp, const glm::vec2 &pixel) const;
 
-    glm::vec2 NDCToPixel(const glm::vec2 &v) const;
-    QPointF QNDCToPixel(const glm::vec2 &v) const;
-    glm::vec2 PixelToNDC(const QPointF &p) const;
-    glm::vec2 PixelToNDC(const glm::vec2 &p) const;
-
     VAPoR::ColorMap *getColormap() const;
     int findSelectedControlPoint(const glm::vec2 &mouse) const;
     bool controlPointContainsPixel(float cp, const glm::vec2 &pixel) const;
