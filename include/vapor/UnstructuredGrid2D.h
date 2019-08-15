@@ -39,8 +39,6 @@ class VDF_API UnstructuredGrid2D : public UnstructuredGrid {
 
     virtual std::vector<size_t> GetCoordDimensions(size_t dim) const override;
 
-    virtual float GetUserCoordinate(std::vector<size_t> &index, size_t dim) const override;
-
     virtual size_t GetGeometryDim() const override;
 
     static std::string GetClassType() { return ("Unstructured2D"); }
@@ -56,8 +54,7 @@ class VDF_API UnstructuredGrid2D : public UnstructuredGrid {
     void GetEnclosingRegion(const std::vector<double> &minu, const std::vector<double> &maxu,
                             std::vector<size_t> &min, std::vector<size_t> &max) const override;
 
-    void GetUserCoordinates(const std::vector<size_t> &indices,
-                            std::vector<double> &coords) const override;
+    virtual void GetUserCoordinates(const size_t indices[], double coords[]) const override;
 
     void GetIndices(const std::vector<double> &coords, std::vector<size_t> &indices) const override;
 

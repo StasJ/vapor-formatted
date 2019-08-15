@@ -20,7 +20,7 @@
 //		It is a base class for Params, MapperFunction and other classes
 //		that retain their state in xml nodes
 //
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <functional>
 #include <string>
 #include <vapor/ParamsBase.h>
@@ -40,7 +40,7 @@ void string_replace(vector<string> &v, string olds, string news) {
 }; // namespace
 
 ParamsBase::ParamsBase(StateSave *ssave, const string &classname) {
-    assert(ssave != NULL);
+    VAssert(ssave != NULL);
 
     _ssave = ssave;
     _node = NULL;
@@ -50,8 +50,8 @@ ParamsBase::ParamsBase(StateSave *ssave, const string &classname) {
 }
 
 ParamsBase::ParamsBase(StateSave *ssave, XmlNode *node) {
-    assert(ssave != NULL);
-    assert(node != NULL);
+    VAssert(ssave != NULL);
+    VAssert(node != NULL);
 
     _ssave = ssave;
     _node = node;
@@ -65,7 +65,7 @@ ParamsBase::ParamsBase(const ParamsBase &rhs) {
 }
 
 ParamsBase::ParamsBase(StateSave *ssave) {
-    assert(ssave != NULL);
+    VAssert(ssave != NULL);
 
     _ssave = ssave;
     _node = NULL;
@@ -147,7 +147,7 @@ vector<double> ParamsBase::GetValueDoubleVec(const string tag) const {
 
     vector<double> empty;
 
-    assert(_node);
+    VAssert(_node);
 
     bool test = _node->HasElementDouble(tag);
     if (!test)
@@ -306,7 +306,7 @@ ParamsSeparator::ParamsSeparator(ParamsSeparator *parent, const string &name)
 
     if (parent->GetNode()->HasChild(name)) {
         _node = parent->GetNode()->GetChild(name);
-        assert(_node);
+        VAssert(_node);
     } else {
         _node = parent->GetNode()->NewChild(name);
         parent->_ssave->Save(parent->GetNode(), "New params");
@@ -352,7 +352,7 @@ vector<string> ParamsFactory::GetFactoryNames() const {
 /////////////////////////////////////////////////////////////////////////
 
 ParamsContainer::ParamsContainer(ParamsBase::StateSave *ssave, const string &name) {
-    assert(ssave != NULL);
+    VAssert(ssave != NULL);
 
     _ssave = ssave;
     _separator = NULL;
@@ -362,8 +362,8 @@ ParamsContainer::ParamsContainer(ParamsBase::StateSave *ssave, const string &nam
 }
 
 ParamsContainer::ParamsContainer(ParamsBase::StateSave *ssave, XmlNode *node) {
-    assert(ssave != NULL);
-    assert(node != NULL);
+    VAssert(ssave != NULL);
+    VAssert(node != NULL);
 
     _ssave = ssave;
     _separator = new ParamsSeparator(ssave, node);
@@ -419,7 +419,7 @@ ParamsContainer::ParamsContainer(const ParamsContainer &rhs) {
 }
 
 ParamsContainer &ParamsContainer::operator=(const ParamsContainer &rhs) {
-    assert(_separator);
+    VAssert(_separator);
 
     vector<string> mynames = GetNames();
     for (int i = 0; i < mynames.size(); i++) {
@@ -435,7 +435,7 @@ ParamsContainer &ParamsContainer::operator=(const ParamsContainer &rhs) {
     vector<string> names = rhs.GetNames();
     for (int i = 0; i < names.size(); i++) {
         XmlNode *eleNameNode = _separator->GetNode()->GetChild(names[i]);
-        assert(eleNameNode);
+        VAssert(eleNameNode);
 
         ParamsSeparator mySep(_ssave, eleNameNode);
 
@@ -468,7 +468,7 @@ ParamsContainer::~ParamsContainer() {
 }
 
 ParamsBase *ParamsContainer::Insert(ParamsBase *pb, string name) {
-    assert(pb != NULL);
+    VAssert(pb != NULL);
     if (name.empty()) {
         name = "NULL";
     }
@@ -490,7 +490,7 @@ ParamsBase *ParamsContainer::Insert(ParamsBase *pb, string name) {
     string classname = pb->GetName();
     XmlNode *node = new XmlNode(*(pb->GetNode()));
     ParamsBase *mypb = ParamsFactory::Instance()->CreateInstance(classname, _ssave, node);
-    assert(mypb != NULL);
+    VAssert(mypb != NULL);
     mypb->SetParent(&mySep);
 
     _elements[name] = mypb;
@@ -501,8 +501,8 @@ ParamsBase *ParamsContainer::Insert(ParamsBase *pb, string name) {
 }
 
 ParamsBase *ParamsContainer::Create(string className, string name) {
-    assert(!className.empty());
-    assert(!name.empty());
+    VAssert(!className.empty());
+    VAssert(!name.empty());
 
     map<string, ParamsBase *>::iterator itr = _elements.find(name);
     if (itr != _elements.end()) {
@@ -519,7 +519,7 @@ ParamsBase *ParamsContainer::Create(string className, string name) {
     // Create the desired class
     //
     ParamsBase *mypb = ParamsFactory::Instance()->CreateInstance(className, _ssave, NULL);
-    assert(mypb != NULL);
+    VAssert(mypb != NULL);
 
     mypb->SetParent(&mySep);
 

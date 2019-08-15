@@ -1,4 +1,4 @@
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <iostream>
 #include <list>
 #include <vapor/BlkMemMgr.h>
@@ -148,21 +148,21 @@ class VDF_API DataMgr : public Wasp::MyBase {
     //! \copydoc DC::GetDimensionNames()
     //
     std::vector<string> GetDimensionNames() const {
-        assert(_dc);
+        VAssert(_dc);
         return (_dc->GetDimensionNames());
     }
 
     //! \copydoc DC::GetDimension()
     //
     bool GetDimension(string dimname, DC::Dimension &dimension) const {
-        assert(_dc);
+        VAssert(_dc);
         return (_dc->GetDimension(dimname, dimension));
     }
 
     //! \copydoc DC::GetMeshNames()
     //
     std::vector<string> GetMeshNames() const {
-        assert(_dc);
+        VAssert(_dc);
         return (_dc->GetMeshNames());
     }
 
@@ -445,6 +445,15 @@ class VDF_API DataMgr : public Wasp::MyBase {
                                   std::vector<size_t> &dims_at_level) const {
         std::vector<size_t> dummy;
         return (GetDimLensAtLevel(varname, level, dims_at_level, dummy));
+    }
+
+    //! Return a variable's array dimension lengths
+    //!
+    //! This method is equivalent to calling GetDimLensAtLevel() with \p level
+    //! equal to -1
+    //!
+    virtual int GetDimLens(string varname, std::vector<size_t> &dims) {
+        return (GetDimLensAtLevel(varname, -1, dims));
     }
 
     //! Unlock a floating-point region of memory

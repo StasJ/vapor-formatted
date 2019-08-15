@@ -40,7 +40,7 @@
 //	Univeristy of Minnesota
 //
 
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <cfloat>
 #include <cmath>
 #include <cstdio>

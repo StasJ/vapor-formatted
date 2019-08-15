@@ -24,10 +24,10 @@
 #include "GUIStateParams.h"
 #include "SettingsParams.h"
 #include "vapor/ControlExecutive.h"
+#include "vapor/VAssert.h"
 #include <QLineEdit>
 #include <QObject>
 #include <QSlider>
-#include <cassert>
 
 #ifdef WIN32
 // Annoying unreferenced formal parameter warning
@@ -216,13 +216,13 @@ class EventRouter {
     virtual void EndCursorMove();
 
     GUIStateParams *GetStateParams() const {
-        assert(_controlExec != NULL);
+        VAssert(_controlExec != NULL);
         return ((GUIStateParams *)_controlExec->GetParamsMgr()->GetParams(
             GUIStateParams::GetClassType()));
     }
 
     AnimationParams *GetAnimationParams() const {
-        assert(_controlExec != NULL);
+        VAssert(_controlExec != NULL);
         return ((AnimationParams *)_controlExec->GetParamsMgr()->GetParams(
             AnimationParams::GetClassType()));
     }
@@ -231,7 +231,7 @@ class EventRouter {
         AnimationParams *aParams;
         aParams = (AnimationParams *)_controlExec->GetParamsMgr()->GetParams(
             AnimationParams::GetClassType());
-        assert(aParams);
+        VAssert(aParams);
 
         return (aParams->GetCurrentTimestep());
     }

@@ -1,5 +1,5 @@
+#include "vapor/VAssert.h"
 #include <algorithm>
-#include <cassert>
 #include <sstream>
 #include <vapor/DerivedVar.h>
 #include <vapor/NetCDFCollection.h>
@@ -21,8 +21,8 @@ size_t numBlocks(size_t min, size_t max, size_t bs) {
 
 #ifdef UNUSED_FUNCTION
 size_t numBlocks(const vector<size_t> &min, const vector<size_t> &max, const vector<size_t> &bs) {
-    assert(min.size() == max.size());
-    assert(min.size() == bs.size());
+    VAssert(min.size() == max.size());
+    VAssert(min.size() == bs.size());
 
     size_t nblocks = 1;
     for (int i = 0; i < bs.size(); i++) {
@@ -34,11 +34,11 @@ size_t numBlocks(const vector<size_t> &min, const vector<size_t> &max, const vec
 
 #ifdef UNUSED_FUNCTION
 size_t numBlocks(const vector<size_t> &dims, const vector<size_t> &bs) {
-    assert(dims.size() == bs.size());
+    VAssert(dims.size() == bs.size());
 
     size_t nblocks = 1;
     for (int i = 0; i < bs.size(); i++) {
-        assert(dims[i] != 0);
+        VAssert(dims[i] != 0);
         nblocks *= (((dims[i] - 1) / bs[i]) + 1);
     }
     return (nblocks);
@@ -46,7 +46,7 @@ size_t numBlocks(const vector<size_t> &dims, const vector<size_t> &bs) {
 #endif
 
 size_t numElements(const vector<size_t> &min, const vector<size_t> &max) {
-    assert(min.size() == max.size());
+    VAssert(min.size() == max.size());
 
     size_t nElements = 1;
     for (int i = 0; i < min.size(); i++) {
@@ -67,7 +67,7 @@ size_t blockSize(const vector<size_t> &bs) {
 
 #ifdef UNUSED_FUNCTION
 vector<size_t> increment(vector<size_t> dims, vector<size_t> coord) {
-    assert(dims.size() == coord.size());
+    VAssert(dims.size() == coord.size());
 
     for (int i = 0; i < coord.size(); i++) {
         coord[i] += 1;
@@ -93,8 +93,8 @@ size_t vproduct(vector<size_t> a) {
 #ifdef UNUSED_FUNCTION
 void extractBlock(const float *data, const vector<size_t> &dims, const vector<size_t> &bcoords,
                   const vector<size_t> &bs, float *block) {
-    assert(dims.size() == bcoords.size());
-    assert(dims.size() == bs.size());
+    VAssert(dims.size() == bcoords.size());
+    VAssert(dims.size() == bs.size());
 
     // Block dimensions
     //
@@ -132,7 +132,7 @@ void extractBlock(const float *data, const vector<size_t> &dims, const vector<si
 #ifdef UNUSED_FUNCTION
 void blockit(const float *data, const vector<size_t> &dims, const vector<size_t> &bs,
              float *blocks) {
-    assert(dims.size() == bs.size());
+    VAssert(dims.size() == bs.size());
 
     size_t block_size = vproduct(bs);
 
@@ -164,7 +164,7 @@ void blockit(const float *data, const vector<size_t> &dims, const vector<size_t>
 // make 2D lat and lon arrays from 1D arrays by replication, in place
 //
 void make2D(float *lonBuf, float *latBuf, vector<size_t> dims) {
-    assert(dims.size() == 2);
+    VAssert(dims.size() == 2);
     size_t nx = dims[0];
     size_t ny = dims[1];
 
@@ -249,8 +249,8 @@ void Transpose(const float *a, float *b, int s1, int s2) { Transpose(a, b, 0, s1
 //
 void transpose(float *a, float *b, vector<size_t> inDims, int axis) {
 
-    assert(inDims.size() < 4);
-    assert(axis >= 0 && axis < inDims.size());
+    VAssert(inDims.size() < 4);
+    VAssert(axis >= 0 && axis < inDims.size());
 
     size_t sz = vproduct(inDims);
 
@@ -264,11 +264,11 @@ void transpose(float *a, float *b, vector<size_t> inDims, int axis) {
     }
 
     if (inDims.size() == 2) {
-        assert(axis == 1);
+        VAssert(axis == 1);
 
         Transpose(a, b, inDims[0], inDims[1]);
     } else if (inDims.size() == 3) {
-        assert(axis == 1 || axis == 2);
+        VAssert(axis == 1 || axis == 2);
 
         size_t stride = inDims[0] * inDims[1];
         ;
@@ -314,9 +314,9 @@ void transpose(vector<size_t> inDims, int axis, vector<size_t> &outDims) {
 void resampleToStaggered(float *src, const vector<size_t> &inMin, const vector<size_t> &inMax,
                          float *dst, const vector<size_t> &outMin, const vector<size_t> &outMax,
                          int stagDim) {
-    assert(inMin.size() == inMax.size());
-    assert(inMin.size() == outMax.size());
-    assert(inMin.size() == outMax.size());
+    VAssert(inMin.size() == inMax.size());
+    VAssert(inMin.size() == outMax.size());
+    VAssert(inMin.size() == outMax.size());
 
     vector<size_t> inDims, outDims;
     for (size_t i = 0; i < outMin.size(); i++) {
@@ -410,9 +410,9 @@ void resampleToStaggered(float *src, const vector<size_t> &inMin, const vector<s
 void resampleToUnStaggered(float *src, const vector<size_t> &inMin, const vector<size_t> &inMax,
                            float *dst, const vector<size_t> &outMin, const vector<size_t> &outMax,
                            int stagDim) {
-    assert(inMin.size() == inMax.size());
-    assert(inMin.size() == outMax.size());
-    assert(inMin.size() == outMax.size());
+    VAssert(inMin.size() == inMax.size());
+    VAssert(inMin.size() == outMax.size());
+    VAssert(inMin.size() == outMax.size());
 
     vector<size_t> myOutMax = outMax;
     vector<size_t> myOutMin = outMin;
@@ -503,7 +503,7 @@ void test_resample(int stagDim) {
 }
 
 int main(int argc, char **argv) {
-    assert(argc == 2);
+    VAssert(argc == 2);
     int stagDim = atoi(argv[1]);
     test_resample(stagDim);
 }
@@ -557,7 +557,7 @@ DerivedCoordVar_PCSFromLatLon::DerivedCoordVar_PCSFromLatLon(string derivedVarNa
                                                              bool lonFlag)
     : DerivedCoordVar(derivedVarName) {
 
-    assert(inNames.size() == 2);
+    VAssert(inNames.size() == 2);
 
     _dc = dc;
     _proj4String = proj4String;
@@ -631,8 +631,8 @@ int DerivedCoordVar_PCSFromLatLon::_readRegionHelperCylindrical(DC::FileTable::F
                                                                 const vector<size_t> &min,
                                                                 const vector<size_t> &max,
                                                                 float *region) {
-    assert(min.size() == 1);
-    assert(min.size() == max.size());
+    VAssert(min.size() == 1);
+    VAssert(min.size() == max.size());
 
     size_t ts = f->GetTS();
     string varname = f->GetVarname();
@@ -866,7 +866,7 @@ int DerivedCoordVar_PCSFromLatLon::_setupVar() {
         _dimLens.push_back(lonDims[1]);
         _make2DFlag = false;
     } else {
-        assert(lonVar.GetDimNames().size() == 1 && _uGridFlag);
+        VAssert(lonVar.GetDimNames().size() == 1 && _uGridFlag);
         dimNames = lonVar.GetDimNames();
         _dimLens = lonDims;
     }
@@ -985,8 +985,8 @@ int DerivedCoordVar_CF1D::CloseVariable(int fd) {
 
 int DerivedCoordVar_CF1D::ReadRegion(int fd, const vector<size_t> &min, const vector<size_t> &max,
                                      float *region) {
-    assert(min.size() == 1);
-    assert(max.size() == 1);
+    VAssert(min.size() == 1);
+    VAssert(max.size() == 1);
 
     float *regptr = region;
     for (size_t i = min[0]; i <= max[0]; i++) {
@@ -1042,6 +1042,10 @@ int DerivedCoordVar_WRFTime::Initialize() {
     size_t numTS = _ncdfc->GetNumTimeSteps();
 
     vector<size_t> dims = _ncdfc->GetSpatialDims(_wrfTimeVar);
+    if (dims.size() != 1) {
+        SetErrMsg("Invalid WRF time variable : %s", _wrfTimeVar.c_str());
+        return (-1);
+    }
 
     char *buf = new char[dims[0] + 1];
     buf[dims[0]] = '\0'; // Null terminate
@@ -1144,8 +1148,8 @@ int DerivedCoordVar_WRFTime::CloseVariable(int fd) {
 
 int DerivedCoordVar_WRFTime::ReadRegion(int fd, const vector<size_t> &min,
                                         const vector<size_t> &max, float *region) {
-    assert(min.size() == 0);
-    assert(max.size() == 0);
+    VAssert(min.size() == 0);
+    VAssert(max.size() == 0);
 
     DC::FileTable::FileObject *f = _fileTable.GetEntry(fd);
 
@@ -1211,17 +1215,24 @@ int DerivedCoordVar_TimeInSeconds::Initialize() {
 
     size_t numTS = _dc->GetNumTimeSteps(_nativeTimeVar);
 
-    float *buf = new float[2 * numTS];
-    float *bufptr1 = buf;
-    float *bufptr2 = buf + numTS;
+    // Need a single precision and double precision buffer. Single for GetVar,
+    // double for udunits.Convert :-(
+    //
+    float *buf = new float[numTS];
+    double *dbuf = new double[2 * numTS];
+    double *dbufptr1 = dbuf;
+    double *dbufptr2 = dbuf + numTS;
 
-    rc = _dc->GetVar(_nativeTimeVar, -1, -1, bufptr1);
+    rc = _dc->GetVar(_nativeTimeVar, -1, -1, buf);
     if (rc < 0) {
         SetErrMsg("Can't read time variable");
         return (-1);
     }
+    for (int i = 0; i < numTS; i++) {
+        dbufptr1[i] = (double)buf[i];
+    }
 
-    status = udunits.Convert(cvar.GetUnits(), "seconds", bufptr1, bufptr2, numTS);
+    status = udunits.Convert(cvar.GetUnits(), "seconds", dbufptr1, dbufptr2, numTS);
     if (!status) {
         SetErrMsg("Invalid coordinate variable %s", _nativeTimeVar.c_str());
         return (-1);
@@ -1229,9 +1240,10 @@ int DerivedCoordVar_TimeInSeconds::Initialize() {
 
     _times.clear();
     for (int i = 0; i < numTS; i++) {
-        _times.push_back(bufptr2[i]);
+        _times.push_back(dbufptr2[i]);
     }
     delete[] buf;
+    delete[] dbuf;
 
     return (0);
 }
@@ -1278,8 +1290,8 @@ int DerivedCoordVar_TimeInSeconds::CloseVariable(int fd) {
 
 int DerivedCoordVar_TimeInSeconds::ReadRegion(int fd, const vector<size_t> &min,
                                               const vector<size_t> &max, float *region) {
-    assert(min.size() == 0);
-    assert(max.size() == 0);
+    VAssert(min.size() == 0);
+    VAssert(max.size() == 0);
 
     DC::FileTable::FileObject *f = _fileTable.GetEntry(fd);
 
@@ -1697,7 +1709,7 @@ int DerivedCoordVarStandardWRF_Terrain::Initialize() {
     // Elevation variable
     //
     vector<string> dimnames = m.GetDimNames();
-    assert(dimnames.size() == 3);
+    VAssert(dimnames.size() == 3);
     if (dimnames[0] == "west_east" && dimnames[1] == "south_north" && dimnames[2] == "bottom_top") {
         _derivedVarName = "Elevation";
     } else if (dimnames[0] == "west_east_stag" && dimnames[1] == "south_north" &&

@@ -121,7 +121,7 @@ OptionParser::Option_T get_options[] = {
 string ProgName;
 
 void set_coord(VDCNetCDF &vdc, string dimname, size_t dimlen, float min, float max) {
-    assert(dimlen >= 1);
+    VAssert(dimlen >= 1);
 
     float *buf = new float[dimlen];
 
@@ -141,9 +141,9 @@ void set_coords(VDCNetCDF &vdc, const vector<float> &extents, const vector<strin
     if (!extents.size())
         return;
 
-    assert(extents.size() == 6);
-    assert(dimnames.size() == 4);
-    assert(dimlens.size() == 4);
+    VAssert(extents.size() == 6);
+    VAssert(dimnames.size() == 4);
+    VAssert(dimlens.size() == 4);
 
     set_coord(vdc, dimnames[0], dimlens[0], extents[0], extents[3]);
     set_coord(vdc, dimnames[1], dimlens[1], extents[1], extents[4]);

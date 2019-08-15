@@ -68,6 +68,8 @@ class TFWidget : public QWidget, public Ui_TFWidgetGUI {
     float getOpacity();
     void RefreshHistogram();
     void SetAutoUpdateParamChanged(bool changed);
+    bool IsOpacitySupported() const;
+    void SetOpacitySupported(bool value);
     bool IsOpacityIntegrated() const;
     void SetOpacityIntegrated(bool value);
 
@@ -82,6 +84,7 @@ class TFWidget : public QWidget, public Ui_TFWidgetGUI {
     void setColorInterpolation(int index);
     void emitTFChange();
     void opacitySliderChanged(int value);
+    void opacitySliderReleased();
 
     void setSingleColor();
     void setUsingSingleColor(int checkState);
@@ -154,7 +157,9 @@ class TFWidget : public QWidget, public Ui_TFWidgetGUI {
     bool _secondaryHistoRangeChanged;
     bool _mainHistoNeedsRefresh;
     bool _secondaryHistoNeedsRefresh;
+    bool _isOpacitySupported;
     bool _isOpacityIntegrated;
+    bool _wasOpacitySliderReleased;
 
     bool _discreteColormap;
     bool _textChanged;
