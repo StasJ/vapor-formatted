@@ -5,6 +5,7 @@
 #include <vapor/RenderParams.h>
 
 class TFFunctionEditor;
+class TFColorWidget;
 
 class TFEditor : public QTabWidget {
     Q_OBJECT
@@ -16,5 +17,6 @@ class TFEditor : public QTabWidget {
 
   private:
     TFFunctionEditor *tff;
+    TFColorWidget *colorWidget;
     QWidget *_tab() const;
 };

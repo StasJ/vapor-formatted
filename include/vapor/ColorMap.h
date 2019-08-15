@@ -61,22 +61,26 @@ class PARAMS_API ColorMap : public ParamsBase {
     void SetUseWhitespace(int state);
     int GetUseWhitespace() const;
 
-    int numControlPoints() { return (int)(GetControlPoints().size() / 4); }
+    int numControlPoints() const { return (int)(GetControlPoints().size() / 4); }
 
     Color controlPointColor(int index) const;
     void controlPointColor(int index, Color color);
 
-    float controlPointValue(int index) const;       // Data Coordinates
+    float controlPointValue(int index) const; // Data Coordinates
+    float controlPointValueNormalized(int index) const;
     void controlPointValue(int index, float value); // Data Coordinates
+    void controlPointValueNormalized(int index, float value);
 
     void addControlPointAt(float value);
+    int addNormControlPointAt(float value);
     void addControlPointAt(float value, Color color);
-    void addNormControlPoint(float normValue, Color color);
+    int addNormControlPoint(float normValue, Color color);
     void deleteControlPoint(int index);
 
     void move(int index, float delta);
 
     Color color(float value) const;
+    Color colorNormalized(float nv) const;
     Color getDivergingColor(float ratio, float index) const;
     Color getCorrectiveDivergingColor(float ratio, float index) const;
 
