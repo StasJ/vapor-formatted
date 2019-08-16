@@ -47,7 +47,7 @@ SliceRenderer::SliceRenderer(const ParamsMgr *pm, string winName, string dataSet
     _cacheParams.domainMax.resize(3, 1.f);
 
     SliceParams *p = dynamic_cast<SliceParams *>(GetActiveParams());
-    assert(p);
+    VAssert(p);
     MapperFunction *tf = p->GetMapperFunc(_cacheParams.varName);
     _colorMapSize = tf->getNumEntries();
 }
@@ -119,7 +119,7 @@ void SliceRenderer::_initVertexVBO() {
 
 int SliceRenderer::_resetDataCache() {
     SliceParams *p = dynamic_cast<SliceParams *>(GetActiveParams());
-    assert(p);
+    VAssert(p);
 
     _cacheParams.varName = p->GetVariableName();
     _cacheParams.heightVarName = p->GetHeightVariableName();
@@ -148,7 +148,7 @@ int SliceRenderer::_resetDataCache() {
 
 void SliceRenderer::_resetColormapCache() {
     SliceParams *p = dynamic_cast<SliceParams *>(GetActiveParams());
-    assert(p);
+    VAssert(p);
 
     MapperFunction *tf = p->GetMapperFunc(_cacheParams.varName);
     tf->makeLut(_cacheParams.tf_lut);
@@ -170,7 +170,7 @@ void SliceRenderer::_resetColormapCache() {
 
 int SliceRenderer::_resetBoxCache() {
     SliceParams *p = dynamic_cast<SliceParams *>(GetActiveParams());
-    assert(p);
+    VAssert(p);
     p->GetBox()->GetExtents(_cacheParams.boxMin, _cacheParams.boxMax);
 
     int rc = _dataMgr->GetVariableExtents(_cacheParams.ts, _cacheParams.varName,
@@ -180,6 +180,13 @@ int SliceRenderer::_resetBoxCache() {
         SetErrMsg("Unable to determine domain extents for %s", _cacheParams.varName.c_str());
         return rc;
     }
+
+    // Moving domain allows area outside of data to be selected
+    for (int i = 0; i < _cacheParams.boxMax.size(); i++) {
+        _cacheParams.boxMin[i] = max(_cacheParams.boxMin[i], _cacheParams.domainMin[i]);
+        _cacheParams.boxMax[i] = min(_cacheParams.boxMax[i], _cacheParams.domainMax[i]);
+    }
+
     _setVertexPositions();
     _resetTextureCoordinates();
     return rc;
@@ -328,7 +335,7 @@ int SliceRenderer::_saveTextureData() {
         SetErrMsg("Unable to acquire Grid for Slice texture");
         return (rc);
     }
-    assert(grid);
+    VAssert(grid);
 
     grid->SetInterpolationOrder(1);
 
@@ -344,7 +351,7 @@ int SliceRenderer::_saveTextureData() {
     else if (_cacheParams.orientation == YZ)
         _populateDataYZ(dataValues, grid);
     else
-        assert(0);
+        VAssert(0);
 
     _createDataTexture(dataValues);
 
@@ -373,7 +380,7 @@ void SliceRenderer::_createDataTexture(float *dataValues) {
 
 bool SliceRenderer::_isDataCacheDirty() const {
     SliceParams *p = dynamic_cast<SliceParams *>(GetActiveParams());
-    assert(p);
+    VAssert(p);
 
     if (_cacheParams.varName != p->GetVariableName())
         return true;
@@ -408,7 +415,7 @@ bool SliceRenderer::_isDataCacheDirty() const {
 
 bool SliceRenderer::_isColormapCacheDirty() const {
     SliceParams *p = dynamic_cast<SliceParams *>(GetActiveParams());
-    assert(p);
+    VAssert(p);
 
     MapperFunction *tf = p->GetMapperFunc(_cacheParams.varName);
     vector<float> tf_lut;
@@ -422,7 +429,7 @@ bool SliceRenderer::_isColormapCacheDirty() const {
 
 bool SliceRenderer::_isBoxCacheDirty() const {
     SliceParams *p = dynamic_cast<SliceParams *>(GetActiveParams());
-    assert(p);
+    VAssert(p);
 
     Box *box = p->GetBox();
     vector<double> min, max;
@@ -490,7 +497,7 @@ void SliceRenderer::_configureShader() {
 
     // Remaining fragment shader uniform floats
     SliceParams *p = dynamic_cast<SliceParams *>(GetActiveParams());
-    assert(p);
+    VAssert(p);
     float opacity = p->GetConstantOpacity();
     s->SetUniform("constantOpacity", opacity);
     s->SetUniform("minLUTValue", (float)_cacheParams.tf_minMax[0]);

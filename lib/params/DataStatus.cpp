@@ -20,8 +20,8 @@
 #pragma warning(disable : 4251 4100)
 #endif
 
+#include "vapor/VAssert.h"
 #include <algorithm>
-#include <cassert>
 #include <cfloat>
 #include <iostream>
 
@@ -38,7 +38,7 @@ using namespace Wasp;
 namespace {
 void print_extents(string header, const vector<double> &minExts, const vector<double> &maxExts) {
 #ifdef DEBUG
-    assert(minExts.size() == maxExts.size());
+    VAssert(minExts.size() == maxExts.size());
 
     cout << endl;
     cout << header << endl;
@@ -70,7 +70,7 @@ DataStatus::DataStatus(size_t cacheSize, int nThreads) {
 
 int DataStatus::Open(const std::vector<string> &files, const std::vector<string> &options,
                      string name, string format) {
-    assert(!name.empty());
+    VAssert(!name.empty());
     vector<string> myOptions = options;
 
     Close(name);
@@ -387,11 +387,11 @@ int find_nearest(const vector<double> &timeCoords, double time) {
 
     // If we get to here there must be at least two elements in timeCoords
     //
-    assert(timeCoords.size() >= 2);
+    VAssert(timeCoords.size() >= 2);
 
     for (int i = 0; i < timeCoords.size() - 1; i++) {
         if (time >= timeCoords[i] && time <= timeCoords[i + 1]) {
-            assert(timeCoords[i] != timeCoords[i + 1]);
+            VAssert(timeCoords[i] != timeCoords[i + 1]);
 
             double s = (time - timeCoords[i]) / (timeCoords[i + 1] - timeCoords[i]);
             if (s <= 0.5) {
@@ -401,7 +401,8 @@ int find_nearest(const vector<double> &timeCoords, double time) {
             }
         }
     }
-    assert(0);
+    VAssert(0);
+    return -1;
 }
 }; // namespace
 
