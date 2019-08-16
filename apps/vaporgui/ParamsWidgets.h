@@ -6,6 +6,7 @@
 #include <QPushButton>
 #include <QTabWidget>
 #include <QWidget>
+#include <cassert>
 #include <vapor/ParamsBase.h>
 #include <vector>
 
