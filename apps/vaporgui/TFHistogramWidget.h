@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Histo.h"
 #include <QFrame>
 #include <QWidget>
 #include <glm/glm.hpp>
@@ -27,6 +28,7 @@ class TFHistogramWidget : public QFrame {
   private:
     VAPoR::DataMgr *_dataMgr = nullptr;
     VAPoR::RenderParams *_renderParams = nullptr;
+    Histo _histo;
 
     glm::vec2 NDCToPixel(const glm::vec2 &v) const;
     QPointF QNDCToPixel(const glm::vec2 &v) const;

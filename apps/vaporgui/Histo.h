@@ -20,21 +20,25 @@
 //
 #ifndef HISTO_H
 #define HISTO_H
+#include <string>
 #include <vapor/DataMgr.h>
 #include <vapor/MyBase.h>
 #include <vapor/RenderParams.h>
 #include <vapor/StructuredGrid.h>
+#include <vector>
 
 class Histo {
   public:
     Histo(int numberBins, float mnData, float mxData, string var, int ts);
     Histo(int numberBins);
+    Histo();
     Histo(const Histo *histo);
     ~Histo();
     void reset(int newNumBins = -1);
     void reset(int newNumBins, float mnData, float mxData);
     void addToBin(float val);
     long getMaxBinSize();
+    int getNumBins() const;
     long getBinSize(int posn) const { return _binArray[posn]; }
     float getBinSizeNormalized(int bin) const;
     float getMinData() { return _minData; }
@@ -44,6 +48,8 @@ class Histo {
     string getVarnameOfUpdate() { return _varnameOfUpdate; }
 
     int Populate(VAPoR::DataMgr *dm, VAPoR::RenderParams *rp);
+    bool NeedsUpdate(VAPoR::DataMgr *dm, VAPoR::RenderParams *rp);
+    int PopulateIfNeeded(VAPoR::DataMgr *dm, VAPoR::RenderParams *rp);
 
   private:
     long *_binArray = nullptr;
@@ -51,6 +57,10 @@ class Histo {
     int _numBins = 0;
     float _minData, _maxData, _range;
     long _maxBinSize = -1;
+
+    int _refLevel = INT_MIN, _lod = INT_MIN;
+    std::vector<double> _minExts, _maxExts;
+    bool _populated = false;
 
     int _timestepOfUpdate;
     string _varnameOfUpdate;

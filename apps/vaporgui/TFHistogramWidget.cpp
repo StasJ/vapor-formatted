@@ -1,4 +1,5 @@
 #include "TFHistogramWidget.h"
+#include "ErrorReporter.h"
 #include <Histo.h>
 #include <QPaintEvent>
 #include <QPainter>
@@ -23,6 +24,10 @@ void TFHistogramWidget::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
                                VAPoR::RenderParams *rp) {
     _renderParams = rp;
     _dataMgr = dataMgr;
+
+    _histo.reset(width());
+    if (_histo.PopulateIfNeeded(dataMgr, rp) < 0)
+        MSG_ERR("Failed to populate histogram");
 }
 
 QSize TFHistogramWidget::minimumSizeHint() const { return QSize(100, 100); }
@@ -38,16 +43,14 @@ void TFHistogramWidget::paintEvent(QPaintEvent *event) {
 
     QMatrix m;
     m.translate(0, height());
-    m.scale(width() / 100.f, -1);
+    m.scale(width() / (float)_histo.getNumBins(), -1);
     p.setMatrix(m);
 
-    //    p.setViewport(0, height(), width(), 0);
     p.fillRect(rect(), Qt::gray);
 
-    Histo h(100);
-    h.Populate(_dataMgr, _renderParams);
-    for (int i = 0; i < 100; i++) {
-        p.fillRect(i, 0, 1, h.getBinSizeNormalized(i) * height(), Qt::black);
+    //    h.Populate(_dataMgr, _renderParams);
+    for (int i = 0; i < _histo.getNumBins(); i++) {
+        p.fillRect(i, 0, 1, _histo.getBinSizeNormalized(i) * height(), Qt::black);
     }
 }
 
