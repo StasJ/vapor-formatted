@@ -163,7 +163,7 @@ void AnnotationEventRouter::copyRegionFromRenderer() {
     ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
     RenderParams *copyParams =
         paramsMgr->GetRenderParams(visualizer, dataSetName, renType, renderer);
-    assert(copyParams);
+    VAssert(copyParams);
 
     Box *copyBox = copyParams->GetBox();
     std::vector<double> minExtents, maxExtents;

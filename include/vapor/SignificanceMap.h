@@ -5,8 +5,8 @@
 #ifndef _SignificanceMap_h_
 #define _SignificanceMap_h_
 
+#include "vapor/VAssert.h"
 #include <algorithm>
-#include <cassert>
 #include <vapor/MyBase.h>
 #include <vector>
 

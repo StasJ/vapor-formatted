@@ -14,7 +14,7 @@
 #include <QSpacerItem>
 #include <QWidget>
 
-#include <cassert>
+#include "vapor/VAssert.h"
 #include <iostream>
 
 VaporWidget::VaporWidget(QWidget *parent, const std::string &labelText) : QWidget(parent) {

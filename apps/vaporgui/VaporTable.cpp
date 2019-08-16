@@ -16,11 +16,11 @@
 //
 
 #include "VaporTable.h"
+#include "vapor/VAssert.h"
 #include <QCheckBox>
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QtGui>
-#include <cassert>
 #include <iostream>
 #include <stdlib.h>
 
@@ -409,7 +409,7 @@ Value VaporTable::GetValue(int row, int col) {
     int nCols = _table->columnCount();
 
     QWidget *widget = _table->cellWidget(row, col);
-    assert(widget);
+    VAssert(widget);
 
     if ((col == nCols - 1 && _lastColIsCheckboxes) || (row == nRows - 1 && _lastRowIsCheckboxes)) {
         QCheckBox *checkBox = widget->findChild<QCheckBox *>();

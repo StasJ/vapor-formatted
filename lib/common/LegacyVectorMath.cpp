@@ -1,5 +1,5 @@
 #define INCLUDE_DEPRECATED_LEGACY_VECTOR_MATH
-#include <assert.h>
+#include "vapor/VAssert.h"
 #include <cmath>
 #include <float.h>
 #include <string>
@@ -371,7 +371,7 @@ void qnormal(float *q) {
 void qinv(const float q1[4], float q2[4]) {
     // Inverse of quaternion is conjugate/norm-square.  4th coeff is real part!
     float mag = q1[0] * q1[0] + q1[1] * q1[1] + q1[2] * q1[2] + q1[3] * q1[3];
-    assert(mag > 0.f);
+    VAssert(mag > 0.f);
     for (int i = 0; i < 3; i++)
         q2[i] = -q1[i] / mag;
     q2[3] = q1[3] / mag;
@@ -769,7 +769,7 @@ void makeModelviewMatrix(float *vpos, float *vdir, float *upvec, float *mtrx) {
     vscale(minv + 8, -1.f);
     vcopy(vpos, minv + 12);
     int rc = minvert(minv, mtrx);
-    assert(rc >= 0); // Only catch this in debug mode
+    VAssert(rc >= 0); // Only catch this in debug mode
 }
 /*
  * make a modelview matrix from viewer position, direction, and up vector
@@ -824,7 +824,7 @@ void makeModelviewMatrixD(double *vpos, double *vdir, double *upvec, double *mtr
     vscale(minv + 8, -1.);
     vcopy(dvpos, minv + 12);
     int rc = minvert(minv, mtrx);
-    assert(rc >= 0); // Only catch this in debug mode
+    VAssert(rc >= 0); // Only catch this in debug mode
 }
 /*
  * make a modelview matrix from viewer position, direction, and up vector
@@ -880,7 +880,7 @@ void makeModelviewMatrixD(const std::vector<double> &vpos, const std::vector<dou
     vscale(minv + 8, -1.);
     vcopy(dvpos, minv + 12);
     int rc = minvert(minv, mtrx);
-    assert(rc >= 0); // Only catch this in debug mode
+    VAssert(rc >= 0); // Only catch this in debug mode
 }
 void matrix4x4_vec3_mult(const float m[16], const float a[4], float b[4]) {
     b[0] = m[0] * a[0] + m[4] * a[1] + m[8] * a[2] + m[12] * a[3];

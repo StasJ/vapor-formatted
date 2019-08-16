@@ -63,8 +63,6 @@ class VDF_API StretchedGrid : public StructuredGrid {
 
     virtual std::vector<size_t> GetCoordDimensions(size_t dim) const override;
 
-    virtual float GetUserCoordinate(std::vector<size_t> &index, size_t dim) const override;
-
     static std::string GetClassType() { return ("Stretched"); }
     std::string GetType() const override { return (GetClassType()); }
 
@@ -90,8 +88,7 @@ class VDF_API StretchedGrid : public StructuredGrid {
 
     // \copydoc GetGrid::GetUserCoordinates()
     //
-    virtual void GetUserCoordinates(const std::vector<size_t> &indices,
-                                    std::vector<double> &coords) const override;
+    virtual void GetUserCoordinates(const size_t indices[], double coords[]) const override;
 
     // \copydoc GetGrid::GetIndices()
     //
