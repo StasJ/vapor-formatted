@@ -6,6 +6,7 @@
 
 class TFFunctionEditor;
 class TFColorWidget;
+class QRangeSlider;
 
 class TFEditor : public QTabWidget {
     Q_OBJECT
@@ -18,5 +19,6 @@ class TFEditor : public QTabWidget {
   private:
     TFFunctionEditor *tff;
     TFColorWidget *colorWidget;
+    QRangeSlider *range;
     QWidget *_tab() const;
 };

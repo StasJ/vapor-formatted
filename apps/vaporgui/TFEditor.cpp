@@ -1,4 +1,5 @@
 #include "TFEditor.h"
+#include "QRangeSlider.h"
 #include "TFColorWidget.h"
 #include "TFFunctionEditor.h"
 #include <QBoxLayout>
@@ -10,9 +11,9 @@ TFEditor::TFEditor() {
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setSpacing(0);
     _tab()->setLayout(layout);
-    layout->addWidget(new QLabel("Testing"));
     layout->addWidget(tff = new TFFunctionEditor);
     layout->addWidget(colorWidget = new TFColorWidget);
+    layout->addWidget(range = new QRangeSlider);
 }
 
 void TFEditor::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
