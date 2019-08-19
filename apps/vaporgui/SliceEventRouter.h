@@ -51,6 +51,7 @@ class SliceEventRouter : public QTabWidget, public RenderEventRouter {
     PSlider *_psl;
     PSlider *_psl2;
     PRange *_prange;
+    PGeometry *_pgeometry;
 
   protected:
     void _updateTab();
