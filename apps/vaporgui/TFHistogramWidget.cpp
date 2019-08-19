@@ -31,7 +31,7 @@ void TFHistogramWidget::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
         MSG_ERR("Failed to populate histogram");
 }
 
-QSize TFHistogramWidget::minimumSizeHint() const { return QSize(100, 100); }
+QSize TFHistogramWidget::minimumSizeHint() const { return QSize(100, 30); }
 
 #define CONTROL_POINT_RADIUS (4.0f)
 #define PADDING (CONTROL_POINT_RADIUS + 1.0f)

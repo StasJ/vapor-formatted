@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QCheckBox>
+#include <QComboBox>
 #include <QGroupBox>
 #include <QLineEdit>
 #include <QPushButton>
@@ -64,6 +65,20 @@ class ParamsWidgetFloat : public ParamsWidget {
 
   private slots:
     void valueChangedSlot();
+};
+
+class ParamsWidgetDropdown : public ParamsWidget {
+    Q_OBJECT
+
+    QComboBox *_box = nullptr;
+
+  public:
+    ParamsWidgetDropdown(const std::string &tag, const std::vector<std::string> &items,
+                         const std::string &label = "");
+    void Update(VAPoR::ParamsBase *p);
+
+  private slots:
+    void indexChangedSlot(int index);
 };
 
 class ParamsWidgetColor : public ParamsWidget {

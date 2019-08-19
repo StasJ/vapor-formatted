@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ParamsWidgets.h"
 #include <QTabWidget>
 #include <vapor/ParamsMgr.h>
 #include <vapor/RenderParams.h>
@@ -22,5 +23,6 @@ class TFEditor : public QTabWidget {
     TFHistogramWidget *tfh;
     TFColorWidget *colorWidget;
     QRangeSlider *range;
+    ParamsWidgetDropdown *colorMapTypeDropdown;
     QWidget *_tab() const;
 };
