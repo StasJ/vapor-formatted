@@ -5,7 +5,7 @@
 #include <vapor/ParamsMgr.h>
 #include <vapor/RenderParams.h>
 
-class TFFunctionEditor;
+class TFOpacityWidget;
 class TFColorWidget;
 class TFHistogramWidget;
 class QRangeSlider;
@@ -19,7 +19,7 @@ class TFEditor : public QTabWidget {
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
 
   private:
-    TFFunctionEditor *tff;
+    TFOpacityWidget *tff;
     TFHistogramWidget *tfh;
     TFColorWidget *colorWidget;
     QRangeSlider *range;

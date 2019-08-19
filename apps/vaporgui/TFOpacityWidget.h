@@ -97,11 +97,11 @@ class ControlPointList {
     LineIterator EndLines() { return LineIterator(this, SizeLines()); }
 };
 
-class TFFunctionEditor : public QFrame {
+class TFOpacityWidget : public QFrame {
     Q_OBJECT
 
   public:
-    TFFunctionEditor();
+    TFOpacityWidget();
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
 

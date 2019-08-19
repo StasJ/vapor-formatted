@@ -1,8 +1,8 @@
 #include "TFEditor.h"
 #include "QRangeSlider.h"
 #include "TFColorWidget.h"
-#include "TFFunctionEditor.h"
 #include "TFHistogramWidget.h"
+#include "TFOpacityWidget.h"
 #include <QBoxLayout>
 #include <QLabel>
 #include <vapor/ColorMap.h>
@@ -13,7 +13,7 @@ TFEditor::TFEditor() {
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setSpacing(0);
     _tab()->setLayout(layout);
-    layout->addWidget(tff = new TFFunctionEditor);
+    layout->addWidget(tff = new TFOpacityWidget);
     layout->addWidget(tfh = new TFHistogramWidget);
     layout->addWidget(colorWidget = new TFColorWidget);
     layout->addWidget(range = new QRangeSlider);
