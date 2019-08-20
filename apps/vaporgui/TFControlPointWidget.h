@@ -1,16 +1,12 @@
 #pragma once
 
-#include "ParamsWidgets.h"
 #include <QComboBox>
 #include <QLineEdit>
 #include <QWidget>
-#include <vapor/ParamsMgr.h>
-#include <vapor/RenderParams.h>
 
-class TFOpacityWidget;
-class TFColorWidget;
-class TFHistogramWidget;
-class QRangeSlider;
+namespace VAPoR {
+class RenderParams;
+}
 
 class TFControlPointWidget : public QWidget {
     Q_OBJECT
@@ -18,7 +14,7 @@ class TFControlPointWidget : public QWidget {
   public:
     TFControlPointWidget();
 
-    void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
+    void Update(VAPoR::RenderParams *rParams);
 
   public slots:
     void SelectOpacityControlPoint(int index);
