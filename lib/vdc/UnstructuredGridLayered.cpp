@@ -25,15 +25,16 @@ UnstructuredGridLayered::UnstructuredGridLayered(
     const std::vector<float *> &blks, const int *vertexOnFace, const int *faceOnVertex,
     const int *faceOnFace,
     Location location, // node,face, edge
-    size_t maxVertexPerFace, size_t maxFacePerVertex, const UnstructuredGridCoordless &xug,
-    const UnstructuredGridCoordless &yug, const UnstructuredGridCoordless &zug,
-    const KDTreeRG *kdtree)
+    size_t maxVertexPerFace, size_t maxFacePerVertex, long nodeOffset, long cellOffset,
+    const UnstructuredGridCoordless &xug, const UnstructuredGridCoordless &yug,
+    const UnstructuredGridCoordless &zug, const QuadTreeRectangle<float, size_t> *qtr)
     : UnstructuredGrid(vertexDims, faceDims, edgeDims, bs, blks, 3, vertexOnFace, faceOnVertex,
-                       faceOnFace, location, maxVertexPerFace, maxFacePerVertex),
+                       faceOnFace, location, maxVertexPerFace, maxFacePerVertex, nodeOffset,
+                       cellOffset),
       _ug2d(vector<size_t>{vertexDims[0]}, vector<size_t>{faceDims[0]},
             edgeDims.size() ? vector<size_t>{edgeDims[0]} : vector<size_t>(), vector<size_t>{bs[0]},
             vector<float *>(), vertexOnFace, faceOnVertex, faceOnFace, location, maxVertexPerFace,
-            maxFacePerVertex, xug, yug, UnstructuredGridCoordless(), kdtree),
+            maxFacePerVertex, nodeOffset, cellOffset, xug, yug, UnstructuredGridCoordless(), qtr),
       _zug(zug) {
 
     VAssert(xug.GetDimensions().size() == 1);
