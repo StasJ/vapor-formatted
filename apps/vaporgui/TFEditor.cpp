@@ -7,6 +7,7 @@
 #include <QBoxLayout>
 #include <QLabel>
 #include <vapor/ColorMap.h>
+//#include "QColorWidget.h"
 
 static ParamsWidgetColor *c;
 
@@ -26,6 +27,7 @@ TFEditor::TFEditor() {
                           VAPoR::ColorMap::_interpTypeTag, {"Linear", "Discrete", "Diverging"},
                           "Color Interpolation"));
     layout->addWidget(c = new ParamsWidgetColor("test"));
+    //    layout->addWidget(new QColorWidget);
 
     //    this->setStyleSheet(R"(QWidget:hover:!pressed {border: 1px solid red;})");
 
