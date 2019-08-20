@@ -102,8 +102,9 @@ void TFOpacityWidget::mousePressEvent(QMouseEvent *event) {
         _dragOffset = NDCToPixel(*it) - mouse;
         _isDraggingControl = true;
         _controlStartValue = *it;
-        emit SelectControlPoint(it.Index());
+        selectControlPoint(it);
     } else {
+        DeselectControlPoint();
         event->ignore();
     }
 }
@@ -143,7 +144,7 @@ void TFOpacityWidget::mouseDoubleClickEvent(QMouseEvent *event) {
     if (controlPointIt != cp.EndPoints()) {
         cp.Remove(controlPointIt);
         opacityChanged();
-        emit DeselectControlPoint();
+        DeselectControlPoint();
         update();
         return;
     }
@@ -209,6 +210,16 @@ glm::vec2 TFOpacityWidget::PixelToNDC(const glm::vec2 &p) const {
 
 glm::vec2 TFOpacityWidget::PixelToNDC(const QPointF &p) const {
     return PixelToNDC(vec2(p.x(), p.y()));
+}
+
+void TFOpacityWidget::selectControlPoint(ControlPointList::PointIterator it) {
+    _selectedControl = it.Index();
+    emit ControlPointSelected(it.Index());
+}
+
+void TFOpacityWidget::DeselectControlPoint() {
+    _selectedControl = -1;
+    emit ControlPointDeselected();
 }
 
 /*

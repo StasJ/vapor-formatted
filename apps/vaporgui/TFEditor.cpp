@@ -31,9 +31,10 @@ TFEditor::TFEditor() {
 
     //    this->setStyleSheet(R"(QWidget:hover:!pressed {border: 1px solid red;})");
 
-    connect(tff, SIGNAL(SelectControlPoint(int)), controlPointWidget,
+    connect(tff, SIGNAL(ControlPointSelected(int)), controlPointWidget,
             SLOT(SelectOpacityControlPoint(int)));
-    connect(tff, SIGNAL(DeselectControlPoint()), controlPointWidget, SLOT(DeselectControlPoint()));
+    connect(tff, SIGNAL(ControlPointDeselected()), controlPointWidget,
+            SLOT(DeselectControlPoint()));
 }
 
 void TFEditor::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,

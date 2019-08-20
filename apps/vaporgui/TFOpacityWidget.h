@@ -108,10 +108,6 @@ class TFOpacityWidget : public QFrame {
 
     QSize minimumSizeHint() const;
 
-  signals:
-    void SelectControlPoint(int index);
-    void DeselectControlPoint();
-
   protected:
     void paintEvent(QPaintEvent *event);
     void mousePressEvent(QMouseEvent *event);
@@ -127,6 +123,7 @@ class TFOpacityWidget : public QFrame {
     ControlPointList::PointIterator _draggedControl;
     glm::vec2 _dragOffset;
     glm::vec2 m;
+    int _selectedControl = -1;
 
     void opacityChanged();
 
@@ -137,4 +134,13 @@ class TFOpacityWidget : public QFrame {
     QPointF QNDCToPixel(const glm::vec2 &v) const;
     glm::vec2 PixelToNDC(const QPointF &p) const;
     glm::vec2 PixelToNDC(const glm::vec2 &p) const;
+
+    void selectControlPoint(ControlPointList::PointIterator it);
+
+  signals:
+    void ControlPointSelected(int index);
+    void ControlPointDeselected();
+
+  public slots:
+    void DeselectControlPoint();
 };
