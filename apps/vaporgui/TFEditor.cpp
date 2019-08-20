@@ -8,6 +8,8 @@
 #include <QLabel>
 #include <vapor/ColorMap.h>
 
+static ParamsWidgetColor *c;
+
 TFEditor::TFEditor() {
     addTab(new QWidget(this), "Transfer Function");
 
@@ -23,6 +25,7 @@ TFEditor::TFEditor() {
     layout->addWidget(colorMapTypeDropdown = new ParamsWidgetDropdown(
                           VAPoR::ColorMap::_interpTypeTag, {"Linear", "Discrete", "Diverging"},
                           "Color Interpolation"));
+    layout->addWidget(c = new ParamsWidgetColor("test"));
 
     //    this->setStyleSheet(R"(QWidget:hover:!pressed {border: 1px solid red;})");
 
@@ -38,6 +41,7 @@ void TFEditor::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
     colorWidget->Update(dataMgr, paramsMgr, rParams);
     colorMapTypeDropdown->Update(rParams->GetMapperFunc(rParams->GetVariableName())->GetColorMap());
     controlPointWidget->Update(rParams);
+    c->Update(rParams);
 }
 
 QWidget *TFEditor::_tab() const { return this->widget(0); }

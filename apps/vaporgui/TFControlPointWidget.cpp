@@ -1,5 +1,6 @@
 #include "TFControlPointWidget.h"
 #include <QBoxLayout>
+#include <QDoubleValidator>
 #include <QLabel>
 #include <QPainter>
 #include <vapor/RenderParams.h>
@@ -14,6 +15,8 @@ TFControlPointWidget::TFControlPointWidget() {
     layout->addStretch(20);
     layout->addWidget(_valueEdit = new QLineEdit, 30);
 
+    _locationEdit->setValidator(new QDoubleValidator);
+
     _locationEditType->blockSignals(true);
     _locationEditType->setMinimumSize(30, 10);
     _locationEditType->setSizeAdjustPolicy(QComboBox::AdjustToContents);
@@ -27,17 +30,21 @@ TFControlPointWidget::TFControlPointWidget() {
 }
 
 void TFControlPointWidget::Update(VAPoR::RenderParams *rParams) {
+    _min = rParams->GetMapperFunc(rParams->GetVariableName())->getMinMapValue();
+    _max = rParams->GetMapperFunc(rParams->GetVariableName())->getMaxMapValue();
+
+    ((QDoubleValidator *)_locationEdit->validator())->setRange(_min, _max);
+    ((QDoubleValidator *)_locationEdit->validator())->setDecimals(2);
+
     if (_opacityId >= 0) {
         float value;
-        if (isUsingNormalizedValue())
-            value = rParams->GetMapperFunc(rParams->GetVariableName())
-                        ->GetOpacityMap(0)
-                        ->controlPointValueNormalized(_opacityId);
-        else
-            value = rParams->GetMapperFunc(rParams->GetVariableName())
-                        ->GetOpacityMap(0)
-                        ->controlPointValue(_opacityId);
-        _locationEdit->setText(QString::number(value));
+
+        value = rParams->GetMapperFunc(rParams->GetVariableName())
+                    ->GetOpacityMap(0)
+                    ->controlPointValueNormalized(_opacityId);
+        if (isUsingMappedValue())
+            value = toMappedValue(value);
+        _locationEdit->setText(QString::number(value * 100));
         _valueEdit->setText(QString::number(rParams->GetMapperFunc(rParams->GetVariableName())
                                                 ->GetOpacityMap(0)
                                                 ->controlPointOpacity(_opacityId)));
@@ -73,4 +80,20 @@ void TFControlPointWidget::paintEvent(QPaintEvent *event) {
 
 bool TFControlPointWidget::isUsingNormalizedValue() const {
     return _locationEditType->currentIndex() == 0;
+}
+
+bool TFControlPointWidget::isUsingMappedValue() const {
+    return _locationEditType->currentIndex() == 1;
+}
+
+float TFControlPointWidget::toMappedValue(float normalized) const {
+    printf("%f -> %f\n", _min, _max);
+    return normalized * (_max - _min) + _min;
+}
+
+float TFControlPointWidget::toNormalizedValue(float mapped) const {
+    if (_max == _min)
+        return 0;
+
+    return (mapped - _min) / (_max - _min);
 }
