@@ -24,7 +24,7 @@ class VolumeVariablesSubtab : public QWidget, public Ui_VolumeVariablesGUI {
     VolumeVariablesSubtab(QWidget *parent) {
         setupUi(this);
         _variablesWidget->Reinit((VariableFlags)(SCALAR), (DimFlags)(THREED));
-        ((QVBoxLayout *)layout())->insertWidget(1, tf = new TFEditor);
+        ((QVBoxLayout *)layout())->insertWidget(0, tf = new TFEditor);
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
