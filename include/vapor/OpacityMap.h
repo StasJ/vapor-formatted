@@ -35,6 +35,7 @@ class PARAMS_API OpacityMap : public ParamsBase {
     virtual ~OpacityMap();
     void clear();
 
+    float opacityDataAtNorm(float nv) const;
     float opacityData(float value) const;
     bool inDataBounds(float value) const;
 
@@ -74,7 +75,9 @@ class PARAMS_API OpacityMap : public ParamsBase {
     float controlPointOpacity(int index) const;
     void controlPointOpacity(int index, float opacity);
 
-    float controlPointValue(int index) const;       // Data Coordinates
+    float controlPointValueNormalized(int index) const;
+    float controlPointValue(int index) const; // Data Coordinates
+    void controlPointValueNormalized(int index, float nv);
     void controlPointValue(int index, float value); // Data Coordinates
 
     void setOpaque();

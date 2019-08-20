@@ -101,6 +101,8 @@ void TFOpacityWidget::mousePressEvent(QMouseEvent *event) {
         _draggedControl = it;
         _dragOffset = NDCToPixel(*it) - mouse;
         _isDraggingControl = true;
+        _controlStartValue = *it;
+        emit SelectControlPoint(it.Index());
     } else {
         event->ignore();
     }
@@ -108,7 +110,8 @@ void TFOpacityWidget::mousePressEvent(QMouseEvent *event) {
 
 void TFOpacityWidget::mouseReleaseEvent(QMouseEvent *event) {
     if (_isDraggingControl)
-        opacityChanged();
+        if (*_draggedControl != _controlStartValue)
+            opacityChanged();
     _isDraggingControl = false;
 }
 
@@ -140,6 +143,7 @@ void TFOpacityWidget::mouseDoubleClickEvent(QMouseEvent *event) {
     if (controlPointIt != cp.EndPoints()) {
         cp.Remove(controlPointIt);
         opacityChanged();
+        emit DeselectControlPoint();
         update();
         return;
     }

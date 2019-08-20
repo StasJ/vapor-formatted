@@ -35,6 +35,7 @@ class ControlPointList {
 
         bool IsFirst() const { return i == 0; }
         bool IsLast() const { return i == list->Size() - 1; }
+        int Index() const { return i; }
 
         friend class ControlPointList;
     };
@@ -107,6 +108,10 @@ class TFOpacityWidget : public QFrame {
 
     QSize minimumSizeHint() const;
 
+  signals:
+    void SelectControlPoint(int index);
+    void DeselectControlPoint();
+
   protected:
     void paintEvent(QPaintEvent *event);
     void mousePressEvent(QMouseEvent *event);
@@ -118,6 +123,7 @@ class TFOpacityWidget : public QFrame {
     VAPoR::RenderParams *_renderParams = nullptr;
     ControlPointList _controlPoints;
     bool _isDraggingControl = false;
+    glm::vec2 _controlStartValue;
     ControlPointList::PointIterator _draggedControl;
     glm::vec2 _dragOffset;
     glm::vec2 m;
