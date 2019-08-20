@@ -516,25 +516,19 @@ int FlowRenderer::_genSeedsRakeUniform(std::vector<flow::Particle> &seeds, float
         VAssert(rakeSeeds[i] > 0);
 
     /* Create arrays that contain X, Y, and Z coordinates */
-    float xStart, yStart, zStart;
-    float xStep = 0.0f, yStep = 0.0f, zStep = 0.0f;
-    if (rakeSeeds[0] > 1) {
-        xStart = rake[0];
-        xStep = (rake[1] - rake[0]) / float(rakeSeeds[0] - 1);
-    } else // only 1 seed, place it in the middle.
-        xStart = rake[0] + 0.5f * (rake[1] - rake[0]);
+    float start[3], step[3];
 
-    if (rakeSeeds[1] > 1) {
-        yStart = rake[2];
-        yStep = (rake[3] - rake[2]) / float(rakeSeeds[1] - 1);
-    } else
-        yStart = rake[2] + 0.5f * (rake[3] - rake[2]);
-
-    if (rakeSeeds[2] > 1) {
-        zStart = rake[4];
-        zStep = (rake[5] - rake[4]) / float(rakeSeeds[2] - 1);
-    } else
-        zStart = rake[4] + 0.5f * (rake[5] - rake[4]);
+    for (int i = 0; i < 3; i++) // for each of the X, Y, Z dimensions
+    {
+        step[i] = 0.0f;
+        if (rakeSeeds[i] == 1) // one seed in this dimension
+            start[i] = rake[i * 2] + 0.5f * (rake[i * 2 + 1] - rake[i * 2]);
+        else // more than one seed in this dimension
+        {
+            start[i] = rake[i * 2];
+            step[i] = (rake[i * 2 + 1] - rake[i * 2]) / float(rakeSeeds[i] - 1);
+        }
+    }
 
     /* Populate the list of seeds */
     seeds.resize(rakeSeeds[0] * rakeSeeds[1] * rakeSeeds[2]);
@@ -542,14 +536,38 @@ int FlowRenderer::_genSeedsRakeUniform(std::vector<flow::Particle> &seeds, float
     for (int z = 0; z < rakeSeeds[2]; z++)
         for (int y = 0; y < rakeSeeds[1]; y++)
             for (int x = 0; x < rakeSeeds[0]; x++) {
-                seeds[idx].location.x = xStart + float(x) * xStep;
-                seeds[idx].location.y = yStart + float(y) * yStep;
-                seeds[idx].location.z = zStart + float(z) * zStep;
+                seeds[idx].location.x = start[0] + float(x) * step[0];
+                seeds[idx].location.y = start[1] + float(y) * step[1];
+                seeds[idx].location.z = start[2] + float(z) * step[2];
                 seeds[idx].time = timeVal;
             }
 
     return 0;
 }
+
+#if 0
+int
+FlowRenderer::_genSeedsRakeRandom( std::vector<flow::Particle>& seeds, 
+                                   float timeVal ) const
+{
+    FlowParams* params = dynamic_cast<FlowParams*>( GetActiveParams() );
+
+    /* retrieve rake from params */
+    auto rake = params->GetRake();
+    VAssert( rake.size() == 6 );
+    for( int i = 0; i < 3; i++ )
+        VAssert( rake[i*2+1] >= rake[i*2] );
+
+    /* retrieve uniform seed numbers from params */
+    auto rakeSeeds = params->GetRakeNumOfSeeds();
+    VAssert( rakeSeeds.size() == 4 ); 
+    for( int i = 0; i < 3; i++ )
+        VAssert( rakeSeeds[i] > 0 );
+
+
+    return 0;
+}
+#endif
 
 int FlowRenderer::_getAGrid(const FlowParams *params, int timestep, std::string &varName,
                             Grid **gridpp) const {
