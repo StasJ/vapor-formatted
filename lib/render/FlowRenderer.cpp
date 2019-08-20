@@ -7,6 +7,7 @@
 #include "vapor/glutil.h"
 #include <cstring>
 #include <iostream>
+#include <random>
 
 #define GL_ERROR -20
 
@@ -509,21 +510,21 @@ int FlowRenderer::_genSeedsRakeUniform(std::vector<flow::Particle> &seeds, float
     for (int i = 0; i < 3; i++)
         VAssert(rake[i * 2 + 1] >= rake[i * 2]);
 
-    /* retrieve uniform seed numbers from params */
+    /* retrieve seed numbers from params */
     auto rakeSeeds = params->GetRakeNumOfSeeds();
     VAssert(rakeSeeds.size() == 4);
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i++) // we only need first 3 values for unifrm seeds
         VAssert(rakeSeeds[i] > 0);
 
     /* Create arrays that contain X, Y, and Z coordinates */
     float start[3], step[3];
-
     for (int i = 0; i < 3; i++) // for each of the X, Y, Z dimensions
     {
-        step[i] = 0.0f;
         if (rakeSeeds[i] == 1) // one seed in this dimension
+        {
             start[i] = rake[i * 2] + 0.5f * (rake[i * 2 + 1] - rake[i * 2]);
-        else // more than one seed in this dimension
+            step[i] = 0.0f;
+        } else // more than one seed in this dimension
         {
             start[i] = rake[i * 2];
             step[i] = (rake[i * 2 + 1] - rake[i * 2]) / float(rakeSeeds[i] - 1);
@@ -545,29 +546,37 @@ int FlowRenderer::_genSeedsRakeUniform(std::vector<flow::Particle> &seeds, float
     return 0;
 }
 
-#if 0
-int
-FlowRenderer::_genSeedsRakeRandom( std::vector<flow::Particle>& seeds, 
-                                   float timeVal ) const
-{
-    FlowParams* params = dynamic_cast<FlowParams*>( GetActiveParams() );
+int FlowRenderer::_genSeedsRakeRandom(std::vector<flow::Particle> &seeds, float timeVal) const {
+    FlowParams *params = dynamic_cast<FlowParams *>(GetActiveParams());
 
     /* retrieve rake from params */
     auto rake = params->GetRake();
-    VAssert( rake.size() == 6 );
-    for( int i = 0; i < 3; i++ )
-        VAssert( rake[i*2+1] >= rake[i*2] );
+    VAssert(rake.size() == 6);
+    for (int i = 0; i < 3; i++)
+        VAssert(rake[i * 2 + 1] >= rake[i * 2]);
 
     /* retrieve uniform seed numbers from params */
     auto rakeSeeds = params->GetRakeNumOfSeeds();
-    VAssert( rakeSeeds.size() == 4 ); 
-    for( int i = 0; i < 3; i++ )
-        VAssert( rakeSeeds[i] > 0 );
+    VAssert(rakeSeeds.size() == 4);
+    auto totalNumOfSeeds = rakeSeeds[3]; // We only need the 4th value for random seeds
 
+    /* Create three uniform distributions in 3 dimensions */
+    std::random_device rd;  // Will be used to obtain a seed for the random number engine
+    std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
+    std::uniform_real_distribution<float> distX(rake[0], rake[1]);
+    std::uniform_real_distribution<float> distY(rake[2], rake[3]);
+    std::uniform_real_distribution<float> distZ(rake[4], rake[5]);
+
+    seeds.resize(totalNumOfSeeds);
+    for (long i = 0; i < totalNumOfSeeds; i++) {
+        seeds[i].location.x = distX(gen);
+        seeds[i].location.y = distY(gen);
+        seeds[i].location.z = distZ(gen);
+        seeds[i].time = timeVal;
+    }
 
     return 0;
 }
-#endif
 
 int FlowRenderer::_getAGrid(const FlowParams *params, int timestep, std::string &varName,
                             Grid **gridpp) const {
