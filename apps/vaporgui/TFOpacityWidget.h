@@ -7,6 +7,8 @@
 #include <vapor/RenderParams.h>
 #include <vapor/VAssert.h>
 
+class TFControlPointWidget;
+
 class ControlPointList {
   public:
     class PointIterator {
@@ -70,11 +72,18 @@ class ControlPointList {
         return _points[i];
     }
 
-    void Add(const glm::vec2 &v) { _points.push_back(v); }
+    int Add(const glm::vec2 &v) {
+        for (int i = 0; i < _points.size(); i++)
+            if (_points[i].x > v.x)
+                return Add(v, i);
 
-    void Add(const glm::vec2 &v, const int i) {
+        return Add(v, 0);
+    }
+
+    int Add(const glm::vec2 &v, const int i) {
         VAssert(i >= 0 && i <= _points.size());
         _points.insert(_points.begin() + i, v);
+        return i;
     }
 
     void Add(const glm::vec2 &v, const LineIterator &line) {
@@ -107,6 +116,7 @@ class TFOpacityWidget : public QFrame {
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
 
     QSize minimumSizeHint() const;
+    TFControlPointWidget *GetInfoWidget() const;
 
   protected:
     void paintEvent(QPaintEvent *event);
@@ -125,6 +135,7 @@ class TFOpacityWidget : public QFrame {
     glm::vec2 _dragOffset;
     glm::vec2 m;
     int _selectedControl = -1;
+    TFControlPointWidget *_infoWidget = nullptr;
 
     void opacityChanged();
 
@@ -144,4 +155,7 @@ class TFOpacityWidget : public QFrame {
 
   public slots:
     void DeselectControlPoint();
+
+  private slots:
+    void SelectedControlChanged(float value, float opacity);
 };
