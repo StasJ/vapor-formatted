@@ -1,8 +1,8 @@
 #include "TFEditor.h"
 #include "QRangeSlider.h"
 #include "TFColorWidget.h"
-#include "TFControlPointWidget.h"
 #include "TFHistogramWidget.h"
+#include "TFOpacityControlPointWidget.h"
 #include "TFOpacityWidget.h"
 #include <QBoxLayout>
 #include <QLabel>

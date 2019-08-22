@@ -1,5 +1,5 @@
 #include "TFOpacityWidget.h"
-#include "TFControlPointWidget.h"
+#include "TFOpacityControlPointWidget.h"
 #include <QPaintEvent>
 #include <QPainter>
 #include <glm/glm.hpp>
@@ -40,7 +40,7 @@ TFOpacityWidget::TFOpacityWidget() {
     _controlPoints.Add(vec2(0.2, 0.5));
     _controlPoints.Add(vec2(0.5, 0.8));
 
-    _infoWidget = new TFControlPointWidget;
+    _infoWidget = new TFOpacityControlPointWidget;
     connect(_infoWidget, SIGNAL(ControlPointChanged(float, float)), this,
             SLOT(SelectedControlChanged(float, float)));
 }
@@ -66,7 +66,7 @@ void TFOpacityWidget::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMg
 
 QSize TFOpacityWidget::minimumSizeHint() const { return QSize(100, 75); }
 
-TFControlPointWidget *TFOpacityWidget::GetInfoWidget() const { return _infoWidget; }
+TFOpacityControlPointWidget *TFOpacityWidget::GetInfoWidget() const { return _infoWidget; }
 
 #define CONTROL_POINT_RADIUS (4.0f)
 #define PADDING (CONTROL_POINT_RADIUS + 1.0f)
