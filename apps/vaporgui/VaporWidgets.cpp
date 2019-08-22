@@ -417,6 +417,10 @@ int VComboBox::GetCurrentIndex() const { return _combo->currentIndex(); }
 
 std::string VComboBox::GetCurrentText() const { return _combo->currentText().toStdString(); }
 
+std::string VComboBox::GetItemText(int index) const {
+    return _combo->itemText(index).toStdString();
+}
+
 void VComboBox::AddOption(const std::string &option, int index) {
     _combo->insertItem(index, QString::fromStdString(option));
 }
