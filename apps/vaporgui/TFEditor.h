@@ -26,5 +26,6 @@ class TFEditor : public QTabWidget {
     QRangeSlider *range;
     ParamsWidgetDropdown *colorMapTypeDropdown;
     TFInfoWidget *controlPointWidget;
+    TFInfoWidget *colorInfo;
     QWidget *_tab() const;
 };

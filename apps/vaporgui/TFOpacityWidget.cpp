@@ -45,6 +45,11 @@ TFOpacityWidget::TFOpacityWidget() {
             SLOT(SelectedControlChanged(float, float)));
 }
 
+TFOpacityWidget::~TFOpacityWidget() {
+    if (!_infoWidget->parent())
+        delete _infoWidget;
+}
+
 void TFOpacityWidget::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                              VAPoR::RenderParams *rp) {
     _renderParams = rp;
