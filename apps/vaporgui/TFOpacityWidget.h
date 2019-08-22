@@ -1,7 +1,6 @@
 #pragma once
 
-#include <QFrame>
-#include <QWidget>
+#include "TFMapWidget.h"
 #include <glm/glm.hpp>
 #include <vapor/ParamsMgr.h>
 #include <vapor/RenderParams.h>
@@ -107,7 +106,7 @@ class ControlPointList {
     LineIterator EndLines() { return LineIterator(this, SizeLines()); }
 };
 
-class TFOpacityWidget : public QFrame {
+class TFOpacityWidget : public TFMapWidget {
     Q_OBJECT
 
   public:
@@ -121,7 +120,6 @@ class TFOpacityWidget : public QFrame {
 
   protected:
     void paintEvent(QPaintEvent *event);
-    void drawControl(QPainter &p, glm::vec2 ndc, bool selected = false) const;
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
