@@ -8,13 +8,13 @@ namespace VAPoR {
 class RenderParams;
 }
 
-class TFControlPointWidget : public QWidget {
+class TFInfoWidget : public QWidget {
     Q_OBJECT
 
   public:
     enum ValueFormat { Mapped = 0, Percent = 1 };
 
-    TFControlPointWidget();
+    TFInfoWidget();
 
     void Update(VAPoR::RenderParams *rParams);
 
