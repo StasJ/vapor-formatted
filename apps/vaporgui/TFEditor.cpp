@@ -2,7 +2,7 @@
 #include "QRangeSlider.h"
 #include "TFColorWidget.h"
 #include "TFHistogramWidget.h"
-#include "TFOpacityControlPointWidget.h"
+#include "TFOpacityInfoWidget.h"
 #include "TFOpacityWidget.h"
 #include <QBoxLayout>
 #include <QLabel>

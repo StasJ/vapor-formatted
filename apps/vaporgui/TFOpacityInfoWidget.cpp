@@ -1,55 +1,51 @@
-#include "TFOpacityControlPointWidget.h"
+#include "TFOpacityInfoWidget.h"
 #include <QBoxLayout>
 #include <QDoubleValidator>
 #include <QLabel>
 #include <QPainter>
 #include <vapor/RenderParams.h>
 
-TFOpacityControlPointWidget::TFOpacityControlPointWidget() {
+TFOpacityInfoWidget::TFOpacityInfoWidget() {
     ((QBoxLayout *)layout())->addWidget(_opacityEdit = new QLineEdit, 30);
 
     _opacityEdit->setValidator(new QDoubleValidator(0, 1, 6));
     connect(_opacityEdit, SIGNAL(returnPressed()), this, SLOT(opacityEditChanged()));
 }
 
-void TFOpacityControlPointWidget::Update(VAPoR::RenderParams *rParams) {
+void TFOpacityInfoWidget::Update(VAPoR::RenderParams *rParams) {
     TFInfoWidget::Update(rParams);
     if (!rParams)
         return;
 }
 
-void TFOpacityControlPointWidget::DeselectControlPoint() {
+void TFOpacityInfoWidget::DeselectControlPoint() {
     TFInfoWidget::DeselectControlPoint();
     _opacityEdit->clear();
 }
 
-void TFOpacityControlPointWidget::SetOpacity(float opacity) {
+void TFOpacityInfoWidget::SetOpacity(float opacity) {
     _opacity = opacity;
     updateOpacity();
 }
 
-void TFOpacityControlPointWidget::SetControlPoint(float value, float opacity) {
+void TFOpacityInfoWidget::SetControlPoint(float value, float opacity) {
     this->setEnabled(true);
     SetNormalizedValue(value);
     SetOpacity(opacity);
 }
 
-void TFOpacityControlPointWidget::updateOpacity() {
+void TFOpacityInfoWidget::updateOpacity() {
     if (!isEnabled())
         return;
 
     _opacityEdit->setText(QString::number(_opacity));
 }
 
-float TFOpacityControlPointWidget::getOpacityFromEdit() const {
-    return _opacityEdit->text().toFloat();
-}
+float TFOpacityInfoWidget::getOpacityFromEdit() const { return _opacityEdit->text().toFloat(); }
 
-void TFOpacityControlPointWidget::controlPointChanged() {
-    emit ControlPointChanged(_value, _opacity);
-}
+void TFOpacityInfoWidget::controlPointChanged() { emit ControlPointChanged(_value, _opacity); }
 
-void TFOpacityControlPointWidget::opacityEditChanged() {
+void TFOpacityInfoWidget::opacityEditChanged() {
     _opacity = getOpacityFromEdit();
     controlPointChanged();
 }
