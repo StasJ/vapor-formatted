@@ -67,9 +67,8 @@ QSize TFOpacityWidget::minimumSizeHint() const { return QSize(100, 75); }
 TFInfoWidget *TFOpacityWidget::CreateInfoWidget() {
     TFOpacityInfoWidget *info = new TFOpacityInfoWidget;
     connect(info, SIGNAL(ControlPointChanged(float, float)), this,
-            SLOT(SelectedControlChanged(float, float)));
-    connect(this, SIGNAL(InfoSetControlPoint(float, float)), info,
-            SLOT(SetControlPoint(float, float)));
+            SLOT(UpdateFromInfo(float, float)));
+    connect(this, SIGNAL(UpdateInfo(float, float)), info, SLOT(SetControlPoint(float, float)));
     connect(this, SIGNAL(ControlPointDeselected()), info, SLOT(DeselectControlPoint()));
 
     return info;
@@ -136,7 +135,7 @@ void TFOpacityWidget::mouseMoveEvent(QMouseEvent *event) {
                        vec2(it.IsLast() ? 1 : (*(it + 1)).x, 1));
 
         *_draggedControl = newVal;
-        emit InfoSetControlPoint(newVal.x, newVal.y);
+        emit UpdateInfo(newVal.x, newVal.y);
         update();
     } else {
         event->ignore();
@@ -220,8 +219,7 @@ glm::vec2 TFOpacityWidget::PixelToNDC(const QPointF &p) const {
 void TFOpacityWidget::selectControlPoint(ControlPointList::PointIterator it) {
     _selectedControl = it.Index();
     update();
-    emit InfoSetControlPoint((*it).x, (*it).y);
-    emit ControlPointSelected(it.Index());
+    emit UpdateInfo((*it).x, (*it).y);
 }
 
 void TFOpacityWidget::DeselectControlPoint() {
@@ -230,7 +228,7 @@ void TFOpacityWidget::DeselectControlPoint() {
     emit ControlPointDeselected();
 }
 
-void TFOpacityWidget::SelectedControlChanged(float value, float opacity) {
+void TFOpacityWidget::UpdateFromInfo(float value, float opacity) {
     assert(_selectedControl >= 0);
     assert(value >= 0 && value <= 1);
     assert(opacity >= 0 && opacity <= 1);

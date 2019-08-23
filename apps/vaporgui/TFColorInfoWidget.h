@@ -33,5 +33,5 @@ class TFColorInfoWidget : public TFInfoWidget {
     void DeselectControlPoint();
 
   private slots:
-    void opacityEditChanged();
+    void colorEditChanged();
 };

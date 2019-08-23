@@ -8,7 +8,7 @@
 TFColorInfoWidget::TFColorInfoWidget() {
     ((QBoxLayout *)layout())->addWidget(_colorEdit = new QColorWidget, 30, Qt::AlignRight);
 
-    connect(_colorEdit, SIGNAL(colorChanged(QColor)), this, SLOT(opacityEditChanged()));
+    connect(_colorEdit, SIGNAL(colorChanged(QColor)), this, SLOT(colorEditChanged()));
 }
 
 void TFColorInfoWidget::Update(VAPoR::RenderParams *rParams) {
@@ -34,4 +34,4 @@ void TFColorInfoWidget::controlPointChanged() {
     emit ControlPointChanged(_value, _colorEdit->getColor());
 }
 
-void TFColorInfoWidget::opacityEditChanged() { controlPointChanged(); }
+void TFColorInfoWidget::colorEditChanged() { controlPointChanged(); }
