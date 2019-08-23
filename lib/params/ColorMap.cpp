@@ -64,7 +64,7 @@ ColorMap::Color::Color(const Color &c) : _hue(c._hue), _sat(c._sat), _val(c._val
 //----------------------------------------------------------------------------
 // Return the rgb components of the color (0.0 ... 1.0)
 //----------------------------------------------------------------------------
-void ColorMap::Color::toRGB(float *rgb) {
+void ColorMap::Color::toRGB(float *rgb) const {
 
     /*
      *  hsv-rgb Conversion function.  inputs and outputs	between 0 and 1
