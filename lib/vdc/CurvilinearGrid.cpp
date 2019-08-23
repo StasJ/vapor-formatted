@@ -2,6 +2,7 @@
 #include <cfloat>
 #include <cmath>
 #include <iostream>
+#include <limits>
 #include <stdio.h>
 #include <vapor/CurvilinearGrid.h>
 #include <vapor/QuadTreeRectangle.hpp>
