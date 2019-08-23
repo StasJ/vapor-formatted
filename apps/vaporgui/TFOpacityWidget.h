@@ -2,8 +2,6 @@
 
 #include "TFMapWidget.h"
 #include <glm/glm.hpp>
-#include <vapor/ParamsMgr.h>
-#include <vapor/RenderParams.h>
 #include <vapor/VAssert.h>
 
 class ControlPointList {

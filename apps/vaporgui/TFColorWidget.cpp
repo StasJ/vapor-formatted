@@ -2,6 +2,8 @@
 #include "TFColorInfoWidget.h"
 #include <QMouseEvent>
 #include <QPainter>
+#include <vapor/ParamsMgr.h>
+#include <vapor/RenderParams.h>
 
 using namespace VAPoR;
 using glm::vec2;

@@ -5,6 +5,8 @@
 #include <QPainter>
 #include <glm/glm.hpp>
 #include <vapor/DataMgr.h>
+#include <vapor/ParamsMgr.h>
+#include <vapor/RenderParams.h>
 
 using namespace VAPoR;
 using glm::clamp;

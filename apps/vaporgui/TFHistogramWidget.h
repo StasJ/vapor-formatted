@@ -1,14 +1,13 @@
 #pragma once
 
 #include "Histo.h"
+#include "TFMapWidget.h"
 #include <QFrame>
 #include <QWidget>
 #include <glm/glm.hpp>
-#include <vapor/ParamsMgr.h>
-#include <vapor/RenderParams.h>
 #include <vapor/VAssert.h>
 
-class TFHistogramWidget : public QFrame {
+class TFHistogramWidget : public TFMapWidget {
     Q_OBJECT
 
   public:
@@ -16,6 +15,7 @@ class TFHistogramWidget : public QFrame {
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
 
+    TFInfoWidget *CreateInfoWidget() { return nullptr; }
     QSize minimumSizeHint() const;
 
   protected:
