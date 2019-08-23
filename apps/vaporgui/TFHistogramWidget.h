@@ -15,12 +15,13 @@ class TFHistogramWidget : public TFMapWidget {
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
 
-    TFInfoWidget *CreateInfoWidget();
     QSize minimumSizeHint() const;
+    void Deactivate() {}
 
   protected:
+    TFInfoWidget *createInfoWidget();
     void paintEvent(QPaintEvent *event);
-    //    void mousePressEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
     //    void mouseReleaseEvent(QMouseEvent *event);
     //    void mouseMoveEvent(QMouseEvent *event);
     //    void mouseDoubleClickEvent(QMouseEvent *event);

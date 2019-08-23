@@ -34,13 +34,13 @@ void TFHistogramWidget::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
         MSG_ERR("Failed to populate histogram");
 }
 
-TFInfoWidget *TFHistogramWidget::CreateInfoWidget() {
+QSize TFHistogramWidget::minimumSizeHint() const { return QSize(100, 30); }
+
+TFInfoWidget *TFHistogramWidget::createInfoWidget() {
     TFHistogramInfoWidget *info = new TFHistogramInfoWidget;
 
     return info;
 }
-
-QSize TFHistogramWidget::minimumSizeHint() const { return QSize(100, 30); }
 
 #define CONTROL_POINT_RADIUS (4.0f)
 #define PADDING (CONTROL_POINT_RADIUS + 1.0f)
@@ -72,10 +72,11 @@ void TFHistogramWidget::paintEvent(QPaintEvent *event) {
     p.drawPolygon(graph);
 }
 
-// void TFFunctionEditor::mousePressEvent(QMouseEvent *event)
-// void TFFunctionEditor::mouseReleaseEvent(QMouseEvent *event)
-// void TFFunctionEditor::mouseMoveEvent(QMouseEvent *event)
-// void TFFunctionEditor::mouseDoubleClickEvent(QMouseEvent *event)
+void TFHistogramWidget::mousePressEvent(QMouseEvent *event) { emit Activated(this); }
+
+// void TFHistogramWidget::mouseReleaseEvent(QMouseEvent *event)
+// void TFHistogramWidget::mouseMoveEvent(QMouseEvent *event)
+// void TFHistogramWidget::mouseDoubleClickEvent(QMouseEvent *event)
 
 glm::vec2 TFHistogramWidget::NDCToPixel(const glm::vec2 &v) const {
     return vec2(PADDING + v.x * (width() - 2 * PADDING),

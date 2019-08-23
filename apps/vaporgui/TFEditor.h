@@ -42,12 +42,28 @@ class TFMapsGroup : public QWidget {
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
 
     TFMapsInfoGroup *CreateInfoGroup();
+
+  private:
+    void add(TFMapWidget *map);
+
+  private slots:
+    void mapActivated(TFMapWidget *map);
 };
 
 class TFMapsInfoGroup : public QStackedWidget {
     Q_OBJECT
 
+    std::vector<TFInfoWidget *> _infos;
+
   public:
     TFMapsInfoGroup();
     void Update(VAPoR::RenderParams *rParams);
+
+    friend class TFMapsGroup;
+
+  private:
+    void add(TFMapWidget *map);
+
+  private slots:
+    void mapActivated(TFMapWidget *map);
 };

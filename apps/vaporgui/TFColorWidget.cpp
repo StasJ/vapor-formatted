@@ -22,7 +22,9 @@ void TFColorWidget::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
 
 QSize TFColorWidget::minimumSizeHint() const { return QSize(100, 30); }
 
-TFInfoWidget *TFColorWidget::CreateInfoWidget() {
+void TFColorWidget::Deactivate() { DeselectControlPoint(); }
+
+TFInfoWidget *TFColorWidget::createInfoWidget() {
     TFColorInfoWidget *info = new TFColorInfoWidget;
 
     connect(this, SIGNAL(ControlPointDeselected()), info, SLOT(DeselectControlPoint()));
@@ -69,6 +71,7 @@ void TFColorWidget::paintEvent(QPaintEvent *event) {
 }
 
 void TFColorWidget::mousePressEvent(QMouseEvent *event) {
+    emit Activated(this);
     ColorMap *cm = getColormap();
     vec2 mouse(event->pos().x(), event->pos().y());
 
@@ -80,6 +83,7 @@ void TFColorWidget::mousePressEvent(QMouseEvent *event) {
             selectControlPoint(i);
             _dragOffset = controlPositionForValue(value) - mouse;
             _paramsMgr->BeginSaveStateGroup("Colormap modification");
+            update();
             return;
         }
     }
@@ -159,6 +163,7 @@ void TFColorWidget::selectControlPoint(int index) {
 void TFColorWidget::DeselectControlPoint() {
     _selectedId = -1;
     emit ControlPointDeselected();
+    update();
 }
 
 void TFColorWidget::UpdateFromInfo(float value, QColor color) {

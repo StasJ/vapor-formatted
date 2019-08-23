@@ -64,7 +64,9 @@ void TFOpacityWidget::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMg
 
 QSize TFOpacityWidget::minimumSizeHint() const { return QSize(100, 75); }
 
-TFInfoWidget *TFOpacityWidget::CreateInfoWidget() {
+void TFOpacityWidget::Deactivate() { DeselectControlPoint(); }
+
+TFInfoWidget *TFOpacityWidget::createInfoWidget() {
     TFOpacityInfoWidget *info = new TFOpacityInfoWidget;
     connect(info, SIGNAL(ControlPointChanged(float, float)), this,
             SLOT(UpdateFromInfo(float, float)));
@@ -99,6 +101,7 @@ void TFOpacityWidget::paintEvent(QPaintEvent *event) {
 }
 
 void TFOpacityWidget::mousePressEvent(QMouseEvent *event) {
+    emit Activated(this);
     vec2 mouse = qvec2(event->posF());
     auto it = findSelectedControlPoint(mouse);
 
