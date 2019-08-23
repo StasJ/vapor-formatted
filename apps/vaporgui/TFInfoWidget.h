@@ -34,7 +34,7 @@ class TFInfoWidget : public QWidget {
 
     virtual void controlPointChanged() = 0;
 
-  private:
+  protected:
     QLineEdit *_valueEdit;
     QComboBox *_valueEditType;
 
