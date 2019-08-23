@@ -22,8 +22,8 @@ TFEditor::TFEditor() {
     layout->addWidget(tff = new TFOpacityWidget);
     layout->addWidget(tfh = new TFHistogramWidget);
     layout->addWidget(colorWidget = new TFColorWidget);
-    layout->addWidget(controlPointWidget = tff->GetInfoWidget());
-    layout->addWidget(colorInfo = colorWidget->GetInfoWidget());
+    layout->addWidget(controlPointWidget = tff->CreateInfoWidget());
+    layout->addWidget(colorInfo = colorWidget->CreateInfoWidget());
     layout->addWidget(range = new QRangeSlider);
     layout->addWidget(colorMapTypeDropdown = new ParamsWidgetDropdown(
                           VAPoR::ColorMap::_interpTypeTag, {"Linear", "Discrete", "Diverging"},

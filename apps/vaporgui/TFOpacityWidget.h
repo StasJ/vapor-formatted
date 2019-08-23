@@ -6,8 +6,6 @@
 #include <vapor/RenderParams.h>
 #include <vapor/VAssert.h>
 
-class TFOpacityInfoWidget;
-
 class ControlPointList {
   public:
     class PointIterator {
@@ -111,12 +109,11 @@ class TFOpacityWidget : public TFMapWidget {
 
   public:
     TFOpacityWidget();
-    ~TFOpacityWidget();
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
 
     QSize minimumSizeHint() const;
-    TFOpacityInfoWidget *GetInfoWidget() const;
+    TFInfoWidget *CreateInfoWidget();
 
   protected:
     void paintEvent(QPaintEvent *event);
@@ -134,7 +131,6 @@ class TFOpacityWidget : public TFMapWidget {
     glm::vec2 _dragOffset;
     glm::vec2 m;
     int _selectedControl = -1;
-    TFOpacityInfoWidget *_infoWidget = nullptr;
 
     void opacityChanged();
 
@@ -151,6 +147,7 @@ class TFOpacityWidget : public TFMapWidget {
   signals:
     void ControlPointSelected(int index);
     void ControlPointDeselected();
+    void InfoSetControlPoint(float value, float opacity);
 
   public slots:
     void DeselectControlPoint();
