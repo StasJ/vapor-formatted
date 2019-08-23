@@ -1,5 +1,6 @@
 #include "TFHistogramWidget.h"
 #include "ErrorReporter.h"
+#include "TFHistogramInfoWidget.h"
 #include <Histo.h>
 #include <QPaintEvent>
 #include <QPainter>
@@ -31,6 +32,12 @@ void TFHistogramWidget::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
         _histo.reset(width());
     if (_histo.PopulateIfNeeded(dataMgr, rp) < 0)
         MSG_ERR("Failed to populate histogram");
+}
+
+TFInfoWidget *TFHistogramWidget::CreateInfoWidget() {
+    TFHistogramInfoWidget *info = new TFHistogramInfoWidget;
+
+    return info;
 }
 
 QSize TFHistogramWidget::minimumSizeHint() const { return QSize(100, 30); }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ParamsWidgets.h"
+#include <QStackedWidget>
 #include <QTabWidget>
 #include <vapor/ParamsMgr.h>
 #include <vapor/RenderParams.h>
@@ -13,6 +14,7 @@ class QRangeSlider;
 class TFInfoWidget;
 class TFMapsGroup;
 class TFMapWidget;
+class TFMapsInfoGroup;
 
 class TFEditor : public QTabWidget {
     Q_OBJECT
@@ -23,23 +25,29 @@ class TFEditor : public QTabWidget {
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
 
   private:
-    TFOpacityWidget *tff;
-    TFHistogramWidget *tfh;
-    TFColorWidget *colorWidget;
     QRangeSlider *range;
     ParamsWidgetDropdown *colorMapTypeDropdown;
-    TFInfoWidget *controlPointWidget;
-    TFInfoWidget *colorInfo;
     TFMapsGroup *_maps;
+    TFMapsInfoGroup *_mapsInfo;
     QWidget *_tab() const;
 };
 
 class TFMapsGroup : public QWidget {
     Q_OBJECT
 
-    std::vector<TFMapWidget *> _widgets;
+    std::vector<TFMapWidget *> _maps;
 
   public:
     TFMapsGroup();
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
+
+    TFMapsInfoGroup *CreateInfoGroup();
+};
+
+class TFMapsInfoGroup : public QStackedWidget {
+    Q_OBJECT
+
+  public:
+    TFMapsInfoGroup();
+    void Update(VAPoR::RenderParams *rParams);
 };

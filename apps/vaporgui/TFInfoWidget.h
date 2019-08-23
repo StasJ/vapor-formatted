@@ -32,7 +32,7 @@ class TFInfoWidget : public QWidget {
     float toNormalizedValue(float mapped) const;
     float getValueFromEdit() const;
 
-    virtual void controlPointChanged() = 0;
+    virtual void controlPointChanged(){};
 
   protected:
     QLineEdit *_valueEdit;
