@@ -90,7 +90,7 @@ class RENDER_API FlowRenderer : public Renderer {
     int _genSeedsXY(std::vector<flow::Particle> &seeds, float timeVal) const;
     int _genSeedsRakeUniform(std::vector<flow::Particle> &seeds, float timeVal) const;
     int _genSeedsRakeRandom(std::vector<flow::Particle> &seeds, float timeVal) const;
-    // int  _genSeedsRakeRandomBiased( std::vector<flow::Particle>& seeds, float timeVal ) const;
+    int _genSeedsRakeRandomBiased(std::vector<flow::Particle> &seeds, float timeVal) const;
 
     int _renderFromAnAdvection(const flow::Advection *, FlowParams *, bool fast);
     void _prepareColormap(FlowParams *);
