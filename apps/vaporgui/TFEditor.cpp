@@ -81,7 +81,10 @@ void TFMapsGroup::mapActivated(TFMapWidget *activatedMap) {
 
 TFMapsInfoGroup::TFMapsInfoGroup() {}
 
-void TFMapsInfoGroup::Update(VAPoR::RenderParams *rParams) {}
+void TFMapsInfoGroup::Update(VAPoR::RenderParams *rParams) {
+    for (auto info : _infos)
+        info->Update(rParams);
+}
 
 void TFMapsInfoGroup::add(TFMapWidget *map) {
     TFInfoWidget *info = map->GetInfoWidget();
