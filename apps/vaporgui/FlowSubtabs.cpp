@@ -409,9 +409,6 @@ void FlowSeedingSubtab::_rakeNumOfSeedsChanged() {
         }
     }
     if (diff) {
-        for (int i = 0; i < 4; i++)
-            std::cout << newVal[i] << "  ";
-        std::cout << std::endl;
         _params->SetRakeNumOfSeeds(newVal);
     }
 }
@@ -419,9 +416,8 @@ void FlowSeedingSubtab::_rakeNumOfSeedsChanged() {
 void FlowSeedingSubtab::_rakeGeometryChanged() {
     std::vector<float> range;
     _rake->GetCurrentValues(range);
-    for (int i = 0; i < range.size(); i++)
-        std::cout << range[i] << ",  ";
-    std::cout << std::endl;
+    VAssert(range.size() == 6);
+    _params->SetRake(range);
 }
 
 void FlowSeedingSubtab::_outputButtonClicked() { _params->SetNeedFlowlineOutput(true); }
