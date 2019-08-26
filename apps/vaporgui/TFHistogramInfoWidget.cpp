@@ -18,3 +18,8 @@ void TFHistogramInfoWidget::SetControlPoint(float value) {
     this->setEnabled(true);
     SetNormalizedValue(value);
 }
+
+void TFHistogramInfoWidget::Deselect() {
+    this->setEnabled(false);
+    _valueEdit->clear();
+}

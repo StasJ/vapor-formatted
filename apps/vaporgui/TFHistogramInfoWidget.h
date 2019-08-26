@@ -17,4 +17,5 @@ class TFHistogramInfoWidget : public TFInfoWidget {
 
   public slots:
     void SetControlPoint(float value);
+    void Deselect();
 };
