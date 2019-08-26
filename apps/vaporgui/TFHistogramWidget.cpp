@@ -34,7 +34,7 @@ void TFHistogramWidget::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
         MSG_ERR("Failed to populate histogram");
 }
 
-QSize TFHistogramWidget::minimumSizeHint() const { return QSize(100, 30); }
+QSize TFHistogramWidget::minimumSizeHint() const { return QSize(100, 40); }
 
 TFInfoWidget *TFHistogramWidget::createInfoWidget() {
     TFHistogramInfoWidget *info = new TFHistogramInfoWidget;
@@ -53,23 +53,24 @@ void TFHistogramWidget::paintEvent(QPaintEvent *event) {
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
 
-    QMatrix m;
-    m.translate(0, height());
-    m.scale(width() / (float)_histo.getNumBins(), -1);
-    p.setMatrix(m);
-
     p.fillRect(rect(), Qt::gray);
 
-    QPolygonF graph;
-    graph.push_back(QPointF(0, 0));
+    //    QMatrix m;
+    //    m.translate(PADDING, height());
+    //    m.scale((width()-PADDING*2)/(float)_histo.getNumBins(), -1);
+    //    p.setMatrix(m);
 
-    for (int i = 0; i < _histo.getNumBins(); i++) {
-        float bin = _histo.getBinSizeNormalized(i) * height();
-        graph.push_back(QPointF(i, bin));
-        graph.push_back(QPointF(i, bin));
+    QPolygonF graph;
+    graph.push_back(NDCToQPixel(0, 0));
+
+    int nBins = _histo.getNumBins();
+    for (int i = 0; i < nBins; i++) {
+        float bin = _histo.getBinSizeNormalized(i);
+        graph.push_back(NDCToQPixel(i / (float)nBins, bin));
+        graph.push_back(NDCToQPixel(i / (float)nBins, bin));
     }
 
-    graph.push_back(QPointF(_histo.getNumBins() - 1, 0));
+    graph.push_back(NDCToQPixel(1, 0));
 
     p.setBrush(QBrush(Qt::black));
     p.drawPolygon(graph);
@@ -95,10 +96,12 @@ glm::vec2 TFHistogramWidget::NDCToPixel(const glm::vec2 &v) const {
                 PADDING + (1.0f - v.y) * (height() - 2 * PADDING));
 }
 
-QPointF TFHistogramWidget::QNDCToPixel(const glm::vec2 &v) const {
+QPointF TFHistogramWidget::NDCToQPixel(const glm::vec2 &v) const {
     const vec2 p = NDCToPixel(v);
     return QPointF(p.x, p.y);
 }
+
+QPointF TFHistogramWidget::NDCToQPixel(float x, float y) const { return NDCToQPixel(vec2(x, y)); }
 
 glm::vec2 TFHistogramWidget::PixelToNDC(const glm::vec2 &p) const {
     float width = QWidget::width();

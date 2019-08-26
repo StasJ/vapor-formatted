@@ -32,7 +32,8 @@ class TFHistogramWidget : public TFMapWidget {
     Histo _histo;
 
     glm::vec2 NDCToPixel(const glm::vec2 &v) const;
-    QPointF QNDCToPixel(const glm::vec2 &v) const;
+    QPointF NDCToQPixel(const glm::vec2 &v) const;
+    QPointF NDCToQPixel(float x, float y) const;
     glm::vec2 PixelToNDC(const QPointF &p) const;
     glm::vec2 PixelToNDC(const glm::vec2 &p) const;
 
