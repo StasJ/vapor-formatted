@@ -128,6 +128,7 @@ class FlowSeedingSubtab : public QVaporSubtab {
     VSlider *_rakeBiasStrength;
 
     /* Helper functions */
+    void _hideShowWidgets(); // hide and show widgets based on the current seed generation mode.
 };
 
 //
