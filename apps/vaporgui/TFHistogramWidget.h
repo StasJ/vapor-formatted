@@ -4,7 +4,6 @@
 #include "TFMapWidget.h"
 #include <QFrame>
 #include <QWidget>
-#include <glm/glm.hpp>
 #include <vapor/VAssert.h>
 
 class TFHistogramWidget : public TFMapWidget {
@@ -30,12 +29,6 @@ class TFHistogramWidget : public TFMapWidget {
     VAPoR::DataMgr *_dataMgr = nullptr;
     VAPoR::RenderParams *_renderParams = nullptr;
     Histo _histo;
-
-    glm::vec2 NDCToPixel(const glm::vec2 &v) const;
-    QPointF NDCToQPixel(const glm::vec2 &v) const;
-    QPointF NDCToQPixel(float x, float y) const;
-    glm::vec2 PixelToNDC(const QPointF &p) const;
-    glm::vec2 PixelToNDC(const glm::vec2 &p) const;
 
   signals:
     void InfoDeselected();

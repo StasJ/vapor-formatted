@@ -136,11 +136,6 @@ class TFOpacityWidget : public TFMapWidget {
     bool controlPointContainsPixel(const glm::vec2 &cp, const glm::vec2 &pixel) const;
     ControlPointList::PointIterator findSelectedControlPoint(const glm::vec2 &mouse);
 
-    glm::vec2 NDCToPixel(const glm::vec2 &v) const;
-    QPointF QNDCToPixel(const glm::vec2 &v) const;
-    glm::vec2 PixelToNDC(const QPointF &p) const;
-    glm::vec2 PixelToNDC(const glm::vec2 &p) const;
-
     void selectControlPoint(ControlPointList::PointIterator it);
 
   signals:
