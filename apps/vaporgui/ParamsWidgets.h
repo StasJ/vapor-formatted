@@ -67,6 +67,22 @@ class ParamsWidgetFloat : public ParamsWidget {
     void valueChangedSlot();
 };
 
+class QRangeSliderTextCombo;
+class ParamsWidgetRange : public ParamsWidget {
+    Q_OBJECT
+
+    QRangeSliderTextCombo *_range = nullptr;
+
+  public:
+    ParamsWidgetRange(const std::string &tag, const std::string &label = "");
+    void Update(VAPoR::ParamsBase *p);
+
+    ParamsWidgetRange *SetRange(float min, float max);
+
+  private slots:
+    void valueChangedSlot();
+};
+
 class ParamsWidgetDropdown : public ParamsWidget {
     Q_OBJECT
 

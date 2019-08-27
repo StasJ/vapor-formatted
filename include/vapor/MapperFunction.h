@@ -274,7 +274,7 @@ class PARAMS_API MapperFunction : public ParamsBase {
         SetValueLong(_secondaryVarMapperTag, "Apply color through a secondary color", val);
     }
 
-  private:
+  public:
     //
     // XML tags
     //
@@ -286,6 +286,7 @@ class PARAMS_API MapperFunction : public ParamsBase {
     static const string _autoUpdateHistoTag;
     static const string _secondaryVarMapperTag;
 
+  private:
     //
     // Size of lookup table.  Always 1<<8 currently!
     //

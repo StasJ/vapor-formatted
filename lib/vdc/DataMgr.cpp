@@ -1557,6 +1557,25 @@ int DataMgr::GetDataRange(size_t ts, string varname, int level, int lod, size_t 
     return (0);
 }
 
+// Please I'm just trying to make things work.
+#define REQUIRED_SAMPLE_SIZE 1000000
+
+int DataMgr::GetDefaultMetaInfoStride(std::string varname, int refinementLevel) {
+    std::vector<size_t> dimsAtLevel;
+    int rc = GetDimLensAtLevel(varname, refinementLevel, dimsAtLevel);
+    VAssert(rc >= 0);
+
+    long size = 1;
+    for (int i = 0; i < dimsAtLevel.size(); i++)
+        size *= dimsAtLevel[i];
+
+    int stride = 1;
+    if (size > REQUIRED_SAMPLE_SIZE)
+        stride = 1 + size / REQUIRED_SAMPLE_SIZE;
+
+    return stride;
+}
+
 int DataMgr::GetDimLensAtLevel(string varname, int level, std::vector<size_t> &dims_at_level,
                                std::vector<size_t> &bs_at_level) const {
     VAssert(_dc);
