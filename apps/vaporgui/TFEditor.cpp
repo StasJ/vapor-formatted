@@ -9,9 +9,6 @@
 #include <QBoxLayout>
 #include <QLabel>
 #include <vapor/ColorMap.h>
-//#include "QColorWidget.h"
-
-static ParamsWidgetColor *c;
 
 TFEditor::TFEditor() {
     addTab(new QWidget(this), "Transfer Function");
@@ -26,7 +23,6 @@ TFEditor::TFEditor() {
     layout->addWidget(colorMapTypeDropdown = new ParamsWidgetDropdown(
                           VAPoR::ColorMap::_interpTypeTag, {"Linear", "Discrete", "Diverging"},
                           "Color Interpolation"));
-    layout->addWidget(c = new ParamsWidgetColor("test"));
 
     connect(range, SIGNAL(ValueChanged(float, float)), this, SLOT(_rangeChanged(float, float)));
 
@@ -39,8 +35,13 @@ void TFEditor::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
     colorMapTypeDropdown->Update(rParams->GetMapperFunc(rParams->GetVariableName())->GetColorMap());
     _maps->Update(dataMgr, paramsMgr, rParams);
     _mapsInfo->Update(rParams);
-    c->Update(rParams);
+    _updateMappingRangeControl(dataMgr, paramsMgr, rParams);
+}
 
+QWidget *TFEditor::_tab() const { return this->widget(0); }
+
+void TFEditor::_updateMappingRangeControl(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
+                                          VAPoR::RenderParams *rParams) {
     float min, max;
     _getDataRange(dataMgr, rParams, &min, &max);
     range->SetRange(min, max);
@@ -48,8 +49,6 @@ void TFEditor::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
         rParams->GetMapperFunc(rParams->GetVariableName())->getMinMaxMapValue();
     range->SetValue(mapperRange[0], mapperRange[1]);
 }
-
-QWidget *TFEditor::_tab() const { return this->widget(0); }
 
 void TFEditor::_getDataRange(VAPoR::DataMgr *d, VAPoR::RenderParams *r, float *min,
                              float *max) const {

@@ -31,8 +31,10 @@ class TFEditor : public QTabWidget {
     ParamsWidgetDropdown *colorMapTypeDropdown;
     TFMapsGroup *_maps;
     TFMapsInfoGroup *_mapsInfo;
-    QWidget *_tab() const;
 
+    QWidget *_tab() const;
+    void _updateMappingRangeControl(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
+                                    VAPoR::RenderParams *rParams);
     void _getDataRange(VAPoR::DataMgr *dataMgr, VAPoR::RenderParams *rParams, float *min,
                        float *max) const;
 
