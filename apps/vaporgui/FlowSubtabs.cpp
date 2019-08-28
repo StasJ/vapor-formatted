@@ -353,9 +353,10 @@ void FlowSeedingSubtab::_hideShowWidgets() {
 
 void FlowSeedingSubtab::_rakeBiasVariableChanged(int idx) {
     // idx is always a valid value, since it's returned by the GUI
-    if (_rakeBiasVariable->GetCurrentIndex() != idx) {
-        _rakeBiasVariable->SetIndex(idx);
-        _params->SetRakeBiasVariable(_rakeBiasVariable->GetCurrentText());
+    auto varGUI = _rakeBiasVariable->GetCurrentText();
+    auto varParams = _params->GetRakeBiasVariable();
+    if (varGUI.compare(varParams) != 0) {
+        _params->SetRakeBiasVariable(varGUI);
     }
 }
 
