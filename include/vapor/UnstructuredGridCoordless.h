@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <ostream>
-#include <vapor/KDTreeRG.h>
+#include <vapor/QuadTreeRectangle.hpp>
 #include <vapor/UnstructuredGrid.h>
 #include <vapor/common.h>
 #include <vector>
@@ -31,10 +31,11 @@ class VDF_API UnstructuredGridCoordless : public UnstructuredGrid {
                               const int *vertexOnFace, const int *faceOnVertex,
                               const int *faceOnFace,
                               Location location, // node,face, edge
-                              size_t maxVertexPerFace, size_t maxFacePerVertex)
+                              size_t maxVertexPerFace, size_t maxFacePerVertex, long nodeOffset,
+                              long cellOffset)
         : UnstructuredGrid(vertexDims, faceDims, edgeDims, bs, blks, topology_dimension,
                            vertexOnFace, faceOnVertex, faceOnFace, location, maxVertexPerFace,
-                           maxFacePerVertex) {}
+                           maxFacePerVertex, nodeOffset, cellOffset) {}
 
     UnstructuredGridCoordless() = default;
     virtual ~UnstructuredGridCoordless() = default;

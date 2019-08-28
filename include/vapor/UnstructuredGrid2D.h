@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <ostream>
-#include <vapor/KDTreeRG.h>
+#include <vapor/QuadTreeRectangle.hpp>
 #include <vapor/UnstructuredGrid.h>
 #include <vapor/UnstructuredGridCoordless.h>
 #include <vapor/common.h>
@@ -30,12 +30,18 @@ class VDF_API UnstructuredGrid2D : public UnstructuredGrid {
                        const std::vector<float *> &blks, const int *vertexOnFace,
                        const int *faceOnVertex, const int *faceOnFace,
                        Location location, // node,face, edge
-                       size_t maxVertexPerFace, size_t maxFacePerVertex,
-                       const UnstructuredGridCoordless &xug, const UnstructuredGridCoordless &yug,
-                       const UnstructuredGridCoordless &zug, const KDTreeRG *kdtree);
+                       size_t maxVertexPerFace, size_t maxFacePerVertex, long nodeOffset,
+                       long cellOffset, const UnstructuredGridCoordless &xug,
+                       const UnstructuredGridCoordless &yug, const UnstructuredGridCoordless &zug,
+                       const QuadTreeRectangle<float, size_t> *qtr);
 
     UnstructuredGrid2D() = default;
-    virtual ~UnstructuredGrid2D() = default;
+    virtual ~UnstructuredGrid2D() {
+        if (_qtrOwner && _qtr)
+            delete _qtr;
+    }
+
+    const QuadTreeRectangle<float, size_t> *GetQuadTreeRectangle() const { return (_qtr); }
 
     virtual std::vector<size_t> GetCoordDimensions(size_t dim) const override;
 
@@ -134,7 +140,8 @@ class VDF_API UnstructuredGrid2D : public UnstructuredGrid {
     UnstructuredGridCoordless _xug;
     UnstructuredGridCoordless _yug;
     UnstructuredGridCoordless _zug;
-    const KDTreeRG *_kdtree;
+    const QuadTreeRectangle<float, size_t> *_qtr;
+    bool _qtrOwner;
 
     bool _insideGrid(const std::vector<double> &coords, size_t &face, std::vector<size_t> &nodes,
                      double *lambda, int &nlambda) const;
@@ -145,8 +152,12 @@ class VDF_API UnstructuredGrid2D : public UnstructuredGrid {
     bool _insideGridFaceCentered(const std::vector<double> &coords, size_t &face,
                                  std::vector<size_t> &nodes, double *lambda, int &nlambda) const;
 
+    bool _pointInsideBoundingRectangle(const double pt[], const double verts[], int n) const;
+
     bool _insideFace(size_t face, double pt[2], std::vector<size_t> &node_indices, double *lambda,
                      int &nlambda) const;
+
+    QuadTreeRectangle<float, size_t> *_makeQuadTreeRectangle() const;
 };
 }; // namespace VAPoR
 

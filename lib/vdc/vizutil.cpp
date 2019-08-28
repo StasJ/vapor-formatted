@@ -1,5 +1,6 @@
 #include "vapor/VAssert.h"
 #include <cmath>
+#include <iostream>
 #include <vapor/vizutil.h>
 
 namespace {
@@ -193,6 +194,9 @@ bool VAPoR::WachspressCoords2D(const double verts[], const double pt[], int n, d
     if (n == 0)
         return (false);
 
+    if (n == 3)
+        return (BarycentricCoordsTri(verts, pt, lambda));
+
     for (int i = 0; i < n; i++)
         lambda[i] = 0.0;
 
@@ -262,9 +266,9 @@ bool VAPoR::WachspressCoords2D(const double verts[], const double pt[], int n, d
     bool inside = true;
     wTotal = 1.0 / wTotal;
     for (int i = 0; i < n; i++) {
-        lambda[i] *= wTotal;
         if (lambda[i] < 0.0)
             inside = false;
+        lambda[i] *= wTotal;
     }
 
     return (inside);
