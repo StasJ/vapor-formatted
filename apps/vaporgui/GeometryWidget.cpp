@@ -386,7 +386,7 @@ void GeometryWidget::Update(ParamsMgr *paramsMgr, DataMgr *dataMgr, RenderParams
         _box = box;
     else
         _box = _rParams->GetBox();
-    assert(_box);
+    VAssert(_box);
 
     // Get current domain extents
     //
