@@ -20,6 +20,7 @@
 //
 #ifndef HISTO_H
 #define HISTO_H
+#include <climits>
 #include <string>
 #include <vapor/DataMgr.h>
 #include <vapor/MyBase.h>
