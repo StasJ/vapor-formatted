@@ -61,7 +61,7 @@ class FlowVariablesSubtab : public QVaporSubtab {
 
     VLineEdit *_steadyNumOfSteps;
 
-    VIntSlider *_unsteadyPastNumOfTimeSteps;
+    VIntSlider *_pastNumOfTimeSteps;
 
   private slots:
     // Respond to user input
@@ -69,7 +69,7 @@ class FlowVariablesSubtab : public QVaporSubtab {
     void _velocityMultiplierChanged();
     void _steadyNumOfStepsChanged();
     void _periodicClicked();
-    // void _unsteadyPastNumOfTimeStepsChanged();
+    void _pastNumOfTimeStepsChanged(int);
 };
 
 //
