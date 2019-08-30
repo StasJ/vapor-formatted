@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <ostream>
-#include <vapor/KDTreeRG.h>
+#include <vapor/QuadTreeRectangle.hpp>
 #include <vapor/UnstructuredGrid2D.h>
 #include <vapor/common.h>
 #include <vector>
@@ -30,13 +30,18 @@ class VDF_API UnstructuredGridLayered : public UnstructuredGrid {
                             const std::vector<float *> &blks, const int *vertexOnFace,
                             const int *faceOnVertex, const int *faceOnFace,
                             Location location, // node,face, edge
-                            size_t maxVertexPerFace, size_t maxFacePerVertex,
-                            const UnstructuredGridCoordless &xug,
+                            size_t maxVertexPerFace, size_t maxFacePerVertex, long nodeOffset,
+                            long cellOffset, const UnstructuredGridCoordless &xug,
                             const UnstructuredGridCoordless &yug,
-                            const UnstructuredGridCoordless &zug, const KDTreeRG *kdtree);
+                            const UnstructuredGridCoordless &zug,
+                            const QuadTreeRectangle<float, size_t> *qtr);
 
     UnstructuredGridLayered() = default;
     virtual ~UnstructuredGridLayered() = default;
+
+    const QuadTreeRectangle<float, size_t> *GetQuadTreeRectangle() const {
+        return (_ug2d.GetQuadTreeRectangle());
+    }
 
     virtual std::vector<size_t> GetCoordDimensions(size_t dim) const override;
 
@@ -67,18 +72,6 @@ class VDF_API UnstructuredGridLayered : public UnstructuredGrid {
     float GetValueNearestNeighbor(const std::vector<double> &coords) const override;
 
     float GetValueLinear(const std::vector<double> &coords) const override;
-
-    virtual void SetNodeOffset(long offset) override {
-        _ug2d.SetNodeOffset(offset);
-        _zug.SetNodeOffset(offset);
-        UnstructuredGrid::SetNodeOffset(offset);
-    }
-
-    virtual void SetCellOffset(long offset) override {
-        _ug2d.SetCellOffset(offset);
-        _zug.SetCellOffset(offset);
-        UnstructuredGrid::SetCellOffset(offset);
-    }
 
     /////////////////////////////////////////////////////////////////////////////
     //

@@ -6,7 +6,6 @@
 #include <vapor/DC.h>
 #include <vapor/DerivedVarMgr.h>
 #include <vapor/GridHelper.h>
-#include <vapor/KDTreeRG.h>
 #include <vapor/LayeredGrid.h>
 #include <vapor/MyBase.h>
 #include <vapor/RegularGrid.h>
