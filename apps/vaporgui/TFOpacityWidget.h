@@ -103,24 +103,24 @@ class ControlPointList {
     LineIterator EndLines() { return LineIterator(this, SizeLines()); }
 };
 
-class TFOpacityWidget : public TFMapWidget {
+class TFOpacityMap : public TFMap {
     Q_OBJECT
 
   public:
-    TFOpacityWidget();
+    TFOpacityMap(TFMapWidget *parent);
 
-    void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
+    void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
+                VAPoR::RenderParams *rParams) override;
 
-    QSize minimumSizeHint() const;
-    void Deactivate();
+    QSize minimumSizeHint() const override;
+    void Deactivate() override;
 
-  protected:
-    TFInfoWidget *createInfoWidget();
-    void paintEvent(QPaintEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mouseDoubleClickEvent(QMouseEvent *event);
+    TFInfoWidget *createInfoWidget() override;
+    void paintEvent(QPainter &p) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
 
   private:
     VAPoR::RenderParams *_renderParams = nullptr;
@@ -146,4 +146,9 @@ class TFOpacityWidget : public TFMapWidget {
   public slots:
     void DeselectControlPoint();
     void UpdateFromInfo(float value, float opacity);
+};
+
+class TFOpacityWidget : public TFMapWidget {
+  public:
+    TFOpacityWidget();
 };

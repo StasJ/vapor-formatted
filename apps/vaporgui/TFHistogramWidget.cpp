@@ -19,13 +19,10 @@ static vec2 qvec2(const QPoint &qp) { return vec2(qp.x(), qp.y()); }
 static vec2 qvec2(const QPointF &qp) { return vec2(qp.x(), qp.y()); }
 static QPointF qvec2(const vec2 &v) { return QPointF(v.x, v.y); }
 
-TFHistogramWidget::TFHistogramWidget() {
-    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
-    this->setFrameStyle(QFrame::Box);
-}
+TFHistogramMap::TFHistogramMap(TFMapWidget *parent) : TFMap(parent) {}
 
-void TFHistogramWidget::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
-                               VAPoR::RenderParams *rp) {
+void TFHistogramMap::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
+                            VAPoR::RenderParams *rp) {
     _renderParams = rp;
     _dataMgr = dataMgr;
 
@@ -37,9 +34,9 @@ void TFHistogramWidget::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
     update();
 }
 
-QSize TFHistogramWidget::minimumSizeHint() const { return QSize(100, 40); }
+QSize TFHistogramMap::minimumSizeHint() const { return QSize(100, 40); }
 
-TFInfoWidget *TFHistogramWidget::createInfoWidget() {
+TFInfoWidget *TFHistogramMap::createInfoWidget() {
     TFHistogramInfoWidget *info = new TFHistogramInfoWidget;
 
     connect(this, SIGNAL(UpdateInfo(float)), info, SLOT(SetControlPoint(float)));
@@ -51,11 +48,7 @@ TFInfoWidget *TFHistogramWidget::createInfoWidget() {
 #define CONTROL_POINT_RADIUS (4.0f)
 #define PADDING (CONTROL_POINT_RADIUS + 1.0f)
 
-void TFHistogramWidget::paintEvent(QPaintEvent *event) {
-    QFrame::paintEvent(event);
-    QPainter p(this);
-    p.setRenderHint(QPainter::Antialiasing);
-
+void TFHistogramMap::paintEvent(QPainter &p) {
     p.fillRect(rect(), Qt::gray);
 
     //    QMatrix m;
@@ -82,17 +75,19 @@ void TFHistogramWidget::paintEvent(QPaintEvent *event) {
     p.drawPolygon(graph);
 }
 
-void TFHistogramWidget::mousePressEvent(QMouseEvent *event) {
+void TFHistogramMap::mousePressEvent(QMouseEvent *event) {
     emit Activated(this);
     emit UpdateInfo(PixelToNDC(event->pos()).x);
 }
 
-void TFHistogramWidget::mouseReleaseEvent(QMouseEvent *event) {
+void TFHistogramMap::mouseReleaseEvent(QMouseEvent *event) {
     //    emit InfoDeselected();
 }
 
-void TFHistogramWidget::mouseMoveEvent(QMouseEvent *event) {
+void TFHistogramMap::mouseMoveEvent(QMouseEvent *event) {
     emit UpdateInfo(PixelToNDC(event->pos()).x);
 }
 
 // void TFHistogramWidget::mouseDoubleClickEvent(QMouseEvent *event)
+
+TFHistogramWidget::TFHistogramWidget() { _map = new TFHistogramMap(this); }

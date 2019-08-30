@@ -6,11 +6,11 @@
 #include <QWidget>
 #include <vapor/VAssert.h>
 
-class TFHistogramWidget : public TFMapWidget {
+class TFHistogramMap : public TFMap {
     Q_OBJECT
 
   public:
-    TFHistogramWidget();
+    TFHistogramMap(TFMapWidget *parent);
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
 
@@ -19,7 +19,7 @@ class TFHistogramWidget : public TFMapWidget {
 
   protected:
     TFInfoWidget *createInfoWidget();
-    void paintEvent(QPaintEvent *event);
+    void paintEvent(QPainter &p);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
@@ -33,4 +33,9 @@ class TFHistogramWidget : public TFMapWidget {
   signals:
     void InfoDeselected();
     void UpdateInfo(float value);
+};
+
+class TFHistogramWidget : public TFMapWidget {
+  public:
+    TFHistogramWidget();
 };
