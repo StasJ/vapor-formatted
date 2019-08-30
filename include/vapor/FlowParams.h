@@ -71,6 +71,9 @@ class PARAMS_API FlowParams : public RenderParams {
     float GetRakeBiasStrength() const;
     void SetRakeBiasStrength(float);
 
+    int GetPastNumOfTimeSteps() const;
+    void SetPastNumOfTimeSteps(int);
+
   protected:
     static const std::string _isSteadyTag;
     static const std::string _velocityMultiplierTag;
@@ -85,6 +88,7 @@ class PARAMS_API FlowParams : public RenderParams {
     static const std::string _rakeNumOfSeedsTag;
     static const std::string _rakeBiasVariable;
     static const std::string _rakeBiasStrength;
+    static const std::string _pastNumOfTimeSteps;
 };
 
 } // namespace VAPoR
