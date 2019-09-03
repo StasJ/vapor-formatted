@@ -129,7 +129,9 @@
 using namespace std;
 using namespace VAPoR;
 
-QEvent::Type MainForm::ParamsChangeEvent::_customEventType = QEvent::None;
+const QEvent::Type MainForm::ParamsChangeEvent = (QEvent::Type)QEvent::registerEventType();
+const QEvent::Type MainForm::ParamsIntermediateChangeEvent =
+    (QEvent::Type)QEvent::registerEventType();
 
 namespace {
 
@@ -1064,7 +1066,7 @@ void MainForm::_stateChangeCB() {
 
     // Generate an application event whenever state changes
     //
-    ParamsChangeEvent *event = new ParamsChangeEvent();
+    QEvent *event = new QEvent(ParamsChangeEvent);
     QApplication::postEvent(this, event);
 
     _eventsSinceLastSave++;
@@ -1400,7 +1402,7 @@ void MainForm::_setAnimationOnOff(bool on) {
 
         // Generate an event and force an update
         //
-        ParamsChangeEvent *event = new ParamsChangeEvent();
+        QEvent *event = new QEvent(ParamsChangeEvent);
         QApplication::postEvent(this, event);
     }
 }
@@ -1821,7 +1823,7 @@ bool MainForm::eventFilter(QObject *obj, QEvent *event) {
 
     // Only update the GUI if the Params state has changed
     //
-    if (event->type() == ParamsChangeEvent::type()) {
+    if (event->type() == ParamsChangeEvent) {
         if (_stats) {
             _stats->Update();
         }
