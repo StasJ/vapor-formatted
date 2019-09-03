@@ -311,6 +311,10 @@ MainForm::MainForm(vector<QString> files, QApplication *app, QWidget *parent)
 
     _paramsMgr = _controlExec->GetParamsMgr();
     _paramsMgr->RegisterStateChangeCB(std::bind(&MainForm::_stateChangeCB, this));
+    _paramsMgr->RegisterIntermediateStateChangeCB([this]() {
+        QEvent *event = new QEvent(ParamsIntermediateChangeEvent);
+        QApplication::postEvent(this, event);
+    });
     _paramsMgr->RegisterStateChangeFlag(&_stateChangeFlag);
 
     // Set Defaults from startup file
@@ -1839,6 +1843,18 @@ bool MainForm::eventFilter(QObject *obj, QEvent *event) {
         // force visualizer redraw
         //
         _vizWinMgr->Update(false);
+
+        update();
+
+        return (false);
+    }
+
+    if (event->type() == ParamsIntermediateChangeEvent) {
+        //        _tabMgr->Update();
+
+        // force visualizer redraw
+        //
+        _vizWinMgr->Update(true);
 
         update();
 
