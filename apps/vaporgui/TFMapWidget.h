@@ -64,6 +64,8 @@ class TFMap : public QObject {
 class TFMapWidget : public QFrame {
     Q_OBJECT
 
+    std::vector<TFMap *> _maps;
+
   public:
     TFMapWidget(TFMap *map);
     void AddMap(TFMap *map);
@@ -73,8 +75,6 @@ class TFMapWidget : public QFrame {
     QSize minimumSizeHint() const override;
 
   protected:
-    TFMap *_map = nullptr;
-
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
