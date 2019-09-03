@@ -43,6 +43,7 @@ TFOpacityMap::TFOpacityMap(TFMapWidget *parent) : TFMap(parent) {}
 void TFOpacityMap::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                           VAPoR::RenderParams *rp) {
     _renderParams = rp;
+    _paramsMgr = paramsMgr;
 
     MapperFunction *mf = rp->GetMapperFunc(rp->GetVariableName());
     // TODO Multiple opacity maps?
@@ -106,6 +107,7 @@ void TFOpacityMap::mousePressEvent(QMouseEvent *event) {
         _isDraggingControl = true;
         _controlStartValue = *it;
         selectControlPoint(it);
+        _paramsMgr->BeginSaveStateGroup("Move opacity control point");
     } else {
         DeselectControlPoint();
         event->ignore();
@@ -114,8 +116,9 @@ void TFOpacityMap::mousePressEvent(QMouseEvent *event) {
 
 void TFOpacityMap::mouseReleaseEvent(QMouseEvent *event) {
     if (_isDraggingControl) {
-        if (*_draggedControl != _controlStartValue)
-            opacityChanged();
+        //        if (*_draggedControl != _controlStartValue)
+        opacityChanged();
+        _paramsMgr->EndSaveStateGroup();
     } else
         event->ignore();
     _isDraggingControl = false;
@@ -136,6 +139,8 @@ void TFOpacityMap::mouseMoveEvent(QMouseEvent *event) {
 
         *_draggedControl = newVal;
         emit UpdateInfo(newVal.x, newVal.y);
+        opacityChanged();
+        _paramsMgr->IntermediateChange();
         update();
     } else {
         event->ignore();
