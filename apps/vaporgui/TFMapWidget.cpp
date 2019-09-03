@@ -86,6 +86,10 @@ int TFMap::GetPadding() const { return PADDING; }
 
 int TFMap::GetControlPointRadius() const { return CONTROL_POINT_RADIUS; }
 
+TFMapWidget::TFMapWidget(TFMap *map) { _map = map; }
+
+void TFMapWidget::AddMap(TFMap *map) { VAssert(0); }
+
 TFInfoWidget *TFMapWidget::GetInfoWidget() {
     if (_map)
         return _map->GetInfoWidget();

@@ -63,5 +63,5 @@ class TFColorMap : public TFMap {
 
 class TFColorWidget : public TFMapWidget {
   public:
-    TFColorWidget();
+    TFColorWidget() : TFMapWidget(new TFColorMap(this)) {}
 };

@@ -37,5 +37,5 @@ class TFHistogramMap : public TFMap {
 
 class TFHistogramWidget : public TFMapWidget {
   public:
-    TFHistogramWidget();
+    TFHistogramWidget() : TFMapWidget(new TFHistogramMap(this)) {}
 };
