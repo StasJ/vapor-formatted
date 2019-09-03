@@ -32,6 +32,7 @@ class QRangeSlider : public QSlider {
     void paintHandle(QStylePainter &p, int i);
     void paintTrack(QStylePainter &p);
     bool doesHandleContainPixel(int handle, const QPoint &pixel) const;
+    bool doesGrooveContainPixel(const QPoint &pixel) const;
     bool isSliderDown(int i) const;
     void swapSliders();
 };
