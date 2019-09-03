@@ -22,6 +22,11 @@ void TFMap::resize(int width, int height) {
     _height = height;
 }
 
+void TFMap::mousePressEvent(QMouseEvent *event) { event->ignore(); }
+void TFMap::mouseReleaseEvent(QMouseEvent *event) { event->ignore(); }
+void TFMap::mouseMoveEvent(QMouseEvent *event) { event->ignore(); }
+void TFMap::mouseDoubleClickEvent(QMouseEvent *event) { event->ignore(); }
+
 void TFMap::drawControl(QPainter &p, const QPointF &pos, bool selected) const {
     QPen pen(Qt::darkGray, 0.5);
     QBrush brush(QColor(0xfa, 0xfa, 0xfa));
@@ -125,12 +130,16 @@ void TFMapWidget::paintEvent(QPaintEvent *event) {
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
 
-    for (int i = _maps.size() - 1; i >= 0; i--)
+    for (int i = _maps.size() - 1; i >= 0; i--) {
+        p.save();
         _maps[i]->paintEvent(p);
+        p.restore();
+    }
 }
 
 void TFMapWidget::mousePressEvent(QMouseEvent *event) {
     for (auto map : _maps) {
+        event->accept();
         map->mousePressEvent(event);
         if (event->isAccepted())
             break;
@@ -139,6 +148,7 @@ void TFMapWidget::mousePressEvent(QMouseEvent *event) {
 
 void TFMapWidget::mouseReleaseEvent(QMouseEvent *event) {
     for (auto map : _maps) {
+        event->accept();
         map->mouseReleaseEvent(event);
         if (event->isAccepted())
             break;
@@ -147,6 +157,7 @@ void TFMapWidget::mouseReleaseEvent(QMouseEvent *event) {
 
 void TFMapWidget::mouseMoveEvent(QMouseEvent *event) {
     for (auto map : _maps) {
+        event->accept();
         map->mouseMoveEvent(event);
         if (event->isAccepted())
             break;
@@ -155,6 +166,7 @@ void TFMapWidget::mouseMoveEvent(QMouseEvent *event) {
 
 void TFMapWidget::mouseDoubleClickEvent(QMouseEvent *event) {
     for (auto map : _maps) {
+        event->accept();
         map->mouseDoubleClickEvent(event);
         if (event->isAccepted())
             break;

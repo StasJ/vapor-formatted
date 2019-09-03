@@ -35,10 +35,10 @@ class TFMap : public QObject {
     void resize(int width, int height);
 
     virtual void paintEvent(QPainter &p) = 0;
-    virtual void mousePressEvent(QMouseEvent *event) {}
-    virtual void mouseReleaseEvent(QMouseEvent *event) {}
-    virtual void mouseMoveEvent(QMouseEvent *event) {}
-    virtual void mouseDoubleClickEvent(QMouseEvent *event) {}
+    virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent *event);
+    virtual void mouseDoubleClickEvent(QMouseEvent *event);
 
   protected:
     void drawControl(QPainter &p, const QPointF &pos, bool selected = false) const;
@@ -80,5 +80,5 @@ class TFMapWidget : public QFrame {
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
-    void resizeEvent(QResizeEvent *event);
+    void resizeEvent(QResizeEvent *event) override;
 };
