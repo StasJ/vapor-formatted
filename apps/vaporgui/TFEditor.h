@@ -46,6 +46,16 @@ class TFEditor : public QTabWidget {
     void _rangeChanged(float left, float right);
 };
 
+class SettingsMenu : public QToolButton {
+    Q_OBJECT
+
+  public:
+    SettingsMenu();
+
+  protected:
+    void paintEvent(QPaintEvent *event);
+};
+
 class TFMapsGroup : public QWidget {
     Q_OBJECT
 
