@@ -242,6 +242,13 @@ int Advection::CalculateParticleValues(Field *scalar, bool skipNonZero) {
     return 0;
 }
 
+int Advection::CalculateStreamLength() {
+    // Stream length is calculated from either the beginning of a stream, or
+    // right after a separator.
+
+    return 0;
+}
+
 int Advection::CalculateParticleProperties(Field *scalar) {
     size_t mostSteps = 0;
     for (const auto &s : _streams)
@@ -404,11 +411,11 @@ const std::vector<Particle> &Advection::GetStreamAt(size_t i) const {
     return _streams.at(i);
 }
 
-size_t Advection::GetMaxNumOfSteps() const {
-    size_t max = 0;
-    size_t idx = 0;
+int Advection::GetMaxNumOfSteps() const {
+    int max = 0;
+    int idx = 0;
     for (const auto &s : _streams) {
-        size_t num = s.size() - _separatorCount[idx];
+        int num = s.size() - _separatorCount[idx];
         max = max > num ? max : num;
         idx++;
     }
