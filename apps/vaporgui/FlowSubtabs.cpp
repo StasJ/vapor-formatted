@@ -291,6 +291,13 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
         _rake->SetCurrentValues(rakeVals);
     }
 
+    /* Update rake num. of seeds */
+    auto rakeNumOfSeeds = _params->GetRakeNumOfSeeds();
+    _rakeXNum->SetEditText(QString::number(rakeNumOfSeeds[0]));
+    _rakeYNum->SetEditText(QString::number(rakeNumOfSeeds[1]));
+    _rakeZNum->SetEditText(QString::number(rakeNumOfSeeds[2]));
+    _rakeTotalNum->SetEditText(QString::number(rakeNumOfSeeds[2]));
+
     /* Update rake random bias variable and strength */
     if (_rakeBiasVariable->GetNumOfItems() < 1) // Not filled with variables yet
     {
