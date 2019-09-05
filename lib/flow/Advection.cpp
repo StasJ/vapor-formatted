@@ -242,13 +242,6 @@ int Advection::CalculateParticleValues(Field *scalar, bool skipNonZero) {
     return 0;
 }
 
-int Advection::CalculateStreamLength() {
-    // Stream length is calculated from either the beginning of a stream, or
-    // right after a separator.
-
-    return 0;
-}
-
 int Advection::CalculateParticleProperties(Field *scalar) {
     size_t mostSteps = 0;
     for (const auto &s : _streams)
@@ -330,6 +323,8 @@ int Advection::OutputStreamsGnuplot(const std::string &filename, bool append) co
     if (f == nullptr)
         return FILE_ERROR;
 
+    std::fprintf(f, "%s\n", "# This file could be plotted by Gnuplot using the following command:");
+    std::fprintf(f, "%s\n\n", "# splot " filename " u 1:2:3 w lines ");
     std::fprintf(f, "%s\n", "# X-position      Y-position      Z-position     Time     Value");
     for (const auto &s : _streams) {
         for (const auto &p : s) {
