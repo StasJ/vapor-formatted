@@ -191,10 +191,6 @@ FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
     _layout->addWidget(_fileWriter);
     connect(_fileWriter, SIGNAL(_pathChanged()), this, SLOT(_fileWriterChanged()));
 
-    _outputButton = new QPushButton("Output Flow Lines", this);
-    _layout->addWidget(_outputButton);
-    connect(_outputButton, SIGNAL(clicked()), this, SLOT(_outputButtonClicked()));
-
     /* Index numbers are in agreement with what's in FlowRenderer.h */
     _seedGenMode->AddOption("From a Built In Function", 0);
     _seedGenMode->AddOption("From a List", 1);
@@ -463,8 +459,6 @@ void FlowSeedingSubtab::_rakeGeometryChanged() {
     _params->SetRake(range);
 }
 
-void FlowSeedingSubtab::_outputButtonClicked() { _params->SetNeedFlowlineOutput(true); }
-
 void FlowSeedingSubtab::_seedGenModeChanged(int newIdx) { _params->SetSeedGenMode(newIdx); }
 
 void FlowSeedingSubtab::_fileReaderChanged() {
@@ -475,6 +469,7 @@ void FlowSeedingSubtab::_fileReaderChanged() {
 void FlowSeedingSubtab::_fileWriterChanged() {
     std::string filename = _fileWriter->GetPath();
     _params->SetFlowlineOutputFilename(filename);
+    _params->SetNeedFlowlineOutput(true);
 }
 
 void FlowSeedingSubtab::_flowDirectionChanged(int newIdx) { _params->SetFlowDirection(newIdx); }

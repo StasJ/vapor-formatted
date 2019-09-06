@@ -107,7 +107,6 @@ class FlowSeedingSubtab : public QVaporSubtab {
     void _fileReaderChanged();
     void _fileWriterChanged();
     void _flowDirectionChanged(int newIdx);
-    void _outputButtonClicked();
 
     void _rakeGeometryChanged();
     void _rakeNumOfSeedsChanged();
@@ -121,7 +120,6 @@ class FlowSeedingSubtab : public QVaporSubtab {
     VComboBox *_seedGenMode;
     VFileReader *_fileReader;
     VFileWriter *_fileWriter;
-    QPushButton *_outputButton;
     VComboBox *_flowDirection;
 
     /* Rake related widgets */
