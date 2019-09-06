@@ -9,6 +9,13 @@
 #include <iostream>
 #include <random>
 
+#ifdef WIN32
+#include <Processthreadsapi.h>
+#else
+#include <sys/types.h>
+#include <unistd.h>
+#endif
+
 #define GL_ERROR -20
 
 using namespace VAPoR;
@@ -657,8 +664,15 @@ int FlowRenderer::_genSeedsRakeRandom(std::vector<flow::Particle> &seeds, float 
     auto totalNumOfSeeds = rakeSeeds[3]; // We only need the 4th value for random seeds
 
     /* Create three uniform distributions in 3 dimensions */
-    std::random_device rd;  // Will be used to obtain a seed for the random number engine
-    std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
+    /* Use the current process ID as the engine seed, so that the generated seeds are
+       reproducible during this run                                                */
+    int randSeed;
+#ifdef WIN32
+    randSeed = GetCurrentProcessId();
+#else
+    randSeed = ::getpid();
+#endif
+    std::mt19937 gen(randSeed); // Standard mersenne_twister_engine seeded with randSeed
     std::uniform_real_distribution<float> distX(rake[0], rake[1]);
     std::uniform_real_distribution<float> distY(rake[2], rake[3]);
     std::uniform_real_distribution<float> distZ(rake[4], rake[5]);
@@ -754,8 +768,13 @@ int FlowRenderer::_genSeedsRakeRandomBiased(std::vector<flow::Particle> &seeds,
      */
 
     /* Create three uniform distributions in 3 dimensions */
-    std::random_device rd;  // Will be used to obtain a seed for the random number engine
-    std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
+    int randSeed;
+#ifdef WIN32
+    randSeed = GetCurrentProcessId();
+#else
+    randSeed = ::getpid();
+#endif
+    std::mt19937 gen(randSeed); // Standard mersenne_twister_engine seeded with randSeed
     std::uniform_real_distribution<float> distX(rake[0], rake[1]);
     std::uniform_real_distribution<float> distY(rake[2], rake[3]);
     std::uniform_real_distribution<float> distZ(rake[4], rake[5]);
