@@ -41,7 +41,8 @@ TFInfoWidget *TFColorMap::createInfoWidget() {
 #define PADDING (CONTROL_POINT_RADIUS + 1.0f)
 
 void TFColorMap::paintEvent(QPainter &p) {
-    p.fillRect(rect(), Qt::gray);
+    //     243 245 249
+    p.fillRect(rect(), Qt::lightGray);
 
     if (_renderParams) {
         RenderParams *rp = _renderParams;

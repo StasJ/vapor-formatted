@@ -49,7 +49,7 @@ TFInfoWidget *TFHistogramMap::createInfoWidget() {
 #define PADDING (CONTROL_POINT_RADIUS + 1.0f)
 
 void TFHistogramMap::paintEvent(QPainter &p) {
-    p.fillRect(rect(), Qt::gray);
+    p.fillRect(rect(), Qt::lightGray);
 
     //    QMatrix m;
     //    m.translate(PADDING, height());
