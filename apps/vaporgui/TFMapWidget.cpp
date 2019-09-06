@@ -94,11 +94,11 @@ glm::vec2 TFMap::PixelToNDC(const glm::vec2 &p) const {
 
 glm::vec2 TFMap::PixelToNDC(const QPointF &p) const { return PixelToNDC(vec2(p.x(), p.y())); }
 
-QRectF TFMap::PaddedRect() const {
-    return QRectF(PADDING, PADDING, width() - PADDING * 2, height() - PADDING * 2);
+QRect TFMap::paddedRect() const {
+    return QRect(PADDING, PADDING, width() - PADDING * 2, height() - PADDING * 2);
 }
 
-QRectF TFMap::rect() const { return QRectF(0, 0, width(), height()); }
+QRect TFMap::rect() const { return QRect(0, 0, width(), height()); }
 
 int TFMap::GetPadding() const { return PADDING; }
 

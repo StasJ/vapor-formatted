@@ -1,4 +1,5 @@
 #include "TFColorWidget.h"
+#include "QPaintUtils.h"
 #include "TFColorInfoWidget.h"
 #include <QMouseEvent>
 #include <QPainter>
@@ -43,6 +44,7 @@ TFInfoWidget *TFColorMap::createInfoWidget() {
 void TFColorMap::paintEvent(QPainter &p) {
     //     243 245 249
     p.fillRect(rect(), Qt::lightGray);
+    QPaintUtils::BoxDropShadow(p, paddedRect(), 10, QColor(0, 0, 0, 120));
 
     if (_renderParams) {
         RenderParams *rp = _renderParams;
@@ -60,7 +62,7 @@ void TFColorMap::paintEvent(QPainter &p) {
         }
         QImage image(buf, nSamples, 1, QImage::Format::Format_RGB888);
 
-        p.drawImage(PaddedRect(), image);
+        p.drawImage(paddedRect(), image);
 
         for (int i = 0; i < cm->numControlPoints(); i++) {
             drawControl(p, controlQPositionForValue(cm->controlPointValueNormalized(i)),
