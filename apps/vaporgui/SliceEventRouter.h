@@ -2,7 +2,9 @@
 #define SLICEEVENTROUTER_H
 
 #include "GL/glew.h"
-#include "ParamsWidgets.h"
+#include "PSlider.h"
+#include "PSpinBox.h"
+#include "ParamsWidget.h"
 #include "RenderEventRouter.h"
 #include "SliceSubtabs.h"
 #include "VariablesWidget.h"

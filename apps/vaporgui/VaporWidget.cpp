@@ -1,6 +1,6 @@
+#include "VaporWidget.h"
 #include "ErrorReporter.h"
 #include "FileOperationChecker.h"
-#include "VaporWidgets.h"
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -28,7 +28,7 @@
 
 VaporWidget::VaporWidget(QWidget *parent) : QWidget(parent) {}
 
-void VaporWidget::addToolTip(const std::string &toolTip) {
+void VaporWidget::SetToolTip(const std::string &toolTip) {
     setToolTip(QString::fromStdString(toolTip));
 }
 
