@@ -10,6 +10,8 @@
 class VSection : public QTabWidget {
     Q_OBJECT
 
+    class SettingsMenuButton;
+
   public:
     VSection(const std::string &title);
     QVBoxLayout *layout() const;
@@ -26,11 +28,11 @@ class VSection : public QTabWidget {
     QString _createStylesheet() const;
 };
 
-class VSectionSettingsMenuButton : public QToolButton {
+class VSection::SettingsMenuButton : public QToolButton {
     Q_OBJECT
 
   public:
-    VSectionSettingsMenuButton();
+    SettingsMenuButton();
 
   protected:
     void paintEvent(QPaintEvent *event);
