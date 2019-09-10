@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ParamsWidgets.h"
+#include "VSection.h"
 #include <QStackedWidget>
 #include <QTabWidget>
 #include <vapor/ParamsMgr.h>
@@ -19,7 +20,7 @@ class TFMapsGroup;
 class TFMapWidget;
 class TFMapsInfoGroup;
 
-class TFEditor : public QTabWidget {
+class TFEditor : public VSection {
     Q_OBJECT
 
   public:
@@ -34,14 +35,11 @@ class TFEditor : public QTabWidget {
     ParamsWidgetDropdown *colorMapTypeDropdown;
     TFMapsGroup *_maps;
     TFMapsInfoGroup *_mapsInfo;
-    QToolButton *_tool;
 
-    QWidget *_tab() const;
     void _updateMappingRangeControl(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                                     VAPoR::RenderParams *rParams);
     void _getDataRange(VAPoR::DataMgr *dataMgr, VAPoR::RenderParams *rParams, float *min,
                        float *max) const;
-    QString _createStylesheet() const;
 
   private slots:
     void _rangeChanged(float left, float right);
@@ -50,16 +48,6 @@ class TFEditor : public QTabWidget {
     void _loadColormap();
     void _loadTransferFunction();
     void _saveTransferFunction();
-};
-
-class SettingsMenu : public QToolButton {
-    Q_OBJECT
-
-  public:
-    SettingsMenu();
-
-  protected:
-    void paintEvent(QPaintEvent *event);
 };
 
 #include <QWidgetAction>

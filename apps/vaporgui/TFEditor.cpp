@@ -19,21 +19,11 @@
 using namespace Wasp;
 using namespace VAPoR;
 #include <algorithm>
-TFEditor::TFEditor() {
-    addTab(new QWidget(this), "Transfer Function");
-
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->setMargin(12);
-    _tab()->setLayout(layout);
-
-    _tool = new SettingsMenu;
-    setCornerWidget(_tool);
-    setStyleSheet(_createStylesheet());
-
-    layout->addWidget(_maps = new TFMapsGroup);
-    layout->addWidget(_mapsInfo = _maps->CreateInfoGroup());
-    layout->addWidget(range = new QRangeSliderTextCombo);
-    layout->addWidget(
+TFEditor::TFEditor() : VSection("Transfer Function") {
+    layout()->addWidget(_maps = new TFMapsGroup);
+    layout()->addWidget(_mapsInfo = _maps->CreateInfoGroup());
+    layout()->addWidget(range = new QRangeSliderTextCombo);
+    layout()->addWidget(
         colorMapTypeDropdown = new ParamsWidgetDropdown(
             VAPoR::ColorMap::_interpTypeTag, {"Linear", "Discrete", "Diverging"},
             {TFInterpolator::linear, TFInterpolator::discrete, TFInterpolator::diverging},
@@ -64,7 +54,7 @@ TFEditor::TFEditor() {
     QAction *test = new QAction("TEST", this);
     test->setCheckable(true);
     menu->addAction(test);
-    _tool->setMenu(menu);
+    setMenu(menu);
 
     connect(range, SIGNAL(ValueChanged(float, float)), this, SLOT(_rangeChanged(float, float)));
 
@@ -80,8 +70,6 @@ void TFEditor::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
     _mapsInfo->Update(rParams);
     _updateMappingRangeControl(dataMgr, paramsMgr, rParams);
 }
-
-QWidget *TFEditor::_tab() const { return this->widget(0); }
 
 void TFEditor::_updateMappingRangeControl(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                                           VAPoR::RenderParams *rParams) {
@@ -102,32 +90,6 @@ void TFEditor::_getDataRange(VAPoR::DataMgr *d, VAPoR::RenderParams *r, float *m
                     range);
     *min = range[0];
     *max = range[1];
-}
-
-QString TFEditor::_createStylesheet() const {
-    std::string stylesheet;
-
-#if defined(Darwin)
-    stylesheet +=
-        R"(
-    QTabWidget::right-corner {
-        top: 24px;
-        right: 3px;
-    }
-    )";
-#elif defined(WIN32)
-#error style missing for windows
-#else
-    stylesheet +=
-        R"(
-    QTabWidget::right-corner {
-        top: -3px;
-        right: 5px;
-    }
-    )";
-#endif
-
-    return QString::fromStdString(stylesheet);
 }
 
 void TFEditor::_rangeChanged(float left, float right) {
@@ -201,29 +163,6 @@ void TFEditor::_saveTransferFunction() {
 
     if (rc < 0)
         MSG_ERR("Failed to save transfer function");
-}
-
-#include <QStylePainter>
-SettingsMenu::SettingsMenu() {
-    setIcon(QIcon(QString::fromStdString(GetSharePath("images/gear-dropdown1.png"))));
-    setIconSize(QSize(18, 18));
-    setCursor(QCursor(Qt::PointingHandCursor));
-    setPopupMode(QToolButton::InstantPopup);
-
-    setStyleSheet("border: none;"
-                  "background-color: none;"
-                  "padding: 0px;");
-}
-
-void SettingsMenu::paintEvent(QPaintEvent *event) {
-    // This function is overridden to prevent Qt from drawing its own dropdown arrow
-    QStylePainter p(this);
-
-    QStyleOptionToolButton option;
-    initStyleOption(&option);
-    option.subControls = QStyle::SC_ToolButton;
-    option.features = QStyleOptionToolButton::None;
-    p.drawComplexControl(QStyle::CC_ToolButton, option);
 }
 
 std::map<std::string, QIcon> ColorMapMenuItem::icons;
