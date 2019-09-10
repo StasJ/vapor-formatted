@@ -300,7 +300,7 @@ int FlowRenderer::_renderFromAnAdvection(const flow::Advection *adv, FlowParams 
                 _particleHelper1(vec, p, singleColor);
             } // Finish processing a stream
             if (!vec.empty()) {
-                _drawALineSeg(vec.data(), vec.size() / 4, singleColor);
+                _drawALineStrip(vec.data(), vec.size() / 4, singleColor);
                 vec.clear();
             }
         }  // Finish processing all streams
@@ -331,7 +331,7 @@ int FlowRenderer::_renderFromAnAdvection(const flow::Advection *adv, FlowParams 
             } // Finish processing a stream
 
             if (!vec.empty()) {
-                _drawALineSeg(vec.data(), vec.size() / 4, singleColor);
+                _drawALineStrip(vec.data(), vec.size() / 4, singleColor);
                 vec.clear();
             }
         } // Finish processing all streams
@@ -350,12 +350,12 @@ void FlowRenderer::_particleHelper1(std::vector<float> &vec, const flow::Particl
         vec.push_back(p.value);
     } else if (vec.size() > 0) // p is a separator and vec is non-empty
     {
-        _drawALineSeg(vec.data(), vec.size() / 4, singleColor);
+        _drawALineStrip(vec.data(), vec.size() / 4, singleColor);
         vec.clear();
     }
 }
 
-int FlowRenderer::_drawALineSeg(const float *buf, size_t numOfParts, bool singleColor) const {
+int FlowRenderer::_drawALineStrip(const float *buf, size_t numOfParts, bool singleColor) const {
     // Make some OpenGL function calls
     glm::mat4 modelview = _glManager->matrixManager->GetModelViewMatrix();
     glm::mat4 projection = _glManager->matrixManager->GetProjectionMatrix();
