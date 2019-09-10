@@ -45,6 +45,13 @@ class RENDER_API CalcEngineMgr : public Wasp::MyBase {
 
     std::vector<string> GetFunctionNames(string scriptType, string datasetName);
 
+    //! Rebuild from params database
+    //!
+    //! When invoked this method rebuilds internal state using the ParamsMgr
+    //! \p paramsMgr passed in to the constructor
+    //
+    void ReinitFromState() { _sync(); }
+
   private:
     const DataStatus *_dataStatus;
     const ParamsMgr *_paramsMgr;
