@@ -106,6 +106,12 @@ int TFMap::GetControlPointRadius() const { return CONTROL_POINT_RADIUS; }
 
 TFMapWidget::TFMapWidget(TFMap *map) { AddMap(map); }
 
+TFMapWidget::~TFMapWidget() {
+    for (TFMap *map : _maps) {
+        delete map;
+    }
+}
+
 void TFMapWidget::AddMap(TFMap *map) {
     if (std::find(_maps.begin(), _maps.end(), map) == _maps.end())
         _maps.push_back(map);
