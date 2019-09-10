@@ -87,11 +87,16 @@ class ParamsWidgetDropdown : public ParamsWidget {
     Q_OBJECT
 
     QComboBox *_box = nullptr;
+    std::vector<int> _itemValues;
 
   public:
     ParamsWidgetDropdown(const std::string &tag, const std::vector<std::string> &items,
-                         const std::string &label = "");
+                         const std::vector<int> &itemValues = {}, const std::string &label = "");
     void Update(VAPoR::ParamsBase *p);
+
+  private:
+    int getValueForIndex(int index) const;
+    int getIndexForValue(int value) const;
 
   private slots:
     void indexChangedSlot(int index);

@@ -33,9 +33,11 @@ TFEditor::TFEditor() {
     layout->addWidget(_maps = new TFMapsGroup);
     layout->addWidget(_mapsInfo = _maps->CreateInfoGroup());
     layout->addWidget(range = new QRangeSliderTextCombo);
-    layout->addWidget(colorMapTypeDropdown = new ParamsWidgetDropdown(
-                          VAPoR::ColorMap::_interpTypeTag, {"Linear", "Discrete", "Diverging"},
-                          "Color Interpolation"));
+    layout->addWidget(
+        colorMapTypeDropdown = new ParamsWidgetDropdown(
+            VAPoR::ColorMap::_interpTypeTag, {"Linear", "Discrete", "Diverging"},
+            {TFInterpolator::linear, TFInterpolator::discrete, TFInterpolator::diverging},
+            "Color Interpolation"));
 
     QMenu *menu = new QMenu;
     menu->addAction("Save Colormap", this, SLOT(_saveTransferFunction()));
