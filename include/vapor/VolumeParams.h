@@ -41,6 +41,10 @@ class PARAMS_API VolumeParams : public RenderParams {
 
     void SetIsoValues(std::vector<double> values);
     std::vector<double> GetIsoValues() const;
+    vector<double> GetIsoValues(const string &variable) { return GetIsoValues(); }
+    void SetIsoValues(const string &variable, const vector<double> &values) {
+        SetIsoValues(values);
+    }
     void SetEnabledIsoValues(std::vector<bool> mask);
     std::vector<bool> GetEnabledIsoValues() const;
 

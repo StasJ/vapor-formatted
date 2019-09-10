@@ -84,9 +84,9 @@ class PARAMS_API ContourParams : public RenderParams {
 
     bool GetLockToTF() const;
 
-    vector<double> GetContourValues(string varName);
-
-    void SetContourValues(string varName, vector<double> vals);
+    bool HasIsoValues() const { return true; }
+    vector<double> GetContourValues(const string &varName);
+    void SetContourValues(const string &varName, const vector<double> &vals);
 
     // Get static string identifier for this params class
     //
