@@ -46,6 +46,7 @@ class TFEditor : public QTabWidget {
   private slots:
     void _rangeChanged(float left, float right);
     void _test();
+    void _loadColormap(std::string path);
     void _loadColormap();
     void _loadTransferFunction();
     void _saveTransferFunction();
@@ -65,11 +66,22 @@ class SettingsMenu : public QToolButton {
 class ColorMapMenuItem : public QWidgetAction {
     Q_OBJECT
 
+    static std::map<std::string, QIcon> icons;
+    static QIcon getCachedIcon(const std::string &path);
+    static QSize getIconSize();
+    static QSize getIconPadding();
+
+    const std::string _path;
+
   public:
-    ColorMapMenuItem(const QIcon &icon);
+    ColorMapMenuItem(const std::string &path);
     static void CloseMenu(QAction *action);
+
+  signals:
+    void triggered(std::string colormapPath);
+
   private slots:
-    void _pressed();
+    void _clicked();
 };
 
 class TFMapsGroup : public QWidget {
