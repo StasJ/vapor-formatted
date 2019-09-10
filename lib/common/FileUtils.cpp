@@ -1,5 +1,6 @@
 #include "vapor/FileUtils.h"
 #include <algorithm>
+#include <dirent.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <vapor/MyBase.h>
@@ -143,6 +144,29 @@ FileType FileUtils::GetFileType(const std::string &path) {
             return FileType::Other;
     } else
         return FileType::Does_Not_Exist;
+}
+
+std::vector<std::string> FileUtils::ListFiles(const std::string &path) {
+    DIR *dir = opendir(path.c_str());
+    if (!dir)
+        return {};
+
+    struct dirent *ent;
+    vector<string> fileNames;
+
+    while ((ent = readdir(dir))) {
+        const string name = ent->d_name;
+
+        if (name == ".")
+            continue;
+        if (name == "..")
+            continue;
+
+        fileNames.push_back(name);
+    }
+
+    closedir(dir);
+    return fileNames;
 }
 
 std::string FileUtils::JoinPaths(std::initializer_list<std::string> paths) {
