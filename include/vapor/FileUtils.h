@@ -3,6 +3,7 @@
 #include <initializer_list>
 #include <string>
 #include <vapor/common.h>
+#include <vector>
 
 namespace Wasp {
 namespace FileUtils {
