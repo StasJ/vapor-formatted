@@ -63,6 +63,8 @@ class PARAMS_API MapperFunction : public ParamsBase {
     //
     int LoadFromFile(string path);
 
+    int LoadColormapFromFile(string path);
+
     // Get static string identifier for this params class
     //
     static string GetClassType() { return ("MapperFunctionParams"); }

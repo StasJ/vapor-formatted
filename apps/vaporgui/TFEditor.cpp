@@ -1,16 +1,23 @@
 #include "TFEditor.h"
+#include "ErrorReporter.h"
 #include "QRangeSlider.h"
 #include "QRangeSliderTextCombo.h"
+#include "SettingsParams.h"
 #include "TFColorInfoWidget.h"
 #include "TFColorWidget.h"
 #include "TFHistogramWidget.h"
 #include "TFOpacityInfoWidget.h"
 #include "TFOpacityWidget.h"
 #include <QBoxLayout>
+#include <QFileDialog>
 #include <QLabel>
 #include <QMenu>
 #include <vapor/ColorMap.h>
+#include <vapor/FileUtils.h>
 #include <vapor/ResourcePath.h>
+
+using namespace Wasp;
+using namespace VAPoR;
 
 TFEditor::TFEditor() {
     addTab(new QWidget(this), "Transfer Function");
@@ -31,11 +38,11 @@ TFEditor::TFEditor() {
                           "Color Interpolation"));
 
     QMenu *menu = new QMenu;
-    menu->addAction("Save Colormap");
-    menu->addAction("Load Colormap");
+    menu->addAction("Save Colormap", this, SLOT(_saveTransferFunction()));
+    menu->addAction("Load Colormap", this, SLOT(_loadColormap()));
     menu->addSeparator();
-    menu->addAction("Save Transfer Function");
-    menu->addAction("Load Transfer Function");
+    menu->addAction("Save Transfer Function", this, SLOT(_saveTransferFunction()));
+    menu->addAction("Load Transfer Function", this, SLOT(_loadTransferFunction()));
     menu->addSeparator();
     menu->addAction("Auto Update Histogram")->setCheckable(true);
     QAction *test = new QAction("TEST", this);
@@ -51,6 +58,7 @@ TFEditor::TFEditor() {
 void TFEditor::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                       VAPoR::RenderParams *rParams) {
     _rParams = rParams;
+    _paramsMgr = paramsMgr;
     colorMapTypeDropdown->Update(rParams->GetMapperFunc(rParams->GetVariableName())->GetColorMap());
     _maps->Update(dataMgr, paramsMgr, rParams);
     _mapsInfo->Update(rParams);
@@ -108,6 +116,66 @@ QString TFEditor::_createStylesheet() const {
 
 void TFEditor::_rangeChanged(float left, float right) {
     _rParams->GetMapperFunc(_rParams->GetVariableName())->setMinMaxMapValue(left, right);
+}
+
+void TFEditor::_loadColormap() {
+    SettingsParams *sp = (SettingsParams *)_paramsMgr->GetParams(SettingsParams::GetClassType());
+
+    QString qDefaultDirectory = QString::fromStdString(sp->GetTFDir());
+    QString qSelectedPath = QFileDialog::getOpenFileName(
+        nullptr, "Select a .tf3 file", qDefaultDirectory, "Vapor Transfer Function (*.tf3)");
+    if (qSelectedPath.isNull())
+        return;
+
+    string selectedPath = qSelectedPath.toStdString();
+    sp->SetTFDir(FileUtils::Dirname(selectedPath));
+
+    MapperFunction *tf = _rParams->GetMapperFunc(_rParams->GetVariableName());
+
+    int rc = tf->LoadColormapFromFile(selectedPath);
+
+    if (rc < 0)
+        MSG_ERR("Failed to load transfer function");
+}
+
+void TFEditor::_loadTransferFunction() {
+    SettingsParams *sp = (SettingsParams *)_paramsMgr->GetParams(SettingsParams::GetClassType());
+
+    QString qDefaultDirectory = QString::fromStdString(sp->GetTFDir());
+    QString qSelectedPath = QFileDialog::getOpenFileName(
+        nullptr, "Select a .tf3 file", qDefaultDirectory, "Vapor Transfer Function (*.tf3)");
+    if (qSelectedPath.isNull())
+        return;
+
+    string selectedPath = qSelectedPath.toStdString();
+    sp->SetTFDir(FileUtils::Dirname(selectedPath));
+
+    MapperFunction *tf = _rParams->GetMapperFunc(_rParams->GetVariableName());
+
+    int rc = tf->LoadFromFile(selectedPath);
+
+    if (rc < 0)
+        MSG_ERR("Failed to load transfer function");
+}
+
+void TFEditor::_saveTransferFunction() {
+    SettingsParams *sp = (SettingsParams *)_paramsMgr->GetParams(SettingsParams::GetClassType());
+
+    QString qDefaultDirectory = QString::fromStdString(sp->GetTFDir());
+    QString qSelectedPath = QFileDialog::getSaveFileName(
+        nullptr, "Select a .tf3 file", qDefaultDirectory, "Vapor Transfer Function (*.tf3)");
+    if (qSelectedPath.isNull())
+        return;
+
+    string selectedPath = qSelectedPath.toStdString();
+    sp->SetTFDir(FileUtils::Dirname(selectedPath));
+
+    MapperFunction *tf = _rParams->GetMapperFunc(_rParams->GetVariableName());
+
+    int rc = tf->SaveToFile(selectedPath);
+
+    if (rc < 0)
+        MSG_ERR("Failed to save transfer function");
 }
 
 #include <QStylePainter>

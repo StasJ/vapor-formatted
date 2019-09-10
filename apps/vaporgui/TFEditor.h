@@ -28,7 +28,8 @@ class TFEditor : public QTabWidget {
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
 
   private:
-    VAPoR::RenderParams *_rParams;
+    VAPoR::RenderParams *_rParams = nullptr;
+    VAPoR::ParamsMgr *_paramsMgr = nullptr;
     QRangeSliderTextCombo *range;
     ParamsWidgetDropdown *colorMapTypeDropdown;
     TFMapsGroup *_maps;
@@ -44,6 +45,9 @@ class TFEditor : public QTabWidget {
 
   private slots:
     void _rangeChanged(float left, float right);
+    void _loadColormap();
+    void _loadTransferFunction();
+    void _saveTransferFunction();
 };
 
 class SettingsMenu : public QToolButton {
