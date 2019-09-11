@@ -1,4 +1,5 @@
 #include "TFOpacityInfoWidget.h"
+#include "VLineItem.h"
 #include <QBoxLayout>
 #include <QDoubleValidator>
 #include <QLabel>
@@ -6,7 +7,7 @@
 #include <vapor/RenderParams.h>
 
 TFOpacityInfoWidget::TFOpacityInfoWidget() {
-    ((QBoxLayout *)layout())->addWidget(_opacityEdit = new QLineEdit, 30, Qt::AlignRight);
+    ((QBoxLayout *)layout())->addWidget(new VLineItem("Opacity", _opacityEdit = new QLineEdit));
 
     _opacityEdit->setValidator(new QDoubleValidator(0, 1, 6));
     connect(_opacityEdit, SIGNAL(returnPressed()), this, SLOT(opacityEditChanged()));

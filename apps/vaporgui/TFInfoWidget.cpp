@@ -3,16 +3,16 @@
 #include <QDoubleValidator>
 #include <QLabel>
 #include <QPainter>
+#include <VLineItem.h>
 #include <vapor/RenderParams.h>
 
 TFInfoWidget::TFInfoWidget() {
-    QBoxLayout *layout = new QHBoxLayout;
-    layout->setSpacing(0);
+    QBoxLayout *layout = new QVBoxLayout;
+    layout->setSpacing(12);
     layout->setMargin(0);
     this->setLayout(layout);
-    layout->addWidget(_valueEdit = new QLineEdit, 30);
-    layout->addWidget(_valueEditType = new QComboBox, 20);
-    layout->addStretch(20);
+    layout->addWidget(new VLineItem("Data Value", _valueEdit = new QLineEdit));
+    _valueEditType = new QComboBox;
 
     _valueEdit->setValidator(new QDoubleValidator);
 

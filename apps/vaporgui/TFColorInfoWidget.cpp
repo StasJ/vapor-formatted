@@ -1,4 +1,5 @@
 #include "TFColorInfoWidget.h"
+#include "VLineItem.h"
 #include <QBoxLayout>
 #include <QDoubleValidator>
 #include <QLabel>
@@ -6,7 +7,7 @@
 #include <vapor/RenderParams.h>
 
 TFColorInfoWidget::TFColorInfoWidget() {
-    ((QBoxLayout *)layout())->addWidget(_colorEdit = new QColorWidget, 30, Qt::AlignRight);
+    ((QBoxLayout *)layout())->addWidget(new VLineItem("Color", _colorEdit = new QColorWidget));
 
     connect(_colorEdit, SIGNAL(colorChanged(QColor)), this, SLOT(colorEditChanged()));
 }

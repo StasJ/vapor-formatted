@@ -297,13 +297,15 @@ void TFMapsInfoGroup::Update(VAPoR::RenderParams *rParams) {
         info->Update(rParams);
 }
 
-void TFMapsInfoGroup::add(TFMapWidget *map) {
-    TFInfoWidget *info = map->GetInfoWidget();
-    _infos.push_back(info);
-    addWidget(info);
-    connect(map, SIGNAL(Activated(TFMapWidget *)), this, SLOT(mapActivated(TFMapWidget *)));
+void TFMapsInfoGroup::add(TFMapWidget *mapWidget) {
+    for (TFMap *map : mapWidget->GetMaps()) {
+        TFInfoWidget *info = map->GetInfoWidget();
+        _infos.push_back(info);
+        addWidget(info);
+        connect(map, SIGNAL(Activated(TFMap *)), this, SLOT(mapActivated(TFMap *)));
+    }
 }
 
-void TFMapsInfoGroup::mapActivated(TFMapWidget *activatedMap) {
+void TFMapsInfoGroup::mapActivated(TFMap *activatedMap) {
     setCurrentWidget(activatedMap->GetInfoWidget());
 }

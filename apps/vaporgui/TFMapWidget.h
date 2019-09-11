@@ -70,10 +70,17 @@ class TFMapWidget : public QFrame {
     TFMapWidget(TFMap *map);
     ~TFMapWidget();
     void AddMap(TFMap *map);
+    std::vector<TFMap *> GetMaps() const;
     TFInfoWidget *GetInfoWidget();
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
     void Deactivate();
     QSize minimumSizeHint() const override;
+
+  signals:
+    void Activated(TFMapWidget *who);
+
+  private slots:
+    void _mapActivated(TFMap *who);
 
   protected:
     void paintEvent(QPaintEvent *event) override;

@@ -18,6 +18,7 @@ class QRangeSliderTextCombo;
 class TFInfoWidget;
 class TFMapsGroup;
 class TFMapWidget;
+class TFMap;
 class TFMapsInfoGroup;
 
 class TFEditor : public VSection {
@@ -105,5 +106,5 @@ class TFMapsInfoGroup : public QStackedWidget {
     void add(TFMapWidget *map);
 
   private slots:
-    void mapActivated(TFMapWidget *map);
+    void mapActivated(TFMap *map);
 };

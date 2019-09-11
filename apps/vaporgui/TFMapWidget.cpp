@@ -113,11 +113,16 @@ TFMapWidget::~TFMapWidget() {
 }
 
 void TFMapWidget::AddMap(TFMap *map) {
-    if (std::find(_maps.begin(), _maps.end(), map) == _maps.end())
+    if (std::find(_maps.begin(), _maps.end(), map) == _maps.end()) {
         _maps.push_back(map);
+        connect(map, SIGNAL(Activated(TFMap *)), this, SLOT(_mapActivated(TFMap *)));
+    }
 }
 
+std::vector<TFMap *> TFMapWidget::GetMaps() const { return _maps; }
+
 TFInfoWidget *TFMapWidget::GetInfoWidget() {
+    assert(_maps.size() == 1);
     if (_maps.size())
         return _maps[0]->GetInfoWidget();
     return nullptr;
@@ -142,6 +147,14 @@ QSize TFMapWidget::minimumSizeHint() const {
         max.setHeight(std::max(max.height(), s.height()));
     }
     return max;
+}
+
+void TFMapWidget::_mapActivated(TFMap *who) {
+    for (auto map : _maps)
+        if (map != who)
+            map->Deactivate();
+
+    emit Activated(this);
 }
 
 void TFMapWidget::paintEvent(QPaintEvent *event) {
