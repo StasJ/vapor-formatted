@@ -364,6 +364,9 @@ int FlowRenderer::_drawALineStrip(const float *buf, size_t numOfParts, bool sing
     _shader->SetUniform("Projection", projection);
     _shader->SetUniform("colorMapRange", glm::make_vec3(_colorMapRange));
     _shader->SetUniform("singleColor", int(singleColor));
+    float planes[24]; // 6 planes, each with 4 elements
+    Renderer::GetClippingPlanes(planes);
+    _shader->SetUniformArray("clipPlanes", 6, (glm::vec4 *)planes);
 
     glActiveTexture(GL_TEXTURE0 + _colorMapTexOffset);
     glBindTexture(GL_TEXTURE_1D, _colorMapTexId);
