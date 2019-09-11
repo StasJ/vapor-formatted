@@ -96,6 +96,7 @@ void QRangeSlider::mousePressEvent(QMouseEvent *event) {
             _lastSelectedControl = id;
             setValue(_value[id]);
             QSlider::mousePressEvent(event);
+            emit ValueChangedBegin();
             return;
         }
     }
@@ -111,6 +112,7 @@ void QRangeSlider::mousePressEvent(QMouseEvent *event) {
             _grabbedBarPosition = selectedPosition;
             _grabbedBarControlStartPositions[0] = _position[0];
             _grabbedBarControlStartPositions[1] = _position[1];
+            emit ValueChangedBegin();
         }
     }
 }

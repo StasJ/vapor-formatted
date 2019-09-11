@@ -14,6 +14,7 @@ class QRangeSlider : public QSlider {
     void SetValue(float min, float max);
 
   signals:
+    void ValueChangedBegin();
     void ValueChangedIntermediate(float min, float max);
     void ValueChanged(float min, float max);
 

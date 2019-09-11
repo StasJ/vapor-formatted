@@ -28,5 +28,7 @@ class QRangeSliderTextCombo : public QWidget {
     void rightTextChanged();
 
   signals:
+    void ValueChangedBegin();
     void ValueChanged(float min, float max);
+    void ValueChangedIntermediate(float min, float max);
 };
