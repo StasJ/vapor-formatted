@@ -18,6 +18,8 @@
 #include <cstring>
 #include <ctype.h>
 
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
+
 /* GeoTIFF overrides */
 
 #ifdef WIN32
@@ -415,7 +417,7 @@ static int applyCorners(float lonlat[4], float relPos[4], TIFF *out) {
         // reproject latlon to specified coord projection.
         // unless it's already a lat/lon projection
         double dbextents[4];
-        if (pj_is_latlong(p)) {
+        if (pj_is_latlong((projPJ)p)) {
             for (int j = 0; j < 4; j++) {
                 dbextents[j] = lonlat[j];
             }
@@ -428,7 +430,8 @@ static int applyCorners(float lonlat[4], float relPos[4], TIFF *out) {
             for (int j = 0; j < 4; j++)
                 dbextents[j] = lonlat[j] * DEG2RAD;
             // convert the latlons to coordinates in the projection.
-            int rc = pj_transform(latlon_p, p, 2, 2, dbextents, dbextents + 1, 0);
+            double dummy[1] = {0.0};
+            int rc = pj_transform(latlon_p, (projPJ)p, 2, 2, dbextents, dbextents + 1, dummy);
             if (rc && !ignore) {
                 int *pjerrnum = pj_get_errno_ref();
                 fprintf(stderr, "Error converting lonlat to projection\n %s\n",
