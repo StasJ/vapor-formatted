@@ -10,6 +10,8 @@ class TFHistogramMap : public TFMap {
     Q_OBJECT
 
   public:
+    bool DynamicScaling = true;
+
     TFHistogramMap(TFMapWidget *parent);
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
