@@ -863,7 +863,7 @@ bool CurvilinearGrid::_insideFace(const vector<size_t> &face, double pt[2],
     // coordinates
     // for layered 3D data)
     //
-    if (gDim > 2)
+    if (gDim > 2 && n == 8)
         n /= 2;
     VAssert(n == 4);
 
