@@ -180,7 +180,9 @@ void FlowParams::SetPastNumOfTimeSteps(int val) {
 }
 
 int FlowParams::GetSeedInjInterval() const {
-    // return -1 as an obvious invalid value. Valid values are greater than 0
+    // return -1 as an obvious invalid value.
+    // 0 means no repeated seed injection
+    // 1 means every time step, 2 means every other time step, etc.
     return int(GetValueLong(_seedInjInterval, -1));
 }
 
