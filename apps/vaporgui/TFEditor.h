@@ -52,6 +52,7 @@ class TFEditor : public VSection {
     void _loadColormap();
     void _loadTransferFunction();
     void _saveTransferFunction();
+    void _histogramDynamicScalingToggled(bool on);
 };
 
 #include <QWidgetAction>
@@ -87,7 +88,7 @@ class TFMapsGroup : public QWidget {
 
     TFMapsInfoGroup *CreateInfoGroup();
 
-    TFHistogramWidget *histo;
+    TFHistogramMap *histo;
 
   private:
     void add(TFMapWidget *map);
