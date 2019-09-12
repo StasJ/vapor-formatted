@@ -143,6 +143,21 @@ long Histo::getMaxBinSize() {
 
 int Histo::getNumBins() const { return _numBins; }
 
+long Histo::getBinSize(int index) const {
+    if (index < 0) {
+        index += _nBinsBelow;
+        if (index < 0)
+            return 0;
+        return _below[index];
+    } else if (index >= _numBins) {
+        index -= _numBins;
+        if (index >= _nBinsAbove)
+            return 0;
+        return _above[index];
+    } else
+        return _binArray[index];
+}
+
 float Histo::getNormalizedBinSize(int bin) const {
     if (_maxBinSize == 0)
         return 0;
@@ -170,6 +185,8 @@ float Histo::getNormalizedBinSizeForNormalizedValue(float v) const {
     } else
         return getNormalizedBinSize(v * _numBins);
 }
+
+int Histo::getBinIndexForValue(float v) { return (v - _minMapData) / _range * _numBins; }
 
 int Histo::Populate(VAPoR::DataMgr *dm, VAPoR::RenderParams *rp) {
     size_t ts = rp->GetCurrentTimestep();
