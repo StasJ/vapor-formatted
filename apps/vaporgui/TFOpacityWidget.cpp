@@ -139,9 +139,9 @@ void TFOpacityMap::mouseMoveEvent(QMouseEvent *event) {
 
         *_draggedControl = newVal;
         emit UpdateInfo(newVal.x, newVal.y);
+        update();
         opacityChanged();
         _paramsMgr->IntermediateChange();
-        update();
     } else {
         event->ignore();
     }
@@ -154,9 +154,9 @@ void TFOpacityMap::mouseDoubleClickEvent(QMouseEvent *event) {
     auto controlPointIt = findSelectedControlPoint(mouse);
     if (controlPointIt != cp.EndPoints()) {
         cp.Remove(controlPointIt);
+        update();
         opacityChanged();
         DeselectControlPoint();
-        update();
         return;
     }
 
@@ -167,8 +167,8 @@ void TFOpacityMap::mouseDoubleClickEvent(QMouseEvent *event) {
         if (DistanceToLine(a, b, mouse) <= GetControlPointRadius()) {
             int index = cp.Add(PixelToNDC(Project(a, b, mouse)), it);
             selectControlPoint(cp.BeginPoints() + index);
-            opacityChanged();
             update();
+            opacityChanged();
             return;
         }
     }
