@@ -6,6 +6,7 @@
 #include "TFColorInfoWidget.h"
 #include "TFColorWidget.h"
 #include "TFHistogramWidget.h"
+#include "TFIsoValueWidget.h"
 #include "TFOpacityInfoWidget.h"
 #include "TFOpacityWidget.h"
 #include <QBoxLayout>
@@ -21,6 +22,7 @@ using namespace VAPoR;
 #include <algorithm>
 TFEditor::TFEditor() : VSection("Transfer Function") {
     layout()->addWidget(_maps = new TFMapsGroup);
+    layout()->addWidget(_iso = new TFIsoValueWidget);
     layout()->addWidget(_mapsInfo = _maps->CreateInfoGroup());
     layout()->addWidget(range = new QRangeSliderTextCombo);
     layout()->addWidget(
@@ -74,6 +76,7 @@ void TFEditor::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
     _paramsMgr = paramsMgr;
     colorMapTypeDropdown->Update(rParams->GetMapperFunc(rParams->GetVariableName())->GetColorMap());
     _maps->Update(dataMgr, paramsMgr, rParams);
+    _iso->Update(dataMgr, paramsMgr, rParams);
     _mapsInfo->Update(rParams);
     _updateMappingRangeControl(dataMgr, paramsMgr, rParams);
 }
