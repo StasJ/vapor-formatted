@@ -716,6 +716,16 @@ int FlowRenderer::_genSeedsRakeRandom(std::vector<flow::Particle> &seeds) const 
         seeds[i].time = timeVal;
     }
 
+    /* If in unsteady case and there are multiple seed injections, we insert more seeds */
+    if (!_cache_isSteady && _cache_seedInjInterval > 0) {
+        size_t firstN = seeds.size();
+        // Check every time step available, see if we need to inject seeds at that time step
+        for (size_t ts = 1; ts < _timestamps.size(); ts++)
+            if (ts % _cache_seedInjInterval == 0) {
+                _dupSeedsNewTime(seeds, firstN, _timestamps.at(ts));
+            }
+    }
+
     return 0;
 }
 
@@ -798,9 +808,10 @@ int FlowRenderer::_genSeedsRakeRandomBiased(std::vector<flow::Particle> &seeds) 
         numOfTrials++;
     }
 
+    delete grid;
+
     // If we reach numOfTrialLimit without collecting enough seeds, bail.
     if (numOfTrials == numOfTrialLimit && seeds.size() < numOfSeedsNeeded) {
-        delete grid;
         seeds.clear();
         return flow::GRID_ERROR;
     }
@@ -817,12 +828,20 @@ int FlowRenderer::_genSeedsRakeRandomBiased(std::vector<flow::Particle> &seeds) 
     else
         std::partial_sort(seeds.begin(), seeds.begin() + numOfSeedsNeeded, seeds.end(), desLambda);
 
-    // We only take first chunck of seeds that we need, and reset the value field of each particle
-    seeds.resize(numOfSeedsNeeded);
-    for (auto &e : seeds)
+    seeds.resize(numOfSeedsNeeded); // We only take first chunck of seeds that we need
+    for (auto &e : seeds)           // reset the value field of each particle
         e.value = 0.0f;
 
-    delete grid;
+    /* If in unsteady case and there are multiple seed injections, we insert more seeds */
+    if (!_cache_isSteady && _cache_seedInjInterval > 0) {
+        size_t firstN = seeds.size();
+        // Check every time step available, see if we need to inject seeds at that time step
+        for (size_t ts = 1; ts < _timestamps.size(); ts++)
+            if (ts % _cache_seedInjInterval == 0) {
+                _dupSeedsNewTime(seeds, firstN, _timestamps.at(ts));
+            }
+    }
+
     return 0;
 }
 
