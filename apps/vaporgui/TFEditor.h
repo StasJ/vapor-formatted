@@ -38,7 +38,6 @@ class TFEditor : public VSection {
     ParamsWidgetDropdown *colorMapTypeDropdown;
     TFMapsGroup *_maps;
     TFMapsInfoGroup *_mapsInfo;
-    TFIsoValueWidget *_iso;
 
     void _updateMappingRangeControl(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                                     VAPoR::RenderParams *rParams);
