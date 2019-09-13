@@ -102,6 +102,12 @@ QRect TFMap::paddedRect() const {
 
 QRect TFMap::rect() const { return QRect(0, 0, width(), height()); }
 
+const QFont TFMap::getFont() const {
+    if (_parent)
+        return _parent->font();
+    return QFont();
+}
+
 QMargins TFMap::GetPadding() const { return QMargins(PADDING, PADDING, PADDING, PADDING); }
 
 int TFMap::GetControlPointRadius() const { return CONTROL_POINT_RADIUS; }

@@ -52,6 +52,7 @@ class TFMap : public QObject {
     glm::vec2 PixelToNDC(const glm::vec2 &p) const;
     QRect paddedRect() const;
     QRect rect() const;
+    const QFont getFont() const;
 
     virtual QMargins GetPadding() const;
     int GetControlPointRadius() const;
