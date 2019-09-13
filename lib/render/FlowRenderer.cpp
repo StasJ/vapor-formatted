@@ -615,6 +615,13 @@ int FlowRenderer::_genSeedsXY(std::vector<flow::Particle> &seeds) const {
     return 0;
 }
 
+void FlowRenderer::_dupSeedsNewTime(std::vector<flow::Particle> &seeds, size_t firstN,
+                                    float newTime) const {
+    VAssert(firstN <= seeds.size());
+    for (size_t i = 0; i < firstN; i++)
+        seeds.emplace_back(seeds[i].location, newTime);
+}
+
 int FlowRenderer::_genSeedsRakeUniform(std::vector<flow::Particle> &seeds) const {
     FlowParams *params = dynamic_cast<FlowParams *>(GetActiveParams());
     VAssert(params);
@@ -647,7 +654,7 @@ int FlowRenderer::_genSeedsRakeUniform(std::vector<flow::Particle> &seeds) const
     }
 
     /* Populate the list of seeds */
-    float timeVal = _timestamps.at(0);
+    float timeVal = _timestamps.at(0); // Default time value
     glm::vec3 loc;
     seeds.clear();
     for (int k = 0; k < rakeSeeds[2]; k++)
@@ -660,7 +667,14 @@ int FlowRenderer::_genSeedsRakeUniform(std::vector<flow::Particle> &seeds) const
             }
 
     /* If in unsteady case and there are multiple seed injections, we insert more seeds */
-    // TODO
+    if (!_cache_isSteady && _cache_seedInjInterval > 0) {
+        size_t firstN = seeds.size();
+        // Check every time step available, see if we need to inject seeds at that time step
+        for (size_t ts = 1; ts < _timestamps.size(); ts++)
+            if (ts % _cache_seedInjInterval == 0) {
+                _dupSeedsNewTime(seeds, firstN, _timestamps.at(ts));
+            }
+    }
 
     return 0;
 }
