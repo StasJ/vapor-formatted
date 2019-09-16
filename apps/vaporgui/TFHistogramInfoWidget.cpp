@@ -4,14 +4,8 @@
 #include <vapor/RenderParams.h>
 
 TFHistogramInfoWidget::TFHistogramInfoWidget() {
-    ((QBoxLayout *)layout())->addWidget(new QLabel, 30, Qt::AlignRight);
+    layout()->addWidget(new QLabel);
     _valueEdit->setReadOnly(true);
-}
-
-void TFHistogramInfoWidget::Update(VAPoR::RenderParams *rParams) {
-    TFInfoWidget::Update(rParams);
-    if (!rParams)
-        return;
 }
 
 void TFHistogramInfoWidget::SetControlPoint(float value) {

@@ -139,7 +139,6 @@ void TFIsoValueMap::mouseMoveEvent(QMouseEvent *event) {
 
 void TFIsoValueMap::mouseDoubleClickEvent(QMouseEvent *event) {
     vec2 mouse = qvec2(event->pos());
-    ColorMap *cm = getColormap();
     int selectedId = findSelectedControlPoint(mouse);
     if (selectedId >= 0) {
         deleteControlPoint(selectedId);
@@ -179,18 +178,10 @@ void TFIsoValueMap::moveControlPoint(int *index, float value) {
     *index = addControlPoint(value);
 }
 
-ColorMap *TFIsoValueMap::getColormap() const {
-    return _renderParams->GetMapperFunc(_renderParams->GetVariableName())->GetColorMap();
-}
-
 void TFIsoValueMap::selectControlPoint(int index) {
     _selectedId = index;
-    ColorMap *cm = getColormap();
-
-    float value = cm->controlPointValueNormalized(index);
-    ColorMap::Color vColor = cm->controlPointColor(index);
-
-    UpdateInfo(value, VColorToQColor(vColor));
+    float value = _isoValues[index];
+    UpdateInfo(value);
 }
 
 void TFIsoValueMap::DeselectControlPoint() {
@@ -228,16 +219,4 @@ float TFIsoValueMap::controlXForValue(float value) const { return NDCToPixel(vec
 
 float TFIsoValueMap::valueForControlX(float position) const {
     return PixelToNDC(vec2(position, 0.f)).x;
-}
-
-QColor TFIsoValueMap::VColorToQColor(const ColorMap::Color &c) {
-    float rgb[3];
-    c.toRGB(rgb);
-    return QColor(rgb[0] * 255, rgb[1] * 255, rgb[2] * 255);
-}
-
-ColorMap::Color TFIsoValueMap::QColorToVColor(const QColor &c) {
-    double h, s, v;
-    c.getHsvF(&h, &s, &v);
-    return ColorMap::Color(h, s, v);
 }
