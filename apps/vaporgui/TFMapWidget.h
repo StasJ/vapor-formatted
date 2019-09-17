@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QFrame>
+#include <QMenu>
 #include <glm/glm.hpp>
 #include <vector>
 
@@ -29,9 +30,7 @@ class TFMap : public QObject {
                         VAPoR::RenderParams *rParams) = 0;
     virtual void Deactivate() = 0;
     virtual QSize minimumSizeHint() const = 0;
-    virtual QList<QAction *> GetActionsForLocation(const glm::vec2 &p) {
-        return QList<QAction *>();
-    }
+    virtual void PopulateContextMenu(QMenu *menu, const glm::vec2 &p) {}
 
     int width() const { return _width; }
     int height() const { return _height; }
