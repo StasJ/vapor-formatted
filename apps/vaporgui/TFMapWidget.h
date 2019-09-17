@@ -29,6 +29,9 @@ class TFMap : public QObject {
                         VAPoR::RenderParams *rParams) = 0;
     virtual void Deactivate() = 0;
     virtual QSize minimumSizeHint() const = 0;
+    virtual QList<QAction *> GetActionsForLocation(const glm::vec2 &p) {
+        return QList<QAction *>();
+    }
 
     int width() const { return _width; }
     int height() const { return _height; }
@@ -81,6 +84,7 @@ class TFMapWidget : public QFrame {
 
   private slots:
     void _mapActivated(TFMap *who);
+    void _showContextMenu(const QPoint &);
 
   protected:
     void paintEvent(QPaintEvent *event) override;
