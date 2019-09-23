@@ -161,6 +161,8 @@ void TFColorMap::moveControlPoint(int *index, float value) {
 void TFColorMap::deleteControlPoint(int index) {
     if (index == _selectedId)
         DeselectControlPoint();
+    else if (index < _selectedId)
+        _selectedId--;
     getColormap()->deleteControlPoint(index);
     update();
 }
