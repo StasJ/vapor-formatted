@@ -26,25 +26,7 @@ FlowVariablesSubtab::FlowVariablesSubtab(QWidget *parent) : QVaporSubtab(parent)
     _periodicZ = new VCheckBox(this, "Particles periodic in Z");
     _layout->addWidget(_periodicZ);
 
-    _steady = new VCheckBox(this, "Use Steady Flow");
-    _layout->addWidget(_steady);
-
-    _steadyNumOfSteps = new VLineEdit(this, "Steady Integration Steps", "100");
-    _layout->addWidget(_steadyNumOfSteps);
-
-    _pastNumOfTimeSteps = new VIntSlider(this, "Display Past Num. of Time Steps", 1, 2);
-    _layout->addWidget(_pastNumOfTimeSteps);
-
-    _seedInjInterval = new VIntSlider(this, "Seed Injection Interval", 0, 1);
-    _layout->addWidget(_seedInjInterval);
-
-    connect(_steady, SIGNAL(_checkboxClicked()), this, SLOT(_steadyGotClicked()));
     connect(_velocityMltp, SIGNAL(_editingFinished()), this, SLOT(_velocityMultiplierChanged()));
-    connect(_steadyNumOfSteps, SIGNAL(_editingFinished()), this, SLOT(_steadyNumOfStepsChanged()));
-    connect(_pastNumOfTimeSteps, SIGNAL(_valueChanged(int)), this,
-            SLOT(_pastNumOfTimeStepsChanged(int)));
-    connect(_seedInjInterval, SIGNAL(_valueChanged(int)), this, SLOT(_seedInjIntervalChanged(int)));
-
     connect(_periodicX, SIGNAL(_checkboxClicked()), this, SLOT(_periodicClicked()));
     connect(_periodicY, SIGNAL(_checkboxClicked()), this, SLOT(_periodicClicked()));
     connect(_periodicZ, SIGNAL(_checkboxClicked()), this, SLOT(_periodicClicked()));
@@ -57,9 +39,6 @@ void FlowVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *para
     _variablesWidget->Update(dataMgr, paramsMgr, rParams);
 
     // Update custom widgets
-    bool isSteady = _params->GetIsSteady();
-    _steady->SetCheckState(isSteady);
-
     auto mltp = _params->GetVelocityMultiplier();
     _velocityMltp->SetEditText(QString::number(mltp, 'f', 3));
 
@@ -68,41 +47,18 @@ void FlowVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *para
     _periodicY->SetCheckState(bools[1]);
     _periodicZ->SetCheckState(bools[2]);
 
-    int totalNumOfTimeSteps = dataMgr->GetNumTimeSteps();
-    int steadyNumOfSteps = _params->GetSteadyNumOfSteps();
-    _steadyNumOfSteps->SetEditText(QString::number(steadyNumOfSteps));
-
-    // Update the past num of steps widget
-    _pastNumOfTimeSteps->SetRange(0, totalNumOfTimeSteps - 1);
-    int valParams = _params->GetPastNumOfTimeSteps();
-    if (valParams < 0) // initial value, we need to set it to all time steps!
+    /*if( isSteady )
     {
-        _pastNumOfTimeSteps->SetCurrentValue(totalNumOfTimeSteps - 1);
-        _params->SetPastNumOfTimeSteps(totalNumOfTimeSteps - 1);
-    } else {
-        _pastNumOfTimeSteps->SetCurrentValue(valParams);
-    }
-
-    // Update the seed injection interval widget
-    _seedInjInterval->SetRange(0, totalNumOfTimeSteps - 1);
-    int injIntv = _params->GetSeedInjInterval();
-    if (injIntv < 0) // initial value, we set it to 0
-    {
-        _seedInjInterval->SetCurrentValue(0);
-        _params->SetSeedInjInterval(0);
-    } else {
-        _seedInjInterval->SetCurrentValue(injIntv);
-    }
-
-    if (isSteady) {
         _steadyNumOfSteps->show();
         _pastNumOfTimeSteps->hide();
         _seedInjInterval->hide();
-    } else {
+    }
+    else
+    {
         _steadyNumOfSteps->hide();
         _pastNumOfTimeSteps->show();
         _seedInjInterval->show();
-    }
+    }*/
 }
 
 void FlowVariablesSubtab::_periodicClicked() {
@@ -111,11 +67,6 @@ void FlowVariablesSubtab::_periodicClicked() {
     bools[1] = _periodicY->GetCheckState();
     bools[2] = _periodicZ->GetCheckState();
     _params->SetPeriodic(bools);
-}
-
-void FlowVariablesSubtab::_steadyGotClicked() {
-    bool userInput = _steady->GetCheckState();
-    _params->SetIsSteady(userInput);
 }
 
 void FlowVariablesSubtab::_velocityMultiplierChanged() {
@@ -139,41 +90,6 @@ void FlowVariablesSubtab::_velocityMultiplierChanged() {
             _params->SetVelocityMultiplier(newval);
     } else
         _velocityMltp->SetEditText(QString::number(oldval, 'f', 3));
-}
-
-void FlowVariablesSubtab::_steadyNumOfStepsChanged() {
-    int newval, oldval;
-    oldval = (int)_params->GetSteadyNumOfSteps();
-    try {
-        newval = std::stoi(_steadyNumOfSteps->GetEditText());
-    } catch (const std::invalid_argument &e) {
-        std::cerr << "bad input: " << _steadyNumOfSteps->GetEditText() << std::endl;
-        _steadyNumOfSteps->SetEditText(QString::number(oldval));
-        return;
-    }
-
-    if (newval >= 0) // in the valid range
-    {
-        /* std::stoi() would convert "383aaa" without throwing an exception.
-           We set the correct text based on the number identified.        */
-        _steadyNumOfSteps->SetEditText(QString::number(newval));
-        /* Only write back to _params if newval is different from oldval */
-        if (newval != oldval)
-            _params->SetSteadyNumOfSteps(newval);
-    } else
-        _steadyNumOfSteps->SetEditText(QString::number(oldval));
-}
-
-void FlowVariablesSubtab::_pastNumOfTimeStepsChanged(int newVal) {
-    if (newVal != _params->GetPastNumOfTimeSteps()) {
-        _params->SetPastNumOfTimeSteps(newVal);
-    }
-}
-
-void FlowVariablesSubtab::_seedInjIntervalChanged(int newVal) {
-    if (newVal != _params->GetSeedInjInterval()) {
-        _params->SetSeedInjInterval(newVal);
-    }
 }
 
 //
@@ -200,6 +116,21 @@ void FlowAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *par
 //================================
 //
 FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
+    _steady = new VCheckBox(this, "Use Steady Flow");
+    _layout->addWidget(_steady);
+    connect(_steady, SIGNAL(_checkboxClicked()), this, SLOT(_steadyGotClicked()));
+    _steadyNumOfSteps = new VLineEdit(this, "Steady Integration Steps", "100");
+    _layout->addWidget(_steadyNumOfSteps);
+    connect(_steadyNumOfSteps, SIGNAL(_editingFinished()), this, SLOT(_steadyNumOfStepsChanged()));
+    _pastNumOfTimeSteps = new VIntSlider(this, "Display Past Num. of Time Steps", 1, 2);
+    _layout->addWidget(_pastNumOfTimeSteps);
+    connect(_pastNumOfTimeSteps, SIGNAL(_valueChanged(int)), this,
+            SLOT(_pastNumOfTimeStepsChanged(int)));
+    _seedInjInterval = new VIntSlider(this, "Seed Injection Interval", 0, 1);
+    _layout->addWidget(_seedInjInterval);
+
+    connect(_seedInjInterval, SIGNAL(_valueChanged(int)), this, SLOT(_seedInjIntervalChanged(int)));
+
     /* Index numbers are in agreement with what's in FlowRenderer.h */
     _flowDirection = new VComboBox(this, "Steady Flow Direction");
     _flowDirection->AddOption("Forward", 0);
@@ -209,11 +140,19 @@ FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
     connect(_flowDirection, SIGNAL(_indexChanged(int)), this, SLOT(_flowDirectionChanged(int)));
     _seedGenMode = new VComboBox(this, "Seed Generation Mode");
 
+    _hline1 = new QFrame(this);
+    _hline1->setFrameShape(QFrame::HLine);
+    _layout->addWidget(_hline1);
+
     /* The following two widgets are able to output a file of current flow lines */
     _fileWriter = new VFileWriter(this, "Output Flow Lines");
     _fileWriter->SetFileFilter(QString::fromAscii("*.txt"));
     _layout->addWidget(_fileWriter);
     connect(_fileWriter, SIGNAL(_pathChanged()), this, SLOT(_fileWriterChanged()));
+
+    _hline2 = new QFrame(this);
+    _hline2->setFrameShape(QFrame::HLine);
+    _layout->addWidget(_hline2);
 
     /* Index numbers are in agreement with what's in FlowRenderer.h */
     _seedGenMode->AddOption("From a Built In Function", 0);
@@ -263,6 +202,34 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
     _params = dynamic_cast<VAPoR::FlowParams *>(params);
     VAssert(_params);
 
+    bool isSteady = _params->GetIsSteady();
+    _steady->SetCheckState(isSteady);
+    int steadyNumOfSteps = _params->GetSteadyNumOfSteps();
+    _steadyNumOfSteps->SetEditText(QString::number(steadyNumOfSteps));
+
+    /* Update the past num of steps widget */
+    int totalNumOfTimeSteps = dataMgr->GetNumTimeSteps();
+    _pastNumOfTimeSteps->SetRange(0, totalNumOfTimeSteps - 1);
+    int valParams = _params->GetPastNumOfTimeSteps();
+    if (valParams < 0) // initial value, we need to set it to all time steps!
+    {
+        _pastNumOfTimeSteps->SetCurrentValue(totalNumOfTimeSteps - 1);
+        _params->SetPastNumOfTimeSteps(totalNumOfTimeSteps - 1);
+    } else {
+        _pastNumOfTimeSteps->SetCurrentValue(valParams);
+    }
+
+    /* Update the seed injection interval widget */
+    _seedInjInterval->SetRange(0, totalNumOfTimeSteps - 1);
+    int injIntv = _params->GetSeedInjInterval();
+    if (injIntv < 0) // initial value, we set it to 0
+    {
+        _seedInjInterval->SetCurrentValue(0);
+        _params->SetSeedInjInterval(0);
+    } else {
+        _seedInjInterval->SetCurrentValue(injIntv);
+    }
+
     /* Update flow direction combo */
     long dir = _params->GetFlowDirection();
     if (dir >= 0 && dir < _flowDirection->GetNumOfItems())
@@ -271,7 +238,6 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
         _flowDirection->SetIndex(0);
         _params->SetFlowDirection(0); // use 0 as the default option
     }
-    bool isSteady = _params->GetIsSteady();
     if (isSteady)
         _flowDirection->show();
     else
@@ -285,6 +251,7 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
         _seedGenMode->SetIndex(0);
         _params->SetSeedGenMode(0); // use 0 as the default option
     }
+
     _hideShowWidgets();
 
     /* Update rake range */
@@ -351,7 +318,60 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
         _fileWriter->SetPath(_params->GetFlowlineOutputFilename());
 }
 
+void FlowSeedingSubtab::_pastNumOfTimeStepsChanged(int newVal) {
+    if (newVal != _params->GetPastNumOfTimeSteps()) {
+        _params->SetPastNumOfTimeSteps(newVal);
+    }
+}
+
+void FlowSeedingSubtab::_seedInjIntervalChanged(int newVal) {
+    if (newVal != _params->GetSeedInjInterval()) {
+        _params->SetSeedInjInterval(newVal);
+    }
+}
+
+void FlowSeedingSubtab::_steadyNumOfStepsChanged() {
+    int newval, oldval;
+    oldval = (int)_params->GetSteadyNumOfSteps();
+    try {
+        newval = std::stoi(_steadyNumOfSteps->GetEditText());
+    } catch (const std::invalid_argument &e) {
+        std::cerr << "bad input: " << _steadyNumOfSteps->GetEditText() << std::endl;
+        _steadyNumOfSteps->SetEditText(QString::number(oldval));
+        return;
+    }
+
+    if (newval >= 0) // in the valid range
+    {
+        /* std::stoi() would convert "383aaa" without throwing an exception.
+           We set the correct text based on the number identified.        */
+        _steadyNumOfSteps->SetEditText(QString::number(newval));
+        /* Only write back to _params if newval is different from oldval */
+        if (newval != oldval)
+            _params->SetSteadyNumOfSteps(newval);
+    } else
+        _steadyNumOfSteps->SetEditText(QString::number(oldval));
+}
+
+void FlowSeedingSubtab::_steadyGotClicked() {
+    bool userInput = _steady->GetCheckState();
+    _params->SetIsSteady(userInput);
+}
+
 void FlowSeedingSubtab::_hideShowWidgets() {
+    bool isSteady = _params->GetIsSteady();
+    if (isSteady) {
+        _steadyNumOfSteps->show();
+        _flowDirection->show();
+        _seedInjInterval->hide();
+        _pastNumOfTimeSteps->hide();
+    } else {
+        _steadyNumOfSteps->hide();
+        _flowDirection->hide();
+        _seedInjInterval->show();
+        _pastNumOfTimeSteps->show();
+    }
+
     long genMod = _params->GetSeedGenMode();
     // genMod must be valid at this point
     if (genMod == 0) // Built-in function mode
