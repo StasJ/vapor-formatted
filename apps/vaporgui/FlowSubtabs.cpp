@@ -16,7 +16,7 @@ FlowVariablesSubtab::FlowVariablesSubtab(QWidget *parent) : QVaporSubtab(parent)
     _variablesWidget->Reinit((VariableFlags)(VECTOR | COLOR), (DimFlags)(THREED));
     _layout->addWidget(_variablesWidget, 0, 0);
 
-    _velocityMltp = new VLineEdit(this, "Velocity Multiplier", "1.0");
+    _velocityMltp = new VLineEdit(this, "Field Scale Factor", "1.0");
     _layout->addWidget(_velocityMltp);
 
     _periodicX = new VCheckBox(this, "Particles periodic in X");
@@ -129,7 +129,7 @@ void FlowVariablesSubtab::_velocityMultiplierChanged() {
         return;
     }
 
-    if (newval >= 0.001 && newval <= 1.0) // in the valid range
+    if (newval >= 0.001 && newval <= 1000.0) // in the valid range
     {
         /* std::stod() would convert "3.83aaa" without throwing an exception.
            We set the correct text based on the number identified.        */

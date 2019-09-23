@@ -53,11 +53,11 @@ bool FlowParams::GetNeedFlowlineOutput() const {
 }
 
 double FlowParams::GetVelocityMultiplier() const {
-    return GetValueDouble(_velocityMultiplierTag, 0.01);
+    return GetValueDouble(_velocityMultiplierTag, 1.0);
 }
 
 void FlowParams::SetVelocityMultiplier(double coeff) {
-    SetValueDouble(_velocityMultiplierTag, "velocity multiplier", coeff);
+    SetValueDouble(_velocityMultiplierTag, "Field Scale Factor", coeff);
 }
 
 long FlowParams::GetSteadyNumOfSteps() const { return GetValueLong(_steadyNumOfStepsTag, 100); }
