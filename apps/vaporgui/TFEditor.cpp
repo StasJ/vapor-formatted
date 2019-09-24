@@ -105,6 +105,7 @@ void TFEditor::_rangeChangedBegin() { _paramsMgr->BeginSaveStateGroup("Change tf
 void TFEditor::_rangeChangedIntermediate(float left, float right) {
     _rParams->GetMapperFunc(_rParams->GetVariableName())->setMinMaxMapValue(left, right);
     _maps->histo->update();
+    _paramsMgr->IntermediateChange();
 }
 
 void TFEditor::_rangeChanged(float left, float right) {
