@@ -310,10 +310,9 @@ float Advection::_calcAdjustFactor(const Particle &p2, const Particle &p1,
         return 1.0f;
 }
 
-int Advection::OutputStreamsGnuplot(const std::string &filename, size_t maxPart,
-                                    bool append) const {
+std::FILE *Advection::_prepareFileWrite(const std::string &filename, bool append) const {
     if (filename.empty())
-        return FILE_ERROR;
+        return nullptr;
 
     FILE *f = nullptr;
     if (append) {
@@ -322,18 +321,51 @@ int Advection::OutputStreamsGnuplot(const std::string &filename, size_t maxPart,
         f = std::fopen(filename.c_str(), "w");
     }
     if (f == nullptr)
-        return FILE_ERROR;
+        return nullptr;
 
     std::fprintf(f, "%s\n", "# This file could be plotted by Gnuplot using the following command:");
     std::fprintf(f, "%s\n\n", "# splot output_filename u 1:2:3 w lines ");
-    std::fprintf(f, "%s\n", "# X-position      Y-position      Z-position     Time     Value");
+    std::fprintf(f, "%s\n\n", "# X-position      Y-position      Z-position     Time     Value");
 
+    return f;
+}
+
+int Advection::OutputStreamsGnuplotMaxPart(const std::string &filename, size_t maxPart,
+                                           bool append) const {
+    std::FILE *f = _prepareFileWrite(filename, append);
+    if (f == nullptr)
+        return FILE_ERROR;
+
+    size_t numPart;
     for (const auto &s : _streams) {
         // Either output all the particles in this stream,
         // or only up to a certain number of particles.
-        size_t numPart = maxPart < s.size() ? maxPart : s.size();
+        numPart = maxPart < s.size() ? maxPart : s.size();
         for (size_t i = 0; i < numPart; i++) {
             const auto &p = s[i];
+            if (!p.IsSpecial()) {
+                std::fprintf(f, "%f, %f, %f, %f, %f\n", p.location.x, p.location.y, p.location.z,
+                             p.time, p.value);
+            }
+        }
+        std::fprintf(f, "\n\n");
+    }
+    std::fclose(f);
+
+    return 0;
+}
+
+int Advection::OutputStreamsGnuplotMaxTime(const std::string &filename, float timeStamp,
+                                           bool append) const {
+    std::FILE *f = _prepareFileWrite(filename, append);
+    if (f == nullptr)
+        return FILE_ERROR;
+
+    for (const auto &s : _streams) {
+        for (const auto &p : s) {
+            if (p.time > timeStamp)
+                break; // finish this current stream
+
             if (!p.IsSpecial()) {
                 std::fprintf(f, "%f, %f, %f, %f, %f\n", p.location.x, p.location.y, p.location.z,
                              p.time, p.value);
@@ -413,7 +445,7 @@ const std::vector<Particle> &Advection::GetStreamAt(size_t i) const {
     return _streams.at(i);
 }
 
-int Advection::GetMaxNumOfSteps() const {
+int Advection::GetMaxNumOfPart() const {
     int max = 0;
     int idx = 0;
     for (const auto &s : _streams) {
