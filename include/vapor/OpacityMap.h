@@ -65,7 +65,7 @@ class PARAMS_API OpacityMap : public ParamsBase {
     double GetPhase() const { return GetValueDouble(_phaseTag, 2 * M_PI); }
     void SetPhase(double phase);
 
-    int numControlPoints() { return (int)GetControlPoints().size() / 2; }
+    int numControlPoints() const { return (int)GetControlPoints().size() / 2; }
 
     void addNormControlPoint(float normv, float opacity); // Normalized Coords
     void addControlPoint(float value, float opacity);     // Data Coordinates
