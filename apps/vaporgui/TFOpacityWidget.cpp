@@ -44,6 +44,9 @@ TFOpacityMap::TFOpacityMap(TFMapWidget *parent) : TFMap(parent) {}
 
 void TFOpacityMap::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                           VAPoR::RenderParams *rp) {
+    if (rp != _renderParams)
+        DeselectControlPoint();
+
     _renderParams = rp;
     _paramsMgr = paramsMgr;
 
