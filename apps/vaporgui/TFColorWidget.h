@@ -7,6 +7,7 @@
 #include <vapor/VAssert.h>
 
 class TFColorInfoWidget;
+class ParamsDropdownMenuItem;
 
 class TFColorMap : public TFMap {
     Q_OBJECT
@@ -32,6 +33,7 @@ class TFColorMap : public TFMap {
   private:
     VAPoR::ParamsMgr *_paramsMgr = nullptr;
     VAPoR::RenderParams *_renderParams = nullptr;
+    ParamsDropdownMenuItem *_colorInterpolationMenu;
     bool _isDraggingControl = false;
     int _draggingControlID;
     int _selectedId = -1;

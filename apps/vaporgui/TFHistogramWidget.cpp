@@ -1,5 +1,6 @@
 #include "TFHistogramWidget.h"
 #include "ErrorReporter.h"
+#include "ParamsMenuItems.h"
 #include "QPaintUtils.h"
 #include "TFHistogramInfoWidget.h"
 #include <Histo.h>

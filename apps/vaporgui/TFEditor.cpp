@@ -26,11 +26,6 @@ TFEditor::TFEditor() : VSection("Transfer Function") {
     layout()->addWidget(_mapsInfo = _maps->CreateInfoGroup());
     layout()->addWidget(range = new TFMappingRangeSelector);
     connect(range, SIGNAL(ValueChangedIntermediate(float, float)), _maps->histo, SLOT(update()));
-    layout()->addWidget(
-        colorMapTypeDropdown = new ParamsWidgetDropdown(
-            VAPoR::ColorMap::_interpTypeTag, {"Linear", "Discrete", "Diverging"},
-            {TFInterpolator::linear, TFInterpolator::discrete, TFInterpolator::diverging},
-            "Color Interpolation"));
 
     QMenu *menu = new QMenu;
     _maps->histo->PopulateSettingsMenu(menu);
@@ -43,7 +38,6 @@ void TFEditor::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                       VAPoR::RenderParams *rParams) {
     _rParams = rParams;
     _paramsMgr = paramsMgr;
-    colorMapTypeDropdown->Update(rParams->GetMapperFunc(rParams->GetVariableName())->GetColorMap());
     _maps->Update(dataMgr, paramsMgr, rParams);
     _mapsInfo->Update(rParams);
     range->Update(dataMgr, paramsMgr, rParams);

@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Histo.h"
-#include "ParamsMenuItems.h"
 #include "TFMapWidget.h"
 #include <QFrame>
 #include <QWidget>
 #include <vapor/VAssert.h>
+
+class ParamsDropdownMenuItem;
 
 class TFHistogramMap : public TFMap {
     Q_OBJECT
