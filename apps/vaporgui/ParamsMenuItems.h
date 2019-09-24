@@ -12,7 +12,7 @@ class ParamsMenuItem : public QAction {
     Q_OBJECT
 
   public:
-    ParamsMenuItem(const std::string &tag, const std::string &label = "");
+    ParamsMenuItem(QObject *parent, const std::string &tag, const std::string &label = "");
     virtual void Update(VAPoR::ParamsBase *p) = 0;
 
   protected:
@@ -28,7 +28,8 @@ class ParamsDropdownMenuItem : public ParamsMenuItem {
     std::vector<QAction *> _items;
 
   public:
-    ParamsDropdownMenuItem(const std::string &tag, const std::vector<std::string> &items,
+    ParamsDropdownMenuItem(QObject *parent, const std::string &tag,
+                           const std::vector<std::string> &items,
                            const std::vector<int> &itemValues = {}, const std::string &label = "");
     void Update(VAPoR::ParamsBase *p);
 
