@@ -37,7 +37,6 @@ class TFMap : public QObject {
     int width() const { return _width; }
     int height() const { return _height; }
     void resize(int width, int height);
-    void update();
     QRect paddedRect() const;
     QRect rect() const;
     const QFont getFont() const;
@@ -47,6 +46,9 @@ class TFMap : public QObject {
     virtual void mouseReleaseEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void mouseDoubleClickEvent(QMouseEvent *event);
+
+  public slots:
+    void update();
 
   protected:
     void drawControl(QPainter &p, const QPointF &pos, bool selected = false) const;
