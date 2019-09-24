@@ -1,10 +1,13 @@
 #include "TFColorWidget.h"
 #include "QPaintUtils.h"
 #include "TFColorInfoWidget.h"
+#include "TFUtils.h"
 #include <QMouseEvent>
 #include <QPainter>
+#include <vapor/FileUtils.h>
 #include <vapor/ParamsMgr.h>
 #include <vapor/RenderParams.h>
+#include <vapor/ResourcePath.h>
 
 using namespace VAPoR;
 using glm::vec2;
@@ -43,6 +46,24 @@ void TFColorMap::PopulateContextMenu(QMenu *menu, const glm::vec2 &p) {
     else
         menu->addAction("Add control point", this, SLOT(menuAddControlPoint()))
             ->setProperty(PROPERTY_VALUE, QVariant(valueForControlX(p.x)));
+}
+
+void TFColorMap::PopulateSettingsMenu(QMenu *menu) const {
+    menu->addAction("Save Colormap", this, SLOT(menuSave()));
+    menu->addAction("Load Colormap", this, SLOT(menuLoad()));
+
+    QMenu *builtinColormapMenu = menu->addMenu("Load Built-In Colormap");
+    string builtinPath = GetSharePath("palettes");
+    auto fileNames = FileUtils::ListFiles(builtinPath);
+    std::sort(fileNames.begin(), fileNames.end());
+    for (int i = 0; i < fileNames.size(); i++) {
+
+        string path = FileUtils::JoinPaths({builtinPath, fileNames[i]});
+
+        QAction *item = new ColorMapMenuItem(path);
+        connect(item, SIGNAL(triggered(std::string)), this, SLOT(menuLoadBuiltin(std::string)));
+        builtinColormapMenu->addAction(item);
+    }
 }
 
 TFInfoWidget *TFColorMap::createInfoWidget() {
@@ -216,6 +237,27 @@ void TFColorMap::menuAddControlPoint() {
         addControlPoint(value.toFloat());
 }
 
+void TFColorMap::menuLoad() {
+    RenderParams *rp = _renderParams;
+    if (!rp)
+        return;
+    TFUtils::LoadColormap(_paramsMgr, rp->GetMapperFunc(rp->GetVariableName()));
+}
+
+void TFColorMap::menuSave() {
+    RenderParams *rp = _renderParams;
+    if (!rp)
+        return;
+    TFUtils::SaveTransferFunction(_paramsMgr, rp->GetMapperFunc(rp->GetVariableName()));
+}
+
+void TFColorMap::menuLoadBuiltin(std::string path) {
+    RenderParams *rp = _renderParams;
+    if (!rp)
+        return;
+    TFUtils::LoadColormap(rp->GetMapperFunc(rp->GetVariableName()), path);
+}
+
 int TFColorMap::findSelectedControlPoint(const glm::vec2 &mouse) const {
     const ColorMap *cm = getColormap();
     const int n = cm->numControlPoints();
@@ -254,4 +296,56 @@ ColorMap::Color TFColorMap::QColorToVColor(const QColor &c) {
     double h, s, v;
     c.getHsvF(&h, &s, &v);
     return ColorMap::Color(h, s, v);
+}
+
+#include <QPushButton>
+#include <vapor/STLUtils.h>
+
+ColorMapMenuItem::ColorMapMenuItem(const std::string &path) : QWidgetAction(nullptr), _path(path) {
+    QPushButton *button = new QPushButton;
+    setDefaultWidget(button);
+
+    button->setIcon(getCachedIcon(path));
+    button->setFixedSize(getIconSize() + getIconPadding());
+    connect(button, SIGNAL(clicked()), this, SLOT(_clicked()));
+
+    string name = STLUtils::Split(FileUtils::Basename(path), ".")[0];
+    button->setToolTip(QString::fromStdString(name));
+
+    button->setStyleSheet(R"(
+                          QPushButton {
+                              icon-size: 50px 15px;
+                          padding: 0px;
+                          margin: 0px;
+                          background: none;
+                          border: none;
+                          }
+                          QPushButton::hover {
+                          background: #aaa;
+                          }
+                          )");
+}
+
+void ColorMapMenuItem::CloseMenu(QAction *action) {
+    if (!action)
+        return;
+
+    QList<QWidget *> menus = action->associatedWidgets();
+
+    for (QWidget *widget : menus) {
+        QMenu *menu = dynamic_cast<QMenu *>(widget);
+        if (!menu)
+            continue;
+        if (menu->isHidden())
+            continue;
+
+        menu->hide();
+        CloseMenu(menu->menuAction());
+    }
+}
+
+void ColorMapMenuItem::_clicked() {
+    trigger();
+    emit triggered(_path);
+    CloseMenu(this);
 }

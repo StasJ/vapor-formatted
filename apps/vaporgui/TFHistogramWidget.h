@@ -12,8 +12,6 @@ class TFHistogramMap : public TFMap {
     enum ScalingType { Linear = 0, Logarithmic, Boolean, ScalingTypeCount };
 
   public:
-    bool DynamicScaling = true;
-
     TFHistogramMap(TFMapWidget *parent);
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
 
@@ -34,11 +32,13 @@ class TFHistogramMap : public TFMap {
     VAPoR::RenderParams *_renderParams = nullptr;
     Histo _histo;
     QAction *_scalingActions[ScalingTypeCount];
+    bool _dynamicScaling = true;
 
     ScalingType _getScalingType() const;
 
   private slots:
-    void _setScalingTypeAction();
+    void _menuSetScalingType();
+    void _menuDynamicScalingToggled(bool on);
 
   signals:
     void InfoDeselected();

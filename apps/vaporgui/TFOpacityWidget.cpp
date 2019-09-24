@@ -1,5 +1,6 @@
 #include "TFOpacityWidget.h"
 #include "TFOpacityInfoWidget.h"
+#include "TFUtils.h"
 #include <QAction>
 #include <QPaintEvent>
 #include <QPainter>
@@ -81,6 +82,11 @@ void TFOpacityMap::PopulateContextMenu(QMenu *menu, const glm::vec2 &p) {
     else
         menu->addAction("Add control point", this, SLOT(menuAddControlPoint()))
             ->setProperty(PROPERTY_LOCATION, QVariant(qvec2(PixelToNDC(p))));
+}
+
+void TFOpacityMap::PopulateSettingsMenu(QMenu *menu) const {
+    menu->addAction("Save Transfer Function", this, SLOT(menuSave()));
+    menu->addAction("Load Transfer Function", this, SLOT(menuLoad()));
 }
 
 TFInfoWidget *TFOpacityMap::createInfoWidget() {
@@ -258,6 +264,20 @@ void TFOpacityMap::menuAddControlPoint() {
     QVariant location = sender()->property(PROPERTY_LOCATION);
     if (location.isValid())
         addControlPoint(qvec2(location.toPointF()));
+}
+
+void TFOpacityMap::menuLoad() {
+    RenderParams *rp = _renderParams;
+    if (!rp)
+        return;
+    TFUtils::LoadTransferFunction(_paramsMgr, rp->GetMapperFunc(rp->GetVariableName()));
+}
+
+void TFOpacityMap::menuSave() {
+    RenderParams *rp = _renderParams;
+    if (!rp)
+        return;
+    TFUtils::SaveTransferFunction(_paramsMgr, rp->GetMapperFunc(rp->GetVariableName()));
 }
 
 void TFOpacityMap::DeselectControlPoint() {
