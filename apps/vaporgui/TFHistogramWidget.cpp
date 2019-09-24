@@ -27,6 +27,9 @@ TFHistogramMap::TFHistogramMap(TFMapWidget *parent) : TFMap(parent) {
         _scalingActions[i]->setCheckable(true);
         connect(_scalingActions[i], SIGNAL(triggered()), this, SLOT(_menuSetScalingType()));
     }
+
+    scalingMenu = new ParamsDropdownMenuItem(SCALING_TAG, {"Linear", "Logarithmic", "Boolean"}, {},
+                                             "Histogram Scaling");
 }
 
 void TFHistogramMap::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -43,6 +46,7 @@ void TFHistogramMap::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr
         _scalingActions[i]->setChecked(false);
     _scalingActions[_getScalingType()]->setChecked(true);
 
+    scalingMenu->Update(rp);
     update();
 }
 
@@ -57,6 +61,8 @@ void TFHistogramMap::PopulateSettingsMenu(QMenu *menu) const {
         menu->addAction("Histogram Dynamic Scaling", this, SLOT(_menuDynamicScalingToggled(bool)));
     histogramDynamicScalingAction->setCheckable(true);
     histogramDynamicScalingAction->setChecked(_dynamicScaling);
+
+    menu->addAction(scalingMenu);
 }
 
 TFInfoWidget *TFHistogramMap::createInfoWidget() {

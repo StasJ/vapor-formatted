@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Histo.h"
+#include "ParamsMenuItems.h"
 #include "TFMapWidget.h"
 #include <QFrame>
 #include <QWidget>
@@ -10,6 +11,7 @@ class TFHistogramMap : public TFMap {
     Q_OBJECT
 
     enum ScalingType { Linear = 0, Logarithmic, Boolean, ScalingTypeCount };
+    ParamsDropdownMenuItem *scalingMenu;
 
   public:
     TFHistogramMap(TFMapWidget *parent);
