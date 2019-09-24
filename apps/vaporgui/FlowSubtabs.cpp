@@ -131,11 +131,16 @@ FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
     _hline1->setFrameShape(QFrame::HLine);
     _layout->addWidget(_hline1);
 
-    /* The following two widgets are able to output a file of current flow lines */
+    /* The following two widgets deal with flow line output and seed point input */
     _fileWriter = new VFileWriter(this, "Output Flow Lines");
     _fileWriter->SetFileFilter(QString::fromAscii("*.txt"));
     _layout->addWidget(_fileWriter);
     connect(_fileWriter, SIGNAL(_pathChanged()), this, SLOT(_fileWriterChanged()));
+
+    _fileReader = new VFileReader(this, "Input Seed File");
+    _fileReader->SetFileFilter(QString::fromAscii("*.txt"));
+    _layout->addWidget(_fileReader);
+    connect(_fileReader, SIGNAL(_pathChanged()), this, SLOT(_fileReaderChanged()));
 
     _hline2 = new QFrame(this);
     _hline2->setFrameShape(QFrame::HLine);
@@ -148,11 +153,6 @@ FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
     _seedGenMode->AddOption("From a List", 3);
     _layout->addWidget(_seedGenMode);
     connect(_seedGenMode, SIGNAL(_indexChanged(int)), this, SLOT(_seedGenModeChanged(int)));
-
-    _fileReader = new VFileReader(this, "Input Seed File");
-    _fileReader->SetFileFilter(QString::fromAscii("*.txt"));
-    _layout->addWidget(_fileReader);
-    connect(_fileReader, SIGNAL(_pathChanged()), this, SLOT(_fileReaderChanged()));
 
     /* Set up the Rake selector */
     std::vector<float> geoRange = {0.0, 1.0, 0.0, 1.0, 0.0, 1.0}; // temporary range
@@ -224,10 +224,6 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
         _flowDirection->SetIndex(0);
         _params->SetFlowDirection(0); // use 0 as the default option
     }
-    if (isSteady)
-        _flowDirection->show();
-    else
-        _flowDirection->hide();
 
     /* Update seed generation mode combo */
     long genMod = _params->GetSeedGenMode();
@@ -368,7 +364,6 @@ void FlowSeedingSubtab::_hideShowWidgets() {
         _rakeTotalNum->hide();
         _rakeBiasVariable->hide();
         _rakeBiasStrength->hide();
-        _fileReader->hide();
     } else if (genMod == 1) // Rake + Random
     {
         _rake->show();
@@ -378,7 +373,6 @@ void FlowSeedingSubtab::_hideShowWidgets() {
         _rakeTotalNum->show();
         _rakeBiasVariable->hide();
         _rakeBiasStrength->hide();
-        _fileReader->hide();
     } else if (genMod == 2) // Rake + Random + Bias
     {
         _rake->show();
@@ -388,7 +382,6 @@ void FlowSeedingSubtab::_hideShowWidgets() {
         _rakeTotalNum->show();
         _rakeBiasVariable->show();
         _rakeBiasStrength->show();
-        _fileReader->hide();
     } else if (genMod == 3) // List
     {
         _rake->hide();
@@ -398,7 +391,6 @@ void FlowSeedingSubtab::_hideShowWidgets() {
         _rakeTotalNum->hide();
         _rakeBiasVariable->hide();
         _rakeBiasStrength->hide();
-        _fileReader->show();
     }
 }
 
