@@ -60,20 +60,10 @@ class FlowVariablesSubtab : public QVaporSubtab {
     VCheckBox *_periodicY;
     VCheckBox *_periodicZ;
 
-    // VCheckBox*          _steady;
-    // VLineEdit*          _steadyNumOfSteps;
-    // VIntSlider*         _pastNumOfTimeSteps;
-    // VIntSlider*         _seedInjInterval;
-
   private slots:
     // Respond to user input
     void _velocityMultiplierChanged();
     void _periodicClicked();
-
-    // void _steadyGotClicked();
-    // void _steadyNumOfStepsChanged();
-    // void _pastNumOfTimeStepsChanged( int );
-    // void _seedInjIntervalChanged( int );
 };
 
 //

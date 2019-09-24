@@ -46,19 +46,6 @@ void FlowVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *para
     _periodicX->SetCheckState(bools[0]);
     _periodicY->SetCheckState(bools[1]);
     _periodicZ->SetCheckState(bools[2]);
-
-    /*if( isSteady )
-    {
-        _steadyNumOfSteps->show();
-        _pastNumOfTimeSteps->hide();
-        _seedInjInterval->hide();
-    }
-    else
-    {
-        _steadyNumOfSteps->hide();
-        _pastNumOfTimeSteps->show();
-        _seedInjInterval->show();
-    }*/
 }
 
 void FlowVariablesSubtab::_periodicClicked() {
@@ -155,11 +142,10 @@ FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
     _layout->addWidget(_hline2);
 
     /* Index numbers are in agreement with what's in FlowRenderer.h */
-    _seedGenMode->AddOption("From a Built In Function", 0);
-    _seedGenMode->AddOption("From a List", 1);
-    _seedGenMode->AddOption("From a Rake, Uniformly", 2);
-    _seedGenMode->AddOption("From a Rake, Randomly", 3);
-    _seedGenMode->AddOption("From a Rake, Randomly with Bias", 4);
+    _seedGenMode->AddOption("From a Rake, Uniformly", 0);
+    _seedGenMode->AddOption("From a Rake, Randomly", 1);
+    _seedGenMode->AddOption("From a Rake, Randomly with Bias", 2);
+    _seedGenMode->AddOption("From a List", 3);
     _layout->addWidget(_seedGenMode);
     connect(_seedGenMode, SIGNAL(_indexChanged(int)), this, SLOT(_seedGenModeChanged(int)));
 
@@ -372,29 +358,8 @@ void FlowSeedingSubtab::_hideShowWidgets() {
         _pastNumOfTimeSteps->show();
     }
 
-    long genMod = _params->GetSeedGenMode();
-    // genMod must be valid at this point
-    if (genMod == 0) // Built-in function mode
-    {
-        _rake->hide();
-        _rakeXNum->hide();
-        _rakeYNum->hide();
-        _rakeZNum->hide();
-        _rakeTotalNum->hide();
-        _rakeBiasVariable->hide();
-        _rakeBiasStrength->hide();
-        _fileReader->hide();
-    } else if (genMod == 1) // From a list mode
-    {
-        _rake->hide();
-        _rakeXNum->hide();
-        _rakeYNum->hide();
-        _rakeZNum->hide();
-        _rakeTotalNum->hide();
-        _rakeBiasVariable->hide();
-        _rakeBiasStrength->hide();
-        _fileReader->show();
-    } else if (genMod == 2) // From a rake, uniform mode
+    long genMod = _params->GetSeedGenMode(); // genMod must be valid at this point
+    if (genMod == 0)                         // Rake + Uniform
     {
         _rake->show();
         _rakeXNum->show();
@@ -404,7 +369,7 @@ void FlowSeedingSubtab::_hideShowWidgets() {
         _rakeBiasVariable->hide();
         _rakeBiasStrength->hide();
         _fileReader->hide();
-    } else if (genMod == 3) // From a rake, random mode
+    } else if (genMod == 1) // Rake + Random
     {
         _rake->show();
         _rakeXNum->hide();
@@ -414,7 +379,7 @@ void FlowSeedingSubtab::_hideShowWidgets() {
         _rakeBiasVariable->hide();
         _rakeBiasStrength->hide();
         _fileReader->hide();
-    } else if (genMod == 4) // From a rake, random with bias
+    } else if (genMod == 2) // Rake + Random + Bias
     {
         _rake->show();
         _rakeXNum->hide();
@@ -424,6 +389,16 @@ void FlowSeedingSubtab::_hideShowWidgets() {
         _rakeBiasVariable->show();
         _rakeBiasStrength->show();
         _fileReader->hide();
+    } else if (genMod == 3) // List
+    {
+        _rake->hide();
+        _rakeXNum->hide();
+        _rakeYNum->hide();
+        _rakeZNum->hide();
+        _rakeTotalNum->hide();
+        _rakeBiasVariable->hide();
+        _rakeBiasStrength->hide();
+        _fileReader->show();
     }
 }
 
