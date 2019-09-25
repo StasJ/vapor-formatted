@@ -102,10 +102,12 @@ class RENDER_API FlowRenderer : public Renderer {
     int _drawALineStrip(const float *buf, size_t numOfParts, bool singleColor) const;
     void _restoreGLState() const;
 
-    int _getAGrid(const FlowParams *params, // Input
-                  int timestep,             // Input
-                  std::string &varName,     // Input
-                  Grid **gridpp) const;     // Output
+    /*
+    int  _getAGrid( const FlowParams* params,           // Input
+                    int               timestep,         // Input
+                    std::string&      varName,          // Input
+                    Grid**            gridpp  ) const;  // Output
+    */
 
     // Update values of _cache_* and _state_* member variables.
     void _updateFlowCacheAndStates(const FlowParams *);

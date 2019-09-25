@@ -373,26 +373,14 @@ int VaporField::_getAGrid(size_t timestep, std::string &varName, const VAPoR::Gr
     return 0;
 }
 
-/* Sometimes the container calls a default constructor like this.
- * We can delete this block of code if it doesn't cause problem for some time.
-VaporField::RichGrid::RichGrid() :  realGrid( nullptr ),
-                                    TS( 0 ),
-                                    varName(),
-                                    refinementLevel(0),
-                                    compressionLevel(0),
-                                    extMin(),
-                                    extMax(),
-                                    mgr( nullptr )
-{}
-*/
-
+// RichGrid Constructor
 VaporField::RichGrid::RichGrid(const VAPoR::Grid *g, size_t currentTS, const std::string &var,
                                int refLevel, int compLevel, const std::vector<double> &min,
                                const std::vector<double> &max, VAPoR::DataMgr *dm)
     : realGrid(g), TS(currentTS), varName(var), refinementLevel(refLevel),
       compressionLevel(compLevel), extMin(min), extMax(max), mgr(dm) {}
 
-// Destructor
+// RichGrid Destructor
 VaporField::RichGrid::~RichGrid() {
     if (mgr && realGrid) {
         mgr->UnlockGrid(realGrid);
