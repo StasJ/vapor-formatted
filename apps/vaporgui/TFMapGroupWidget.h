@@ -15,10 +15,10 @@ class TFHistogramWidget;
 class QRangeSlider;
 class QRangeSliderTextCombo;
 class TFInfoWidget;
-class TFMapsGroup;
+class TFMapGroupWidget;
 class TFMapWidget;
 class TFMap;
-class TFMapsInfoGroup;
+class TFMapInfoGroupWidget;
 class TFIsoValueWidget;
 class TFMappingRangeSelector;
 
@@ -28,16 +28,16 @@ class ParamsMgr;
 class RenderParams;
 } // namespace VAPoR
 
-class TFMapsGroup : public QWidget {
+class TFMapGroupWidget : public QWidget {
     Q_OBJECT
 
     std::vector<TFMapWidget *> _maps;
 
   public:
-    TFMapsGroup();
+    TFMapGroupWidget();
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
 
-    TFMapsInfoGroup *CreateInfoGroup();
+    TFMapInfoGroupWidget *CreateInfoGroup();
 
     TFHistogramMap *histo;
 
@@ -48,16 +48,16 @@ class TFMapsGroup : public QWidget {
     void mapActivated(TFMapWidget *map);
 };
 
-class TFMapsInfoGroup : public QStackedWidget {
+class TFMapInfoGroupWidget : public QStackedWidget {
     Q_OBJECT
 
     std::vector<TFInfoWidget *> _infos;
 
   public:
-    TFMapsInfoGroup();
+    TFMapInfoGroupWidget();
     void Update(VAPoR::RenderParams *rParams);
 
-    friend class TFMapsGroup;
+    friend class TFMapGroupWidget;
 
   private:
     void add(TFMapWidget *map);
