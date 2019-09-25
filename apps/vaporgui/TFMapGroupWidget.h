@@ -42,7 +42,8 @@ class TFMapGroupWidget : public QWidget {
     TFHistogramMap *histo;
 
   private:
-    void add(TFMapWidget *map);
+    void add(TFMapWidget *mapWidget);
+    void add(TFMap *map);
 
   private slots:
     void mapActivated(TFMapWidget *map);
