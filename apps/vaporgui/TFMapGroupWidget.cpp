@@ -27,13 +27,6 @@ TFMapGroupWidget::TFMapGroupWidget() {
     layout->setSpacing(0);
     layout->setMargin(0);
     setLayout(layout);
-
-    TFMapWidget *o;
-    add(o = new TFOpacityWidget);
-    histo = new TFHistogramMap(o);
-    o->AddMap(histo);
-    add(new TFIsoValueWidget);
-    add(new TFColorWidget);
 }
 
 void TFMapGroupWidget::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -52,17 +45,25 @@ TFMapInfoGroupWidget *TFMapGroupWidget::CreateInfoGroup() {
     return infos;
 }
 
-void TFMapGroupWidget::add(TFMapWidget *mapWidget) {
+void TFMapGroupWidget::Add(TFMapWidget *mapWidget) {
     _maps.push_back(mapWidget);
     layout()->addWidget(mapWidget);
     connect(mapWidget, SIGNAL(Activated(TFMapWidget *)), this, SLOT(mapActivated(TFMapWidget *)));
 }
 
-void TFMapGroupWidget::add(TFMap *map) {
-    TFMapWidget *mapWidget = new TFMapWidget(map);
-    _maps.push_back(mapWidget);
-    layout()->addWidget(mapWidget);
-    connect(mapWidget, SIGNAL(Activated(TFMapWidget *)), this, SLOT(mapActivated(TFMapWidget *)));
+void TFMapGroupWidget::Add(TFMap *map) { Add(new TFMapWidget(map)); }
+
+void TFMapGroupWidget::Add(const std::initializer_list<TFMap *> &layeredMaps) {
+    assert(layeredMaps.size() > 0);
+    if (layeredMaps.size() == 0)
+        return;
+
+    TFMapWidget *mapWidget = new TFMapWidget(*layeredMaps.begin());
+
+    for (auto it = layeredMaps.begin() + 1; it != layeredMaps.end(); ++it)
+        mapWidget->AddMap(*it);
+
+    Add(mapWidget);
 }
 
 void TFMapGroupWidget::mapActivated(TFMapWidget *activatedMap) {

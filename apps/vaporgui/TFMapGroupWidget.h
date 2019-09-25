@@ -39,11 +39,9 @@ class TFMapGroupWidget : public QWidget {
 
     TFMapInfoGroupWidget *CreateInfoGroup();
 
-    TFHistogramMap *histo;
-
-  private:
-    void add(TFMapWidget *mapWidget);
-    void add(TFMap *map);
+    void Add(TFMapWidget *mapWidget);
+    void Add(TFMap *map);
+    void Add(const std::initializer_list<TFMap *> &layeredMaps);
 
   private slots:
     void mapActivated(TFMapWidget *map);
