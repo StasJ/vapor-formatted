@@ -1,26 +1,13 @@
 #pragma once
 
-#include "ParamsWidgets.h"
-#include "VSection.h"
 #include <QStackedWidget>
-#include <QTabWidget>
+#include <QWidget>
 #include <vector>
 
-#include <QToolButton>
-
-class TFOpacityWidget;
-class TFColorWidget;
-class TFHistogramMap;
-class TFHistogramWidget;
-class QRangeSlider;
-class QRangeSliderTextCombo;
 class TFInfoWidget;
-class TFMapGroupWidget;
 class TFMapWidget;
 class TFMap;
 class TFMapInfoGroupWidget;
-class TFIsoValueWidget;
-class TFMappingRangeSelector;
 
 namespace VAPoR {
 class DataMgr;
@@ -53,7 +40,6 @@ class TFMapInfoGroupWidget : public QStackedWidget {
     std::vector<TFInfoWidget *> _infos;
 
   public:
-    TFMapInfoGroupWidget();
     void Update(VAPoR::RenderParams *rParams);
 
     friend class TFMapGroupWidget;

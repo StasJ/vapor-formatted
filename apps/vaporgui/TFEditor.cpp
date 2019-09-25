@@ -1,27 +1,10 @@
 #include "TFEditor.h"
-#include "ErrorReporter.h"
-#include "SettingsParams.h"
-#include "TFColorInfoWidget.h"
 #include "TFColorWidget.h"
 #include "TFHistogramWidget.h"
-#include "TFIsoValueWidget.h"
 #include "TFMapGroupWidget.h"
 #include "TFMappingRangeSelector.h"
-#include "TFOpacityInfoWidget.h"
 #include "TFOpacityWidget.h"
-#include <QBoxLayout>
-#include <QFileDialog>
-#include <QLabel>
-#include <QMenu>
-#include <vapor/ColorMap.h>
-#include <vapor/FileUtils.h>
-#include <vapor/ParamsMgr.h>
-#include <vapor/RenderParams.h>
-#include <vapor/ResourcePath.h>
 
-using namespace Wasp;
-using namespace VAPoR;
-#include <algorithm>
 TFEditor::TFEditor() : VSection("Transfer Function") {
     _maps = new TFMapGroupWidget;
     _opacityMap = new TFOpacityMap(nullptr);
@@ -49,8 +32,6 @@ TFEditor::TFEditor() : VSection("Transfer Function") {
 
 void TFEditor::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                       VAPoR::RenderParams *rParams) {
-    _rParams = rParams;
-    _paramsMgr = paramsMgr;
     _maps->Update(dataMgr, paramsMgr, rParams);
     _mapsInfo->Update(rParams);
     range->Update(dataMgr, paramsMgr, rParams);
