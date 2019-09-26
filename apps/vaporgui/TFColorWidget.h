@@ -14,8 +14,6 @@ class TFColorMap : public TFMap {
 
   public:
     TFColorMap(TFMapWidget *parent = nullptr);
-    void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
-                VAPoR::RenderParams *rParams) override;
 
     QSize minimumSizeHint() const override;
     void Deactivate() override;
@@ -23,6 +21,7 @@ class TFColorMap : public TFMap {
     void PopulateSettingsMenu(QMenu *menu) const override;
 
   protected:
+    void paramsUpdate() override;
     TFInfoWidget *createInfoWidget() override;
     void paintEvent(QPainter &p) override;
     void mousePressEvent(QMouseEvent *event) override;
@@ -31,8 +30,6 @@ class TFColorMap : public TFMap {
     void mouseDoubleClickEvent(QMouseEvent *event) override;
 
   private:
-    VAPoR::ParamsMgr *_paramsMgr = nullptr;
-    VAPoR::RenderParams *_renderParams = nullptr;
     ParamsDropdownMenuItem *_colorInterpolationMenu;
     bool _isDraggingControl = false;
     int _draggingControlID;

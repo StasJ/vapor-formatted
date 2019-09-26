@@ -121,15 +121,13 @@ class TFOpacityMap : public TFMap {
   public:
     TFOpacityMap(TFMapWidget *parent = nullptr);
 
-    void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
-                VAPoR::RenderParams *rParams) override;
-
     QSize minimumSizeHint() const override;
     void Deactivate() override;
     void PopulateContextMenu(QMenu *menu, const glm::vec2 &p) override;
     void PopulateSettingsMenu(QMenu *menu) const override;
 
   protected:
+    void paramsUpdate() override;
     TFInfoWidget *createInfoWidget() override;
     void paintEvent(QPainter &p) override;
     void mousePressEvent(QMouseEvent *event) override;
@@ -138,8 +136,6 @@ class TFOpacityMap : public TFMap {
     void mouseDoubleClickEvent(QMouseEvent *event) override;
 
   private:
-    VAPoR::ParamsMgr *_paramsMgr = nullptr;
-    VAPoR::RenderParams *_renderParams = nullptr;
     ControlPointList _controlPoints;
     bool _isDraggingControl = false;
     bool _isDraggingLine = false;

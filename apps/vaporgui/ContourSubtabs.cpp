@@ -44,6 +44,7 @@ void ContourAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *
     _spacingCombo->Update(0, maxSpacing, spacing);
 
     _TFWidget->Update(dataMgr, paramsMgr, _cParams);
+    _tfEditor->Update(dataMgr, paramsMgr, _cParams);
 }
 
 void ContourAppearanceSubtab::Initialize(VAPoR::ContourParams *cParams) {

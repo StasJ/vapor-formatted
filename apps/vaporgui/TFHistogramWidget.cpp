@@ -25,20 +25,6 @@ TFHistogramMap::TFHistogramMap(TFMapWidget *parent) : TFMap(parent) {
         this, SCALING_TAG, {"Linear", "Logarithmic", "Boolean"}, {}, "Histogram Scaling");
 }
 
-void TFHistogramMap::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
-                            VAPoR::RenderParams *rp) {
-    _renderParams = rp;
-    _dataMgr = dataMgr;
-
-    if (_histo.getNumBins() != width())
-        _histo.reset(width());
-    if (_histo.PopulateIfNeeded(dataMgr, rp) < 0)
-        MSG_ERR("Failed to populate histogram");
-
-    _scalingMenu->Update(rp);
-    update();
-}
-
 QSize TFHistogramMap::minimumSizeHint() const { return QSize(100, 40); }
 
 void TFHistogramMap::PopulateSettingsMenu(QMenu *menu) const {
@@ -48,6 +34,19 @@ void TFHistogramMap::PopulateSettingsMenu(QMenu *menu) const {
         menu->addAction("Histogram Dynamic Scaling", this, SLOT(_menuDynamicScalingToggled(bool)));
     histogramDynamicScalingAction->setCheckable(true);
     histogramDynamicScalingAction->setChecked(_dynamicScaling);
+}
+
+void TFHistogramMap::paramsUpdate() {
+    if (width() == 0)
+        return;
+
+    if (_histo.getNumBins() != width())
+        _histo.reset(width());
+    if (_histo.PopulateIfNeeded(getDataMgr(), getRenderParams()) < 0)
+        MSG_ERR("Failed to populate histogram");
+
+    _scalingMenu->Update(getRenderParams());
+    update();
 }
 
 TFInfoWidget *TFHistogramMap::createInfoWidget() {
@@ -60,6 +59,9 @@ TFInfoWidget *TFHistogramMap::createInfoWidget() {
 }
 
 void TFHistogramMap::paintEvent(QPainter &p) {
+    if (width() == 0)
+        return;
+
     p.fillRect(rect(), Qt::lightGray);
 
     //    QMatrix m;
@@ -71,7 +73,7 @@ void TFHistogramMap::paintEvent(QPainter &p) {
     graph.push_back(NDCToQPixel(0, 0));
 
     vector<double> mapRange =
-        _renderParams->GetMapperFunc(_renderParams->GetVariableName())->getMinMaxMapValue();
+        getRenderParams()->GetMapperFunc(getRenderParams()->GetVariableName())->getMinMaxMapValue();
 
     int startBin = _histo.getBinIndexForValue(mapRange[0]);
     int endBin = _histo.getBinIndexForValue(mapRange[1]);
@@ -140,11 +142,11 @@ void TFHistogramMap::mouseMoveEvent(QMouseEvent *event) {
 // void TFHistogramWidget::mouseDoubleClickEvent(QMouseEvent *event)
 
 TFHistogramMap::ScalingType TFHistogramMap::_getScalingType() const {
-    if (!_renderParams)
+    if (!getRenderParams())
         return ScalingType::Linear;
 
     ScalingType type =
-        (ScalingType)_renderParams->GetValueLong(SCALING_TAG, (int)ScalingType::Linear);
+        (ScalingType)getRenderParams()->GetValueLong(SCALING_TAG, (int)ScalingType::Linear);
     if (type >= ScalingTypeCount || type < 0)
         type = Linear;
 

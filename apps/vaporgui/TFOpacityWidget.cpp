@@ -42,33 +42,6 @@ float DistanceToLine(vec2 a, vec2 b, vec2 p) {
 
 TFOpacityMap::TFOpacityMap(TFMapWidget *parent) : TFMap(parent) {}
 
-void TFOpacityMap::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
-                          VAPoR::RenderParams *rp) {
-    if (rp != _renderParams)
-        DeselectControlPoint();
-
-    _renderParams = rp;
-    _paramsMgr = paramsMgr;
-
-    MapperFunction *mf = rp->GetMapperFunc(rp->GetVariableName());
-    // TODO Multiple opacity maps?
-    //    int n = mf->getNumOpacityMaps();
-    //    printf("# opacity maps = %i\n", n);
-
-    OpacityMap *om = mf->GetOpacityMap(0);
-
-    vector<double> cp = om->GetControlPoints();
-    _controlPoints.Resize(cp.size() / 2);
-    for (int i = 0; i < cp.size(); i += 2) {
-        _controlPoints[i / 2].y = cp[i];
-        _controlPoints[i / 2].x = cp[i + 1];
-    }
-    update();
-
-    if (_selectedControl > -1)
-        UpdateInfo(_controlPoints[_selectedControl].x, _controlPoints[_selectedControl].y);
-}
-
 QSize TFOpacityMap::minimumSizeHint() const { return QSize(100, 75); }
 
 void TFOpacityMap::Deactivate() { DeselectControlPoint(); }
@@ -90,6 +63,26 @@ void TFOpacityMap::PopulateContextMenu(QMenu *menu, const glm::vec2 &p) {
 void TFOpacityMap::PopulateSettingsMenu(QMenu *menu) const {
     menu->addAction("Save Transfer Function", this, SLOT(menuSave()));
     menu->addAction("Load Transfer Function", this, SLOT(menuLoad()));
+}
+
+void TFOpacityMap::paramsUpdate() {
+    MapperFunction *mf = getRenderParams()->GetMapperFunc(getRenderParams()->GetVariableName());
+    // TODO Multiple opacity maps?
+    //    int n = mf->getNumOpacityMaps();
+    //    printf("# opacity maps = %i\n", n);
+
+    OpacityMap *om = mf->GetOpacityMap(0);
+
+    vector<double> cp = om->GetControlPoints();
+    _controlPoints.Resize(cp.size() / 2);
+    for (int i = 0; i < cp.size(); i += 2) {
+        _controlPoints[i / 2].y = cp[i];
+        _controlPoints[i / 2].x = cp[i + 1];
+    }
+    update();
+
+    if (_selectedControl > -1)
+        UpdateInfo(_controlPoints[_selectedControl].x, _controlPoints[_selectedControl].y);
 }
 
 TFInfoWidget *TFOpacityMap::createInfoWidget() {
@@ -134,13 +127,13 @@ void TFOpacityMap::mousePressEvent(QMouseEvent *event) {
         _dragOffset = NDCToPixel(*it) - mouse;
         _isDraggingControl = true;
         selectControlPoint(it);
-        _paramsMgr->BeginSaveStateGroup("Move opacity control point");
+        getParamsMgr()->BeginSaveStateGroup("Move opacity control point");
     } else if (lineIt != _controlPoints.EndLines()) {
         _draggedLine = lineIt;
         _dragOffset = NDCToPixel(lineIt.a()) - mouse;
         _dragOffsetB = NDCToPixel(lineIt.b()) - mouse;
         _isDraggingLine = true;
-        _paramsMgr->BeginSaveStateGroup("Move opacity control line");
+        getParamsMgr()->BeginSaveStateGroup("Move opacity control line");
     } else {
         DeselectControlPoint();
         event->ignore();
@@ -150,7 +143,7 @@ void TFOpacityMap::mousePressEvent(QMouseEvent *event) {
 void TFOpacityMap::mouseReleaseEvent(QMouseEvent *event) {
     if (_isDraggingControl || _isDraggingLine) {
         opacityChanged();
-        _paramsMgr->EndSaveStateGroup();
+        getParamsMgr()->EndSaveStateGroup();
     } else
         event->ignore();
     _isDraggingControl = false;
@@ -174,7 +167,7 @@ void TFOpacityMap::mouseMoveEvent(QMouseEvent *event) {
         emit UpdateInfo(newVal.x, newVal.y);
         update();
         opacityChanged();
-        _paramsMgr->IntermediateChange();
+        getParamsMgr()->IntermediateChange();
     } else if (_isDraggingLine) {
         auto &it = _draggedLine;
         it.setA(glm::clamp(PixelToNDC(mouse + _dragOffset),
@@ -185,7 +178,7 @@ void TFOpacityMap::mouseMoveEvent(QMouseEvent *event) {
                            vec2(it.IsLast() ? 1 : (it + 1).b().x, 1)));
         update();
         opacityChanged();
-        _paramsMgr->IntermediateChange();
+        getParamsMgr()->IntermediateChange();
     } else {
         event->ignore();
     }
@@ -213,10 +206,10 @@ void TFOpacityMap::mouseDoubleClickEvent(QMouseEvent *event) {
 }
 
 void TFOpacityMap::opacityChanged() {
-    if (!_renderParams)
+    if (!getRenderParams())
         return;
 
-    MapperFunction *mf = _renderParams->GetMapperFunc(_renderParams->GetVariableName());
+    MapperFunction *mf = getRenderParams()->GetMapperFunc(getRenderParams()->GetVariableName());
 
     OpacityMap *om = mf->GetOpacityMap(0);
 
@@ -262,7 +255,7 @@ void TFOpacityMap::selectControlPoint(ControlPointList::PointIterator it) {
 
 void TFOpacityMap::deleteControlPoint(ControlPointList::PointIterator it) {
     if (_isDraggingControl || _isDraggingLine) {
-        _paramsMgr->EndSaveStateGroup();
+        getParamsMgr()->EndSaveStateGroup();
         _isDraggingControl = false;
         _isDraggingLine = false;
     }
@@ -303,17 +296,17 @@ void TFOpacityMap::menuAddControlPoint() {
 }
 
 void TFOpacityMap::menuLoad() {
-    RenderParams *rp = _renderParams;
+    RenderParams *rp = getRenderParams();
     if (!rp)
         return;
-    TFUtils::LoadTransferFunction(_paramsMgr, rp->GetMapperFunc(rp->GetVariableName()));
+    TFUtils::LoadTransferFunction(getParamsMgr(), rp->GetMapperFunc(rp->GetVariableName()));
 }
 
 void TFOpacityMap::menuSave() {
-    RenderParams *rp = _renderParams;
+    RenderParams *rp = getRenderParams();
     if (!rp)
         return;
-    TFUtils::SaveTransferFunction(_paramsMgr, rp->GetMapperFunc(rp->GetVariableName()));
+    TFUtils::SaveTransferFunction(getParamsMgr(), rp->GetMapperFunc(rp->GetVariableName()));
 }
 
 void TFOpacityMap::DeselectControlPoint() {
