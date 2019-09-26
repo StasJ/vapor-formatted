@@ -18,6 +18,8 @@ class TFIsoValueMap : public TFMap {
     QSize minimumSizeHint() const override;
     void Deactivate() override;
 
+    void SetEquidistantIsoValues(bool b) { _equidistantIsoValues = b; }
+
   protected:
     void paramsUpdate() override;
     TFInfoWidget *createInfoWidget() override;

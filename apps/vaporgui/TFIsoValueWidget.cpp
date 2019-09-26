@@ -11,8 +11,6 @@ using glm::vec2;
 using std::vector;
 
 static vec2 qvec2(const QPoint &qp) { return vec2(qp.x(), qp.y()); }
-static vec2 qvec2(const QPointF &qp) { return vec2(qp.x(), qp.y()); }
-static QPointF qvec2(const vec2 &v) { return QPointF(v.x, v.y); }
 
 TFIsoValueMap::TFIsoValueMap(TFMapWidget *parent) : TFMap(parent) {}
 
@@ -33,6 +31,9 @@ void TFIsoValueMap::paramsUpdate() {
 #define PROPERTY_VALUE ("value")
 
 void TFIsoValueMap::PopulateContextMenu(QMenu *menu, const glm::vec2 &p) {
+    if (_equidistantIsoValues)
+        return;
+
     int selectedId = findSelectedControlPoint(p);
     if (selectedId != -1)
         menu->addAction("Delete control point", this, SLOT(menuDeleteControlPoint()))
@@ -165,6 +166,9 @@ void TFIsoValueMap::mouseMoveEvent(QMouseEvent *event) {
 }
 
 void TFIsoValueMap::mouseDoubleClickEvent(QMouseEvent *event) {
+    if (_equidistantIsoValues)
+        return;
+
     vec2 mouse = qvec2(event->pos());
     int selectedId = findSelectedControlPoint(mouse);
     if (selectedId >= 0) {
