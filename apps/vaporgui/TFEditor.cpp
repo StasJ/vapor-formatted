@@ -1,6 +1,7 @@
 #include "TFEditor.h"
 #include "TFColorWidget.h"
 #include "TFHistogramWidget.h"
+#include "TFIsoValueWidget.h"
 #include "TFMapGroupWidget.h"
 #include "TFMappingRangeSelector.h"
 #include "TFOpacityWidget.h"
@@ -10,8 +11,10 @@ TFEditor::TFEditor() : VSection("Transfer Function") {
     _opacityMap = new TFOpacityMap(nullptr);
     _histogramMap = new TFHistogramMap(nullptr);
     _colorMap = new TFColorMap(nullptr);
+    _isoMap = new TFIsoValueMap(nullptr);
 
     _maps->Add({_opacityMap, _histogramMap});
+    _maps->Add(_isoMap);
     _maps->Add(_colorMap);
 
     layout()->addWidget(_maps);

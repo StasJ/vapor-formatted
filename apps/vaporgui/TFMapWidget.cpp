@@ -34,6 +34,16 @@ void TFMap::update() {
         _parent->update();
 }
 
+void TFMap::show() {
+    if (_parent)
+        _parent->show();
+}
+
+void TFMap::hide() {
+    if (_parent)
+        _parent->hide();
+}
+
 void TFMap::drawControl(QPainter &p, const QPointF &pos, bool selected) const {
     float radius = CONTROL_POINT_RADIUS;
 

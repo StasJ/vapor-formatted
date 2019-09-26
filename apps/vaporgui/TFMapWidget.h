@@ -51,6 +51,8 @@ class TFMap : public QObject {
 
   public slots:
     void update();
+    void show();
+    void hide();
 
   protected:
     void drawControl(QPainter &p, const QPointF &pos, bool selected = false) const;
