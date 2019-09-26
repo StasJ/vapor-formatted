@@ -14,7 +14,7 @@ class TFHistogramMap : public TFMap {
     enum ScalingType { Linear = 0, Logarithmic, Boolean, ScalingTypeCount };
 
   public:
-    TFHistogramMap(TFMapWidget *parent);
+    TFHistogramMap(TFMapWidget *parent = nullptr);
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
 
     QSize minimumSizeHint() const;
