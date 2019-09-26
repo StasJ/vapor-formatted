@@ -15,6 +15,7 @@ class TFIsoValueMap : public TFMap {
     TFIsoValueMap(TFMapWidget *parent = nullptr);
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                 VAPoR::RenderParams *rParams) override;
+    void PopulateContextMenu(QMenu *menu, const glm::vec2 &p);
 
     QSize minimumSizeHint() const override;
     void Deactivate() override;
@@ -67,6 +68,10 @@ class TFIsoValueMap : public TFMap {
   public slots:
     void DeselectControlPoint();
     void UpdateFromInfo(float value);
+
+  private slots:
+    void menuDeleteControlPoint();
+    void menuAddControlPoint();
 };
 
 class TFIsoValueWidget : public TFMapWidget {

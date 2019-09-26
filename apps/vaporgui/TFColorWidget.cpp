@@ -234,6 +234,7 @@ void TFColorMap::UpdateFromInfo(float value, QColor color) {
 }
 
 void TFColorMap::menuDeleteSelectedControlPoint() {
+    emit Activated(this);
     const ColorMap *cm = getColormap();
     QVariant valueVariant = sender()->property(PROPERTY_INDEX);
     if (valueVariant.isValid()) {
@@ -244,6 +245,7 @@ void TFColorMap::menuDeleteSelectedControlPoint() {
 }
 
 void TFColorMap::menuAddControlPoint() {
+    emit Activated(this);
     QVariant value = sender()->property(PROPERTY_VALUE);
     if (value.isValid())
         addControlPoint(value.toFloat());

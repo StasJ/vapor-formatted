@@ -286,6 +286,7 @@ void TFOpacityMap::addControlPoint(const glm::vec2 &ndc) {
 }
 
 void TFOpacityMap::menuDeleteSelectedControlPoint() {
+    emit Activated(this);
     QVariant indexVariant = sender()->property(PROPERTY_INDEX);
     if (indexVariant.isValid()) {
         int index = indexVariant.toInt();
@@ -295,6 +296,7 @@ void TFOpacityMap::menuDeleteSelectedControlPoint() {
 }
 
 void TFOpacityMap::menuAddControlPoint() {
+    emit Activated(this);
     QVariant location = sender()->property(PROPERTY_LOCATION);
     if (location.isValid())
         addControlPoint(qvec2(location.toPointF()));
