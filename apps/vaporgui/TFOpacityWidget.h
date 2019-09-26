@@ -42,8 +42,11 @@ class ControlPointList {
 
       public:
         glm::vec2 &operator*() = delete;
-        bool IsFirst() const = delete;
-        bool IsLast() const = delete;
+        //        bool IsFirst() const = delete;
+        //        bool IsLast() const = delete;
+        bool IsLast() const { return i == list->Size(); }
+        LineIterator operator+(int x) const { return LineIterator(list, i + x); }
+        LineIterator operator-(int x) const { return LineIterator(list, i - x); }
 
         const glm::vec2 a() {
             if (i == 0)
@@ -54,6 +57,14 @@ class ControlPointList {
             if (i == list->SizeLines() - 1)
                 return glm::vec2(1, (*list)[list->Size() - 1].y);
             return (*list)[i];
+        }
+        void setA(const glm::vec2 &v) {
+            if (i != 0)
+                (*list)[i - 1] = v;
+        }
+        void setB(const glm::vec2 &v) {
+            if (i != list->SizeLines() - 1)
+                (*list)[i] = v;
         }
 
         friend class ControlPointList;
@@ -131,9 +142,11 @@ class TFOpacityMap : public TFMap {
     VAPoR::RenderParams *_renderParams = nullptr;
     ControlPointList _controlPoints;
     bool _isDraggingControl = false;
-    glm::vec2 _controlStartValue;
+    bool _isDraggingLine = false;
     ControlPointList::PointIterator _draggedControl;
+    ControlPointList::LineIterator _draggedLine;
     glm::vec2 _dragOffset;
+    glm::vec2 _dragOffsetB;
     glm::vec2 m;
     int _selectedControl = -1;
 
@@ -141,6 +154,7 @@ class TFOpacityMap : public TFMap {
 
     bool controlPointContainsPixel(const glm::vec2 &cp, const glm::vec2 &pixel) const;
     ControlPointList::PointIterator findSelectedControlPoint(const glm::vec2 &mouse);
+    ControlPointList::LineIterator findSelectedControlLine(const glm::vec2 &mouse);
 
     void selectControlPoint(ControlPointList::PointIterator it);
     void deleteControlPoint(ControlPointList::PointIterator it);
