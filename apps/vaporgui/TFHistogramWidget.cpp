@@ -73,7 +73,7 @@ void TFHistogramMap::paintEvent(QPainter &p) {
     graph.push_back(NDCToQPixel(0, 0));
 
     vector<double> mapRange =
-        getRenderParams()->GetMapperFunc(getRenderParams()->GetVariableName())->getMinMaxMapValue();
+        getRenderParams()->GetMapperFunc(getVariableName())->getMinMaxMapValue();
 
     int startBin = _histo.getBinIndexForValue(mapRange[0]);
     int endBin = _histo.getBinIndexForValue(mapRange[1]);
