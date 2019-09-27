@@ -1,10 +1,12 @@
 #include "TFEditorIsoSurface.h"
+#include "ParamsWidgets.h"
 #include "TFColorWidget.h"
 #include "TFHistogramWidget.h"
 #include "TFIsoValueWidget.h"
 #include "TFMapGroupWidget.h"
 #include "TFMappingRangeSelector.h"
 #include "TFOpacityWidget.h"
+#include <vapor/VolumeIsoParams.h>
 
 TFEditorIsoSurface::TFEditorIsoSurface() : VSection("Transfer Function") {
     _maps = new TFMapGroupWidget;
@@ -19,6 +21,11 @@ TFEditorIsoSurface::TFEditorIsoSurface() : VSection("Transfer Function") {
     layout()->addWidget(_mapsInfo = _maps->CreateInfoGroup());
     layout()->addWidget(range = new TFMappingRangeSelector);
     connect(range, SIGNAL(ValueChangedIntermediate(float, float)), _histogramMap, SLOT(update()));
+
+    layout()->addWidget(_colormappedVariableCheckbox =
+                            new ParamsWidgetCheckbox(VAPoR::VolumeIsoParams::UseColormapVariableTag,
+                                                     "Color by second variable"));
+    layout()->addWidget(_constantColorSelector = new ParamsWidgetColor("ConstantColor"));
 
     _maps2 = new TFMapGroupWidget;
     _opacityMap2 = new TFOpacityMap;
@@ -54,8 +61,25 @@ void TFEditorIsoSurface::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *param
     _maps->Update(dataMgr, paramsMgr, rParams);
     _mapsInfo->Update(rParams);
     range->Update(dataMgr, paramsMgr, rParams);
+    _colormappedVariableCheckbox->Update(rParams);
 
-    _maps2->Update(dataMgr, paramsMgr, rParams);
-    _mapsInfo2->Update(rParams);
-    range2->Update(dataMgr, paramsMgr, rParams);
+    bool useColormappedVar =
+        rParams->GetValueLong(VAPoR::VolumeIsoParams::UseColormapVariableTag, false);
+
+    if (useColormappedVar) {
+        _maps2->show();
+        _mapsInfo2->show();
+        range2->show();
+        _constantColorSelector->hide();
+
+        _maps2->Update(dataMgr, paramsMgr, rParams);
+        _mapsInfo2->Update(rParams);
+        range2->Update(dataMgr, paramsMgr, rParams);
+    } else {
+        _maps2->hide();
+        _mapsInfo2->hide();
+        range2->hide();
+        _constantColorSelector->show();
+        _constantColorSelector->Update(rParams);
+    }
 }

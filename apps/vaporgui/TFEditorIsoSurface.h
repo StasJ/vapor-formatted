@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ParamsWidgets.h"
 #include "VSection.h"
 
 class TFMapGroupWidget;
@@ -31,6 +32,9 @@ class TFEditorIsoSurface : public VSection {
 
     TFHistogramMap *_histogramMap;
     TFIsoValueMap *_isoMap;
+
+    ParamsWidgetCheckbox *_colormappedVariableCheckbox;
+    ParamsWidgetColor *_constantColorSelector;
 
     TFMapGroupWidget *_maps2;
     TFMapInfoGroupWidget *_mapsInfo2;
