@@ -5,7 +5,7 @@
 #include "ui_VolumeIsoGeometryGUI.h"
 #include "ui_VolumeIsoVariablesGUI.h"
 
-#include "TFEditor.h"
+#include "TFEditorIsoSurface.h"
 #include "vapor/VolumeIsoParams.h"
 
 namespace VAPoR {
@@ -23,7 +23,7 @@ class VolumeIsoVariablesSubtab : public QWidget, public Ui_VolumeIsoVariablesGUI
         setupUi(this);
         _variablesWidget->Reinit((VariableFlags)(SCALAR | COLOR), (DimFlags)(THREED));
 
-        ((QVBoxLayout *)layout())->insertWidget(0, tf = new TFEditor);
+        ((QVBoxLayout *)layout())->insertWidget(0, tf = new TFEditorIsoSurface);
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *params);
@@ -32,7 +32,7 @@ class VolumeIsoVariablesSubtab : public QWidget, public Ui_VolumeIsoVariablesGUI
 
   private:
     VAPoR::VolumeIsoParams *_isoParams;
-    TFEditor *tf;
+    TFEditorIsoSurface *tf;
 };
 
 class VolumeIsoAppearanceSubtab : public QWidget, public Ui_VolumeIsoAppearanceGUI {

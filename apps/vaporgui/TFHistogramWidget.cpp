@@ -25,7 +25,10 @@ TFHistogramMap::TFHistogramMap(TFMapWidget *parent) : TFMap(parent) {
         this, SCALING_TAG, {"Linear", "Logarithmic", "Boolean"}, {}, "Histogram Scaling");
 }
 
-QSize TFHistogramMap::minimumSizeHint() const { return QSize(100, 40); }
+QSize TFHistogramMap::minimumSizeHint() const {
+    //    return QSize(100, 40);
+    return QSize(100, 75);
+}
 
 void TFHistogramMap::PopulateSettingsMenu(QMenu *menu) const {
     menu->addAction(_scalingMenu);
