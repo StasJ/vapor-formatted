@@ -3,8 +3,6 @@
 #include <QLabel>
 #include <vapor/RenderParams.h>
 
-TFIsoValueInfoWidget::TFIsoValueInfoWidget() { layout()->addWidget(new QLabel); }
-
 void TFIsoValueInfoWidget::controlPointChanged() {
     emit ControlPointChanged(this->getValueFromEdit());
 }

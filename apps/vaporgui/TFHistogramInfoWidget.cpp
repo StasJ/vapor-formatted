@@ -4,7 +4,7 @@
 #include <vapor/RenderParams.h>
 
 TFHistogramInfoWidget::TFHistogramInfoWidget() {
-    layout()->addWidget(new QLabel);
+    //    layout()->addWidget(new QLabel);
     _valueEdit->setReadOnly(true);
 }
 
