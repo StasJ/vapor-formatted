@@ -71,7 +71,13 @@ void TFIsoValueMap::paintEvent(QPainter &p) {
 
     if (getRenderParams()) {
         for (int i = 0; i < _isoValues.size(); i++) {
-            drawControl(p, controlQPositionForValue(_isoValues[i]), i == _selectedId);
+            float v = _isoValues[i];
+            bool invalid = false;
+            if (v < 0 || v > 1) {
+                v = glm::clamp(v, 0.f, 1.f);
+                invalid = true;
+            }
+            drawControl(p, controlQPositionForValue(v), i == _selectedId, invalid);
         }
 
         if (_isoValues.size() == 0) {
@@ -83,7 +89,8 @@ void TFIsoValueMap::paintEvent(QPainter &p) {
     }
 }
 
-void TFIsoValueMap::drawControl(QPainter &p, const QPointF &pos, bool selected) const {
+void TFIsoValueMap::drawControl(QPainter &p, const QPointF &pos, bool selected,
+                                bool invalid) const {
     float r = GetControlPointRadius();
     float t = GetControlPointTriangleHeight();
     float s = GetControlPointSquareHeight();
@@ -93,7 +100,8 @@ void TFIsoValueMap::drawControl(QPainter &p, const QPointF &pos, bool selected) 
     p.setBrush(brush);
     p.setPen(pen);
 
-    //    p.drawEllipse(pos, radius, radius);
+    if (invalid)
+        p.setBrush(QBrush(QColor(0xfa, 0x8a, 0x8a)));
 
     QPolygonF graph;
     graph.push_back(pos + QPointF(0, 0));
@@ -132,12 +140,11 @@ void TFIsoValueMap::mousePressEvent(QMouseEvent *event) {
 
     int selectedId = findSelectedControlPoint(mouse);
     if (selectedId >= 0) {
-        float value = _isoValues[selectedId];
         _isDraggingControl = true;
         _draggingControlID = selectedId;
         selectControlPoint(selectedId);
         update();
-        _dragOffset = controlPositionForValue(value) - mouse;
+        _dragOffset = controlPositionForValue(glm::clamp(_isoValues[selectedId], 0.f, 1.f)) - mouse;
         getParamsMgr()->BeginSaveStateGroup("IsoValue modification");
         return;
     }
@@ -204,8 +211,8 @@ void TFIsoValueMap::saveToParams(VAPoR::RenderParams *rp) const {
         return;
     assert(rp->HasIsoValues());
 
-    const float min = getDataRangeMin();
-    const float max = getDataRangeMax();
+    const float min = getMapRangeMin();
+    const float max = getMapRangeMax();
 
     vector<double> values(_isoValues.size());
     for (int i = 0; i < values.size(); i++)
@@ -220,8 +227,8 @@ void TFIsoValueMap::loadFromParams(VAPoR::RenderParams *rp) {
         return;
     assert(rp->HasIsoValues());
 
-    const float min = getDataRangeMin();
-    const float max = getDataRangeMax();
+    const float min = getMapRangeMin();
+    const float max = getMapRangeMax();
 
     vector<double> newValues = rp->GetIsoValues();
     if (newValues.size() != _isoValues.size()) {
@@ -230,7 +237,16 @@ void TFIsoValueMap::loadFromParams(VAPoR::RenderParams *rp) {
     }
     for (int i = 0; i < newValues.size(); i++)
         _isoValues[i] = (newValues[i] - min) / (max - min);
+
+    //    if (!_equidistantIsoValues)
+    //        clampIsoValuesToMappingRange();
 }
+
+// void TFIsoValueMap::clampIsoValuesToMappingRange()
+//{
+//   / for (int i = 0; i < _isoValues.size(); i++)
+//        _isoValues[i] = glm::clamp(_isoValues[i], 0.f, 1.f);
+//}
 
 int TFIsoValueMap::addControlPoint(float value) {
     int index = -1;
@@ -301,7 +317,7 @@ void TFIsoValueMap::UpdateFromInfo(float value) {
 
 int TFIsoValueMap::findSelectedControlPoint(const glm::vec2 &mouse) const {
     for (int i = _isoValues.size() - 1; i >= 0; i--)
-        if (controlPointContainsPixel(_isoValues[i], mouse))
+        if (controlPointContainsPixel(glm::clamp(_isoValues[i], 0.f, 1.f), mouse))
             return i;
     return -1;
 }
@@ -326,13 +342,13 @@ float TFIsoValueMap::valueForControlX(float position) const {
     return PixelToNDC(vec2(position, 0.f)).x;
 }
 
-float TFIsoValueMap::getDataRangeMin() const {
+float TFIsoValueMap::getMapRangeMin() const {
     if (!getRenderParams())
         return 0;
     return getRenderParams()->GetMapperFunc(getRenderParams()->GetVariableName())->getMinMapValue();
 }
 
-float TFIsoValueMap::getDataRangeMax() const {
+float TFIsoValueMap::getMapRangeMax() const {
     if (!getRenderParams())
         return 1;
     return getRenderParams()->GetMapperFunc(getRenderParams()->GetVariableName())->getMaxMapValue();
