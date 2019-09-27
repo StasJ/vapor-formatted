@@ -1,4 +1,5 @@
 #include "vapor/VaporField.h"
+#include <sstream>
 
 using namespace flow;
 
@@ -371,6 +372,19 @@ int VaporField::_getAGrid(size_t timestep, std::string &varName, const VAPoR::Gr
         _recentGrids.pop_back();
 
     return 0;
+}
+
+std::string VaporField::_paramsToString(size_t currentTS, const std::string &var, int refLevel,
+                                        int compLevel, const std::vector<double> &min,
+                                        const std::vector<double> &max) const {
+    std::string space("  ");
+    std::ostringstream oss;
+    oss << currentTS << space << var << space << refLevel << space << compLevel << space;
+    for (size_t i = 0; i < min.size(); i++)
+        oss << min[i] << space;
+    for (size_t i = 0; i < max.size(); i++)
+        oss << max[i] << space;
+    return oss.str();
 }
 
 // RichGrid Constructor
