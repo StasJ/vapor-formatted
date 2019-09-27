@@ -42,7 +42,7 @@ void TFHistogramMap::PopulateSettingsMenu(QMenu *menu) const {
 void TFHistogramMap::paramsUpdate() {
     if (_histo.getNumBins() != width() || _histo.getNumBins() == 0)
         _histo.reset(width() ? width() : 256); // This can be called before it is resized
-    if (_histo.PopulateIfNeeded(getDataMgr(), getRenderParams()) < 0)
+    if (_histo.PopulateIfNeeded(getVariableName(), getDataMgr(), getRenderParams()) < 0)
         MSG_ERR("Failed to populate histogram");
 
     _scalingMenu->Update(getRenderParams());
