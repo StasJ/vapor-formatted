@@ -22,8 +22,6 @@ class VolumeIsoVariablesSubtab : public QWidget, public Ui_VolumeIsoVariablesGUI
     VolumeIsoVariablesSubtab(QWidget *parent) {
         setupUi(this);
         _variablesWidget->Reinit((VariableFlags)(SCALAR | COLOR), (DimFlags)(THREED));
-
-        ((QVBoxLayout *)layout())->insertWidget(0, tf = new TFEditorIsoSurface);
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *params);
@@ -32,7 +30,6 @@ class VolumeIsoVariablesSubtab : public QWidget, public Ui_VolumeIsoVariablesGUI
 
   private:
     VAPoR::VolumeIsoParams *_isoParams;
-    TFEditorIsoSurface *tf;
 };
 
 class VolumeIsoAppearanceSubtab : public QWidget, public Ui_VolumeIsoAppearanceGUI {
@@ -56,6 +53,7 @@ class VolumeIsoAppearanceSubtab : public QWidget, public Ui_VolumeIsoAppearanceG
 
   private:
     VAPoR::VolumeIsoParams *_params;
+    TFEditorIsoSurface *_tfe;
 };
 
 class VolumeIsoGeometrySubtab : public QWidget, public Ui_VolumeIsoGeometryGUI {

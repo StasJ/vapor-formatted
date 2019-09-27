@@ -13,12 +13,12 @@ void VolumeIsoVariablesSubtab::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr,
     // _castingModeComboBox->setCurrentIndex( mode - 1 );
 
     _variablesWidget->Update(dataMgr, paramsMgr, params);
-    tf->Update(dataMgr, paramsMgr, params);
 }
 
 VolumeIsoAppearanceSubtab::VolumeIsoAppearanceSubtab(QWidget *parent) {
     setupUi(this);
     _TFWidget->Reinit((TFFlags)(CONSTANT_COLOR | COLORMAP_VAR_IS_IN_TF2 | ISOLINES | SAMPLING));
+    ((QVBoxLayout *)layout())->insertWidget(0, _tfe = new TFEditorIsoSurface);
 
     _params = nullptr;
 
@@ -52,6 +52,7 @@ VolumeIsoAppearanceSubtab::VolumeIsoAppearanceSubtab(QWidget *parent) {
 void VolumeIsoAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                                        VAPoR::RenderParams *params) {
     _TFWidget->Update(dataMgr, paramsMgr, params);
+    _tfe->Update(dataMgr, paramsMgr, params);
 
     _params = dynamic_cast<VAPoR::VolumeIsoParams *>(params);
     VAssert(_params);
