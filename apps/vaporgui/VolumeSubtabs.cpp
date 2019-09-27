@@ -1,4 +1,5 @@
 #include "VolumeSubtabs.h"
+#include <TFEditor.h>
 
 using namespace VAPoR;
 
@@ -8,13 +9,13 @@ void VolumeVariablesSubtab::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, Rende
     VAssert(vp);
 
     _variablesWidget->Update(dataMgr, paramsMgr, params);
-    tf->Update(dataMgr, paramsMgr, params);
 }
 
 VolumeAppearanceSubtab::VolumeAppearanceSubtab(QWidget *parent) {
     setupUi(this);
     _TFWidget->SetOpacityIntegrated(true);
     _TFWidget->Reinit((TFFlags)(SAMPLING));
+    verticalLayout->insertWidget(0, _tfe = new TFEditor);
 
     _params = nullptr;
 
@@ -52,6 +53,7 @@ void VolumeAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *p
     VAssert(vp);
 
     _TFWidget->Update(dataMgr, paramsMgr, rParams);
+    _tfe->Update(dataMgr, paramsMgr, rParams);
 
     // ---------------------------
     // Raytracing Parameters

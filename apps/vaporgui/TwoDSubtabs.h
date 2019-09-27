@@ -6,6 +6,7 @@
 #include "ui_TwoDAppearanceGUI.h"
 #include "ui_TwoDGeometryGUI.h"
 #include "ui_TwoDVariablesGUI.h"
+#include <TFEditor.h>
 
 namespace VAPoR {
 class ControlExec;
@@ -34,15 +35,19 @@ class TwoDAppearanceSubtab : public QWidget, public Ui_TwoDAppearanceGUI {
 
     Q_OBJECT
 
+    TFEditor *_tfe;
+
   public:
     TwoDAppearanceSubtab(QWidget *parent) {
         setupUi(this);
         _TFWidget->Reinit((TFFlags)(0));
+        verticalLayout->insertWidget(0, _tfe = new TFEditor);
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                 VAPoR::RenderParams *rParams) {
         _TFWidget->Update(dataMgr, paramsMgr, rParams);
+        _tfe->Update(dataMgr, paramsMgr, rParams);
     }
 };
 

@@ -13,6 +13,10 @@ void TFMappingRangeSelector::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *p
                                     VAPoR::RenderParams *rParams) {
     _rParams = rParams;
     _paramsMgr = paramsMgr;
+    if (!rParams || !paramsMgr || !dataMgr)
+        return;
+    if (!dataMgr->VariableExists(rParams->GetCurrentTimestep(), _getVariableName()))
+        return;
 
     float min, max;
     _getDataRange(dataMgr, rParams, &min, &max);
