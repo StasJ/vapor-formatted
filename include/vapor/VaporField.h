@@ -11,9 +11,7 @@
 namespace flow {
 class VaporField : public Field {
   public:
-    VaporField();
-    VaporField(int recentGridLimit);
-    virtual ~VaporField();
+    VaporField(size_t cacheLimit);
 
     //
     // Functions from class Field
@@ -45,22 +43,25 @@ class VaporField : public Field {
     // This class keeps a pointer to a vapor grid, and all the metadata
     // associated with the grid.
     //
-    struct RichGrid {
-        const VAPoR::Grid *realGrid;
-        const size_t TS;
-        const std::string varName;
-        const int refinementLevel, compressionLevel;
+#if 0
+    struct RichGrid
+    {
+        const VAPoR::Grid*        realGrid;
+        const size_t              TS;
+        const std::string         varName;
+        const int                 refinementLevel, compressionLevel; 
         const std::vector<double> extMin, extMax;
-        VAPoR::DataMgr *mgr; // for unlocking realGrid
+        VAPoR::DataMgr*           mgr;  // for unlocking realGrid
 
-        // RichGrid();
-        RichGrid(const VAPoR::Grid *g, size_t currentTS, const std::string &var, int refLevel,
-                 int compLevel, const std::vector<double> &min, const std::vector<double> &max,
-                 VAPoR::DataMgr *dm);
-        ~RichGrid();
-        bool equals(size_t currentTS, const std::string &var, int refLevel, int compLevel,
-                    const std::vector<double> &min, const std::vector<double> &max) const;
+        RichGrid( const VAPoR::Grid* g, size_t currentTS,
+                  const std::string& var, int refLevel, int compLevel,
+                  const std::vector<double>& min, const std::vector<double>& max,
+                  VAPoR::DataMgr* dm );
+       ~RichGrid();
+        bool equals( size_t currentTS, const std::string& var, int refLevel, int compLevel,
+                     const std::vector<double>& min, const std::vector<double>& max ) const;
     };
+#endif
 
     //
     // This wrapper class wraps a grid and a data manager pointer to ensure
@@ -92,12 +93,12 @@ class VaporField : public Field {
   protected:
     // Member variables
     std::vector<float> _timestamps; // in ascending order
-    VAPoR::DataMgr *_datamgr;
-    const VAPoR::FlowParams *_params;
+    VAPoR::DataMgr *_datamgr = nullptr;
+    const VAPoR::FlowParams *_params = nullptr;
 
     // Keep copies of recent grids.
-    const int _recentGridLimit;
-    std::list<RichGrid> _recentGrids;
+    // const int                   _recentGridLimit;
+    // std::list<RichGrid>         _recentGrids;
 
     // Member functions
     template <typename T>

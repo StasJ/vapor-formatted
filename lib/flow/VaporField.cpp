@@ -4,18 +4,7 @@
 using namespace flow;
 
 // Constructor
-VaporField::VaporField() : _recentGridLimit(12) {
-    _datamgr = nullptr;
-    _params = nullptr;
-}
-
-VaporField::VaporField(int limit) : _recentGridLimit(limit) {
-    _datamgr = nullptr;
-    _params = nullptr;
-}
-
-// Destructor
-VaporField::~VaporField() {}
+VaporField::VaporField(size_t cache_limit) {}
 
 bool VaporField::InsideVolumeVelocity(float time, const glm::vec3 &pos) {
     const std::vector<double> coords{pos.x, pos.y, pos.z};
@@ -341,35 +330,39 @@ size_t VaporField::_binarySearch(const std::vector<T> &vec, T val, size_t begin,
 int VaporField::GetNumberOfTimesteps() { return _timestamps.size(); }
 
 int VaporField::_getAGrid(size_t timestep, std::string &varName, const VAPoR::Grid **gridpp) {
+#if 0
     // First check if we have the requested grid in our cache
-    std::vector<double> extMin, extMax;
-    _params->GetBox()->GetExtents(extMin, extMax);
-    int refLevel = _params->GetRefinementLevel();
+    std::vector<double>           extMin, extMax;
+    _params->GetBox()->GetExtents( extMin, extMax );
+    int refLevel  = _params->GetRefinementLevel();
     int compLevel = _params->GetCompressionLevel();
 
-    for (auto it = _recentGrids.cbegin(); it != _recentGrids.cend(); ++it)
-        if (it->equals(timestep, varName, refLevel, compLevel, extMin, extMax)) { // We found it!
+    for( auto it = _recentGrids.cbegin(); it != _recentGrids.cend(); ++it )
+        if( it->equals( timestep, varName, refLevel, compLevel, extMin, extMax ) )
+        {   // We found it!
             *gridpp = it->realGrid;
             // Move this node to the front of the list
-            if (it != _recentGrids.cbegin())
-                _recentGrids.splice(_recentGrids.cbegin(), _recentGrids, it);
+            if( it != _recentGrids.cbegin() )
+                _recentGrids.splice( _recentGrids.cbegin(), _recentGrids, it );
             return 0;
         }
 
     // There's no such grid in our cache! Let's ask for it from the data manager,
     // and then keep it in our cache!
-    VAPoR::Grid *grid =
-        _datamgr->GetVariable(timestep, varName, refLevel, compLevel, extMin, extMax, true);
-    if (grid == nullptr) {
+    VAPoR::Grid* grid = _datamgr->GetVariable( timestep, varName, refLevel, compLevel,
+                                               extMin, extMax, true );
+    if( grid == nullptr )
+    {
         Wasp::MyBase::SetErrMsg("Not able to get a grid!");
         return GRID_ERROR;
     }
     *gridpp = grid;
-    // Put it in our cache
-    _recentGrids.emplace_front(grid, timestep, varName, refLevel, compLevel, extMin, extMax,
-                               _datamgr);
-    if (_recentGrids.size() > _recentGridLimit)
+    // Put it in our cache     
+    _recentGrids.emplace_front( grid, timestep, varName, refLevel, compLevel,
+                                extMin, extMax, _datamgr );
+    if( _recentGrids.size() > _recentGridLimit )
         _recentGrids.pop_back();
+#endif
 
     return 0;
 }
@@ -387,27 +380,46 @@ std::string VaporField::_paramsToString(size_t currentTS, const std::string &var
     return oss.str();
 }
 
+#if 0
 // RichGrid Constructor
-VaporField::RichGrid::RichGrid(const VAPoR::Grid *g, size_t currentTS, const std::string &var,
-                               int refLevel, int compLevel, const std::vector<double> &min,
-                               const std::vector<double> &max, VAPoR::DataMgr *dm)
-    : realGrid(g), TS(currentTS), varName(var), refinementLevel(refLevel),
-      compressionLevel(compLevel), extMin(min), extMax(max), mgr(dm) {}
+VaporField::RichGrid::RichGrid( const VAPoR::Grid* g, 
+                                size_t currentTS,
+                                const std::string& var, 
+                                int refLevel, 
+                                int compLevel,
+                                const std::vector<double>& min, 
+                                const std::vector<double>& max,
+                                VAPoR::DataMgr* dm      )
+                     :          realGrid( g ),
+                                TS( currentTS ),
+                                varName( var ),
+                                refinementLevel( refLevel ),
+                                compressionLevel( compLevel ),
+                                extMin( min ),
+                                extMax( max ),
+                                mgr( dm )
+{}
 
 // RichGrid Destructor
-VaporField::RichGrid::~RichGrid() {
-    if (mgr && realGrid) {
-        mgr->UnlockGrid(realGrid);
+VaporField::RichGrid::~RichGrid()
+{
+    if( mgr && realGrid )
+    {
+        mgr->UnlockGrid( realGrid );
         delete realGrid;
     }
 }
 
-bool VaporField::RichGrid::equals(size_t currentTS, const std::string &var, int refLevel,
-                                  int compLevel, const std::vector<double> &min,
-                                  const std::vector<double> &max) const {
-    if (currentTS == TS && var == varName && refLevel == refinementLevel &&
-        compLevel == compressionLevel && min == extMin && max == extMax)
+bool 
+VaporField::RichGrid::equals( size_t currentTS, const std::string& var, 
+                              int refLevel, int compLevel, 
+                              const std::vector<double>& min, 
+                              const std::vector<double>& max ) const
+{
+    if( currentTS == TS && var == varName && refLevel == refinementLevel &&
+        compLevel == compressionLevel && min == extMin && max == extMax )
         return true;
     else
         return false;
 }
+#endif
