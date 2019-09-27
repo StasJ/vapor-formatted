@@ -13,6 +13,7 @@ TFEditorIsoSurface::TFEditorIsoSurface() : VSection("Transfer Function") {
     _histogramMap = new TFHistogramMap;
     _isoMap = new TFIsoValueMap;
     _isoMap->SetEquidistantIsoValues(false);
+    _isoMap->BottomPadding = true;
 
     _maps->Add(_histogramMap);
     _maps->Add(_isoMap);
