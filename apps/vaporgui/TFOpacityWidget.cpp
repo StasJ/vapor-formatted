@@ -87,6 +87,8 @@ void TFOpacityMap::paramsUpdate() {
 
 TFInfoWidget *TFOpacityMap::createInfoWidget() {
     TFOpacityInfoWidget *info = new TFOpacityInfoWidget;
+    info->UsingColormapVariable = this->UsingColormapVariable;
+
     connect(info, SIGNAL(ControlPointChanged(float, float)), this,
             SLOT(UpdateFromInfo(float, float)));
     connect(this, SIGNAL(UpdateInfo(float, float)), info, SLOT(SetControlPoint(float, float)));

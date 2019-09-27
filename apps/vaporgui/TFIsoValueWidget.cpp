@@ -52,6 +52,7 @@ void TFIsoValueMap::Deactivate() { DeselectControlPoint(); }
 
 TFInfoWidget *TFIsoValueMap::createInfoWidget() {
     TFIsoValueInfoWidget *info = new TFIsoValueInfoWidget;
+    info->UsingColormapVariable = this->UsingColormapVariable;
 
     connect(this, SIGNAL(ControlPointDeselected()), info, SLOT(Deselect()));
     connect(this, SIGNAL(UpdateInfo(float)), info, SLOT(SetControlPoint(float)));
