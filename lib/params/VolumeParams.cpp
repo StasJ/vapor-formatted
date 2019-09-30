@@ -1,4 +1,5 @@
 
+#include <cassert>
 #include <string>
 #include <vapor/STLUtils.h>
 #include <vapor/VolumeParams.h>
