@@ -9,6 +9,7 @@ namespace VAPoR {
 class DataMgr;
 class ParamsMgr;
 class RenderParams;
+class MapperFunction;
 } // namespace VAPoR
 
 class TFInfoWidget;
@@ -67,6 +68,7 @@ class TFMap : public QObject {
     VAPoR::DataMgr *getDataMgr() const { return _dataMgr; }
     VAPoR::ParamsMgr *getParamsMgr() const { return _paramsMgr; }
     VAPoR::RenderParams *getRenderParams() const { return _renderParams; }
+    VAPoR::MapperFunction *getMapperFunction() const;
     std::string getVariableName() const;
 
     void drawControl(QPainter &p, const QPointF &pos, bool selected = false) const;
