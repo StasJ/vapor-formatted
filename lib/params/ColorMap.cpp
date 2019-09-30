@@ -470,17 +470,14 @@ void ColorMap::SetInterpType(TFInterpolator::type t) {
     SetValueLong(_interpTypeTag, "Set Color Interpolation", (long)t);
 }
 
-void ColorMap::SetUseWhitespace(int state) {
+void ColorMap::SetUseWhitespace(bool enabled) {
     SetValueLong(_useWhitespaceTag,
                  "Set the use of whitespace for "
                  "diverging colormaps",
-                 state);
+                 enabled);
 }
 
-int ColorMap::GetUseWhitespace() const {
-    int x = GetValueLong(_useWhitespaceTag, true);
-    return x;
-}
+bool ColorMap::GetUseWhitespace() const { return GetValueLong(_useWhitespaceTag, true); }
 
 void ColorMap::SetDataBounds(const vector<double> &bounds) {
     VAssert(bounds.size() == 2);

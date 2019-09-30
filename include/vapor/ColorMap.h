@@ -58,8 +58,8 @@ class PARAMS_API ColorMap : public ParamsBase {
         return (TFInterpolator::type)GetValueLong(_interpTypeTag, defaultv);
     }
     void SetInterpType(TFInterpolator::type t);
-    void SetUseWhitespace(int state);
-    int GetUseWhitespace() const;
+    void SetUseWhitespace(bool enabled);
+    bool GetUseWhitespace() const;
 
     int numControlPoints() const { return (int)(GetControlPoints().size() / 4); }
 
