@@ -89,12 +89,25 @@ void VolumeParams::SetSamplingMultiplier(float d) {
     SetValueDouble(_samplingRateMultiplierTag, "Sampling Rate Multiplier", d);
 }
 
-void VolumeParams::SetIsoValues(std::vector<double> mask) {
-    assert(mask.size() <= 4);
-    SetValueDoubleVec(_isoValuesTag, "Iso surface values", mask);
+vector<double> VolumeParams::GetIsoValues(const string &variable) {
+    const string tag = "IsoValues_" + variable;
+
+    if (!GetNode()->HasElementDouble(tag)) {
+        const MapperFunction *mf = GetMapperFunc(variable);
+        const float min = mf->getMinMapValue();
+        const float max = mf->getMaxMapValue();
+        const float middle = (min + max) / 2.f;
+        SetIsoValues(variable, {middle});
+    }
+
+    return GetValueDoubleVec(tag);
 }
 
-std::vector<double> VolumeParams::GetIsoValues() const { return GetValueDoubleVec(_isoValuesTag); }
+void VolumeParams::SetIsoValues(const string &variable, const vector<double> &values) {
+    assert(values.size() <= 4);
+    const string tag = "IsoValues_" + variable;
+    SetValueDoubleVec(tag, tag, values);
+}
 
 void VolumeParams::SetLightingEnabled(bool v) {
     SetValueLong(_lightingEnabledTag, "Lighting enabled", v);

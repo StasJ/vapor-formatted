@@ -48,9 +48,7 @@ bool VolumeIsoRenderer::_usingColorMapData() const {
 void VolumeIsoRenderer::_setShaderUniforms(const ShaderProgram *shader, const bool fast) const {
     VolumeRenderer::_setShaderUniforms(shader, fast);
 
-    VolumeIsoParams *vp = (VolumeIsoParams *)GetActiveParams();
-
-    vector<double> isoValuesD = vp->GetIsoValues();
+    vector<double> isoValuesD = GetActiveParams()->GetIsoValues();
     vector<float> isoValues(isoValuesD.begin(), isoValuesD.end());
     vector<bool> enabledIsoValues(4, false);
     for (int i = 0; i < isoValues.size(); i++)

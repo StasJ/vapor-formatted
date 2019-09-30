@@ -36,12 +36,10 @@ class PARAMS_API VolumeParams : public RenderParams {
     float GetSamplingMultiplier() const;
     void SetSamplingMultiplier(float d);
 
-    void SetIsoValues(std::vector<double> values);
-    std::vector<double> GetIsoValues() const;
-    vector<double> GetIsoValues(const string &variable) { return GetIsoValues(); }
-    void SetIsoValues(const string &variable, const vector<double> &values) {
-        SetIsoValues(values);
-    }
+    using RenderParams::GetIsoValues;
+    using RenderParams::SetIsoValues;
+    vector<double> GetIsoValues(const string &variable);
+    void SetIsoValues(const string &variable, const vector<double> &values);
 
     void SetLightingEnabled(bool v);
     bool GetLightingEnabled() const;
