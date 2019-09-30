@@ -51,6 +51,9 @@ TFEditorIsoSurface::TFEditorIsoSurface() : VSection("Transfer Function") {
     menu->addSeparator();
     _opacityMap2->PopulateSettingsMenu(menu);
     menu->addSeparator();
+
+    _colormappedMenuSettings = menu->actions();
+
     _histogramMap->PopulateSettingsMenu(menu);
     setMenu(menu);
 
@@ -76,11 +79,17 @@ void TFEditorIsoSurface::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *param
         _maps2->Update(dataMgr, paramsMgr, rParams);
         _mapsInfo2->Update(rParams);
         range2->Update(dataMgr, paramsMgr, rParams);
+
+        for (auto action : _colormappedMenuSettings)
+            action->setEnabled(true);
     } else {
         _maps2->hide();
         _mapsInfo2->hide();
         range2->hide();
         _constantColorSelector->show();
         _constantColorSelector->Update(rParams);
+
+        for (auto action : _colormappedMenuSettings)
+            action->setEnabled(false);
     }
 }
