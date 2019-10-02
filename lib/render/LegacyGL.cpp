@@ -102,7 +102,11 @@ void LegacyGL::Vertex(glm::vec3 v) { Vertex3f(v.x, v.y, v.z); }
 
 void LegacyGL::Vertex2f(float x, float y) { Vertex3f(x, y, 0); }
 
+extern bool PRINT_VERTS;
+
 void LegacyGL::Vertex3f(float x, float y, float z) {
+    //    if (PRINT_VERTS)
+    //    printf("V(%f, %f, %f)\n", x, y, z);
     VAssert(_insideBeginEndBlock);
     _vertices.push_back({x, y, z, _nx, _ny, _nz, _r, _g, _b, _a, _s, _t});
 

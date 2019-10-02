@@ -31,6 +31,11 @@
 #include <vapor/ModelParams.h>
 #include <vapor/Renderer.h>
 
+#include <glm/glm.hpp>
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+
 namespace VAPoR {
 
 class DataMgr;
@@ -55,6 +60,15 @@ class RENDER_API ModelRenderer : public Renderer {
     //! \copydoc Renderer::_paintGL()
     virtual int _paintGL(bool fast);
     virtual void _clearCache() {}
+
+  private:
+    Assimp::Importer importer;
+    const aiScene *scene;
+
+    glm::vec3 min, max;
+    long n;
+
+    void renderNode(const aiNode *node);
 };
 
 }; // namespace VAPoR
