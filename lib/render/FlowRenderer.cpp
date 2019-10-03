@@ -192,9 +192,6 @@ int FlowRenderer::_paintGL(bool fast) {
     _velocityField.UpdateParams(params);
     _colorField.UpdateParams(params);
 
-    _printFlowStatus("velocity status: ", _velocityStatus);
-    _printFlowStatus("color status:    ", _colorStatus);
-
     if (_velocityStatus == FlowStatus::SIMPLE_OUTOFDATE) {
         /* Read seeds from a file is a special case, so we put it up front */
         if (_cache_seedGenMode == 3) {
