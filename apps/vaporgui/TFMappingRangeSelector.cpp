@@ -1,4 +1,5 @@
 #include "TFMappingRangeSelector.h"
+#include <vapor/DataMgrUtils.h>
 #include <vapor/ParamsMgr.h>
 #include <vapor/RenderParams.h>
 
@@ -31,7 +32,8 @@ void TFMappingRangeSelector::_getDataRange(VAPoR::DataMgr *d, VAPoR::RenderParam
     std::vector<double> range;
     d->GetDataRange(r->GetCurrentTimestep(), _getVariableName(), r->GetRefinementLevel(),
                     r->GetCompressionLevel(),
-                    d->GetDefaultMetaInfoStride(_getVariableName(), r->GetRefinementLevel()),
+                    VAPoR::DataMgrUtils::GetDefaultMetaInfoStride(d, _getVariableName(),
+                                                                  r->GetRefinementLevel()),
                     range);
     *min = range[0];
     *max = range[1];

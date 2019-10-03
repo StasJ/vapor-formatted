@@ -17,14 +17,14 @@ static vec2 qvec2(const QPoint &qp) { return vec2(qp.x(), qp.y()); }
 static vec2 qvec2(const QPointF &qp) { return vec2(qp.x(), qp.y()); }
 static QPointF qvec2(const vec2 &v) { return QPointF(v.x, v.y); }
 
-vec2 Project(vec2 a, vec2 b, vec2 p) {
+static vec2 Project(vec2 a, vec2 b, vec2 p) {
     vec2 n = glm::normalize(b - a);
     float t = glm::dot(n, p - a);
 
     return n * t + a;
 }
 
-float DistanceToLine(vec2 a, vec2 b, vec2 p) {
+static float DistanceToLine(vec2 a, vec2 b, vec2 p) {
     vec2 n = glm::normalize(b - a);
     float t = glm::dot(n, p - a);
 
