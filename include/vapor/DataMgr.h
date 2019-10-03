@@ -438,8 +438,6 @@ class VDF_API DataMgr : public Wasp::MyBase {
     int GetDataRange(size_t ts, string varname, int level, int lod, size_t stride,
                      std::vector<double> &range);
 
-    int GetDefaultMetaInfoStride(std::string varname, int refinementLevel);
-
     //! \copydoc DC::GetDimLensAtLevel()
     //!
     virtual int GetDimLensAtLevel(string varname, int level,

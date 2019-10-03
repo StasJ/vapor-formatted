@@ -15,6 +15,10 @@ class ParamsMgr;
 class RenderParams;
 } // namespace VAPoR
 
+//! \class TFMapGroupWidget
+//! Manages a vertical stack of TFMap without any spacing between them
+//! to create the illusion of a continuous widget
+
 class TFMapGroupWidget : public QWidget {
     Q_OBJECT
 
@@ -33,6 +37,9 @@ class TFMapGroupWidget : public QWidget {
   private slots:
     void mapActivated(TFMapWidget *map);
 };
+
+//! \class TFMapInfoGroupWidget
+//! Holds a group of TFMapInfo and only displays the relevant one.
 
 class TFMapInfoGroupWidget : public QStackedWidget {
     Q_OBJECT

@@ -11,10 +11,16 @@
 #include <vapor/ParamsBase.h>
 #include <vector>
 
+//! \class ParamsWidget
+//! Provedes a GUI element that is synced with the Params database
+//! The parameter tag that it is linked to is passed in the constructor and the
+//! relevant params node is set in the update method.
+
 class ParamsWidget : public QWidget {
     Q_OBJECT
 
   public:
+    //! \param[in] label will be set to tag by default
     ParamsWidget(const std::string &tag, const std::string &label = "");
     virtual void Update(VAPoR::ParamsBase *p) = 0;
 
@@ -67,22 +73,6 @@ class ParamsWidgetFloat : public ParamsWidget {
     void valueChangedSlot();
 };
 
-class QRangeSliderTextCombo;
-class ParamsWidgetRange : public ParamsWidget {
-    Q_OBJECT
-
-    QRangeSliderTextCombo *_range = nullptr;
-
-  public:
-    ParamsWidgetRange(const std::string &tag, const std::string &label = "");
-    void Update(VAPoR::ParamsBase *p);
-
-    ParamsWidgetRange *SetRange(float min, float max);
-
-  private slots:
-    void valueChangedSlot();
-};
-
 class ParamsWidgetDropdown : public ParamsWidget {
     Q_OBJECT
 
@@ -106,7 +96,6 @@ class QColorWidget;
 class ParamsWidgetColor : public ParamsWidget {
     Q_OBJECT
 
-    //    QPushButton *_button = nullptr;
     QColorWidget *_color = nullptr;
 
   public:
@@ -117,7 +106,6 @@ class ParamsWidgetColor : public ParamsWidget {
     static std::vector<double> QColorToVector(const QColor &c);
 
   private slots:
-    //    void pressed();
     void colorChanged(QColor color);
 };
 

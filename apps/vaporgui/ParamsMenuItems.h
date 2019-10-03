@@ -12,6 +12,9 @@ class ParamsBase;
 //        ParamsMenuItem
 // ******************************
 
+//! \class ParamsMenuItem
+//! Provides the same functionality as ParamsWidget except inside of a QMenu
+
 class ParamsMenuItem : public QAction {
     Q_OBJECT
 
@@ -57,8 +60,8 @@ class ParamsDropdownMenuItem : public ParamsMenuItem {
     void Update(VAPoR::ParamsBase *p);
 
   private:
-    int getValueForIndex(int index) const;
-    int getIndexForValue(int value) const;
+    int _getValueForIndex(int index) const;
+    int _getIndexForValue(int value) const;
 
   private slots:
     void itemSelected();

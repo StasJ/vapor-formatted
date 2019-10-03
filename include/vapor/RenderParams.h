@@ -338,6 +338,7 @@ class PARAMS_API RenderParams : public ParamsBase {
     //! \param[in] Indicates whether we're using color mapped variables
     void SetDefaultVariables(int dim, bool secondaryColormapVariable);
 
+    //! This should be overriden by params for renderes that support iso values to return true.
     virtual bool HasIsoValues() const { return false; }
     virtual vector<double> GetIsoValues(const string &variable) {
         VAssert(0);
