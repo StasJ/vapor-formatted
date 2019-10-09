@@ -10,22 +10,22 @@
 #include <list>
 
 namespace flow {
-class VaporField : public Field {
+class VaporField final : public Field {
   public:
     VaporField(size_t cacheLimit);
 
     //
     // Functions from class Field
     //
-    virtual bool InsideVolumeVelocity(float time, const glm::vec3 &pos);
-    virtual bool InsideVolumeScalar(float time, const glm::vec3 &pos);
+    virtual bool InsideVolumeVelocity(float time, const glm::vec3 &pos) override;
+    virtual bool InsideVolumeScalar(float time, const glm::vec3 &pos) override;
     virtual int GetVelocity(float time, const glm::vec3 &pos, // input
                             glm::vec3 &vel,                   // output
-                            bool checkInsideVolume = true);
+                            bool checkInsideVolume = true) override;
     virtual int GetScalar(float time, const glm::vec3 &pos, // input
                           float &val,                       // output
-                          bool checkInsideVolume = true);
-    virtual int GetNumberOfTimesteps();
+                          bool checkInsideVolume = true) override;
+    virtual int GetNumberOfTimesteps() override;
 
     //
     // Functions for interaction with VAPOR components
@@ -51,9 +51,11 @@ class VaporField : public Field {
 
       public:
         GridWrapper(const VAPoR::Grid *gp, VAPoR::DataMgr *mp) : gridPtr(gp), mgr(mp) {}
-        // Rule of 3
+        // Rule of five
         GridWrapper(const GridWrapper &) = delete;
         GridWrapper &operator=(const GridWrapper &) = delete;
+        GridWrapper(const GridWrapper &&) = delete;
+        GridWrapper &operator=(const GridWrapper &&) = delete;
         ~GridWrapper() {
             if (mgr && gridPtr) {
                 mgr->UnlockGrid(gridPtr);
@@ -67,13 +69,11 @@ class VaporField : public Field {
     //
     void GetFirstStepVelocityIntersection(glm::vec3 &minxyz, glm::vec3 &maxxyz);
 
-  protected:
+  private:
     // Member variables
     std::vector<float> _timestamps; // in ascending order
     VAPoR::DataMgr *_datamgr = nullptr;
     const VAPoR::FlowParams *_params = nullptr;
-
-    // Keep copies of recent grids.
     using cacheType = VAPoR::unique_ptr_cache<std::string, VAPoR::Grid>;
     cacheType _recentGrids;
 
@@ -82,7 +82,7 @@ class VaporField : public Field {
                                 int compLevel, const std::vector<double> &min,
                                 const std::vector<double> &max) const;
 
-    // Are the following member variables pointers set?
+    // Are the following member pointers set?
     //  1) _datamgr and 2) _params
     bool _isReady() const;
 
