@@ -3,11 +3,6 @@
 
 using namespace flow;
 
-Particle::Particle() {
-    time = 0.0f;
-    value = 0.0f;
-}
-
 Particle::Particle(const glm::vec3 &loc, float t, float val) {
     location = loc;
     time = t;
@@ -29,8 +24,6 @@ Particle::Particle(float x, float y, float z, float t, float val) {
     time = t;
     value = val;
 }
-
-Particle::~Particle() {}
 
 void Particle::AttachProperty(float v) {
     auto itr = _properties.cbefore_begin();
@@ -71,11 +64,16 @@ int Particle::GetNumOfProperties() const {
 }
 
 void Particle::SetSpecial(bool isSpecial) {
-    // give time value a nan to indicate the "special state."
-    if (isSpecial)
+    // Give both "time" and "value" a nan to indicate the "special state."
+    // So accidental assignment of nan to one of the two variables would not
+    // render "special state."
+    if (isSpecial) {
         time = std::nanf("1");
-    else
+        value = std::nanf("1");
+    } else {
         time = 0.0f;
+        value = 0.0f;
+    }
 }
 
-bool Particle::IsSpecial() const { return (std::isnan(time)); }
+bool Particle::IsSpecial() const { return (std::isnan(time) && std::isnan(value)); }
