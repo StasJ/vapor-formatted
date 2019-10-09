@@ -9,7 +9,7 @@ VaporField::VaporField(size_t cache_limit) : _recentGrids(cache_limit) {}
 bool VaporField::InsideVolumeVelocity(float time, const glm::vec3 &pos) {
     const std::vector<double> coords{pos.x, pos.y, pos.z};
     const VAPoR::Grid *grid = nullptr;
-    assert(_isReady());
+    VAssert(_isReady());
 
     // In case of steady field, we only check a specific time step
     if (IsSteady) {
@@ -59,11 +59,12 @@ bool VaporField::InsideVolumeVelocity(float time, const glm::vec3 &pos) {
 
 bool VaporField::InsideVolumeScalar(float time, const glm::vec3 &pos) {
     if (ScalarName.empty())
-        return NO_FIELD_YET;
-    std::string scalarname = ScalarName; // const requirement...
+        return false
+
+               std::string scalarname = ScalarName; // const requirement...
     const std::vector<double> coords{pos.x, pos.y, pos.z};
     const VAPoR::Grid *grid = nullptr;
-    assert(_isReady());
+    VAssert(_isReady());
 
     // In case of steady field, we only check a specific time step
     if (IsSteady) {
@@ -160,7 +161,7 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
         // Then we locate the floor time step
         size_t floorTS;
         int rv = LocateTimestamp(time, floorTS);
-        assert(rv == 0);
+        VAssert(rv == 0);
 
         // Find the velocity values at floor time step
         glm::vec3 floorVelocity, ceilVelocity;
@@ -232,7 +233,7 @@ int VaporField::GetScalar(float time, const glm::vec3 &pos, float &scalar, bool 
         // Then we locate the floor time step
         size_t floorTS;
         int rv = LocateTimestamp(time, floorTS);
-        assert(rv == 0);
+        VAssert(rv == 0);
         grid = _getAGrid(floorTS, scalarname);
         VAssert(grid);
         float floorScalar = grid->GetValue(coords);
