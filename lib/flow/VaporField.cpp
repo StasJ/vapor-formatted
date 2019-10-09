@@ -14,7 +14,7 @@ bool VaporField::InsideVolumeVelocity(float time, const glm::vec3 &pos) {
     // In case of steady field, we only check a specific time step
     if (IsSteady) {
         size_t currentTS = _params->GetCurrentTimestep();
-        for (auto v : VelocityNames) // cannot use reference here...
+        for (auto &v : VelocityNames)
             if (!v.empty()) {
                 grid = _getAGrid(currentTS, v);
                 VAssert(grid);
@@ -34,7 +34,7 @@ bool VaporField::InsideVolumeVelocity(float time, const glm::vec3 &pos) {
             return false;
 
         // Second test if pos is inside of time step "floor"
-        for (auto v : VelocityNames) // cannot use references...
+        for (auto &v : VelocityNames)
             if (!v.empty()) {
                 grid = _getAGrid(floor, v);
                 VAssert(grid);
@@ -44,7 +44,7 @@ bool VaporField::InsideVolumeVelocity(float time, const glm::vec3 &pos) {
 
         // If time is larger than _timestamps[floor], we also need to test _timestamps[floor+1]
         if (time > _timestamps[floor]) {
-            for (auto v : VelocityNames) // cannot use references
+            for (auto &v : VelocityNames)
                 if (!v.empty()) {
                     grid = _getAGrid(floor + 1, v);
                     VAssert(grid);
@@ -59,9 +59,9 @@ bool VaporField::InsideVolumeVelocity(float time, const glm::vec3 &pos) {
 
 bool VaporField::InsideVolumeScalar(float time, const glm::vec3 &pos) {
     if (ScalarName.empty())
-        return false
+        return false;
 
-               std::string scalarname = ScalarName; // const requirement...
+    std::string scalarname = ScalarName; // const requirement...
     const std::vector<double> coords{pos.x, pos.y, pos.z};
     const VAPoR::Grid *grid = nullptr;
     VAssert(_isReady());
@@ -108,7 +108,7 @@ void VaporField::GetFirstStepVelocityIntersection(glm::vec3 &minxyz, glm::vec3 &
     std::vector<double> min[3], max[3];
 
     for (int i = 0; i < 3; i++) {
-        auto varname = VelocityNames[i];
+        auto &varname = VelocityNames[i];
         grid = _getAGrid(0, varname);
         VAssert(grid);
         grid->GetUserExtents(min[i], max[i]);
@@ -142,7 +142,7 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
     if (IsSteady) {
         size_t currentTS = _params->GetCurrentTimestep();
         for (int i = 0; i < 3; i++) {
-            auto varname = VelocityNames[i];
+            auto &varname = VelocityNames[i];
             grid = _getAGrid(currentTS, varname);
             VAssert(grid);
             velocity[i] = grid->GetValue(coords);
@@ -166,7 +166,7 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
         // Find the velocity values at floor time step
         glm::vec3 floorVelocity, ceilVelocity;
         for (int i = 0; i < 3; i++) {
-            auto varname = VelocityNames[i];
+            auto &varname = VelocityNames[i];
             grid = _getAGrid(floorTS, varname);
             VAssert(grid);
             floorVelocity[i] = grid->GetValue(coords);
@@ -182,8 +182,10 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
         if (time == _timestamps[floorTS])
             velocity = floorVelocity * mult;
         else {
+            // We need to make sure there aren't duplicate time stamps
+            VAssert(_timestamps[floorTS + 1] > _timestamps[floorTS]);
             for (int i = 0; i < 3; i++) {
-                auto varname = VelocityNames[i];
+                auto &varname = VelocityNames[i];
                 grid = _getAGrid(floorTS + 1, varname);
                 VAssert(grid);
                 ceilVelocity[i] = grid->GetValue(coords);
@@ -313,7 +315,7 @@ int VaporField::LocateTimestamp(float time, size_t &floor) const {
 
 int VaporField::GetNumberOfTimesteps() const { return _timestamps.size(); }
 
-const VAPoR::Grid *VaporField::_getAGrid(size_t timestep, std::string &varName) {
+const VAPoR::Grid *VaporField::_getAGrid(size_t timestep, const std::string &varName) {
     // First check if we have the requested grid in our cache.
     // If it exists, return the grid directly.
     std::vector<double> extMin, extMax;

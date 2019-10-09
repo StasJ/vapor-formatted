@@ -89,8 +89,8 @@ class VaporField final : public Field {
     // _getAGrid will use _params to retrieve/generate grids.
     // In the case of failing to generate a requested grid, nullptr will be returned.
     // This failure will also be recorded to MyBase.
-    const VAPoR::Grid *_getAGrid(size_t timestep,       // Input
-                                 std::string &varName); // Input
+    const VAPoR::Grid *_getAGrid(size_t timestep,             // Input
+                                 const std::string &varName); // Input
 };
 }; // namespace flow
 
