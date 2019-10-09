@@ -25,7 +25,7 @@ class Field {
     //
     // Retrieve the number of time steps in this field
     //
-    virtual int GetNumberOfTimesteps() = 0;
+    virtual int GetNumberOfTimesteps() const = 0;
 
     //
     // Get the field value at a certain position, at a certain time.
