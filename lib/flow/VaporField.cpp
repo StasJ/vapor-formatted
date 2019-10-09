@@ -16,8 +16,8 @@ bool VaporField::InsideVolumeVelocity(float time, const glm::vec3 &pos) {
         size_t currentTS = _params->GetCurrentTimestep();
         for (auto v : VelocityNames) // cannot use reference here...
             if (!v.empty()) {
-                int rv = _getAGrid(currentTS, v, &grid);
-                assert(rv == 0);
+                grid = _getAGrid(currentTS, v);
+                VAssert(grid);
                 if (!grid->InsideGrid(coords))
                     return false;
             }
@@ -36,8 +36,8 @@ bool VaporField::InsideVolumeVelocity(float time, const glm::vec3 &pos) {
         // Second test if pos is inside of time step "floor"
         for (auto v : VelocityNames) // cannot use references...
             if (!v.empty()) {
-                rv = _getAGrid(floor, v, &grid);
-                assert(rv == 0);
+                grid = _getAGrid(floor, v);
+                VAssert(grid);
                 if (!grid->InsideGrid(coords))
                     return false;
             }
@@ -46,8 +46,8 @@ bool VaporField::InsideVolumeVelocity(float time, const glm::vec3 &pos) {
         if (time > _timestamps[floor]) {
             for (auto v : VelocityNames) // cannot use references
                 if (!v.empty()) {
-                    rv = _getAGrid(floor + 1, v, &grid);
-                    assert(rv == 0);
+                    grid = _getAGrid(floor + 1, v);
+                    VAssert(grid);
                     if (!grid->InsideGrid(coords))
                         return false;
                 }
@@ -68,8 +68,8 @@ bool VaporField::InsideVolumeScalar(float time, const glm::vec3 &pos) {
     // In case of steady field, we only check a specific time step
     if (IsSteady) {
         size_t currentTS = _params->GetCurrentTimestep();
-        int rv = _getAGrid(currentTS, scalarname, &grid);
-        assert(rv == 0);
+        grid = _getAGrid(currentTS, scalarname);
+        VAssert(grid);
         if (!grid->InsideGrid(coords))
             return false;
     } else // we check two time steps
@@ -85,15 +85,15 @@ bool VaporField::InsideVolumeScalar(float time, const glm::vec3 &pos) {
             return false;
 
         // Second test if pos is inside of time step "floor"
-        rv = _getAGrid(floor, scalarname, &grid);
-        assert(rv == 0);
+        grid = _getAGrid(floor, scalarname);
+        VAssert(grid);
         if (!grid->InsideGrid(coords))
             return false;
 
         // If time is larger than _timestamps[floor], we also need to test _timestamps[floor+1]
         if (time > _timestamps[floor]) {
-            rv = _getAGrid(floor + 1, scalarname, &grid);
-            assert(rv == 0);
+            grid = _getAGrid(floor + 1, scalarname);
+            VAssert(grid);
             if (!grid->InsideGrid(coords))
                 return false;
         }
@@ -108,8 +108,8 @@ void VaporField::GetFirstStepVelocityIntersection(glm::vec3 &minxyz, glm::vec3 &
 
     for (int i = 0; i < 3; i++) {
         auto varname = VelocityNames[i];
-        int rv = _getAGrid(0, varname, &grid);
-        assert(rv == 0);
+        grid = _getAGrid(0, varname);
+        VAssert(grid);
         grid->GetUserExtents(min[i], max[i]);
     }
 
@@ -142,8 +142,8 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
         size_t currentTS = _params->GetCurrentTimestep();
         for (int i = 0; i < 3; i++) {
             auto varname = VelocityNames[i];
-            int rv = _getAGrid(currentTS, varname, &grid);
-            assert(rv == 0);
+            grid = _getAGrid(currentTS, varname);
+            VAssert(grid);
             velocity[i] = grid->GetValue(coords);
             missingV[i] = grid->GetMissingValue();
         }
@@ -166,8 +166,8 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
         glm::vec3 floorVelocity, ceilVelocity;
         for (int i = 0; i < 3; i++) {
             auto varname = VelocityNames[i];
-            int rv = _getAGrid(floorTS, varname, &grid);
-            assert(rv == 0);
+            grid = _getAGrid(floorTS, varname);
+            VAssert(grid);
             floorVelocity[i] = grid->GetValue(coords);
             missingV[i] = grid->GetMissingValue();
         }
@@ -183,8 +183,8 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
         else {
             for (int i = 0; i < 3; i++) {
                 auto varname = VelocityNames[i];
-                int rv = _getAGrid(floorTS + 1, varname, &grid);
-                assert(rv == 0);
+                grid = _getAGrid(floorTS + 1, varname);
+                VAssert(grid);
                 ceilVelocity[i] = grid->GetValue(coords);
                 missingV[i] = grid->GetMissingValue();
             }
@@ -217,8 +217,8 @@ int VaporField::GetScalar(float time, const glm::vec3 &pos, float &scalar, bool 
 
     if (IsSteady) {
         size_t currentTS = _params->GetCurrentTimestep();
-        int rv = _getAGrid(currentTS, scalarname, &grid);
-        assert(rv == 0);
+        grid = _getAGrid(currentTS, scalarname);
+        VAssert(grid);
         float gridV = grid->GetValue(coords);
         if (gridV == grid->GetMissingValue())
             scalar = 0.0f;
@@ -233,8 +233,8 @@ int VaporField::GetScalar(float time, const glm::vec3 &pos, float &scalar, bool 
         size_t floorTS;
         int rv = LocateTimestamp(time, floorTS);
         assert(rv == 0);
-        rv = _getAGrid(floorTS, scalarname, &grid);
-        assert(rv == 0);
+        grid = _getAGrid(floorTS, scalarname);
+        VAssert(grid);
         float floorScalar = grid->GetValue(coords);
         if (floorScalar == grid->GetMissingValue()) {
             scalar = 0.0f;
@@ -244,8 +244,8 @@ int VaporField::GetScalar(float time, const glm::vec3 &pos, float &scalar, bool 
         if (time == _timestamps[floorTS])
             scalar = floorScalar;
         else {
-            rv = _getAGrid(floorTS + 1, scalarname, &grid);
-            assert(rv == 0);
+            grid = _getAGrid(floorTS + 1, scalarname);
+            VAssert(grid);
             float ceilScalar = grid->GetValue(coords);
             if (ceilScalar == grid->GetMissingValue()) {
                 scalar = 0.0f;
@@ -312,7 +312,7 @@ int VaporField::LocateTimestamp(float time, size_t &floor) const {
 
 int VaporField::GetNumberOfTimesteps() { return _timestamps.size(); }
 
-int VaporField::_getAGrid(size_t timestep, std::string &varName, const VAPoR::Grid **gridpp) {
+const VAPoR::Grid *VaporField::_getAGrid(size_t timestep, std::string &varName) {
     // First check if we have the requested grid in our cache.
     // If it exists, return the grid directly.
     std::vector<double> extMin, extMax;
@@ -321,8 +321,7 @@ int VaporField::_getAGrid(size_t timestep, std::string &varName, const VAPoR::Gr
     int compLevel = _params->GetCompressionLevel();
     std::string key = _paramsToString(timestep, varName, refLevel, compLevel, extMin, extMax);
     if (_recentGrids.contains(key)) {
-        *gridpp = _recentGrids.find(key);
-        return 0;
+        return _recentGrids.find(key);
     }
 
     // There's no such grid in our cache! Let's ask for it from the data manager,
@@ -331,14 +330,13 @@ int VaporField::_getAGrid(size_t timestep, std::string &varName, const VAPoR::Gr
         _datamgr->GetVariable(timestep, varName, refLevel, compLevel, extMin, extMax, true);
     if (grid == nullptr) {
         Wasp::MyBase::SetErrMsg("Not able to get a grid!");
-        return GRID_ERROR;
+        return nullptr;
     }
-    *gridpp = grid;
 
-    // Put it in our cache
+    // Now we have this grid, but also put it in our cache and take the ownership
     _recentGrids.insert(key, grid);
 
-    return 0;
+    return grid;
 }
 
 std::string VaporField::_paramsToString(size_t currentTS, const std::string &var, int refLevel,
