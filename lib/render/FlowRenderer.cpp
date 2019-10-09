@@ -1,5 +1,4 @@
 #include "vapor/FlowRenderer.h"
-#include "vapor/OceanField.h"
 #include "vapor/Particle.h"
 #include "vapor/SteadyVAPORScalar.h"
 #include "vapor/SteadyVAPORVelocity.h"
