@@ -321,7 +321,7 @@ const VAPoR::Grid *VaporField::_getAGrid(size_t timestep, std::string &varName) 
     int compLevel = _params->GetCompressionLevel();
     std::string key = _paramsToString(timestep, varName, refLevel, compLevel, extMin, extMax);
     if (_recentGrids.contains(key)) {
-        return _recentGrids.find(key);
+        return _recentGrids.find(key)->grid();
     }
 
     // There's no such grid in our cache! Let's ask for it from the data manager,
@@ -333,8 +333,10 @@ const VAPoR::Grid *VaporField::_getAGrid(size_t timestep, std::string &varName) 
         return nullptr;
     }
 
-    // Now we have this grid, but also put it in our cache and take the ownership
-    _recentGrids.insert(key, grid);
+    // Now we have this grid, but also put it in a GridWrapper so
+    // 1) it will be properly deleted, and 2) it is stored in our cache
+    // where its ownership is kept.
+    _recentGrids.insert(key, new GridWrapper(grid, _datamgr));
 
     return grid;
 }

@@ -46,9 +46,8 @@ class VaporField final : public Field {
     //
     class GridWrapper {
       private:
-        const VAPoR::Grid *gridPtr;
-        VAPoR::DataMgr *mgr;
-
+        const VAPoR::Grid *const gridPtr;
+        VAPoR::DataMgr *const mgr; // The pointer itself cannot be changed
       public:
         GridWrapper(const VAPoR::Grid *gp, VAPoR::DataMgr *mp) : gridPtr(gp), mgr(mp) {}
         // Rule of five
@@ -62,6 +61,8 @@ class VaporField final : public Field {
                 delete gridPtr;
             }
         }
+
+        const VAPoR::Grid *grid() const { return gridPtr; }
     };
 
     //
@@ -74,7 +75,7 @@ class VaporField final : public Field {
     std::vector<float> _timestamps; // in ascending order
     VAPoR::DataMgr *_datamgr = nullptr;
     const VAPoR::FlowParams *_params = nullptr;
-    using cacheType = VAPoR::unique_ptr_cache<std::string, VAPoR::Grid>;
+    using cacheType = VAPoR::unique_ptr_cache<std::string, GridWrapper>;
     cacheType _recentGrids;
 
     // Member functions
