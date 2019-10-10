@@ -44,7 +44,7 @@ class VaporField final : public Field {
     // This wrapper class wraps a grid and a data manager pointer to ensure
     // the grid is properly destroyed.
     //
-    class GridWrapper {
+    class GridWrapper final {
       private:
         const VAPoR::Grid *const gridPtr;
         VAPoR::DataMgr *const mgr; // The pointer itself cannot be changed
