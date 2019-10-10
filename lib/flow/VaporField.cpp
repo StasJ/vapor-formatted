@@ -6,7 +6,7 @@ using namespace flow;
 // Constructor
 VaporField::VaporField(size_t cache_limit) : _recentGrids(cache_limit) {}
 
-bool VaporField::InsideVolumeVelocity(float time, const glm::vec3 &pos) {
+bool VaporField::InsideVolumeVelocity(float time, const glm::vec3 &pos) const {
     const std::vector<double> coords{pos.x, pos.y, pos.z};
     const VAPoR::Grid *grid = nullptr;
     VAssert(_isReady());
@@ -57,7 +57,7 @@ bool VaporField::InsideVolumeVelocity(float time, const glm::vec3 &pos) {
     return true;
 }
 
-bool VaporField::InsideVolumeScalar(float time, const glm::vec3 &pos) {
+bool VaporField::InsideVolumeScalar(float time, const glm::vec3 &pos) const {
     if (ScalarName.empty())
         return false;
 
@@ -126,7 +126,7 @@ void VaporField::GetFirstStepVelocityIntersection(glm::vec3 &minxyz, glm::vec3 &
 }
 
 int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocity,
-                            bool checkInsideVolume) {
+                            bool checkInsideVolume) const {
     const std::vector<double> coords{pos.x, pos.y, pos.z};
     const VAPoR::Grid *grid = nullptr;
 
@@ -206,7 +206,8 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
     return 0;
 }
 
-int VaporField::GetScalar(float time, const glm::vec3 &pos, float &scalar, bool checkInsideVolume) {
+int VaporField::GetScalar(float time, const glm::vec3 &pos, float &scalar,
+                          bool checkInsideVolume) const {
     if (ScalarName.empty())
         return NO_FIELD_YET;
     if (checkInsideVolume)
@@ -284,11 +285,12 @@ void VaporField::AssignDataManager(VAPoR::DataMgr *dmgr) {
 
 void VaporField::UpdateParams(const VAPoR::FlowParams *p) {
     _params = p;
+
     // Update properties of this Field
     IsSteady = p->GetIsSteady();
     ScalarName = p->GetColorMapVariableName();
     auto velNames = p->GetFieldVariableNames();
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 3 && i < velNames.size(); i++)
         VelocityNames[i] = velNames.at(i);
 }
 
@@ -315,7 +317,7 @@ int VaporField::LocateTimestamp(float time, size_t &floor) const {
 
 int VaporField::GetNumberOfTimesteps() const { return _timestamps.size(); }
 
-const VAPoR::Grid *VaporField::_getAGrid(size_t timestep, const std::string &varName) {
+const VAPoR::Grid *VaporField::_getAGrid(size_t timestep, const std::string &varName) const {
     // First check if we have the requested grid in our cache.
     // If it exists, return the grid directly.
     std::vector<double> extMin, extMax;
