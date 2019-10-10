@@ -17,7 +17,7 @@ class TFHistogramMap : public TFMap {
     TFHistogramMap(TFMapWidget *parent = nullptr);
 
     QSize minimumSizeHint() const;
-    void Deactivate() {}
+    void LostFocus() {}
     void PopulateSettingsMenu(QMenu *menu) const;
 
   protected:

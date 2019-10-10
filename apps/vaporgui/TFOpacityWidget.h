@@ -122,7 +122,7 @@ class TFOpacityMap : public TFMap {
     TFOpacityMap(TFMapWidget *parent = nullptr);
 
     QSize minimumSizeHint() const override;
-    void Deactivate() override;
+    void LostFocus() override;
     void PopulateContextMenu(QMenu *menu, const glm::vec2 &p) override;
     void PopulateSettingsMenu(QMenu *menu) const override;
 

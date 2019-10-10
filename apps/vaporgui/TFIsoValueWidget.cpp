@@ -53,7 +53,7 @@ QSize TFIsoValueMap::minimumSizeHint() const {
     return s;
 }
 
-void TFIsoValueMap::Deactivate() { DeselectControlPoint(); }
+void TFIsoValueMap::LostFocus() { DeselectControlPoint(); }
 
 TFInfoWidget *TFIsoValueMap::createInfoWidget() {
     TFIsoValueInfoWidget *info = new TFIsoValueInfoWidget;

@@ -30,7 +30,7 @@ TFColorMap::TFColorMap(TFMapWidget *parent) : TFMap(parent) {
 
 QSize TFColorMap::minimumSizeHint() const { return QSize(100, 30); }
 
-void TFColorMap::Deactivate() { DeselectControlPoint(); }
+void TFColorMap::LostFocus() { DeselectControlPoint(); }
 
 #define PROPERTY_INDEX ("index")
 #define PROPERTY_VALUE ("value")
