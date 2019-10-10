@@ -60,26 +60,22 @@ int Advection::AdvectOneStep(Field *velocity, float deltaT, ADVECTION_METHOD met
             }
 
             if (!locChanged) // no dimension is periodic
-                continue;
+                continue;    // skip this particle, since it's out of the volume
 
             // If the new location comes inside volume, then we do these things:
             // 1) Update the location of p0 to represent the wrapped result.
             // 2) Insert a separator particle before p0.
-            // Note: the order of these two operations cannot be altered.
             if (velocity->InsideVolumeVelocity(p0.time, loc)) {
                 p0.location = loc;
 
                 Particle separator;
+                separator.SetSpecial(true);
                 auto citr = s.cend();
                 --citr; // insert before the last element, p0
-                s.insert(citr, separator);
-                auto itr2 = s.end();
-                --itr2; // now pointing to the last element
-                --itr2; // now pointing to the 2nd last element
-                itr2->SetSpecial(true);
+                s.insert(citr, std::move(separator));
                 _separatorCount[streamIdx]++;
             } else
-                continue;
+                continue; // skip this particle, since it's out of the volume
         }
 
         const auto &past0 = s.back();

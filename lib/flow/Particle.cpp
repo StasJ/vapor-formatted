@@ -65,8 +65,8 @@ int Particle::GetNumOfProperties() const {
 
 void Particle::SetSpecial(bool isSpecial) {
     // Give both "time" and "value" a nan to indicate the "special state."
-    // So accidental assignment of nan to one of the two variables would not
-    // render "special state."
+    // Accidental assignment of nan to one of the two variables would not
+    // render a "special state."
     if (isSpecial) {
         time = std::nanf("1");
         value = std::nanf("1");
