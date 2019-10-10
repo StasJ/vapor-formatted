@@ -52,7 +52,7 @@ class Advection final {
     const std::vector<Particle> &GetStreamAt(size_t i) const;
 
     // Retrieve the maximum number of particles in any stream
-    int GetMaxNumOfPart() const;
+    size_t GetMaxNumOfPart() const;
 
     //
     // Output a file that could be plotted by gnuplot
