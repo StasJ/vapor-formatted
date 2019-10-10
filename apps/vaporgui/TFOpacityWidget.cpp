@@ -44,7 +44,7 @@ TFOpacityMap::TFOpacityMap(TFMapWidget *parent) : TFMap(parent) {}
 
 QSize TFOpacityMap::minimumSizeHint() const { return QSize(100, 75); }
 
-void TFOpacityMap::Deactivate() { DeselectControlPoint(); }
+void TFOpacityMap::LostFocus() { DeselectControlPoint(); }
 
 #define PROPERTY_INDEX ("index")
 #define PROPERTY_LOCATION ("location")
