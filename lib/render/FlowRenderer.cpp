@@ -7,6 +7,7 @@
 
 #ifdef WIN32
 #include <Processthreadsapi.h>
+#include <Windows.h>
 #else
 #include <sys/types.h>
 #include <unistd.h>
