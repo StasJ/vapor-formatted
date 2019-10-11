@@ -64,11 +64,13 @@ class RENDER_API ModelRenderer : public Renderer {
   private:
     Assimp::Importer importer;
     const aiScene *scene;
+    std::string _cachedFile;
 
     glm::vec3 min, max;
     long n;
 
     void renderNode(const aiNode *node);
+    int loadFile(const std::string &path);
 };
 
 }; // namespace VAPoR
