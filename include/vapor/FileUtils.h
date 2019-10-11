@@ -13,6 +13,7 @@ enum class FileType { File, Directory, Other, Does_Not_Exist };
 extern COMMON_API const std::string Separator;
 
 COMMON_API std::string ReadFileToString(const std::string &path);
+COMMON_API std::string HomeDir();
 COMMON_API std::string Basename(const std::string &path);
 COMMON_API std::string Dirname(const std::string &path);
 COMMON_API std::string Extension(const std::string &path);
