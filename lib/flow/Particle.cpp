@@ -51,7 +51,7 @@ void Particle::ClearProperties() {
     _nProperties = 0;
 }
 
-int Particle::GetNumOfProperties() const { return int(_nProperties); }
+int Particle::GetNumOfProperties() const { return (_nProperties); }
 
 void Particle::SetSpecial(bool isSpecial) {
     // Give both "time" and "value" a nan to indicate the "special state."
