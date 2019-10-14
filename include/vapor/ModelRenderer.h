@@ -62,15 +62,27 @@ class RENDER_API ModelRenderer : public Renderer {
     virtual void _clearCache() {}
 
   private:
-    Assimp::Importer importer;
-    const aiScene *scene;
+    class Model {
+        Assimp::Importer _importer;
+        const aiScene *_scene;
+        std::string _path;
+
+        void renderNode(GLManager *gl, const aiNode *nd);
+
+      public:
+        glm::vec3 min, max;
+
+        void Render(GLManager *gl);
+        int Load(const std::string &path);
+    };
+
+    Model _model;
     std::string _cachedFile;
 
     glm::vec3 min, max;
     long n;
 
-    void renderNode(const aiNode *node);
-    int loadFile(const std::string &path);
+    void _renderNode(const aiNode *node);
 };
 
 }; // namespace VAPoR
