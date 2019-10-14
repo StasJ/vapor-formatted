@@ -14,18 +14,21 @@ bool VaporField::InsideVolumeVelocity(float time, const glm::vec3 &pos) const {
     // In case of steady field, we only check a specific time step
     if (IsSteady) {
         size_t currentTS = _params->GetCurrentTimestep();
-        for (auto &v : VelocityNames)
+        for (auto &v : VelocityNames) {
             if (!v.empty()) {
                 grid = _getAGrid(currentTS, v);
                 VAssert(grid);
-                if (!grid->InsideGrid(coords))
+                if (!grid->InsideGrid(coords)) {
                     return false;
+                }
             }
+        }
     } else // we check two time steps
     {
         // First check if the query time is within range
-        if (time < _timestamps.front() || time > _timestamps.back())
+        if (time < _timestamps.front() || time > _timestamps.back()) {
             return false;
+        }
 
         // Then locate the 2 time steps
         size_t floor = 0;
@@ -34,23 +37,27 @@ bool VaporField::InsideVolumeVelocity(float time, const glm::vec3 &pos) const {
             return false;
 
         // Second test if pos is inside of time step "floor"
-        for (auto &v : VelocityNames)
+        for (auto &v : VelocityNames) {
             if (!v.empty()) {
                 grid = _getAGrid(floor, v);
                 VAssert(grid);
-                if (!grid->InsideGrid(coords))
+                if (!grid->InsideGrid(coords)) {
                     return false;
+                }
             }
+        }
 
         // If time is larger than _timestamps[floor], we also need to test _timestamps[floor+1]
         if (time > _timestamps[floor]) {
-            for (auto &v : VelocityNames)
+            for (auto &v : VelocityNames) {
                 if (!v.empty()) {
                     grid = _getAGrid(floor + 1, v);
                     VAssert(grid);
-                    if (!grid->InsideGrid(coords))
+                    if (!grid->InsideGrid(coords)) {
                         return false;
+                    }
                 }
+            }
         }
     }
 
@@ -58,8 +65,9 @@ bool VaporField::InsideVolumeVelocity(float time, const glm::vec3 &pos) const {
 }
 
 bool VaporField::InsideVolumeScalar(float time, const glm::vec3 &pos) const {
-    if (ScalarName.empty())
+    if (ScalarName.empty()) {
         return false;
+    }
 
     std::string scalarname = ScalarName; // const requirement...
     const std::vector<double> coords{pos.x, pos.y, pos.z};
@@ -71,13 +79,15 @@ bool VaporField::InsideVolumeScalar(float time, const glm::vec3 &pos) const {
         size_t currentTS = _params->GetCurrentTimestep();
         grid = _getAGrid(currentTS, scalarname);
         VAssert(grid);
-        if (!grid->InsideGrid(coords))
+        if (!grid->InsideGrid(coords)) {
             return false;
+        }
     } else // we check two time steps
     {
         // First check if the query time is within range
-        if (time < _timestamps.front() || time > _timestamps.back())
+        if (time < _timestamps.front() || time > _timestamps.back()) {
             return false;
+        }
 
         // Then locate the 2 time steps
         size_t floor = 0;
@@ -88,15 +98,17 @@ bool VaporField::InsideVolumeScalar(float time, const glm::vec3 &pos) const {
         // Second test if pos is inside of time step "floor"
         grid = _getAGrid(floor, scalarname);
         VAssert(grid);
-        if (!grid->InsideGrid(coords))
+        if (!grid->InsideGrid(coords)) {
             return false;
+        }
 
         // If time is larger than _timestamps[floor], we also need to test _timestamps[floor+1]
         if (time > _timestamps[floor]) {
             grid = _getAGrid(floor + 1, scalarname);
             VAssert(grid);
-            if (!grid->InsideGrid(coords))
+            if (!grid->InsideGrid(coords)) {
                 return false;
+            }
         }
     }
 
@@ -131,9 +143,11 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
     const VAPoR::Grid *grid = nullptr;
 
     // First make sure the query positions are inside of the volume
-    if (checkInsideVolume)
-        if (!InsideVolumeVelocity(time, pos))
+    if (checkInsideVolume) {
+        if (!InsideVolumeVelocity(time, pos)) {
             return OUT_OF_FIELD;
+        }
+    }
 
     // Retrieve the missing value velocity multiplier
     const float mult = _params->GetVelocityMultiplier();
@@ -149,14 +163,16 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
             missingV[i] = grid->GetMissingValue();
         }
         auto hasMissing = glm::equal(velocity, missingV);
-        if (glm::any(hasMissing))
+        if (glm::any(hasMissing)) {
             velocity = glm::vec3(0.0f);
-        else
+        } else {
             velocity *= mult;
+        }
     } else {
         // First check if the query time is within range
-        if (time < _timestamps.front() || time > _timestamps.back())
+        if (time < _timestamps.front() || time > _timestamps.back()) {
             return TIME_ERROR;
+        }
 
         // Then we locate the floor time step
         size_t floorTS = 0;
@@ -179,9 +195,9 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
         }
 
         // Find the velocity values at the ceiling time step
-        if (time == _timestamps[floorTS])
+        if (time == _timestamps[floorTS]) {
             velocity = floorVelocity * mult;
-        else {
+        } else {
             // We need to make sure there aren't duplicate time stamps
             VAssert(_timestamps[floorTS + 1] > _timestamps[floorTS]);
             for (int i = 0; i < 3; i++) {
@@ -208,11 +224,14 @@ int VaporField::GetVelocity(float time, const glm::vec3 &pos, glm::vec3 &velocit
 
 int VaporField::GetScalar(float time, const glm::vec3 &pos, float &scalar,
                           bool checkInsideVolume) const {
-    if (ScalarName.empty())
+    if (ScalarName.empty()) {
         return NO_FIELD_YET;
-    if (checkInsideVolume)
-        if (!InsideVolumeScalar(time, pos))
+    }
+    if (checkInsideVolume) {
+        if (!InsideVolumeScalar(time, pos)) {
             return OUT_OF_FIELD;
+        }
+    }
 
     std::string scalarname = ScalarName; // const requirement...
 
@@ -224,14 +243,16 @@ int VaporField::GetScalar(float time, const glm::vec3 &pos, float &scalar,
         grid = _getAGrid(currentTS, scalarname);
         VAssert(grid);
         float gridV = grid->GetValue(coords);
-        if (gridV == grid->GetMissingValue())
+        if (gridV == grid->GetMissingValue()) {
             scalar = 0.0f;
-        else
+        } else {
             scalar = gridV;
+        }
     } else {
         // First check if the query time is within range
-        if (time < _timestamps.front() || time > _timestamps.back())
+        if (time < _timestamps.front() || time > _timestamps.back()) {
             return TIME_ERROR;
+        }
 
         // Then we locate the floor time step
         size_t floorTS = 0;
@@ -245,9 +266,9 @@ int VaporField::GetScalar(float time, const glm::vec3 &pos, float &scalar,
             return 0;
         }
 
-        if (time == _timestamps[floorTS])
+        if (time == _timestamps[floorTS]) {
             scalar = floorScalar;
-        else {
+        } else {
             grid = _getAGrid(floorTS + 1, scalarname);
             VAssert(grid);
             float ceilScalar = grid->GetValue(coords);
@@ -279,8 +300,9 @@ void VaporField::AssignDataManager(VAPoR::DataMgr *dmgr) {
     // Make a copy of the timestamps from the new data manager
     const auto &timeCoords = dmgr->GetTimeCoordinates();
     _timestamps.resize(timeCoords.size());
-    for (size_t i = 0; i < timeCoords.size(); i++)
+    for (size_t i = 0; i < timeCoords.size(); i++) {
         _timestamps[i] = timeCoords[i];
+    }
 }
 
 void VaporField::UpdateParams(const VAPoR::FlowParams *p) {
@@ -290,25 +312,27 @@ void VaporField::UpdateParams(const VAPoR::FlowParams *p) {
     IsSteady = p->GetIsSteady();
     ScalarName = p->GetColorMapVariableName();
     auto velNames = p->GetFieldVariableNames();
-    for (int i = 0; i < 3 && i < velNames.size(); i++)
+    for (int i = 0; i < 3 && i < velNames.size(); i++) {
         VelocityNames[i] = velNames.at(i);
+    }
 }
 
 int VaporField::LocateTimestamp(float time, size_t &floor) const {
-    if (_timestamps.size() == 0)
+    if (_timestamps.size() == 0) {
         return TIME_ERROR;
+    }
     if (_timestamps.size() == 1) {
-        if (_timestamps[0] != time)
+        if (_timestamps[0] != time) {
             return TIME_ERROR;
-        else {
+        } else {
             floor = 0;
             return 0;
         }
     }
 
-    if (time < _timestamps.front() || time > _timestamps.back())
+    if (time < _timestamps.front() || time > _timestamps.back()) {
         return TIME_ERROR;
-    else {
+    } else {
         auto it = std::upper_bound(_timestamps.cbegin(), _timestamps.cend(), time);
         floor = --it - _timestamps.cbegin();
         return 0;
@@ -352,9 +376,11 @@ std::string VaporField::_paramsToString(size_t currentTS, const std::string &var
     std::string space("  ");
     std::ostringstream oss;
     oss << currentTS << space << var << space << refLevel << space << compLevel << space;
-    for (size_t i = 0; i < min.size(); i++)
+    for (size_t i = 0; i < min.size(); i++) {
         oss << min[i] << space;
-    for (size_t i = 0; i < max.size(); i++)
+    }
+    for (size_t i = 0; i < max.size(); i++) {
         oss << max[i] << space;
+    }
     return oss.str();
 }
