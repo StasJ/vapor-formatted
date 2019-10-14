@@ -9,17 +9,16 @@
 #include <glm/glm.hpp>
 
 namespace flow {
-enum ERROR_CODE {
-    ADVECT_HAPPENED = 1,
-    SUCCESS = 0,
-    OUT_OF_FIELD = -1,
-    NO_FIELD_YET = -2,
-    NO_SEED_PARTICLE_YET = -3,
-    FILE_ERROR = -4,
-    TIME_ERROR = -5,
-    GRID_ERROR = -6,
-    SIZE_MISMATCH = -7
-};
+enum FLOW_ERROR_CODE // these enum values are available in the flow namespace.
+{ ADVECT_HAPPENED = 1,
+  SUCCESS = 0,
+  OUT_OF_FIELD = -1,
+  NO_FIELD_YET = -2,
+  NO_SEED_PARTICLE_YET = -3,
+  FILE_ERROR = -4,
+  TIME_ERROR = -5,
+  GRID_ERROR = -6,
+  SIZE_MISMATCH = -7 };
 
 // Particle is not expected to serve as a base class.
 class Particle final {

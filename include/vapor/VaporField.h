@@ -12,7 +12,7 @@
 namespace flow {
 class VaporField final : public Field {
   public:
-    VaporField(size_t cacheLimit);
+    VaporField(size_t cache_limit);
 
     //
     // Functions from class Field
@@ -23,7 +23,7 @@ class VaporField final : public Field {
                             glm::vec3 &vel,                   // output
                             bool checkInsideVolume = true) const override;
     virtual int GetScalar(float time, const glm::vec3 &pos, // input
-                          float &val,                       // output
+                          float &scalar,                    // output
                           bool checkInsideVolume = true) const override;
     virtual int GetNumberOfTimesteps() const override;
 
