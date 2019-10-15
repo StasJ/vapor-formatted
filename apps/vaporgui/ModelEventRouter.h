@@ -51,8 +51,8 @@ class ModelEventRouter : public QTabWidget, public RenderEventRouter {
     virtual void _updateTab();
     virtual string _getDescription() const;
 
-    virtual string _getSmallIconImagePath() const { return ("Models_small.png"); }
-    virtual string _getIconImagePath() const { return ("Models.png"); }
+    virtual string _getSmallIconImagePath() const { return ("Model_small.png"); }
+    virtual string _getIconImagePath() const { return ("Model.png"); }
 
   private:
     ModelEventRouter() {}
