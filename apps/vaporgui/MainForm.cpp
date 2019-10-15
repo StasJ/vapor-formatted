@@ -70,7 +70,6 @@
 #include "ErrorReporter.h"
 #include "FileOperationChecker.h"
 #include "MainForm.h"
-#include "MappingFrame.h"
 #include "MouseModeParams.h"
 #include "Plot.h"
 #include "PythonVariables.h"

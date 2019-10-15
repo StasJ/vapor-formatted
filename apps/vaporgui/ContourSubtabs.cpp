@@ -1,10 +1,9 @@
 #include "ContourSubtabs.h"
 #include "TFEditor.h"
+#include <vapor/glutil.h>
 
 ContourAppearanceSubtab::ContourAppearanceSubtab(QWidget *parent) {
     setupUi(this);
-
-    _TFWidget->Reinit((TFFlags)(CONSTANT_COLOR | ISOLINES));
 
     ((QVBoxLayout *)layout())->insertWidget(0, _tfEditor = new TFEditor);
 
@@ -17,7 +16,6 @@ ContourAppearanceSubtab::ContourAppearanceSubtab(QWidget *parent) {
     connect(_countCombo, SIGNAL(valueChanged(int)), this, SLOT(SetContourCount(int)));
     connect(_cMinCombo, SIGNAL(valueChanged(double)), this, SLOT(SetContourMinimum(double)));
     connect(_spacingCombo, SIGNAL(valueChanged(double)), this, SLOT(SetContourSpacing(double)));
-    connect(_TFWidget, SIGNAL(emitChange()), this, SLOT(EndTFChange()));
 }
 
 void ContourAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -43,7 +41,6 @@ void ContourAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *
     double maxSpacing = (maxBound - minBound);
     _spacingCombo->Update(0, maxSpacing, spacing);
 
-    _TFWidget->Update(dataMgr, paramsMgr, _cParams);
     _tfEditor->Update(dataMgr, paramsMgr, _cParams);
 }
 
