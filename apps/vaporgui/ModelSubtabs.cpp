@@ -2,6 +2,7 @@
 #include "ParamsWidgets.h"
 #include "TFEditor.h"
 #include "VSection.h"
+#include <vapor/ModelParams.h>
 
 ModelVariablesSubtab::ModelVariablesSubtab(QWidget *parent) {
     setupUi(this);
@@ -10,7 +11,7 @@ ModelVariablesSubtab::ModelVariablesSubtab(QWidget *parent) {
     layout()->setContentsMargins(0, 10, 0, 0);
     layout()->addWidget(_modelSettings = new VSection("Model"));
 
-    addPW((new ParamsWidgetFile("file", "Model/Scene File"))
+    addPW((new ParamsWidgetFile(VAPoR::ModelParams::FileTag, "Model/Scene File"))
               ->SetFileTypeFilter(
                   "3D Models/Scenes (*.vms *.3d *.3ds *.3mf *.ac *.ac3d *.acc *.amj *.ase *.ask "
                   "*.b3d *.blend *.bvh *.cms *.cob *.dae *.dxf *.enff *.fbx *.hmb *.ifc *.irr "
