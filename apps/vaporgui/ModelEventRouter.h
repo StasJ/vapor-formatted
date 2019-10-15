@@ -34,7 +34,6 @@ class ModelEventRouter : public QTabWidget, public RenderEventRouter {
 
   public:
     ModelEventRouter(QWidget *parent, VAPoR::ControlExec *ce);
-    ~ModelEventRouter();
 
     virtual void hookUpTab() {}
 
@@ -65,6 +64,4 @@ class ModelEventRouter : public QTabWidget, public RenderEventRouter {
 
     ModelVariablesSubtab *_variables;
     ModelGeometrySubtab *_geometry;
-    ModelAppearanceSubtab *_appearance;
-    ModelAnnotationSubtab *_annotation;
 };

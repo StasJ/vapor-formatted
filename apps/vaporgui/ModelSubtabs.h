@@ -2,8 +2,6 @@
 
 #include "Flags.h"
 #include "RangeCombos.h"
-#include "ui_ModelAnnotationGUI.h"
-#include "ui_ModelAppearanceGUI.h"
 #include "ui_ModelGeometryGUI.h"
 #include "ui_ModelVariablesGUI.h"
 #include "vapor/ModelParams.h"
@@ -36,22 +34,6 @@ class ModelVariablesSubtab : public QWidget, public Ui_ModelVariablesGUI {
     void addPW(ParamsWidget *w);
 };
 
-class ModelAppearanceSubtab : public QWidget, public Ui_ModelAppearanceGUI {
-
-    Q_OBJECT
-
-  public:
-    ModelAppearanceSubtab(QWidget *parent);
-
-    void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
-
-    VAPoR::ModelParams *_cParams;
-    VAPoR::DataMgr *_dataMgr;
-    VAPoR::ParamsMgr *_paramsMgr;
-
-  private slots:
-};
-
 class ModelGeometrySubtab : public QWidget, public Ui_ModelGeometryGUI {
 
     Q_OBJECT
@@ -64,18 +46,5 @@ class ModelGeometrySubtab : public QWidget, public Ui_ModelGeometryGUI {
         _geometryWidget->Update(paramsMgr, dataMgr, rParams);
         _copyRegionWidget->Update(paramsMgr, rParams);
         _transformTable->Update(rParams->GetTransform());
-    }
-};
-
-class ModelAnnotationSubtab : public QWidget, public Ui_ModelAnnotationGUI {
-
-    Q_OBJECT
-
-  public:
-    ModelAnnotationSubtab(QWidget *parent) { setupUi(this); }
-
-    void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
-                VAPoR::RenderParams *rParams) {
-        _colorbarWidget->Update(dataMgr, paramsMgr, rParams);
     }
 };
