@@ -33,7 +33,6 @@ void ModelVariablesSubtab::addPW(ParamsWidget *w) {
 
 ModelGeometrySubtab::ModelGeometrySubtab(QWidget *parent) {
     setupUi(this);
-    _geometryWidget->Reinit((DimFlags)THREED, (VariableFlags)SCALAR);
-
-    _orientationAngles->hide();
+    ((QVBoxLayout *)layout())
+        ->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
 }

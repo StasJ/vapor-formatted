@@ -43,8 +43,6 @@ class ModelGeometrySubtab : public QWidget, public Ui_ModelGeometryGUI {
 
     void Update(VAPoR::ParamsMgr *paramsMgr, VAPoR::DataMgr *dataMgr,
                 VAPoR::RenderParams *rParams) {
-        _geometryWidget->Update(paramsMgr, dataMgr, rParams);
-        _copyRegionWidget->Update(paramsMgr, rParams);
         _transformTable->Update(rParams->GetTransform());
     }
 };
