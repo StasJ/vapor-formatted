@@ -66,10 +66,23 @@ void FlowParams::SetSteadyNumOfSteps(long i) {
     SetValueLong(_steadyNumOfStepsTag, "num of steps for a steady integration", i);
 }
 
-long FlowParams::GetSeedGenMode() const { return GetValueLong(_seedGenModeTag, 0); }
+int FlowParams::GetSeedGenMode() const {
+    auto val = GetValueString(_seedGenModeTag, "");
+    for (const auto &e : _seed2Str) {
+        if (val == e.second)
+            return e.first;
+    }
+    return 0;
+}
 
-void FlowParams::SetSeedGenMode(long i) {
-    SetValueLong(_seedGenModeTag, "which mode do we use to generate seeds", i);
+void FlowParams::SetSeedGenMode(int i) {
+    for (const auto &e : _seed2Str) {
+        if (i == e.first) {
+            SetValueString(_seedGenModeTag, "which way to generate seeds", e.second);
+            return;
+        }
+    }
+    SetValueString(_seedGenModeTag, "which way to generate seeds", "");
 }
 
 std::string FlowParams::GetSeedInputFilename() const {

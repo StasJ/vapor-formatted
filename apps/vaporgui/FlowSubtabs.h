@@ -25,6 +25,9 @@ class ParamsMgr;
 class DataMgr;
 } // namespace VAPoR
 
+using VAPoR::FlowDir;
+using VAPoR::FlowSeedMode;
+
 class QVaporSubtab : public QWidget {
     Q_OBJECT
 

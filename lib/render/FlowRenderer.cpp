@@ -121,7 +121,7 @@ int FlowRenderer::_paintGL(bool fast) {
 
     if (_velocityStatus == FlowStatus::SIMPLE_OUTOFDATE) {
         /* Read seeds from a file is a special case, so we put it up front */
-        if (_cache_seedGenMode == SeedGenMode::LIST) {
+        if (_cache_seedGenMode == FlowSeedMode::LIST) {
             rv = _advection.InputStreamsGnuplot(params->GetSeedInputFilename());
             if (rv != 0) {
                 MyBase::SetErrMsg("Input seed list wrong!");
@@ -134,11 +134,11 @@ int FlowRenderer::_paintGL(bool fast) {
             }
         } else {
             std::vector<flow::Particle> seeds;
-            if (_cache_seedGenMode == SeedGenMode::UNIFORM)
+            if (_cache_seedGenMode == FlowSeedMode::UNIFORM)
                 _genSeedsRakeUniform(seeds);
-            else if (_cache_seedGenMode == SeedGenMode::RANDOM)
+            else if (_cache_seedGenMode == FlowSeedMode::RANDOM)
                 _genSeedsRakeRandom(seeds);
-            else if (_cache_seedGenMode == SeedGenMode::RANDOM_BIAS)
+            else if (_cache_seedGenMode == FlowSeedMode::RANDOM_BIAS)
                 _genSeedsRakeRandomBiased(seeds);
 
             // Note on UseSeedParticles(): this is the only function that resets
@@ -349,8 +349,8 @@ void FlowRenderer::_updateFlowCacheAndStates(const FlowParams *params) {
      */
 
     // Check seed generation mode
-    if (_cache_seedGenMode != static_cast<SeedGenMode>(params->GetSeedGenMode())) {
-        _cache_seedGenMode = static_cast<SeedGenMode>(params->GetSeedGenMode());
+    if (_cache_seedGenMode != static_cast<FlowSeedMode>(params->GetSeedGenMode())) {
+        _cache_seedGenMode = static_cast<FlowSeedMode>(params->GetSeedGenMode());
         _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
         _colorStatus = FlowStatus::SIMPLE_OUTOFDATE;
     }
@@ -359,7 +359,7 @@ void FlowRenderer::_updateFlowCacheAndStates(const FlowParams *params) {
     if (_cache_seedInputFilename != params->GetSeedInputFilename()) {
         _cache_seedInputFilename = params->GetSeedInputFilename();
         // we only update status if the current seed generation mode IS seed list.
-        if (_cache_seedGenMode == SeedGenMode::LIST) {
+        if (_cache_seedGenMode == FlowSeedMode::LIST) {
             _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
             _colorStatus = FlowStatus::SIMPLE_OUTOFDATE;
         }
@@ -425,7 +425,7 @@ void FlowRenderer::_updateFlowCacheAndStates(const FlowParams *params) {
             _cache_rake[i] = rake[i];
 
         // Mark out-of-date if we're currently using any mode that involves a rake
-        if (_cache_seedGenMode != SeedGenMode::LIST) {
+        if (_cache_seedGenMode != FlowSeedMode::LIST) {
             _colorStatus = FlowStatus::SIMPLE_OUTOFDATE;
             _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
         }
@@ -439,7 +439,7 @@ void FlowRenderer::_updateFlowCacheAndStates(const FlowParams *params) {
         for (int i = 0; i < 3; i++)
             _cache_rakeNumOfSeeds[i] = rakeNumOfSeeds[i];
 
-        if (_cache_seedGenMode == SeedGenMode::UNIFORM) {
+        if (_cache_seedGenMode == FlowSeedMode::UNIFORM) {
             _colorStatus = FlowStatus::SIMPLE_OUTOFDATE;
             _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
         }
@@ -449,8 +449,8 @@ void FlowRenderer::_updateFlowCacheAndStates(const FlowParams *params) {
     if (_cache_rakeNumOfSeeds[3] != rakeNumOfSeeds[3]) {
         _cache_rakeNumOfSeeds[3] = rakeNumOfSeeds[3];
 
-        if (_cache_seedGenMode == SeedGenMode::RANDOM ||
-            _cache_seedGenMode == SeedGenMode::RANDOM_BIAS) {
+        if (_cache_seedGenMode == FlowSeedMode::RANDOM ||
+            _cache_seedGenMode == FlowSeedMode::RANDOM_BIAS) {
             _colorStatus = FlowStatus::SIMPLE_OUTOFDATE;
             _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
         }
@@ -464,7 +464,7 @@ void FlowRenderer::_updateFlowCacheAndStates(const FlowParams *params) {
         _cache_rakeBiasVariable = rakeBiasVariable;
         _cache_rakeBiasStrength = rakeBiasStrength;
 
-        if (_cache_seedGenMode == SeedGenMode::RANDOM_BIAS) {
+        if (_cache_seedGenMode == FlowSeedMode::RANDOM_BIAS) {
             _colorStatus = FlowStatus::SIMPLE_OUTOFDATE;
             _velocityStatus = FlowStatus::SIMPLE_OUTOFDATE;
         }

@@ -147,10 +147,11 @@ FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
     _layout->addWidget(_hline2);
 
     /* Index numbers are in agreement with what's in FlowRenderer.h */
-    _seedGenMode->AddOption("From a Rake, Uniformly", 0);
-    _seedGenMode->AddOption("From a Rake, Randomly", 1);
-    _seedGenMode->AddOption("From a Rake, Randomly with Bias", 2);
-    _seedGenMode->AddOption("From a List", 3);
+    _seedGenMode->AddOption("From a Rake, Uniformly", static_cast<int>(FlowSeedMode::UNIFORM));
+    _seedGenMode->AddOption("From a Rake, Randomly", static_cast<int>(FlowSeedMode::RANDOM));
+    _seedGenMode->AddOption("From a Rake, Randomly with Bias",
+                            static_cast<int>(FlowSeedMode::RANDOM_BIAS));
+    _seedGenMode->AddOption("From a List", static_cast<int>(FlowSeedMode::LIST));
     _layout->addWidget(_seedGenMode);
     connect(_seedGenMode, SIGNAL(_indexChanged(int)), this, SLOT(_seedGenModeChanged(int)));
 
@@ -226,7 +227,7 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
     }
 
     /* Update seed generation mode combo */
-    long genMod = _params->GetSeedGenMode();
+    auto genMod = _params->GetSeedGenMode();
     if (genMod >= 0 && genMod < _seedGenMode->GetNumOfItems())
         _seedGenMode->SetIndex(genMod);
     else {
@@ -354,9 +355,8 @@ void FlowSeedingSubtab::_hideShowWidgets() {
         _pastNumOfTimeSteps->show();
     }
 
-    long genMod = _params->GetSeedGenMode(); // genMod must be valid at this point
-    if (genMod == 0)                         // Rake + Uniform
-    {
+    int genMod = _params->GetSeedGenMode(); // genMod must be valid at this point
+    if (genMod == static_cast<int>(FlowSeedMode::UNIFORM)) {
         _rake->show();
         _rakeXNum->show();
         _rakeYNum->show();
@@ -364,8 +364,7 @@ void FlowSeedingSubtab::_hideShowWidgets() {
         _rakeTotalNum->hide();
         _rakeBiasVariable->hide();
         _rakeBiasStrength->hide();
-    } else if (genMod == 1) // Rake + Random
-    {
+    } else if (genMod == static_cast<int>(FlowSeedMode::RANDOM)) {
         _rake->show();
         _rakeXNum->hide();
         _rakeYNum->hide();
@@ -373,8 +372,7 @@ void FlowSeedingSubtab::_hideShowWidgets() {
         _rakeTotalNum->show();
         _rakeBiasVariable->hide();
         _rakeBiasStrength->hide();
-    } else if (genMod == 2) // Rake + Random + Bias
-    {
+    } else if (genMod == static_cast<int>(FlowSeedMode::RANDOM_BIAS)) {
         _rake->show();
         _rakeXNum->hide();
         _rakeYNum->hide();
@@ -382,8 +380,7 @@ void FlowSeedingSubtab::_hideShowWidgets() {
         _rakeTotalNum->show();
         _rakeBiasVariable->show();
         _rakeBiasStrength->show();
-    } else if (genMod == 3) // List
-    {
+    } else if (genMod == static_cast<int>(FlowSeedMode::LIST)) {
         _rake->hide();
         _rakeXNum->hide();
         _rakeYNum->hide();

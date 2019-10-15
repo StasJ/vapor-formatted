@@ -1,13 +1,23 @@
 #ifndef FLOWPARAMS_H
 #define FLOWPARAMS_H
 
+#include <utility>
 #include <vapor/DataMgr.h>
 #include <vapor/RenderParams.h>
+#include <vector>
 
 namespace VAPoR {
 
+//
+// These two enums are used across params, GUI, and renderer.
+// Note: use static_cast to cast between them and int types.
+//
+enum class FlowSeedMode : int { UNIFORM = 0, RANDOM = 1, RANDOM_BIAS = 2, LIST = 3 };
+enum class FlowDir : int { FORWARD = 0, BACKWARD = 1, BI_DIR = 2 };
+
 class PARAMS_API FlowParams : public RenderParams {
   public:
+    // Constructors
     FlowParams(DataMgr *dataManager, ParamsBase::StateSave *stateSave);
     FlowParams(DataMgr *dataManager, ParamsBase::StateSave *stateSave, XmlNode *xmlNode);
 
@@ -31,8 +41,8 @@ class PARAMS_API FlowParams : public RenderParams {
     long GetSteadyNumOfSteps() const;
     void SetSteadyNumOfSteps(long);
 
-    long GetSeedGenMode() const;
-    void SetSeedGenMode(long);
+    int GetSeedGenMode() const;
+    void SetSeedGenMode(int);
 
     void SetNeedFlowlineOutput(bool);
     bool GetNeedFlowlineOutput() const;
@@ -77,7 +87,7 @@ class PARAMS_API FlowParams : public RenderParams {
     int GetSeedInjInterval() const;
     void SetSeedInjInterval(int);
 
-  protected:
+  private:
     static const std::string _isSteadyTag;
     static const std::string _velocityMultiplierTag;
     static const std::string _steadyNumOfStepsTag;
@@ -93,6 +103,14 @@ class PARAMS_API FlowParams : public RenderParams {
     static const std::string _rakeBiasStrength;
     static const std::string _pastNumOfTimeSteps;
     static const std::string _seedInjInterval;
+
+    // maps between ints and "human readable" strings
+    const std::vector<std::pair<int, std::string>> _seed2Str = {
+        {static_cast<int>(FlowSeedMode::UNIFORM), ""}, // default value
+        {static_cast<int>(FlowSeedMode::UNIFORM), "UNIFORM"},
+        {static_cast<int>(FlowSeedMode::RANDOM), "RANDOM"},
+        {static_cast<int>(FlowSeedMode::RANDOM_BIAS), "RANDOM_BIAS"},
+        {static_cast<int>(FlowSeedMode::LIST), "LIST"}};
 };
 
 } // namespace VAPoR
