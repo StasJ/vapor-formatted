@@ -54,8 +54,6 @@ class RENDER_API ModelRenderer : public Renderer {
     ModelRenderer(const ParamsMgr *pm, string winName, string dataSetName, string instName,
                   DataMgr *dataMgr);
 
-    virtual ~ModelRenderer();
-
     static string GetClassType() { return ("Model"); }
 
     //! \copydoc Renderer::_initializeGL()

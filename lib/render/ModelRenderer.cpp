@@ -45,14 +45,12 @@ ModelRenderer::ModelRenderer(const ParamsMgr *pm, string winName, string dataSet
     : Renderer(pm, winName, dataSetName, ModelParams::GetClassType(), ModelRenderer::GetClassType(),
                instName, dataMgr) {}
 
-ModelRenderer::~ModelRenderer() {}
-
-void printSpacing(int depth) {
+static void printSpacing(int depth) {
     for (int i = 0; i < depth; i++)
         printf("  ");
 }
 
-void printNode(XmlNode *n, int depth = 0) {
+static void printNode(XmlNode *n, int depth = 0) {
     printSpacing(depth);
     printf("<%s", n->Tag().c_str());
     for (auto attr : n->Attrs())
