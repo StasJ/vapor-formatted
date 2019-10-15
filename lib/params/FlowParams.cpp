@@ -101,11 +101,23 @@ void FlowParams::SetFlowlineOutputFilename(const std::string &name) {
     SetValueString(_flowlineOutputFilenameTag, "filename for output flow lines", name);
 }
 
-long FlowParams::GetFlowDirection() const { return GetValueLong(_flowDirectionTag, 0); }
+int FlowParams::GetFlowDirection() const {
+    auto val = GetValueString(_flowDirectionTag, "");
+    for (const auto &e : _dir2Str) {
+        if (val == e.second)
+            return e.first;
+    }
+    return 0;
+}
 
-void FlowParams::SetFlowDirection(long i) {
-    SetValueLong(_flowDirectionTag, "does flow integration go forward, backward, or bi-directional",
-                 i);
+void FlowParams::SetFlowDirection(int i) {
+    for (const auto &e : _dir2Str) {
+        if (i == e.first) {
+            SetValueString(_flowDirectionTag, "flow direction", e.second);
+            return;
+        }
+    }
+    SetValueString(_flowDirectionTag, "flow direction", "");
 }
 
 std::vector<bool> FlowParams::GetPeriodic() const {
