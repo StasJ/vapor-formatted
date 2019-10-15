@@ -19,6 +19,7 @@
 //
 //		Supports mouse event reporting.
 //
+
 #include "VizWin.h"
 #include "AnimationParams.h"
 #include "Core3_2_context.h"
@@ -720,8 +721,8 @@ VAPoR::Transform *VizWin::_getDataMgrTransform() const {
 
 void VizWin::updateManip(bool initialize) {
 
-    std::vector<double> minExts(3, numeric_limits<double>::max());
-    std::vector<double> maxExts(3, numeric_limits<double>::lowest());
+    std::vector<double> minExts(3, (std::numeric_limits<double>::max)());
+    std::vector<double> maxExts(3, std::numeric_limits<double>::lowest());
 
     _getActiveExtents(minExts, maxExts);
 
