@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QSpacerItem>
 #include <QTabWidget>
 #include <QWidget>
 #include <cassert>
@@ -29,6 +30,7 @@ class ParamsWidget : public QWidget {
     VAPoR::ParamsBase *_params = nullptr;
     std::string _tag;
     std::string _label;
+    QSpacerItem *_spacer;
 };
 
 class ParamsWidgetCheckbox : public ParamsWidget {
