@@ -8,11 +8,12 @@
 
 #include "vapor/Field.h"
 #include "vapor/Particle.h"
+#include "vapor/common.h"
 #include <string>
 #include <vector>
 
 namespace flow {
-class Advection final {
+class FLOW_API Advection final {
   public:
     enum class ADVECTION_METHOD {
         EULER = 0,

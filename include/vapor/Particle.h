@@ -5,6 +5,7 @@
 #ifndef PARTICLE_H
 #define PARTICLE_H
 
+#include "vapor/common.h"
 #include <forward_list>
 #include <glm/glm.hpp>
 
@@ -21,7 +22,7 @@ enum FLOW_ERROR_CODE // these enum values are available in the flow namespace.
   SIZE_MISMATCH = -7 };
 
 // Particle is not expected to serve as a base class.
-class Particle final {
+class FLOW_API Particle final {
   public:
     glm::vec3 location{0.0f, 0.0f, 0.0f};
     float time = 0.0f;
