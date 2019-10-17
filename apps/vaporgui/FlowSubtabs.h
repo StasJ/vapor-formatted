@@ -13,7 +13,7 @@
 #include "ColorbarWidget.h"
 #include "CopyRegionWidget.h"
 #include "GeometryWidget.h"
-#include "TFWidget.h"
+#include "TFEditor.h"
 #include "TransformTable.h"
 #include "VaporWidgets.h"
 #include "VariablesWidget.h"
@@ -83,7 +83,7 @@ class FlowAppearanceSubtab : public QVaporSubtab {
 
   private:
     VAPoR::FlowParams *_params;
-    TFWidget *_TFWidget;
+    TFEditor *_TFEditor;
 };
 
 //

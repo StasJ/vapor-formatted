@@ -17,6 +17,7 @@
 //	Description:  Implementation of Histo class
 //
 #include "Histo.h"
+#include <cassert>
 #include <vapor/DataMgrUtils.h>
 #include <vapor/MyBase.h>
 using namespace VAPoR;
@@ -432,10 +433,12 @@ void Histo::calculateMaxBinSize() {
 
 void Histo::_getDataRange(const std::string &varName, VAPoR::DataMgr *d, VAPoR::RenderParams *r,
                           float *min, float *max) const {
+    vector<double> minExt, maxExt;
+    r->GetBox()->GetExtents(minExt, maxExt);
+
     std::vector<double> range;
-    d->GetDataRange(
-        r->GetCurrentTimestep(), varName, r->GetRefinementLevel(), r->GetCompressionLevel(),
-        DataMgrUtils::GetDefaultMetaInfoStride(d, varName, r->GetRefinementLevel()), range);
+    d->GetDataRange(r->GetCurrentTimestep(), varName, r->GetRefinementLevel(),
+                    r->GetCompressionLevel(), minExt, maxExt, range);
     *min = range[0];
     *max = range[1];
 }
