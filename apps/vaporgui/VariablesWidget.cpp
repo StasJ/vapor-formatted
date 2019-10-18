@@ -248,7 +248,11 @@ void VariablesWidget::setDefaultVectorVar(std::vector<string> vars) {
         defaultVars.push_back(defaultVar);
         defaultVar = findVarStartingWithLetter(vars, 'v');
         defaultVars.push_back(defaultVar);
-        defaultVars.push_back("");
+        if (_dimFlags & THREED) {
+            defaultVar = findVarStartingWithLetter(vars, 'w');
+            defaultVars.push_back(defaultVar);
+        } else
+            defaultVars.push_back("");
         _rParams->SetFieldVariableNames(defaultVars);
     }
 }
@@ -342,7 +346,6 @@ void VariablesWidget::updateScalarCombo() {
 void VariablesWidget::updateVectorCombo() {
     if (_variableFlags & VECTOR) {
         vector<string> setVarsReq = _rParams->GetFieldVariableNames();
-
         VAssert(setVarsReq.size() == 3);
 
         vector<string> setVars;
@@ -438,6 +441,8 @@ void VariablesWidget::Update(const DataMgr *dataMgr, ParamsMgr *paramsMgr, Rende
     _dataMgr = dataMgr;
     _paramsMgr = paramsMgr;
     _rParams = rParams;
+
+    vector<string> setVarsReq = _rParams->GetFieldVariableNames();
 
     updateCombos();
 
