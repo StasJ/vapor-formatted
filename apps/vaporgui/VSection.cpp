@@ -37,7 +37,7 @@ QString VSection::_createStylesheet() const {
     }
     )";
 #elif defined(WIN32)
-#error style missing for windows
+//#error style missing for windows
 #else
     stylesheet +=
         R"(
