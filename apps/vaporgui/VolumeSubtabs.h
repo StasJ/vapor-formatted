@@ -15,6 +15,9 @@ class ParamsMgr;
 class DataMgr;
 } // namespace VAPoR
 
+class TFEditor;
+class QSliderEdit;
+
 class VolumeVariablesSubtab : public QWidget, public Ui_VolumeVariablesGUI {
 
     Q_OBJECT
@@ -45,6 +48,8 @@ class VolumeAppearanceSubtab : public QWidget, public Ui_VolumeAppearanceGUI {
     static float GetSamplingRateForQString(const QString &str);
 
   private slots:
+    void _densitySlider_valueChanged(double v);
+
     void on__castingModeComboBox_currentIndexChanged(const QString &text);
     void on__samplingRateComboBox_currentIndexChanged(const QString &text);
     void on__lightingCheckBox_toggled(bool checked);
@@ -56,6 +61,8 @@ class VolumeAppearanceSubtab : public QWidget, public Ui_VolumeAppearanceGUI {
 
   private:
     VAPoR::VolumeParams *_params;
+    TFEditor *_tfe;
+    QSliderEdit *_densitySlider;
 };
 
 class VolumeGeometrySubtab : public QWidget, public Ui_VolumeGeometryGUI {

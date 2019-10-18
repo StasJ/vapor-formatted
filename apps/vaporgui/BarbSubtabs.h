@@ -14,6 +14,8 @@ class DataMgr;
 class BarbParams;
 } // namespace VAPoR
 
+class TFEditor;
+
 class BarbVariablesSubtab : public QWidget, public Ui_BarbVariablesGUI {
 
     Q_OBJECT
@@ -55,6 +57,7 @@ class BarbAppearanceSubtab : public QWidget, public Ui_BarbAppearanceGUI {
     Combo *_yDimCombo;
     Combo *_lengthCombo;
     Combo *_thicknessCombo;
+    TFEditor *_tfe;
 };
 
 class BarbGeometrySubtab : public QWidget, public Ui_BarbGeometryGUI {

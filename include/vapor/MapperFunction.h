@@ -63,6 +63,8 @@ class PARAMS_API MapperFunction : public ParamsBase {
     //
     int LoadFromFile(string path);
 
+    int LoadColormapFromFile(string path);
+
     // Get static string identifier for this params class
     //
     static string GetClassType() { return ("MapperFunctionParams"); }
@@ -274,7 +276,7 @@ class PARAMS_API MapperFunction : public ParamsBase {
         SetValueLong(_secondaryVarMapperTag, "Apply color through a secondary color", val);
     }
 
-  private:
+  public:
     //
     // XML tags
     //
@@ -286,6 +288,7 @@ class PARAMS_API MapperFunction : public ParamsBase {
     static const string _autoUpdateHistoTag;
     static const string _secondaryVarMapperTag;
 
+  private:
     //
     // Size of lookup table.  Always 1<<8 currently!
     //

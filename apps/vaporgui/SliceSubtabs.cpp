@@ -1,4 +1,5 @@
 #include "SliceSubtabs.h"
+#include "TFEditor.h"
 #include <QButtonGroup>
 
 #define MIN_SAMPLES 1
@@ -43,7 +44,7 @@ void SliceVariablesSubtab::_setDefaultSampleRate() {
 
 SliceAppearanceSubtab::SliceAppearanceSubtab(QWidget *parent) {
     setupUi(this);
-    _TFWidget->Reinit((TFFlags)(SAMPLING));
+    verticalLayout->insertWidget(0, _tfe = new TFEditor);
 
     _sampleRateWidget->SetLabel(QString("Quality"));
     _sampleRateWidget->SetIntType(true);
@@ -63,8 +64,7 @@ void SliceAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *pa
                                    VAPoR::RenderParams *rParams) {
     _params = dynamic_cast<VAPoR::SliceParams *>(rParams);
     VAssert(_params);
-
-    _TFWidget->Update(dataMgr, paramsMgr, rParams);
+    _tfe->Update(dataMgr, paramsMgr, rParams);
 
     std::vector<double> minExt, maxExt;
     _params->GetBox()->GetExtents(minExt, maxExt);
