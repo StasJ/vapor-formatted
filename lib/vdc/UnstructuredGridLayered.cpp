@@ -27,7 +27,8 @@ UnstructuredGridLayered::UnstructuredGridLayered(
     Location location, // node,face, edge
     size_t maxVertexPerFace, size_t maxFacePerVertex, long nodeOffset, long cellOffset,
     const UnstructuredGridCoordless &xug, const UnstructuredGridCoordless &yug,
-    const UnstructuredGridCoordless &zug, const QuadTreeRectangle<float, size_t> *qtr)
+    const UnstructuredGridCoordless &zug,
+    std::shared_ptr<const QuadTreeRectangle<float, size_t>> qtr)
     : UnstructuredGrid(vertexDims, faceDims, edgeDims, bs, blks, 3, vertexOnFace, faceOnVertex,
                        faceOnFace, location, maxVertexPerFace, maxFacePerVertex, nodeOffset,
                        cellOffset),
