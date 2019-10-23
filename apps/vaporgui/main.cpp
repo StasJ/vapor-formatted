@@ -149,6 +149,7 @@ int main(int argc, char **argv) {
         phome = GetPythonDir();
         setenv("PYTHONHOME", phome.c_str(), 1);
     }
+    cout << "main.cpp PYTHONHOME " << phome << endl;
     MyBase::SetDiagMsg("PYTHONHOME = %s", phome.c_str());
 
 #endif

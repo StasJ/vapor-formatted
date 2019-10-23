@@ -232,7 +232,6 @@ int PyEngine::Initialize() {
     if (PyArray_API == NULL) {
         import_array1(-1)
     }
-
     return (0);
 }
 
