@@ -11,6 +11,8 @@ using namespace VAPoR;
 //
 static RenParamsRegistrar<VolumeIsoParams> registrar(VolumeIsoParams::GetClassType());
 
+const std::string VolumeIsoParams::UseColormapVariableTag = "UseColormapVariable";
+
 VolumeIsoParams::VolumeIsoParams(DataMgr *dataMgr, ParamsBase::StateSave *ssave)
     : VolumeParams(dataMgr, ssave, VolumeIsoParams::GetClassType()) {
     SetDiagMsg("VolumeIsoParams::VolumeIsoParams() this=%p", this);
@@ -37,4 +39,7 @@ VolumeIsoParams::~VolumeIsoParams() {
 string VolumeIsoParams::GetDefaultAlgorithmName() const { return "Iso Regular"; }
 
 // Set everything to default values
-void VolumeIsoParams::_init() { SetDiagMsg("VolumeParams::_init()"); }
+void VolumeIsoParams::_init() {
+    SetDiagMsg("VolumeParams::_init()");
+    SetValueLong(UseColormapVariableTag, UseColormapVariableTag, false);
+}
