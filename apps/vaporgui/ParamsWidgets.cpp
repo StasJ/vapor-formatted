@@ -8,7 +8,7 @@
 
 using namespace VAPoR;
 
-ParamsWidget::ParamsWidget(const std::string &tag, const std::string &label) {
+ParamsWidgetOld::ParamsWidgetOld(const std::string &tag, const std::string &label) {
     assert(!tag.empty());
     _tag = tag;
 
@@ -29,7 +29,7 @@ ParamsWidget::ParamsWidget(const std::string &tag, const std::string &label) {
 }
 
 ParamsWidgetCheckbox::ParamsWidgetCheckbox(const std::string &tag, const std::string &labelText)
-    : ParamsWidget(tag, labelText) {
+    : ParamsWidgetOld(tag, labelText) {
     _checkBox = new QCheckBox();
     connect(_checkBox, SIGNAL(clicked(bool)), this, SLOT(checkbox_clicked(bool)));
 
@@ -47,7 +47,7 @@ void ParamsWidgetCheckbox::checkbox_clicked(bool checked) {
 }
 
 ParamsWidgetNumber::ParamsWidgetNumber(const std::string &tag, const std::string &labelText)
-    : ParamsWidget(tag, labelText) {
+    : ParamsWidgetOld(tag, labelText) {
     _lineEdit = new QLineEdit();
     _lineEdit->setValidator(new QIntValidator);
     connect(_lineEdit, SIGNAL(editingFinished()), this, SLOT(valueChangedSlot()));
@@ -74,7 +74,7 @@ void ParamsWidgetNumber::valueChangedSlot() {
 }
 
 ParamsWidgetFloat::ParamsWidgetFloat(const std::string &tag, const std::string &labelText)
-    : ParamsWidget(tag, labelText) {
+    : ParamsWidgetOld(tag, labelText) {
     _lineEdit = new QLineEdit();
     _lineEdit->setValidator(new QDoubleValidator);
     connect(_lineEdit, SIGNAL(editingFinished()), this, SLOT(valueChangedSlot()));
@@ -104,7 +104,7 @@ ParamsWidgetDropdown::ParamsWidgetDropdown(const std::string &tag,
                                            const std::vector<std::string> &items,
                                            const std::vector<int> &itemValues,
                                            const std::string &labelText)
-    : ParamsWidget(tag, labelText) {
+    : ParamsWidgetOld(tag, labelText) {
     _box = new QComboBox();
     connect(_box, SIGNAL(currentIndexChanged(int)), this, SLOT(indexChangedSlot(int)));
 
@@ -152,7 +152,7 @@ int ParamsWidgetDropdown::getIndexForValue(int value) const {
 }
 
 ParamsWidgetColor::ParamsWidgetColor(const std::string &tag, const std::string &label)
-    : ParamsWidget(tag, label) {
+    : ParamsWidgetOld(tag, label) {
     _color = new QColorWidget;
     connect(_color, SIGNAL(colorChanged(QColor)), this, SLOT(colorChanged(QColor)));
     layout()->addWidget(_color);
@@ -188,7 +188,7 @@ std::vector<double> ParamsWidgetColor::QColorToVector(const QColor &c) {
 #include <vapor/FileUtils.h>
 
 ParamsWidgetFile::ParamsWidgetFile(const std::string &tag, const std::string &label)
-    : ParamsWidget(tag, label) {
+    : ParamsWidgetOld(tag, label) {
 #warning _spacer is a hack. Will be refactored
     _spacer->changeSize(0, 0, QSizePolicy::Minimum, QSizePolicy::Minimum);
 
@@ -275,11 +275,11 @@ ParamsWidgetTabGroup::ParamsWidgetTabGroup(const std::string &title) {
 QWidget *ParamsWidgetTabGroup::_tab() const { return this->widget(0); }
 
 void ParamsWidgetTabGroup::Update(VAPoR::ParamsBase *p) {
-    for (ParamsWidget *w : _widgets)
+    for (ParamsWidgetOld *w : _widgets)
         w->Update(p);
 }
 
-void ParamsWidgetTabGroup::Add(ParamsWidget *widget) {
+void ParamsWidgetTabGroup::Add(ParamsWidgetOld *widget) {
     _tab()->layout()->addWidget(widget);
     _widgets.push_back(widget);
 }
