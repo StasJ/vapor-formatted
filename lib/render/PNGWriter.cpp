@@ -33,7 +33,7 @@ int PNGWriter::Write(const unsigned char *buffer, const unsigned int width,
         return (-1);
     }
 
-    pName = PyString_FromString("imagewriter");
+    pName = PyBytes_FromString("imagewriter");
     pModule = PyImport_Import(pName);
 
     if (pModule == NULL) {
@@ -46,15 +46,15 @@ int PNGWriter::Write(const unsigned char *buffer, const unsigned int width,
         pArgs = PyTuple_New(4);
 
         // The 1st argument: output filename
-        pValue = PyString_FromString(path.c_str());
+        pValue = PyBytes_FromString(path.c_str());
         PyTuple_SetItem(pArgs, 0, pValue);
 
         // The 2nd argument: width
-        pValue = PyInt_FromLong((long)width);
+        pValue = PyLong_FromLong((long)width);
         PyTuple_SetItem(pArgs, 1, pValue);
 
         // The 3rd argument: height
-        pValue = PyInt_FromLong((long)height);
+        pValue = PyLong_FromLong((long)height);
         PyTuple_SetItem(pArgs, 2, pValue);
 
         // The 4th argument: RGB buffer
@@ -62,7 +62,7 @@ int PNGWriter::Write(const unsigned char *buffer, const unsigned int width,
         PyObject *pListOfChars = PyList_New(nChars);
         VAssert(pListOfChars);
         for (long i = 0; i < nChars; i++) {
-            int rt = PyList_SetItem(pListOfChars, i, PyInt_FromLong((long)buffer[i]));
+            int rt = PyList_SetItem(pListOfChars, i, PyLong_FromLong((long)buffer[i]));
             VAssert(rt == 0);
         }
         PyTuple_SetItem(pArgs, 3, pListOfChars);
