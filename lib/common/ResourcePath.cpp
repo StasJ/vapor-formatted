@@ -115,5 +115,6 @@ std::string Wasp::GetPythonDir() {
 
     if (!FileUtils::Exists(exists))
         path = string(PYTHON_DIR);
+    cout << "ResourcePath.cpp setting PYTHONDIR to " << path << endl;
     return path;
 }
