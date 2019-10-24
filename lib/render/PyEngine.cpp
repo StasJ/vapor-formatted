@@ -232,6 +232,7 @@ int PyEngine::Initialize() {
     if (PyArray_API == NULL) {
         import_array1(-1)
     }
+
     return (0);
 }
 
@@ -420,7 +421,7 @@ int PyEngine::Calculate(const string &script, vector<string> inputVarNames,
     PyObject *retObj = PyRun_String(script.c_str(), Py_file_input, mainDict, mainDict);
 
     if (!retObj) {
-        SetErrMsg("PyRun_String() : %s", MyPython::Instance()->PyErr().c_str());
+        SetErrMsg("foo PyRun_String() : %s", MyPython::Instance()->PyErr().c_str());
         _cleanupDict(mainDict, inputVarNames);
         return -1;
     }
@@ -441,7 +442,7 @@ int PyEngine::Calculate(const string &script, vector<string> inputVarNames,
 void PyEngine::_cleanupDict(PyObject *mainDict, vector<string> keynames) {
 
     for (int i = 0; i < keynames.size(); i++) {
-        PyObject *key = PyUnicode_FromString(keynames[i].c_str());
+        PyObject *key = PyBytes_FromString(keynames[i].c_str());
         if (!key)
             continue;
         if (PyDict_Contains(mainDict, key)) {
