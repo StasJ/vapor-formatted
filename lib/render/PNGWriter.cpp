@@ -33,7 +33,7 @@ int PNGWriter::Write(const unsigned char *buffer, const unsigned int width,
         return (-1);
     }
 
-    pName = PyBytes_FromString("imagewriter");
+    pName = PyUnicode_FromString("imagewriter");
     pModule = PyImport_Import(pName);
 
     if (pModule == NULL) {
@@ -46,7 +46,7 @@ int PNGWriter::Write(const unsigned char *buffer, const unsigned int width,
         pArgs = PyTuple_New(4);
 
         // The 1st argument: output filename
-        pValue = PyBytes_FromString(path.c_str());
+        pValue = PyUnicode_FromString(path.c_str());
         PyTuple_SetItem(pArgs, 0, pValue);
 
         // The 2nd argument: width
