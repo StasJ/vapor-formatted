@@ -12,7 +12,7 @@ class PCheckbox : public PWidget {
     PCheckbox(const std::string &tag, const std::string &label = "");
 
   protected:
-    void update() const;
+    void updateGUI() const override;
 
   private slots:
     void checkboxStateChanged(int state);

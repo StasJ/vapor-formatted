@@ -16,7 +16,7 @@ class PColorSelector : public PLineItem {
     static std::vector<double> QColorToVector(const QColor &c);
 
   protected:
-    void update() const;
+    void updateGUI() const override;
 
   private slots:
     void colorChanged(QColor color);
