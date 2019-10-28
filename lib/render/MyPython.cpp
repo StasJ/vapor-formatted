@@ -107,10 +107,10 @@ int MyPython::Initialize() {
             // Py_SetPythonHome( nonConstPyHome );
             // Py_SetPythonHome( wCharPyHome );
 
-            // std::string pythonPath =
-            // "/usr/local/VAPOR-Deps/2019-Aug/lib/python3.6/site-packages"; pythonPath = pythonPath
-            // + ":/usr/local/VAPOR-Deps/2019-Aug/lib/python3.6"; setenv("PYTHONPATH",
-            // pythonPath.c_str(), 1);
+            std::string pythonPath = "/usr/local/VAPOR-Deps/2019-Aug/lib/python3.6/site-packages";
+            pythonPath = pythonPath + ":/usr/local/VAPOR-Deps/2019-Aug/lib/python3.6";
+            pythonPath = pythonPath + ":/usr/local/VAPOR-Deps/2019-Aug/lib";
+            setenv("PYTHONPATH", pythonPath.c_str(), 1);
 
             cout << "MyPython.cpp setting python home to " << m_pyHome << endl;
             // wchar_t pyHome[FILENAME_MAX+1];
