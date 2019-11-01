@@ -102,6 +102,8 @@ void LegacyGL::Vertex(glm::vec3 v) { Vertex3f(v.x, v.y, v.z); }
 
 void LegacyGL::Vertex2f(float x, float y) { Vertex3f(x, y, 0); }
 
+extern bool PRINT_VERTS;
+
 void LegacyGL::Vertex3f(float x, float y, float z) {
     VAssert(_insideBeginEndBlock);
     _vertices.push_back({x, y, z, _nx, _ny, _nz, _r, _g, _b, _a, _s, _t});
@@ -165,7 +167,8 @@ void LegacyGL::DisableLighting() { _lightingEnabled = false; }
 
 void LegacyGL::LightDirectionfv(const float *f) {
     glm::vec3 dir = glm::make_vec3(f);
-    dir = _glManager->matrixManager->GetModelViewMatrix() * glm::vec4(dir, 0.f);
+    // mimic legacy setlightdirectionfv
+    //    dir = _glManager->matrixManager->GetModelViewMatrix() * glm::vec4(dir, 0.f);
     _lightDir[0] = dir.x;
     _lightDir[1] = dir.y;
     _lightDir[2] = dir.z;
