@@ -331,7 +331,6 @@ void SettingsEventRouter::_updateDirectoryPaths() {
     _flowPathEdit->setText(QString::fromStdString(flowPath));
 
     string pythonPath = sParams->GetPythonDir();
-    std::cout << "PythonPath " << pythonPath << endl;
     _pythonPathEdit->setText(QString::fromStdString(pythonPath));
 }
 
