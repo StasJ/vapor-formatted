@@ -89,8 +89,8 @@ NavigationEventRouter::NavigationEventRouter(QWidget *parent, ControlExec *ce)
     framebufferSection->layout()->addWidget(
         _customFramebufferHeight = new ParamsWidgetNumber(
             ViewpointParams::CustomFramebufferHeightTag, "Output Height (px)"));
-    _customFramebufferWidth->SetRange(1, 4096);
-    _customFramebufferHeight->SetRange(1, 4096);
+    _customFramebufferWidth->SetRange(1, 16384);
+    _customFramebufferHeight->SetRange(1, 16384);
 }
 
 NavigationEventRouter::~NavigationEventRouter() {}
