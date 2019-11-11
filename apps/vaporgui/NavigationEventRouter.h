@@ -21,6 +21,7 @@
 #define VIEWPOINTEVENTROUTER_H
 
 #include "EventRouter.h"
+#include "ParamsWidgets.h"
 #include "ui_NavigationTab.h"
 #include <qobject.h>
 #include <vapor/MyBase.h>
@@ -67,6 +68,10 @@ class NavigationEventRouter : public QWidget, public Ui_NavigationTab, public Ev
     virtual void _updateTab();
 
   private:
+    ParamsWidgetCheckbox *_useCustomFramebufferCheckbox;
+    ParamsWidgetNumber *_customFramebufferWidth;
+    ParamsWidgetNumber *_customFramebufferHeight;
+
     NavigationEventRouter() {}
 
     virtual void wheelEvent(QWheelEvent *) {}
