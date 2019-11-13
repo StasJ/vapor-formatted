@@ -10,6 +10,8 @@
 #include "VCheckBox.h"
 #include "VComboBox.h"
 #include "VLineEdit.h"
+#include "VSlider.h"
+#include "VSliderEdit.h"
 #include "VSpinBox.h"
 
 #include <vapor/SliceParams.h>
@@ -36,14 +38,26 @@ class SliceVariablesSubtab : public QWidget, public Ui_SliceVariablesGUI {
     void _setDefaultSampleRate();
     void _vcbChanged(std::string value) { cout << "vcb changed to " << value << endl; }
     void _vsbChanged(int value) { cout << "vsb changed to " << value << endl; }
-    void _vcbChanged(bool value) { cout << "vcb changed to " << value << endl; }
+    void _vcbChanged(bool value) {
+        _vse->SetIntType(value);
+        _vs->SetIntType(value);
+        cout << "vcb changed to " << value << endl;
+    }
     void _vleChanged(std::string value) { cout << "vle changed to " << value << endl; }
+    void _vsChangedIntermediate(double value) {
+        cout << "vle intermediately changed to " << value << endl;
+    }
+    void _vsChanged(double value) { cout << "vs changed to " << value << endl; }
+    void _vseChanged(double value) { cout << "vse changed to " << value << endl; }
 
   private:
     VComboBox2 *_vcb;
     VSpinBox2 *_vsb;
     VCheckBox2 *_vchb;
     VLineEdit2 *_vle;
+    VSlider2 *_vs;
+    VSliderEdit *_vse;
+
     VAPoR::SliceParams *_params;
 };
 
