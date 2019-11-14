@@ -9,7 +9,9 @@
 
 #include "VCheckBox.h"
 #include "VComboBox.h"
+#include "VFileSelector.h"
 #include "VLineEdit.h"
+#include "VPushButton.h"
 #include "VSlider.h"
 #include "VSliderEdit.h"
 #include "VSpinBox.h"
@@ -49,6 +51,13 @@ class SliceVariablesSubtab : public QWidget, public Ui_SliceVariablesGUI {
     }
     void _vsChanged(double value) { cout << "vs changed to " << value << endl; }
     void _vseChanged(double value) { cout << "vse changed to " << value << endl; }
+    void _vseChangedIntermediate(double value) {
+        cout << "vse interm. changed to " << value << endl;
+    }
+    void _bChanged() { cout << "button pushed" << endl; }
+    void _frChanged() { cout << "frChanged " << _fr->GetValue() << endl; }
+    void _fwChanged() { cout << "fwChanged " << _fw->GetValue() << endl; }
+    void _dsChanged() { cout << "dsChanged " << _fw->GetValue() << endl; }
 
   private:
     VComboBox2 *_vcb;
@@ -57,6 +66,10 @@ class SliceVariablesSubtab : public QWidget, public Ui_SliceVariablesGUI {
     VLineEdit2 *_vle;
     VSlider2 *_vs;
     VSliderEdit *_vse;
+    VPushButton2 *_pb;
+    VFileReader2 *_fr;
+    VFileWriter2 *_fw;
+    VDirSelector *_ds;
 
     VAPoR::SliceParams *_params;
 };
