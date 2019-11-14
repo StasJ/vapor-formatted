@@ -22,7 +22,6 @@ class VSpinBox2 : public VContainer {
     QSpinBox *_spinBox;
 
   public slots:
-    void emitSpinBoxChanged(int value){};
     void emitSpinBoxChanged();
 
   signals:
