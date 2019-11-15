@@ -1,6 +1,6 @@
 #include "VComboBox.h"
 
-VComboBox2::VComboBox2(const std::vector<std::string> &values) : VContainer(this) {
+VComboBox::VComboBox(const std::vector<std::string> &values) : VContainer(this) {
     _combo = new QComboBox;
     layout()->addWidget(_combo);
     SetOptions(values);
@@ -10,7 +10,7 @@ VComboBox2::VComboBox2(const std::vector<std::string> &values) : VContainer(this
 
 // Stas thinks that we should have setValues and setValue instead of Update
 //
-void VComboBox2::SetOptions(const std::vector<std::string> &values) {
+void VComboBox::SetOptions(const std::vector<std::string> &values) {
     _combo->blockSignals(true);
     _combo->clear();
     for (auto i : values) {
@@ -19,8 +19,24 @@ void VComboBox2::SetOptions(const std::vector<std::string> &values) {
     _combo->blockSignals(false);
 }
 
-int VComboBox2::GetCurrentIndex() const { return _combo->currentIndex(); }
+void VComboBox::SetIndex(int index) {
+    if (index > _combo->count())
+        return;
 
-std::string VComboBox2::GetCurrentString() const { return _combo->currentText().toStdString(); }
+    _combo->blockSignals(true);
+    _combo->setCurrentIndex(index);
+    _combo->blockSignals(false);
+}
 
-void VComboBox2::emitComboChanged(QString value) { emit ValueChanged(value.toStdString()); }
+void VComboBox::SetValue(const std::string &value) {
+    QString qValue = QString::fromStdString(value);
+    int index = _combo->findText(qValue);
+    if (index >= 0)
+        SetIndex(index);
+}
+
+int VComboBox::GetCurrentIndex() const { return _combo->currentIndex(); }
+
+std::string VComboBox::GetCurrentString() const { return _combo->currentText().toStdString(); }
+
+void VComboBox::emitComboChanged(QString value) { emit ValueChanged(value.toStdString()); }

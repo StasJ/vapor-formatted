@@ -10,6 +10,11 @@ VSection::VSection(const std::string &title) {
     setStyleSheet(_createStylesheet());
 }
 
+void VSection::AddWidget(QWidget *inputWidget, int index) {
+    QWidget *targetTab = widget(index);
+    targetTab->layout()->addWidget(inputWidget);
+}
+
 QVBoxLayout *VSection::layout() const { return (QVBoxLayout *)_tab()->layout(); }
 
 void VSection::setMenu(QMenu *menu) {

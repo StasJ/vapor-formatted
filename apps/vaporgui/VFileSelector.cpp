@@ -6,11 +6,11 @@
 #include "VLineEdit.h"
 #include "VPushButton.h"
 
-VFileSelector2::VFileSelector2(const std::string &buttonText, const std::string &defaultPath,
-                               const std::string &filter = "")
+VFileSelector::VFileSelector(const std::string &buttonText, const std::string &defaultPath,
+                             const std::string &filter = "")
     : VContainer(this), _filePath(defaultPath), _filter(filter) {
-    _pushButton = new VPushButton2(buttonText);
-    _lineEdit = new VLineEdit2(defaultPath);
+    _pushButton = new VPushButton(buttonText);
+    _lineEdit = new VLineEdit(defaultPath);
     layout()->addWidget(_pushButton);
     layout()->addWidget(_lineEdit);
 
@@ -22,9 +22,9 @@ VFileSelector2::VFileSelector2(const std::string &buttonText, const std::string 
             SLOT(SetPathFromLineEdit(const std::string &)));
 }
 
-std::string VFileSelector2::GetValue() const { return _filePath; }
+std::string VFileSelector::GetValue() const { return _filePath; }
 
-bool VFileSelector2::SetValue(const std::string &file) {
+bool VFileSelector::SetValue(const std::string &file) {
     bool success = false;
 
     if (file == _filePath) // Do nothing, if nothing is changed
@@ -41,13 +41,13 @@ bool VFileSelector2::SetValue(const std::string &file) {
     return success;
 }
 
-void VFileSelector2::OpenFileDialog() {
+void VFileSelector::OpenFileDialog() {
     std::string file = _launchFileDialog();
     if (SetValue(file))
         emit ValueChanged(_filePath);
 }
 
-void VFileSelector2::SetPathFromLineEdit(const std::string &file) {
+void VFileSelector::SetPathFromLineEdit(const std::string &file) {
     if (SetValue(file))
         emit ValueChanged(_filePath);
 }
@@ -55,18 +55,18 @@ void VFileSelector2::SetPathFromLineEdit(const std::string &file) {
 //
 //
 //
-VFileReader2::VFileReader2(const std::string &buttonText, const std::string &defaultPath,
-                           const std::string &filter)
-    : VFileSelector2(buttonText, defaultPath, filter) {}
+VFileReader::VFileReader(const std::string &buttonText, const std::string &defaultPath,
+                         const std::string &filter)
+    : VFileSelector(buttonText, defaultPath, filter) {}
 
-std::string VFileReader2::_launchFileDialog() {
+std::string VFileReader::_launchFileDialog() {
     QString fileName = QFileDialog::getOpenFileName(this, "Select Directory/File",
                                                     QString::fromStdString(_filePath),
                                                     QString::fromStdString(_filter));
     return fileName.toStdString();
 }
 
-bool VFileReader2::_isFileOperable(const std::string &filePath) const {
+bool VFileReader::_isFileOperable(const std::string &filePath) const {
     bool operable = false;
     operable = FileOperationChecker::FileGoodToRead(QString::fromStdString(filePath));
     return operable;
@@ -75,17 +75,17 @@ bool VFileReader2::_isFileOperable(const std::string &filePath) const {
 //
 //
 //
-VFileWriter2::VFileWriter2(const std::string &buttonText, const std::string &defaultPath,
-                           const std::string &filter)
-    : VFileSelector2(buttonText, defaultPath, filter) {}
+VFileWriter::VFileWriter(const std::string &buttonText, const std::string &defaultPath,
+                         const std::string &filter)
+    : VFileSelector(buttonText, defaultPath, filter) {}
 
-bool VFileWriter2::_isFileOperable(const std::string &filePath) const {
+bool VFileWriter::_isFileOperable(const std::string &filePath) const {
     bool operable = false;
     operable = FileOperationChecker::FileGoodToWrite(QString::fromStdString(filePath));
     return operable;
 }
 
-std::string VFileWriter2::_launchFileDialog() {
+std::string VFileWriter::_launchFileDialog() {
     QString fileName = QFileDialog::getSaveFileName(this, "Select Directory/File",
                                                     QString::fromStdString(_filePath),
                                                     QString::fromStdString(_filter));
@@ -93,7 +93,7 @@ std::string VFileWriter2::_launchFileDialog() {
 }
 
 VDirSelector::VDirSelector(const std::string &buttonText, const std::string &defaultPath)
-    : VFileSelector2(buttonText, defaultPath) {}
+    : VFileSelector(buttonText, defaultPath) {}
 
 std::string VDirSelector::_launchFileDialog() {
     QString fileName = QFileDialog::getExistingDirectory(this, "Select Directory/File",

@@ -1,6 +1,12 @@
 #include "FlowSubtabs.h"
 #include "vapor/DataMgrUtils.h"
 
+#include "VComboBox.h"
+#include "VLineItem.h"
+#include "VSliderEdit.h"
+
+#define verbose 1
+
 QVaporSubtab::QVaporSubtab(QWidget *parent) : QWidget(parent) {
     _layout = new QVBoxLayout(this);
     _layout->setContentsMargins(0, 0, 0, 0);
@@ -16,20 +22,22 @@ FlowVariablesSubtab::FlowVariablesSubtab(QWidget *parent) : QVaporSubtab(parent)
     _variablesWidget->Reinit((VariableFlags)(VECTOR | COLOR), (DimFlags)(THREED));
     _layout->addWidget(_variablesWidget, 0, 0);
 
-    _velocityMltp = new VLineEdit(this, "Field Scale Factor", "1.0");
-    _layout->addWidget(_velocityMltp);
+    /*    _velocityMltp = new VLineEdit( this, "Field Scale Factor", "1.0" );
+        _layout->addWidget( _velocityMltp );
 
-    _periodicX = new VCheckBox(this, "Particles periodic in X");
-    _layout->addWidget(_periodicX);
-    _periodicY = new VCheckBox(this, "Particles periodic in Y");
-    _layout->addWidget(_periodicY);
-    _periodicZ = new VCheckBox(this, "Particles periodic in Z");
-    _layout->addWidget(_periodicZ);
+        _periodicX = new VCheckBox( this, "Particles periodic in X" );
+        _layout->addWidget( _periodicX );
+        _periodicY = new VCheckBox( this, "Particles periodic in Y" );
+        _layout->addWidget( _periodicY );
+        _periodicZ = new VCheckBox( this, "Particles periodic in Z" );
+        _layout->addWidget( _periodicZ );
 
-    connect(_velocityMltp, SIGNAL(_editingFinished()), this, SLOT(_velocityMultiplierChanged()));
-    connect(_periodicX, SIGNAL(_checkboxClicked()), this, SLOT(_periodicClicked()));
-    connect(_periodicY, SIGNAL(_checkboxClicked()), this, SLOT(_periodicClicked()));
-    connect(_periodicZ, SIGNAL(_checkboxClicked()), this, SLOT(_periodicClicked()));
+        connect( _velocityMltp,     SIGNAL( _editingFinished() ), this, SLOT(
+       _velocityMultiplierChanged() ) ); connect( _periodicX,        SIGNAL( _checkboxClicked() ),
+       this, SLOT( _periodicClicked() ) ); connect( _periodicY,        SIGNAL( _checkboxClicked() ),
+       this, SLOT( _periodicClicked() ) );
+        connect( _periodicZ,        SIGNAL( _checkboxClicked() ), this, SLOT( _periodicClicked() )
+       );*/
 }
 
 void FlowVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -39,45 +47,53 @@ void FlowVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *para
     _variablesWidget->Update(dataMgr, paramsMgr, rParams);
 
     // Update custom widgets
-    auto mltp = _params->GetVelocityMultiplier();
-    _velocityMltp->SetEditText(QString::number(mltp, 'f', 3));
+    /*auto mltp = _params->GetVelocityMultiplier();
+    _velocityMltp->SetEditText( QString::number( mltp, 'f', 3 ) );
 
     auto bools = _params->GetPeriodic();
-    _periodicX->SetCheckState(bools[0]);
-    _periodicY->SetCheckState(bools[1]);
-    _periodicZ->SetCheckState(bools[2]);
+    _periodicX->SetCheckState( bools[0] );
+    _periodicY->SetCheckState( bools[1] );
+    _periodicZ->SetCheckState( bools[2] );*/
 }
 
-void FlowVariablesSubtab::_periodicClicked() {
-    std::vector<bool> bools(3, false);
+/*void
+FlowVariablesSubtab::_periodicClicked()
+{
+    std::vector<bool> bools( 3, false );
     bools[0] = _periodicX->GetCheckState();
     bools[1] = _periodicY->GetCheckState();
     bools[2] = _periodicZ->GetCheckState();
-    _params->SetPeriodic(bools);
-}
+    _params->SetPeriodic( bools );
+}*/
 
-void FlowVariablesSubtab::_velocityMultiplierChanged() {
+/*void
+FlowVariablesSubtab::_velocityMultiplierChanged()
+{
     double newval, oldval;
     oldval = _params->GetVelocityMultiplier();
-    try {
-        newval = std::stod(_velocityMltp->GetEditText());
-    } catch (const std::invalid_argument &e) {
+    try
+    {
+        newval = std::stod( _velocityMltp->GetEditText() );
+    }
+    catch ( const std::invalid_argument& e )
+    {
         std::cerr << "bad input: " << _velocityMltp->GetEditText() << std::endl;
-        _velocityMltp->SetEditText(QString::number(oldval, 'f', 3));
+        _velocityMltp->SetEditText( QString::number( oldval, 'f', 3 ) );
         return;
     }
 
-    if (newval >= 0.001 && newval <= 1000.0) // in the valid range
+    if( newval >= 0.001 && newval <= 1000.0 )   // in the valid range
     {
-        /* std::stod() would convert "3.83aaa" without throwing an exception.
-           We set the correct text based on the number identified.        */
-        _velocityMltp->SetEditText(QString::number(newval, 'f', 3));
-        /* Only write back to _params if newval is different from oldval */
-        if (newval != oldval)
-            _params->SetVelocityMultiplier(newval);
-    } else
-        _velocityMltp->SetEditText(QString::number(oldval, 'f', 3));
-}
+        // std::stod() would convert "3.83aaa" without throwing an exception.
+        // We set the correct text based on the number identified.
+        _velocityMltp->SetEditText( QString::number( newval, 'f', 3 ) );
+        // Only write back to _params if newval is different from oldval
+        if( newval != oldval )
+            _params->SetVelocityMultiplier( newval );
+    }
+    else
+        _velocityMltp->SetEditText( QString::number( oldval, 'f', 3 ) );
+}*/
 
 //
 //================================
@@ -102,89 +118,109 @@ void FlowAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *par
 //================================
 //
 FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
-    _steady = new VCheckBox(this, "Use Steady Flow");
-    _layout->addWidget(_steady);
-    connect(_steady, SIGNAL(_checkboxClicked()), this, SLOT(_steadyGotClicked()));
-    _steadyNumOfSteps = new VLineEdit(this, "Steady Integration Steps", "100");
-    _layout->addWidget(_steadyNumOfSteps);
-    connect(_steadyNumOfSteps, SIGNAL(_editingFinished()), this, SLOT(_steadyNumOfStepsChanged()));
-    _pastNumOfTimeSteps = new VIntSlider(this, "Display Past Num. of Time Steps", 1, 2);
-    _layout->addWidget(_pastNumOfTimeSteps);
-    connect(_pastNumOfTimeSteps, SIGNAL(_valueChanged(int)), this,
-            SLOT(_pastNumOfTimeStepsChanged(int)));
-    _seedInjInterval = new VIntSlider(this, "Seed Injection Interval", 0, 1);
-    _layout->addWidget(_seedInjInterval);
+    _integrationSection = new VSection("Flow Integration Settings");
+    layout()->addWidget(_integrationSection);
 
-    connect(_seedInjInterval, SIGNAL(_valueChanged(int)), this, SLOT(_seedInjIntervalChanged(int)));
+    std::vector<std::string> values = {"Steady", "Unsteady"};
+    _flowTypeComboBox = new VComboBox(values);
+    _integrationSection->AddWidget(new VLineItem("Integration type", _flowTypeComboBox));
+    connect(_flowTypeComboBox, SIGNAL(ValueChanged(std::string)), this,
+            SLOT(_configureIntegrationType(std::string)));
 
-    /* Index numbers are in agreement with what's in FlowRenderer.h */
-    _flowDirection = new VComboBox(this, "Steady Flow Direction");
-    _flowDirection->AddOption("Forward", static_cast<int>(FlowDir::FORWARD));
-    _flowDirection->AddOption("Backward", static_cast<int>(FlowDir::BACKWARD));
-    _flowDirection->AddOption("Bi-Directional", static_cast<int>(FlowDir::BI_DIR));
-    _layout->addWidget(_flowDirection);
-    connect(_flowDirection, SIGNAL(_indexChanged(int)), this, SLOT(_flowDirectionChanged(int)));
-    _seedGenMode = new VComboBox(this, "Seed Generation Mode");
+    values = {"Forward", "Backward", "Bi-Directional"};
+    _flowDirection = new VComboBox(values);
+
+    _integrationLengthSliderEdit = new VSliderEdit();
+    _integrationLengthSliderEdit->SetIntType(true);
+    connect(_integrationLengthSliderEdit, SIGNAL(ValueChanged(double)), this,
+            SLOT(_integrationLengthChanged(int)));
+    _integrationSection->AddWidget(
+        new VLineItem("Integration length", _integrationLengthSliderEdit));
+}
+/*    _steady = new VCheckBox( this, "Use Steady Flow" );
+    _layout->addWidget( _steady );
+    connect( _steady, SIGNAL( _checkboxClicked() ), this, SLOT( _steadyGotClicked() ) );
+    _steadyNumOfSteps = new VLineEdit( this, "Steady Integration Steps", "100" );
+    _layout->addWidget( _steadyNumOfSteps);
+    connect( _steadyNumOfSteps, SIGNAL( _editingFinished() ), this, SLOT( _steadyNumOfStepsChanged()
+) ); _pastNumOfTimeSteps = new VIntSlider( this, "Display Past Num. of Time Steps", 1, 2 );
+    _layout->addWidget( _pastNumOfTimeSteps );
+    connect( _pastNumOfTimeSteps,SIGNAL(_valueChanged(int) ), this, SLOT(
+_pastNumOfTimeStepsChanged(int) )); _seedInjInterval = new VIntSlider( this, "Seed Injection
+Interval", 0, 1 ); _layout->addWidget( _seedInjInterval );
+
+    connect( _seedInjInterval,  SIGNAL(_valueChanged(int)  ), this, SLOT(
+_seedInjIntervalChanged(int) ));
+
+    // Index numbers are in agreement with what's in FlowRenderer.h
+    _flowDirection = new VComboBox( this, "Steady Flow Direction" );
+    _flowDirection->AddOption( "Forward",        static_cast<int>(FlowDir::FORWARD) );
+    _flowDirection->AddOption( "Backward",       static_cast<int>(FlowDir::BACKWARD) );
+    _flowDirection->AddOption( "Bi-Directional", static_cast<int>(FlowDir::BI_DIR) );
+    _layout->addWidget( _flowDirection );
+    connect( _flowDirection, SIGNAL(_indexChanged(int)), this, SLOT( _flowDirectionChanged(int) ) );
+    _seedGenMode = new VComboBox( this, "Seed Generation Mode" );
 
     _hline1 = new QFrame(this);
-    _hline1->setFrameShape(QFrame::HLine);
-    _layout->addWidget(_hline1);
+    _hline1->setFrameShape( QFrame::HLine );
+    _layout->addWidget( _hline1 );
 
-    /* The following two widgets deal with flow line output and seed point input */
-    _fileWriter = new VFileWriter(this, "Output Flow Lines");
-    _fileWriter->SetFileFilter(QString::fromAscii("*.txt"));
-    _layout->addWidget(_fileWriter);
-    connect(_fileWriter, SIGNAL(_pathChanged()), this, SLOT(_fileWriterChanged()));
+    // The following two widgets deal with flow line output and seed point input
+    _fileWriter = new VFileWriter( this, "Output Flow Lines" );
+    _fileWriter->SetFileFilter( QString::fromAscii("*.txt") );
+    _layout->addWidget( _fileWriter );
+    connect( _fileWriter, SIGNAL( _pathChanged() ), this, SLOT( _fileWriterChanged() ) );
 
-    _fileReader = new VFileReader(this, "Input Seed File");
-    _fileReader->SetFileFilter(QString::fromAscii("*.txt"));
-    _layout->addWidget(_fileReader);
-    connect(_fileReader, SIGNAL(_pathChanged()), this, SLOT(_fileReaderChanged()));
+    _fileReader = new VFileReader( this, "Input Seed File" );
+    _fileReader->SetFileFilter( QString::fromAscii("*.txt") );
+    _layout->addWidget( _fileReader );
+    connect( _fileReader, SIGNAL( _pathChanged() ), this, SLOT( _fileReaderChanged() ) );
 
     _hline2 = new QFrame(this);
-    _hline2->setFrameShape(QFrame::HLine);
-    _layout->addWidget(_hline2);
+    _hline2->setFrameShape( QFrame::HLine );
+    _layout->addWidget( _hline2 );
 
-    /* Index numbers are in agreement with what's in FlowRenderer.h */
-    _seedGenMode->AddOption("From a Rake, Uniformly", static_cast<int>(FlowSeedMode::UNIFORM));
-    _seedGenMode->AddOption("From a Rake, Randomly", static_cast<int>(FlowSeedMode::RANDOM));
-    _seedGenMode->AddOption("From a Rake, Randomly with Bias",
-                            static_cast<int>(FlowSeedMode::RANDOM_BIAS));
-    _seedGenMode->AddOption("From a List", static_cast<int>(FlowSeedMode::LIST));
-    _layout->addWidget(_seedGenMode);
-    connect(_seedGenMode, SIGNAL(_indexChanged(int)), this, SLOT(_seedGenModeChanged(int)));
+    // Index numbers are in agreement with what's in FlowRenderer.h
+    _seedGenMode->AddOption( "From a Rake, Uniformly", static_cast<int>(FlowSeedMode::UNIFORM) );
+    _seedGenMode->AddOption( "From a Rake, Randomly",  static_cast<int>(FlowSeedMode::RANDOM) );
+    _seedGenMode->AddOption( "From a Rake, Randomly with Bias",
+                             static_cast<int>(FlowSeedMode::RANDOM_BIAS) );
+    _seedGenMode->AddOption( "From a List",            static_cast<int>(FlowSeedMode::LIST) );
+    _layout->addWidget( _seedGenMode );
+    connect( _seedGenMode, SIGNAL( _indexChanged(int) ), this, SLOT( _seedGenModeChanged(int) ) );
 
-    /* Set up the Rake selector */
+    // Set up the Rake selector
     std::vector<float> geoRange = {0.0, 1.0, 0.0, 1.0, 0.0, 1.0}; // temporary range
-    _rake = new VGeometry(this, 3, geoRange);
-    _layout->addWidget(_rake);
-    connect(_rake, SIGNAL(_geometryChanged()), this, SLOT(_rakeGeometryChanged()));
+    _rake = new VGeometry( this, 3, geoRange );
+    _layout->addWidget( _rake );
+    connect( _rake, SIGNAL( _geometryChanged() ), this, SLOT( _rakeGeometryChanged() ) );
 
-    /* Set up rake seed number controls */
-    _rakeXNum = new VLineEdit(this, "Num. of Seeds in X", "1");
-    _rakeYNum = new VLineEdit(this, "Num. of Seeds in Y", "1");
-    _rakeZNum = new VLineEdit(this, "Num. of Seeds in Z", "1");
-    _rakeTotalNum = new VLineEdit(this, "Total Num. of Seeds", "1");
-    _layout->addWidget(_rakeXNum);
-    _layout->addWidget(_rakeYNum);
-    _layout->addWidget(_rakeZNum);
-    _layout->addWidget(_rakeTotalNum);
-    connect(_rakeXNum, SIGNAL(_editingFinished()), this, SLOT(_rakeNumOfSeedsChanged()));
-    connect(_rakeYNum, SIGNAL(_editingFinished()), this, SLOT(_rakeNumOfSeedsChanged()));
-    connect(_rakeZNum, SIGNAL(_editingFinished()), this, SLOT(_rakeNumOfSeedsChanged()));
-    connect(_rakeTotalNum, SIGNAL(_editingFinished()), this, SLOT(_rakeNumOfSeedsChanged()));
+    // Set up rake seed number controls
+    _rakeXNum     = new VLineEdit( this, "Num. of Seeds in X",  "1" );
+    _rakeYNum     = new VLineEdit( this, "Num. of Seeds in Y",  "1" );
+    _rakeZNum     = new VLineEdit( this, "Num. of Seeds in Z",  "1" );
+    _rakeTotalNum = new VLineEdit( this, "Total Num. of Seeds", "1" );
+    _layout->addWidget( _rakeXNum );
+    _layout->addWidget( _rakeYNum );
+    _layout->addWidget( _rakeZNum );
+    _layout->addWidget( _rakeTotalNum );
+    connect( _rakeXNum, SIGNAL( _editingFinished() ), this, SLOT( _rakeNumOfSeedsChanged() ) );
+    connect( _rakeYNum, SIGNAL( _editingFinished() ), this, SLOT( _rakeNumOfSeedsChanged() ) );
+    connect( _rakeZNum, SIGNAL( _editingFinished() ), this, SLOT( _rakeNumOfSeedsChanged() ) );
+    connect( _rakeTotalNum, SIGNAL( _editingFinished() ), this, SLOT( _rakeNumOfSeedsChanged() ) );
 
-    _rakeBiasVariable = new VComboBox(this, "Random Bias Variable");
-    _rakeBiasStrength = new VSlider(this, "Random Bias Strength", -5.0f, 5.0f);
-    _layout->addWidget(_rakeBiasVariable);
-    _layout->addWidget(_rakeBiasStrength);
-    connect(_rakeBiasVariable, SIGNAL(_indexChanged(int)), this,
-            SLOT(_rakeBiasVariableChanged(int)));
-    connect(_rakeBiasStrength, SIGNAL(_valueChanged()), this, SLOT(_rakeBiasStrengthChanged()));
+    _rakeBiasVariable = new VComboBox( this, "Random Bias Variable" );
+    _rakeBiasStrength = new VSlider(   this, "Random Bias Strength", -5.0f, 5.0f );
+    _layout->addWidget( _rakeBiasVariable );
+    _layout->addWidget( _rakeBiasStrength );
+    connect( _rakeBiasVariable, SIGNAL( _indexChanged(int) ), this, SLOT(
+_rakeBiasVariableChanged(int) ) ); connect( _rakeBiasStrength, SIGNAL( _valueChanged() ),    this,
+SLOT( _rakeBiasStrengthChanged()    ) );
 
     VAssert(parent);
     connect(parent, SIGNAL(currentChanged(int)), this, SLOT(_selectedTabChanged(int)));
 }
+*/
 
 void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                                VAPoR::RenderParams *params) {
@@ -193,137 +229,169 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
     VAssert(_params);
 
     bool isSteady = _params->GetIsSteady();
-    _steady->SetCheckState(isSteady);
+    if (isSteady)
+        _flowTypeComboBox->SetValue("Steady");
+    else
+        _flowTypeComboBox->SetValue("Unsteady");
+
     int steadyNumOfSteps = _params->GetSteadyNumOfSteps();
-    _steadyNumOfSteps->SetEditText(QString::number(steadyNumOfSteps));
-
-    /* Update the past num of steps widget */
+    _integrationLengthSliderEdit->SetValue(steadyNumOfSteps);
+}
+/*
+    int steadyNumOfSteps    = _params->GetSteadyNumOfSteps();
+    _steadyNumOfSteps->SetEditText( QString::number( steadyNumOfSteps ) );
+    // Update the past num of steps widget
     int totalNumOfTimeSteps = dataMgr->GetNumTimeSteps();
-    _pastNumOfTimeSteps->SetRange(0, totalNumOfTimeSteps - 1);
+    _pastNumOfTimeSteps->SetRange( 0, totalNumOfTimeSteps - 1 );
     int valParams = _params->GetPastNumOfTimeSteps();
-    if (valParams < 0) // initial value, we need to set it to all time steps!
+    if( valParams < 0 )     // initial value, we need to set it to all time steps!
     {
-        _pastNumOfTimeSteps->SetCurrentValue(totalNumOfTimeSteps - 1);
-        _params->SetPastNumOfTimeSteps(totalNumOfTimeSteps - 1);
-    } else {
-        _pastNumOfTimeSteps->SetCurrentValue(valParams);
+        _pastNumOfTimeSteps->SetCurrentValue( totalNumOfTimeSteps - 1 );
+        _params->SetPastNumOfTimeSteps( totalNumOfTimeSteps - 1 );
+    }
+    else
+    {
+        _pastNumOfTimeSteps->SetCurrentValue( valParams );
     }
 
-    /* Update the seed injection interval widget */
-    _seedInjInterval->SetRange(0, totalNumOfTimeSteps - 1);
+    // Update the seed injection interval widget
+    _seedInjInterval->SetRange(0, totalNumOfTimeSteps - 1 );
     int injIntv = _params->GetSeedInjInterval();
-    if (injIntv < 0) // initial value, we set it to 0
+    if( injIntv < 0 )       // initial value, we set it to 0
     {
-        _seedInjInterval->SetCurrentValue(0);
-        _params->SetSeedInjInterval(0);
-    } else {
-        _seedInjInterval->SetCurrentValue(injIntv);
+        _seedInjInterval->SetCurrentValue( 0 );
+        _params->SetSeedInjInterval( 0 );
+    }
+    else
+    {
+        _seedInjInterval->SetCurrentValue( injIntv );
     }
 
-    /* Update flow direction combo */
-    auto dir = _params->GetFlowDirection();
-    if (dir >= 0 && dir < _flowDirection->GetNumOfItems())
-        _flowDirection->SetIndex(dir);
-    else {
-        _flowDirection->SetIndex(0);
-        _params->SetFlowDirection(0); // use 0 as the default option
+    // Update flow direction combo
+    auto dir  = _params->GetFlowDirection();
+    if(  dir >= 0 && dir < _flowDirection->GetNumOfItems() )
+        _flowDirection->SetIndex( dir );
+    else
+    {
+        _flowDirection->SetIndex(  0 );
+        _params->SetFlowDirection( 0 ); // use 0 as the default option
     }
 
-    /* Update seed generation mode combo */
+    // Update seed generation mode combo
     auto genMod = _params->GetSeedGenMode();
-    if (genMod >= 0 && genMod < _seedGenMode->GetNumOfItems())
-        _seedGenMode->SetIndex(genMod);
-    else {
-        _seedGenMode->SetIndex(0);
-        _params->SetSeedGenMode(0); // use 0 as the default option
+    if( genMod >= 0 && genMod < _seedGenMode->GetNumOfItems() )
+        _seedGenMode->SetIndex( genMod );
+    else
+    {
+        _seedGenMode->SetIndex(  0 );
+        _params->SetSeedGenMode( 0 ); // use 0 as the default option
     }
 
     _hideShowWidgets();
 
-    /* Update rake range */
+    // Update rake range
     std::vector<double> minExt, maxExt;
-    std::vector<int> axes;
-    VAPoR::DataMgrUtils::GetExtents(dataMgr, _params->GetCurrentTimestep(),
-                                    _params->GetFieldVariableNames(), minExt, maxExt, axes);
-    VAssert(minExt.size() == 3 && maxExt.size() == 3);
+    std::vector<int>    axes;
+    VAPoR::DataMgrUtils::GetExtents( dataMgr,
+                                     _params->GetCurrentTimestep(),
+                                     _params->GetFieldVariableNames(),
+                                     minExt,
+                                     maxExt,
+                                     axes  );
+    VAssert( minExt.size() == 3 && maxExt.size() == 3 );
     std::vector<float> range;
-    for (int i = 0; i < 3; i++) {
-        range.push_back(float(minExt[i]));
-        range.push_back(float(maxExt[i]));
-    }
-    _rake->SetDimAndRange(3, range);
-
-    /* Update rake values */
-    auto rakeVals = _params->GetRake();
-    /* In case the user hasn't set the rake, set the current value to be the rake extents,
-       plus update the params.  Otherwise, apply the actual rake values. */
-    if (std::isnan(rakeVals[0])) {
-        _rake->SetCurrentValues(range);
-        _params->SetRake(range);
-    } else {
-        _rake->SetCurrentValues(rakeVals);
-    }
-
-    /* Update rake num. of seeds */
-    auto rakeNumOfSeeds = _params->GetRakeNumOfSeeds();
-    _rakeXNum->SetEditText(QString::number(rakeNumOfSeeds[0]));
-    _rakeYNum->SetEditText(QString::number(rakeNumOfSeeds[1]));
-    _rakeZNum->SetEditText(QString::number(rakeNumOfSeeds[2]));
-    _rakeTotalNum->SetEditText(QString::number(rakeNumOfSeeds[3]));
-
-    /* Update rake random bias variable and strength */
-    if (_rakeBiasVariable->GetNumOfItems() < 1) // Not filled with variables yet
+    for( int i = 0; i < 3; i++ )
     {
-        auto varNames3d = dataMgr->GetDataVarNames(3);
-        for (int i = 0; i < varNames3d.size(); i++)
-            _rakeBiasVariable->AddOption(varNames3d[i], i);
-        _rakeBiasVariable->SetIndex(0); // Set the 1st variable name
+        range.push_back( float(minExt[i]) );
+        range.push_back( float(maxExt[i]) );
+    }
+    _rake->SetDimAndRange( 3, range );
+
+    // Update rake values
+    auto rakeVals = _params->GetRake();
+    // In case the user hasn't set the rake, set the current value to be the rake extents,
+       plus update the params.  Otherwise, apply the actual rake values.
+    if( std::isnan( rakeVals[0] ) )
+    {
+        _rake->SetCurrentValues( range );
+        _params->SetRake( range );
+    }
+    else
+    {
+        _rake->SetCurrentValues( rakeVals );
+    }
+
+    // Update rake num. of seeds
+    auto rakeNumOfSeeds = _params->GetRakeNumOfSeeds();
+    _rakeXNum->SetEditText( QString::number( rakeNumOfSeeds[0] ) );
+    _rakeYNum->SetEditText( QString::number( rakeNumOfSeeds[1] ) );
+    _rakeZNum->SetEditText( QString::number( rakeNumOfSeeds[2] ) );
+    _rakeTotalNum->SetEditText( QString::number( rakeNumOfSeeds[3] ) );
+
+    // Update rake random bias variable and strength
+    if( _rakeBiasVariable->GetNumOfItems() < 1 )    // Not filled with variables yet
+    {
+        auto varNames3d = dataMgr->GetDataVarNames( 3 );
+        for( int i = 0; i < varNames3d.size(); i++ )
+            _rakeBiasVariable->AddOption( varNames3d[i], i );
+        _rakeBiasVariable->SetIndex( 0 );           // Set the 1st variable name
     }
     auto varParams = _params->GetRakeBiasVariable();
-    if (varParams.empty()) // The variable isn't set by the user yet. Let's set it!
+    if(  varParams.empty() )    // The variable isn't set by the user yet. Let's set it!
     {
         auto varDefault = _rakeBiasVariable->GetCurrentText();
-        _params->SetRakeBiasVariable(varDefault);
-    } else // Find the variable and set it in the GUI!
+        _params->SetRakeBiasVariable( varDefault );
+    }
+    else                        // Find the variable and set it in the GUI!
     {
-        for (int i = 0; i < _rakeBiasVariable->GetNumOfItems(); i++) {
-            auto varName = _rakeBiasVariable->GetItemText(i);
-            if (varName.compare(varParams) == 0) {
-                _rakeBiasVariable->SetIndex(i);
+        for( int i = 0; i < _rakeBiasVariable->GetNumOfItems(); i++ )
+        {
+            auto varName = _rakeBiasVariable->GetItemText( i );
+            if(  varName.compare( varParams ) == 0 )
+            {
+                _rakeBiasVariable->SetIndex( i );
                 break;
             }
         }
     }
 
-    _rakeBiasStrength->SetCurrentValue(_params->GetRakeBiasStrength());
+    _rakeBiasStrength->SetCurrentValue( _params->GetRakeBiasStrength() );
 
-    /* Update input and output file names */
-    if (!_params->GetSeedInputFilename().empty())
-        _fileReader->SetPath(_params->GetSeedInputFilename());
-    if (!_params->GetFlowlineOutputFilename().empty())
-        _fileWriter->SetPath(_params->GetFlowlineOutputFilename());
+    // Update input and output file names
+    if( !_params->GetSeedInputFilename().empty() )
+        _fileReader->SetPath( _params->GetSeedInputFilename() );
+    if( !_params->GetFlowlineOutputFilename().empty() )
+        _fileWriter->SetPath( _params->GetFlowlineOutputFilename() );
 }
+*/
 
-void FlowSeedingSubtab::_pastNumOfTimeStepsChanged(int newVal) {
+void FlowSeedingSubtab::_integrationLengthChanged(int newVal) {
     if (newVal != _params->GetPastNumOfTimeSteps()) {
         _params->SetPastNumOfTimeSteps(newVal);
     }
 }
 
-void FlowSeedingSubtab::_seedInjIntervalChanged(int newVal) {
-    if (newVal != _params->GetSeedInjInterval()) {
-        _params->SetSeedInjInterval(newVal);
+/*
+void
+FlowSeedingSubtab::_seedInjIntervalChanged( int newVal )
+{
+    if( newVal != _params->GetSeedInjInterval() )
+    {
+        _params->SetSeedInjInterval( newVal );
     }
 }
+*/
 
+/*
 #include <QScrollArea>
-void FlowSeedingSubtab::_selectedTabChanged(int index) {
+void FlowSeedingSubtab::_selectedTabChanged(int index)
+{
     if (!_paramsMgr)
         return;
 
-    const QTabWidget *parent = dynamic_cast<QTabWidget *>(sender());
+    const QTabWidget *parent = dynamic_cast<QTabWidget*>(sender());
     VAssert(parent);
-    const QScrollArea *area = dynamic_cast<QScrollArea *>(parent->widget(index));
+    const QScrollArea *area = dynamic_cast<QScrollArea*>(parent->widget(index));
     VAssert(area);
     const QWidget *widget = area->widget();
 
@@ -331,51 +399,103 @@ void FlowSeedingSubtab::_selectedTabChanged(int index) {
 
     gp->SetFlowSeedTabActive(widget == this);
 }
+*/
 
-void FlowSeedingSubtab::_steadyNumOfStepsChanged() {
+/*
+void
+FlowSeedingSubtab::_steadyNumOfStepsChanged()
+{
     int newval, oldval;
     oldval = (int)_params->GetSteadyNumOfSteps();
-    try {
-        newval = std::stoi(_steadyNumOfSteps->GetEditText());
-    } catch (const std::invalid_argument &e) {
+    try
+    {
+        newval = std::stoi( _steadyNumOfSteps->GetEditText() );
+    }
+    catch ( const std::invalid_argument& e )
+    {
         std::cerr << "bad input: " << _steadyNumOfSteps->GetEditText() << std::endl;
-        _steadyNumOfSteps->SetEditText(QString::number(oldval));
+        _steadyNumOfSteps->SetEditText( QString::number( oldval ) );
         return;
     }
 
-    if (newval >= 0) // in the valid range
+    if( newval >= 0 )    // in the valid range
     {
-        /* std::stoi() would convert "383aaa" without throwing an exception.
-           We set the correct text based on the number identified.        */
-        _steadyNumOfSteps->SetEditText(QString::number(newval));
-        /* Only write back to _params if newval is different from oldval */
-        if (newval != oldval)
-            _params->SetSteadyNumOfSteps(newval);
-    } else
-        _steadyNumOfSteps->SetEditText(QString::number(oldval));
+        // std::stoi() would convert "383aaa" without throwing an exception.
+        //   We set the correct text based on the number identified.
+        _steadyNumOfSteps->SetEditText( QString::number( newval ) );
+        // Only write back to _params if newval is different from ldval
+        if( newval != oldval )
+            _params->SetSteadyNumOfSteps( newval );
+    }
+    else
+        _steadyNumOfSteps->SetEditText( QString::number( oldval ) );
+}
+*/
+
+void FlowSeedingSubtab::_configureIntegrationType(const std::string &value) {
+    bool isSteady = true;
+    if (value == "Steady") {
+        //    _startSpinBox->hide();
+        //    _endSpinBox->hide();
+        //    _lifespanSpinBox->hide();
+        //    _intervalSpinBox->hide();
+        //    _directionCombo->show();
+        //    _integrationLengthEdit->show();
+    } else {
+        isSteady = false;
+        //   _startSpinBox->show();
+        //   _endSpinBox->show();
+        //   _lifespanSpinBox->show();
+        //   _intervalSpinBox->show();
+        //   _directionCombo->hide();
+        //   _integrationLengthEdit->hide();
+    }
+
+    if (verbose)
+        std::cout << "Integration combo changed to " << value << endl;
+
+    if (_params != nullptr) {
+        _params->SetIsSteady(isSteady);
+        if (verbose)
+            std::cout << "Integration params changed to " << _params->GetIsSteady() << endl;
+    }
+
+    if (verbose)
+        std::cout << std::endl;
 }
 
-void FlowSeedingSubtab::_steadyGotClicked() {
+/*
+void
+FlowSeedingSubtab::_steadyGotClicked()
+{
     bool userInput = _steady->GetCheckState();
-    _params->SetIsSteady(userInput);
+    _params->SetIsSteady( userInput );
 }
+*/
 
-void FlowSeedingSubtab::_hideShowWidgets() {
+/*
+void
+FlowSeedingSubtab::_hideShowWidgets()
+{
     bool isSteady = _params->GetIsSteady();
-    if (isSteady) {
+    if( isSteady )
+    {
         _steadyNumOfSteps->show();
         _flowDirection->show();
         _seedInjInterval->hide();
         _pastNumOfTimeSteps->hide();
-    } else {
+    }
+    else
+    {
         _steadyNumOfSteps->hide();
         _flowDirection->hide();
         _seedInjInterval->show();
         _pastNumOfTimeSteps->show();
     }
 
-    int genMod = _params->GetSeedGenMode(); // genMod must be valid at this point
-    if (genMod == static_cast<int>(FlowSeedMode::UNIFORM)) {
+    int genMod = _params->GetSeedGenMode();    // genMod must be valid at this point
+    if( genMod == static_cast<int>(FlowSeedMode::UNIFORM) )
+    {
         _rake->show();
         _rakeXNum->show();
         _rakeYNum->show();
@@ -383,7 +503,9 @@ void FlowSeedingSubtab::_hideShowWidgets() {
         _rakeTotalNum->hide();
         _rakeBiasVariable->hide();
         _rakeBiasStrength->hide();
-    } else if (genMod == static_cast<int>(FlowSeedMode::RANDOM)) {
+    }
+    else if( genMod == static_cast<int>(FlowSeedMode::RANDOM) )
+    {
         _rake->show();
         _rakeXNum->hide();
         _rakeYNum->hide();
@@ -391,7 +513,9 @@ void FlowSeedingSubtab::_hideShowWidgets() {
         _rakeTotalNum->show();
         _rakeBiasVariable->hide();
         _rakeBiasStrength->hide();
-    } else if (genMod == static_cast<int>(FlowSeedMode::RANDOM_BIAS)) {
+    }
+    else if( genMod == static_cast<int>(FlowSeedMode::RANDOM_BIAS) )
+    {
         _rake->show();
         _rakeXNum->hide();
         _rakeYNum->hide();
@@ -399,7 +523,9 @@ void FlowSeedingSubtab::_hideShowWidgets() {
         _rakeTotalNum->show();
         _rakeBiasVariable->show();
         _rakeBiasStrength->show();
-    } else if (genMod == static_cast<int>(FlowSeedMode::LIST)) {
+    }
+    else if( genMod == static_cast<int>(FlowSeedMode::LIST) )
+    {
         _rake->hide();
         _rakeXNum->hide();
         _rakeYNum->hide();
@@ -409,91 +535,138 @@ void FlowSeedingSubtab::_hideShowWidgets() {
         _rakeBiasStrength->hide();
     }
 }
+*/
 
-void FlowSeedingSubtab::_rakeBiasVariableChanged(int idx) {
+/*
+void
+FlowSeedingSubtab::_rakeBiasVariableChanged( int idx )
+{
     // idx is always a valid value, since it's returned by the GUI
-    auto varGUI = _rakeBiasVariable->GetCurrentText();
-    auto varParams = _params->GetRakeBiasVariable();
-    if (varGUI.compare(varParams) != 0) {
-        _params->SetRakeBiasVariable(varGUI);
+    auto varGUI     = _rakeBiasVariable->GetCurrentText();
+    auto varParams  = _params->GetRakeBiasVariable();
+    if(  varGUI.compare( varParams ) != 0 )
+    {
+        _params->SetRakeBiasVariable( varGUI );
     }
 }
+*/
 
-void FlowSeedingSubtab::_rakeBiasStrengthChanged() {
+/*
+void
+FlowSeedingSubtab::_rakeBiasStrengthChanged()
+{
     // The value returned from the GUI is always valid
-    auto strenGUI = _rakeBiasStrength->GetCurrentValue();
-    if (strenGUI != _params->GetRakeBiasStrength()) {
-        _rakeBiasStrength->SetCurrentValue(strenGUI);
-        _params->SetRakeBiasStrength(strenGUI);
+    auto strenGUI  = _rakeBiasStrength->GetCurrentValue();
+    if(  strenGUI != _params->GetRakeBiasStrength() )
+    {
+        _rakeBiasStrength->SetCurrentValue( strenGUI );
+        _params->SetRakeBiasStrength( strenGUI );
     }
 }
+*/
 
-void FlowSeedingSubtab::_rakeNumOfSeedsChanged() {
-    /* These fields should ALWAYS contain legal values, even when not in use.
-       That's why we validate every one of them!                           */
+/*
+void
+FlowSeedingSubtab::_rakeNumOfSeedsChanged()
+{
+    // These fields should ALWAYS contain legal values, even when not in use.
+    //   That's why we validate every one of them!
 
     const std::vector<long> oldVal = _params->GetRakeNumOfSeeds();
-    std::vector<long> newVal(4, -1);
+    std::vector<long> newVal( 4, -1 );
 
-    std::vector<VLineEdit *> pointers = {_rakeXNum, _rakeYNum, _rakeZNum, _rakeTotalNum};
-    for (int i = 0; i < 4; i++) {
+    std::vector<VLineEdit*> pointers = {_rakeXNum, _rakeYNum, _rakeZNum, _rakeTotalNum};
+    for( int i = 0; i < 4; i++ )
+    {
         long tmp;
-        try {
-            tmp = std::stol(pointers[i]->GetEditText());
-        } catch (const std::invalid_argument &e) // If not a long number
+        try
+        {
+            tmp = std::stol( pointers[i]->GetEditText() );
+        }
+        catch( const std::invalid_argument& e ) // If not a long number
         {
             std::cerr << "bad input: " << pointers[i]->GetEditText() << std::endl;
             newVal[i] = oldVal[i];
-            pointers[i]->SetEditText(QString::number(oldVal[i]));
+            pointers[i]->SetEditText( QString::number( oldVal[i] ) );
             continue;
         }
 
-        if (tmp > 0) // In the valid range, which is positive here
+        if( tmp > 0 )   // In the valid range, which is positive here
         {
             newVal[i] = tmp;
-            /* std::stol() would convert "383aaa" without throwing an exception.
-               We set the correct text based on the number identified.        */
-            pointers[i]->SetEditText(QString::number(tmp));
-        } else {
+            // std::stol() would convert "383aaa" without throwing an exception.
+            // We set the correct text based on the number identified.
+            pointers[i]->SetEditText( QString::number( tmp ) );
+        }
+        else
+        {
             newVal[i] = oldVal[i];
-            pointers[i]->SetEditText(QString::number(oldVal[i]));
+            pointers[i]->SetEditText( QString::number( oldVal[i] ) );
         }
     }
 
-    /* Only write back to _params when newVal is different from oldVal */
+    // Only write back to _params when newVal is different from oldVal
     bool diff = false;
-    for (int i = 0; i < 4; i++) {
-        if (newVal[i] != oldVal[i]) {
+    for( int i = 0; i < 4; i++ )
+    {
+        if( newVal[i] != oldVal[i] )
+        {
             diff = true;
             break;
         }
     }
-    if (diff) {
-        _params->SetRakeNumOfSeeds(newVal);
+    if( diff )
+    {
+        _params->SetRakeNumOfSeeds( newVal );
     }
 }
+*/
 
-void FlowSeedingSubtab::_rakeGeometryChanged() {
+/*
+void
+FlowSeedingSubtab::_rakeGeometryChanged()
+{
     std::vector<float> range;
-    _rake->GetCurrentValues(range);
-    VAssert(range.size() == 6);
-    _params->SetRake(range);
+    _rake->GetCurrentValues( range );
+    VAssert( range.size() == 6 );
+    _params->SetRake( range );
 }
+*/
 
-void FlowSeedingSubtab::_seedGenModeChanged(int newIdx) { _params->SetSeedGenMode(newIdx); }
+/*
+void
+FlowSeedingSubtab::_seedGenModeChanged( int newIdx )
+{
+    _params->SetSeedGenMode( newIdx );
+}
+*/
 
-void FlowSeedingSubtab::_fileReaderChanged() {
+/*
+void
+FlowSeedingSubtab::_fileReaderChanged()
+{
     std::string filename = _fileReader->GetPath();
-    _params->SetSeedInputFilename(filename);
+    _params->SetSeedInputFilename( filename );
 }
+*/
 
-void FlowSeedingSubtab::_fileWriterChanged() {
+/*
+void
+FlowSeedingSubtab::_fileWriterChanged()
+{
     std::string filename = _fileWriter->GetPath();
-    _params->SetFlowlineOutputFilename(filename);
-    _params->SetNeedFlowlineOutput(true);
+    _params->SetFlowlineOutputFilename( filename );
+    _params->SetNeedFlowlineOutput( true );
 }
+*/
 
-void FlowSeedingSubtab::_flowDirectionChanged(int newIdx) { _params->SetFlowDirection(newIdx); }
+/*
+void
+FlowSeedingSubtab::_flowDirectionChanged( int newIdx )
+{
+    _params->SetFlowDirection( newIdx );
+}
+*/
 
 //
 //================================

@@ -6,10 +6,10 @@
 
 #include "VContainer.h"
 
-class VPushButton2;
-class VLineEdit2;
+class VPushButton;
+class VLineEdit;
 
-class VFileSelector2 : public VContainer {
+class VFileSelector : public VContainer {
     Q_OBJECT
 
   public:
@@ -17,11 +17,11 @@ class VFileSelector2 : public VContainer {
     bool SetValue(const std::string &file);
 
   protected:
-    VFileSelector2(const std::string &buttonText, const std::string &defaultPath,
-                   const std::string &filter);
+    VFileSelector(const std::string &buttonText, const std::string &defaultPath,
+                  const std::string &filter);
 
-    VLineEdit2 *_lineEdit;
-    VPushButton2 *_pushButton;
+    VLineEdit *_lineEdit;
+    VPushButton *_pushButton;
 
     std::string _filePath;
     std::string _filter;
@@ -41,13 +41,13 @@ class VFileSelector2 : public VContainer {
 //
 //
 //
-class VFileReader2 : public VFileSelector2 {
+class VFileReader : public VFileSelector {
     Q_OBJECT
 
   public:
-    VFileReader2(const std::string &buttonText = "Select",
-                 const std::string &defaultPath = QDir::homePath().toStdString(),
-                 const std::string &filter = "");
+    VFileReader(const std::string &buttonText = "Select",
+                const std::string &defaultPath = QDir::homePath().toStdString(),
+                const std::string &filter = "");
 
   private:
     virtual std::string _launchFileDialog();
@@ -57,13 +57,13 @@ class VFileReader2 : public VFileSelector2 {
 //
 //
 //
-class VFileWriter2 : public VFileSelector2 {
+class VFileWriter : public VFileSelector {
     Q_OBJECT
 
   public:
-    VFileWriter2(const std::string &buttonText = "Select",
-                 const std::string &defaultPath = QDir::homePath().toStdString(),
-                 const std::string &filter = "");
+    VFileWriter(const std::string &buttonText = "Select",
+                const std::string &defaultPath = QDir::homePath().toStdString(),
+                const std::string &filter = "");
 
   private:
     virtual std::string _launchFileDialog();
@@ -73,7 +73,7 @@ class VFileWriter2 : public VFileSelector2 {
 //
 //
 //
-class VDirSelector : public VFileSelector2 {
+class VDirSelector : public VFileSelector {
     Q_OBJECT
 
   public:

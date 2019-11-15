@@ -18,7 +18,6 @@
 
 #include "RenderHolder.h"
 #include "ErrorReporter.h"
-#include "VaporWidgets.h"
 #include "VizSelectCombo.h"
 #include "qdialog.h"
 #include "ui_NewRendererDialog.h"
@@ -27,12 +26,14 @@
 #include <QList>
 #include <QStringList>
 #include <QTableWidget>
-#include <SettingsParams.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
 #include <sstream>
 #include <vapor/ControlExecutive.h>
 #include <vapor/ParamsMgr.h>
+//#include "VaporWidgets.h"
+#include "VPushButtonWithDoubleClick.h"
+#include <SettingsParams.h>
 #include <vapor/VolumeIsoRenderer.h>
 #include <vapor/VolumeRenderer.h>
 

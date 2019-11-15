@@ -4,7 +4,7 @@
 
 #define NUM_STEPS 100
 
-VSlider2::VSlider2(double min, double max) : VContainer(this), _isInt(false) {
+VSlider::VSlider(double min, double max) : VContainer(this), _isInt(false) {
     _slider = new QSlider;
     _slider->setOrientation(Qt::Horizontal);
     _slider->setMinimum(0);
@@ -18,7 +18,7 @@ VSlider2::VSlider2(double min, double max) : VContainer(this), _isInt(false) {
     connect(_slider, SIGNAL(sliderReleased()), this, SLOT(emitSliderChanged()));
 }
 
-void VSlider2::SetValue(double value) {
+void VSlider::SetValue(double value) {
     if (value > _maxValid)
         value = _maxValid;
     if (value < _minValid)
@@ -40,7 +40,7 @@ void VSlider2::SetValue(double value) {
     _slider->blockSignals(false);
 }
 
-void VSlider2::SetRange(double min, double max) {
+void VSlider::SetRange(double min, double max) {
     if (_isInt) {
         min = round(min);
         max = round(max);
@@ -56,7 +56,7 @@ void VSlider2::SetRange(double min, double max) {
     _maxValid = max;
 }
 
-double VSlider2::GetValue() const {
+double VSlider::GetValue() const {
     double value = _stepSize * _slider->value() + _minValid;
 
     if (_isInt)
@@ -65,9 +65,9 @@ double VSlider2::GetValue() const {
     return value;
 }
 
-void VSlider2::SetIntType(bool isInt) { _isInt = isInt; }
+void VSlider::SetIntType(bool isInt) { _isInt = isInt; }
 
-void VSlider2::emitSliderChanged() {
+void VSlider::emitSliderChanged() {
     double value = GetValue();
 
     // Nudge the current value to nearest whole number if we are of nt type,
@@ -79,7 +79,7 @@ void VSlider2::emitSliderChanged() {
     emit ValueChanged(value);
 }
 
-void VSlider2::emitSliderChangedIntermediate(int position) {
+void VSlider::emitSliderChangedIntermediate(int position) {
     double value = GetValue();
     emit ValueChangedIntermediate(value);
 }
