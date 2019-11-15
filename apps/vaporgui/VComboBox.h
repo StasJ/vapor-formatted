@@ -16,6 +16,7 @@ class VComboBox : public VContainer {
 
     int GetCurrentIndex() const;
     std::string GetCurrentString() const;
+    int GetCount() const;
 
   private:
     QComboBox *_combo;
