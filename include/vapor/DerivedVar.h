@@ -57,6 +57,8 @@ class VDF_API DerivedVar : public Wasp::MyBase {
 
     virtual size_t GetNumRefLevels() const { return (1); }
 
+    virtual std::vector<size_t> GetCRatios() const { return (std::vector<size_t>(1, 1)); }
+
     virtual int OpenVariableRead(size_t ts, int level = 0, int lod = 0) = 0;
 
     virtual int CloseVariable(int fd) = 0;
@@ -449,6 +451,10 @@ class VDF_API DerivedCoordVarStandardWRF_Terrain : public DerivedCFVertCoordVar 
 
     virtual int GetDimLensAtLevel(int level, std::vector<size_t> &dims_at_level,
                                   std::vector<size_t> &bs_at_level) const;
+
+    virtual size_t GetNumRefLevels() const { return (_dc->GetNumRefLevels(_PHVar)); }
+
+    virtual std::vector<size_t> GetCRatios() const { return (_dc->GetCRatios(_PHVar)); }
 
     virtual int OpenVariableRead(size_t ts, int level = 0, int lod = 0);
 
