@@ -1,4 +1,5 @@
 #include "FlowSubtabs.h"
+#include "ErrorReporter.h"
 #include "vapor/DataMgrUtils.h"
 
 QVaporSubtab::QVaporSubtab(QWidget *parent) : QWidget(parent) {
@@ -192,6 +193,8 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
     _paramsMgr = paramsMgr;
     VAssert(_params);
 
+    int refLevel = _params->GetRefinementLevel();
+    int lod = _params->GetCompressionLevel();
     bool isSteady = _params->GetIsSteady();
     _steady->SetCheckState(isSteady);
     int steadyNumOfSteps = _params->GetSteadyNumOfSteps();
@@ -244,8 +247,12 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
     std::vector<double> minExt, maxExt;
     std::vector<int> axes;
     VAPoR::DataMgrUtils::GetExtents(dataMgr, _params->GetCurrentTimestep(),
-                                    _params->GetFieldVariableNames(), minExt, maxExt, axes);
-    VAssert(minExt.size() == 3 && maxExt.size() == 3);
+                                    _params->GetFieldVariableNames(), refLevel, lod, minExt, maxExt,
+                                    axes);
+    if (minExt.size() != 3 || maxExt.size() != 3) {
+        MSG_ERR("Flow integration variables need to be three dimensional!");
+        return;
+    }
     std::vector<float> range;
     for (int i = 0; i < 3; i++) {
         range.push_back(float(minExt[i]));

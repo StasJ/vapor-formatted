@@ -135,8 +135,8 @@ class VizWin : public QGLWidget {
     void _setNewExtents();
     void _getActiveExtents(std::vector<double> &minExts, std::vector<double> &maxExts);
     void _getUnionOfFieldVarExtents(VAPoR::RenderParams *rParams, VAPoR::DataMgr *dataMgr,
-                                    int timestep, int refLevel, std::vector<double> &minExts,
-                                    std::vector<double> &maxExts);
+                                    int timestep, int refLevel, int lod,
+                                    std::vector<double> &minExts, std::vector<double> &maxExts);
     string _getCurrentDataMgrName() const;
     VAPoR::Transform *_getDataMgrTransform() const;
 
