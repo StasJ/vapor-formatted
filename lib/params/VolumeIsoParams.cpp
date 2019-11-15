@@ -42,4 +42,6 @@ string VolumeIsoParams::GetDefaultAlgorithmName() const { return "Iso Regular"; 
 void VolumeIsoParams::_init() {
     SetDiagMsg("VolumeParams::_init()");
     SetValueLong(UseColormapVariableTag, UseColormapVariableTag, false);
+
+    SetFieldVariableNames(vector<string>());
 }
