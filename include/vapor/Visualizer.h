@@ -25,6 +25,7 @@
 #include <map>
 #include <vapor/AnnotationRenderer.h>
 #include <vapor/DataStatus.h>
+#include <vapor/Framebuffer.h>
 #include <vapor/ParamsMgr.h>
 #include <vapor/Renderer.h>
 
@@ -194,7 +195,7 @@ class RENDER_API Visualizer : public MyBase {
 
     void _deleteFlaggedRenderers();
     int _initializeNewRenderers();
-    void _clearFramebuffer();
+    void _clearActiveFramebuffer(float r, float g, float b) const;
     void _applyDatasetTransformsForRenderer(Renderer *r);
 
     int _getCurrentTimestep() const;
@@ -219,6 +220,10 @@ class RENDER_API Visualizer : public MyBase {
 
     vector<Renderer *> _renderers;
     vector<Renderer *> _renderersToDestroy;
+
+    Framebuffer _framebuffer;
+    unsigned int _screenQuadVAO;
+    unsigned int _screenQuadVBO;
 };
 
 }; // namespace VAPoR

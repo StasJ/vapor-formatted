@@ -276,6 +276,10 @@ class PARAMS_API ViewpointParams : public ParamsBase {
     //
     static string GetClassType() { return ("ViewpointParams"); }
 
+    static const string UseCustomFramebufferTag;
+    static const string CustomFramebufferWidthTag;
+    static const string CustomFramebufferHeightTag;
+
   private:
     ParamsContainer *m_VPs;
     ParamsContainer *_transforms;
