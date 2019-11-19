@@ -421,7 +421,7 @@ int PyEngine::Calculate(const string &script, vector<string> inputVarNames,
     PyObject *retObj = PyRun_String(script.c_str(), Py_file_input, mainDict, mainDict);
 
     if (!retObj) {
-        SetErrMsg("foo PyRun_String() : %s", MyPython::Instance()->PyErr().c_str());
+        SetErrMsg("PyRun_String() : %s", MyPython::Instance()->PyErr().c_str());
         _cleanupDict(mainDict, inputVarNames);
         return -1;
     }
