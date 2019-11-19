@@ -356,7 +356,7 @@ ColorMapMenuItem::ColorMapMenuItem(const std::string &path) : QWidgetAction(null
 
     button->setIcon(getCachedIcon(path));
     button->setFixedSize(getIconSize() + getIconPadding());
-    connect(button, SIGNAL(clicked()), this, SLOT(_clicked()));
+    button->installEventFilter(this);
 
     string name = STLUtils::Split(FileUtils::Basename(path), ".")[0];
     button->setToolTip(QString::fromStdString(name));
@@ -375,6 +375,7 @@ ColorMapMenuItem::ColorMapMenuItem(const std::string &path) : QWidgetAction(null
                           )");
 }
 
+// Manually riggering an action does not close the menu so it has to be done manually.
 void ColorMapMenuItem::CloseMenu(QAction *action) {
     if (!action)
         return;
@@ -393,8 +394,12 @@ void ColorMapMenuItem::CloseMenu(QAction *action) {
     }
 }
 
-void ColorMapMenuItem::_clicked() {
-    trigger();
-    emit triggered(_path);
-    CloseMenu(this);
+bool ColorMapMenuItem::eventFilter(QObject *obj, QEvent *event) {
+    if (event->type() == QEvent::MouseButtonRelease) {
+        trigger();
+        emit triggered(_path);
+        CloseMenu(this);
+        return true;
+    }
+    return QObject::eventFilter(obj, event);
 }
