@@ -107,7 +107,7 @@ void TFColorMap::paintEvent(QPainter &p) {
 
     QMargins padding = GetPadding();
     int nSamples = width() - (padding.left() + padding.right());
-    unsigned char buf[nSamples * 3];
+    unsigned char *buf = new unsigned char[nSamples * 3];
     float rgb[3];
     for (int i = 0; i < nSamples; i++) {
         cm->colorNormalized(i / (float)nSamples).toRGB(rgb);
@@ -123,6 +123,7 @@ void TFColorMap::paintEvent(QPainter &p) {
         drawControl(p, controlQPositionForValue(cm->controlPointValueNormalized(i)),
                     i == _selectedId);
     }
+    delete[] buf;
 }
 
 void TFColorMap::mousePressEvent(QMouseEvent *event) {
@@ -332,7 +333,7 @@ QIcon ColorMapMenuItem::getCachedIcon(const std::string &path) {
 
     QSize size = getIconSize();
     int nSamples = size.width();
-    unsigned char buf[nSamples * 3];
+    unsigned char *buf = new unsigned char[nSamples * 3];
     float rgb[3];
     for (int i = 0; i < nSamples; i++) {
         cm->colorNormalized(i / (float)nSamples).toRGB(rgb);
@@ -341,6 +342,7 @@ QIcon ColorMapMenuItem::getCachedIcon(const std::string &path) {
         buf[i * 3 + 2] = rgb[2] * 255;
     }
     QImage image(buf, nSamples, 1, QImage::Format::Format_RGB888);
+    delete[] buf;
 
     icons[path] = QIcon(QPixmap::fromImage(image).scaled(size.width(), size.height()));
     return icons[path];
