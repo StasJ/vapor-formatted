@@ -734,62 +734,50 @@ FlowSeedingSubtab::_rakeBiasStrengthChanged()
 }
 */
 
-/*
-void
-FlowSeedingSubtab::_rakeNumOfSeedsChanged()
-{
+void FlowSeedingSubtab::_rakeNumOfSeedsChanged() {
     // These fields should ALWAYS contain legal values, even when not in use.
     //   That's why we validate every one of them!
 
     const std::vector<long> oldVal = _params->GetRakeNumOfSeeds();
-    std::vector<long> newVal( 4, -1 );
+    std::vector<long> newVal(4, -1);
 
-    std::vector<VLineEdit*> pointers = {_rakeXNum, _rakeYNum, _rakeZNum, _rakeTotalNum};
-    for( int i = 0; i < 4; i++ )
-    {
+    std::vector<VLineEdit *> pointers = {_rakeXNum, _rakeYNum, _rakeZNum, _rakeTotalNum};
+    for (int i = 0; i < 4; i++) {
         long tmp;
-        try
-        {
-            tmp = std::stol( pointers[i]->GetEditText() );
-        }
-        catch( const std::invalid_argument& e ) // If not a long number
+        try {
+            tmp = std::stol(pointers[i]->GetEditText());
+        } catch (const std::invalid_argument &e) // If not a long number
         {
             std::cerr << "bad input: " << pointers[i]->GetEditText() << std::endl;
             newVal[i] = oldVal[i];
-            pointers[i]->SetEditText( QString::number( oldVal[i] ) );
+            pointers[i]->SetEditText(QString::number(oldVal[i]));
             continue;
         }
 
-        if( tmp > 0 )   // In the valid range, which is positive here
+        if (tmp > 0) // In the valid range, which is positive here
         {
             newVal[i] = tmp;
             // std::stol() would convert "383aaa" without throwing an exception.
             // We set the correct text based on the number identified.
-            pointers[i]->SetEditText( QString::number( tmp ) );
-        }
-        else
-        {
+            pointers[i]->SetEditText(QString::number(tmp));
+        } else {
             newVal[i] = oldVal[i];
-            pointers[i]->SetEditText( QString::number( oldVal[i] ) );
+            pointers[i]->SetEditText(QString::number(oldVal[i]));
         }
     }
 
     // Only write back to _params when newVal is different from oldVal
     bool diff = false;
-    for( int i = 0; i < 4; i++ )
-    {
-        if( newVal[i] != oldVal[i] )
-        {
+    for (int i = 0; i < 4; i++) {
+        if (newVal[i] != oldVal[i]) {
             diff = true;
             break;
         }
     }
-    if( diff )
-    {
-        _params->SetRakeNumOfSeeds( newVal );
+    if (diff) {
+        _params->SetRakeNumOfSeeds(newVal);
     }
 }
-*/
 
 /*
 void
@@ -802,13 +790,7 @@ FlowSeedingSubtab::_rakeGeometryChanged()
 }
 */
 
-/*
-void
-FlowSeedingSubtab::_seedGenModeChanged( int newIdx )
-{
-    _params->SetSeedGenMode( newIdx );
-}
-*/
+void FlowSeedingSubtab::_seedGenModeChanged(int newIdx) { _params->SetSeedGenMode(newIdx); }
 
 /*
 void
