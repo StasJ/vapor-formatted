@@ -51,6 +51,8 @@ SliceParams::~SliceParams() { SetDiagMsg("SliceParams::~SliceParams() this=%p", 
 void SliceParams::_init() {
     SetDiagMsg("SliceParams::_init()");
 
+    SetFieldVariableNames(vector<string>());
+
     Box *box = GetBox();
     box->SetOrientation(XY);
 

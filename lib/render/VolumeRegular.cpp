@@ -86,7 +86,7 @@ int VolumeRegular::_loadDataDirect(const Grid *grid, Texture3D *dataTexture,
 }
 
 ShaderProgram *VolumeRegular::GetShader() const {
-    return _glManager->shaderManager->GetShader("VolumeDVR");
+    return _glManager->shaderManager->GetShader(_addDefinitionsToShader("VolumeDVR"));
 }
 
 void VolumeRegular::SetUniforms(const ShaderProgram *s) const {
@@ -95,6 +95,7 @@ void VolumeRegular::SetUniforms(const ShaderProgram *s) const {
     s->SetSampler("data", _data);
     s->SetSampler("missingMask", _missing);
 
+    s->SetUniform("useColormapData", _hasSecondData);
     if (_hasSecondData) {
         s->SetUniform("hasMissingData2", _hasMissingData2);
 
@@ -105,13 +106,19 @@ void VolumeRegular::SetUniforms(const ShaderProgram *s) const {
 
 float VolumeRegular::GuestimateFastModeSpeedupFactor() const { return 5; }
 
+std::string VolumeRegular::_addDefinitionsToShader(std::string shaderName) const {
+    if (_hasSecondData)
+        shaderName += ":USE_SECOND_DATA";
+
+    return shaderName;
+}
+
 static VolumeAlgorithmRegistrar<VolumeRegularIso> registrationIso;
 
 ShaderProgram *VolumeRegularIso::GetShader() const {
-    return _glManager->shaderManager->GetShader("VolumeIso");
+    return _glManager->shaderManager->GetShader(_addDefinitionsToShader("VolumeIso"));
 }
 
 void VolumeRegularIso::SetUniforms(const ShaderProgram *shader) const {
     VolumeRegular::SetUniforms(shader);
-    shader->SetUniform("useColormapData", _hasSecondData);
 }
