@@ -62,7 +62,10 @@ void VSliderEdit::SetRange(double min, double max) {
     _maxValid = max;
 }
 
-void VSliderEdit::SetIntType(bool type) { _isIntType = type; }
+void VSliderEdit::SetIntType(bool type) {
+    _isIntType = type;
+    SetValue(_value);
+}
 
 void VSliderEdit::emitLineEditValueChanged(const std::string &value) {
     try {
