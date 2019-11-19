@@ -24,9 +24,6 @@ class PARAMS_API VolumeIsoParams : public VolumeParams {
 
   private:
     void _init();
-
-  public:
-    static const std::string UseColormapVariableTag;
 };
 
 }; // namespace VAPoR
