@@ -41,6 +41,7 @@ class RENDER_API VolumeRenderer : public Renderer {
     int _loadSecondaryData();
     virtual void _getLUTFromTF(const MapperFunction *tf, float *LUT) const;
     void _loadTF();
+    void _loadTF(Texture1D *texture, MapperFunction *tf, MapperFunction **cacheTF);
     glm::vec3 _getVolumeScales() const;
     void _getExtents(glm::vec3 *dataMin, glm::vec3 *dataMax, glm::vec3 *userMin,
                      glm::vec3 *userMax) const;
@@ -53,6 +54,7 @@ class RENDER_API VolumeRenderer : public Renderer {
     unsigned int _VBOChunked = (int)NULL;
     VolumeAlgorithm *_algorithm = nullptr;
     Texture1D _LUTTexture;
+    Texture1D _LUT2Texture;
     Texture2D _depthTexture;
     Framebuffer _framebuffer;
 
@@ -77,8 +79,8 @@ class RENDER_API VolumeRenderer : public Renderer {
         std::string colorMapVar = "";
 
         MapperFunction *tf = nullptr;
-        std::vector<double> mapRange;
         std::vector<float> constantColor;
+        MapperFunction *tf2 = nullptr;
 
         std::string algorithmName = "";
 
