@@ -79,7 +79,6 @@ int MyPython::Initialize() {
     }
 
     if (!m_pyHome.empty()) {
-//#ifdef WIN32
 #ifdef WIN32
         std::string pythonPath = m_pyHome + "\\Python36;";
         pythonPath = pythonPath + m_pyHome + "\\Python36\\Lib;";
@@ -90,7 +89,6 @@ int MyPython::Initialize() {
         Py_SetPythonHome((wchar_t *)widecstr);
         MyBase::SetDiagMsg("Setting PYTHONHOME in the vaporgui app to %s\n", m_pyHome.c_str());
 #endif
-        //#endif
     }
 
     // Prevent python from attempting to write a .pyc file on disk.
