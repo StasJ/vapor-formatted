@@ -26,7 +26,6 @@
 #endif
 
 #include "vapor/VAssert.h"
-#include <vapor/CMakeConfig.h>
 #include <vapor/MyPython.h>
 #include <vapor/ResourcePath.h>
 
@@ -82,7 +81,7 @@ int MyPython::Initialize() {
 
     if (!m_pyHome.empty()) {
 #ifdef WIN32
-        std::string version = std::string(PYTHON_VERSION);
+        std::string version = GetPythonVersion();
         version.erase(std::remove(version.begin(), version.end(), '.'), version.end());
         std::string pythonPath = m_pyHome + "\\Python" + version + ";";
         pythonPath = pythonPath + m_pyHome + "\\Python" + version + "\\Lib;";
