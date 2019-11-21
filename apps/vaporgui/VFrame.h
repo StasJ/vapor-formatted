@@ -9,7 +9,7 @@ class VFrame : public QFrame {
     VFrame() {
         setLayout(new QVBoxLayout);
         layout()->setContentsMargins(0, 0, 0, 0);
-        layout()->setSpacing(0);
+        layout()->setSpacing(12);
         setFrameStyle(QFrame::NoFrame);
     }
 
