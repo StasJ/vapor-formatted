@@ -71,6 +71,7 @@ class SliceVariablesSubtab : public QWidget, public Ui_SliceVariablesGUI {
     VLineEdit *_vle;
     VSlider *_vs;
     VSliderEdit *_vse;
+    VSliderEdit *_vsei;
     VPushButton *_pb;
     VFileReader *_fr;
     VFileWriter *_fw;

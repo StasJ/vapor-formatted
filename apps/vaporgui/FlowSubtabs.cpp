@@ -106,16 +106,19 @@ void FlowSeedingSubtab::_createSeedingSection() {
 
     _xSeedSliderEdit = new VSliderEdit();
     _xSeedSliderEdit->SetIntType(true);
+    _xSeedSliderEdit->SetRange(MIN_AXIS_SEEDS, MAX_AXIS_SEEDS);
     _griddedSeedsFrame->addWidget(new VLineItem("X axis seeds", _xSeedSliderEdit));
-    // connect
+    connect(_xSeedSliderEdit, SIGNAL(ValueChanged(double)), this, SLOT(_rakeNumOfSeedsChanged()));
     _ySeedSliderEdit = new VSliderEdit();
     _ySeedSliderEdit->SetIntType(true);
+    _ySeedSliderEdit->SetRange(MIN_AXIS_SEEDS, MAX_AXIS_SEEDS);
     _griddedSeedsFrame->addWidget(new VLineItem("Y axis seeds", _ySeedSliderEdit));
-    // connect
+    connect(_ySeedSliderEdit, SIGNAL(ValueChanged(double)), this, SLOT(_rakeNumOfSeedsChanged()));
     _zSeedSliderEdit = new VSliderEdit();
     _zSeedSliderEdit->SetIntType(true);
+    _zSeedSliderEdit->SetRange(MIN_AXIS_SEEDS, MAX_AXIS_SEEDS);
     _griddedSeedsFrame->addWidget(new VLineItem("Z axis seeds", _zSeedSliderEdit));
-    // connect
+    connect(_zSeedSliderEdit, SIGNAL(ValueChanged(double)), this, SLOT(_rakeNumOfSeedsChanged()));
 
     // List of seeds selection
     _listOfSeedsFrame = new VFrame();
@@ -129,9 +132,12 @@ void FlowSeedingSubtab::_createSeedingSection() {
     _randomSeedsFrame = new VFrame();
     _seedDistributionSection->AddWidget(_randomSeedsFrame);
 
-    _randomSeedSpinBox = new VSpinBox(0, 100000);
-    _randomSeedsFrame->addWidget(new VLineItem("Number of random seeds", _randomSeedSpinBox));
-    // connect
+    //_randomSeedSpinBox = new VSpinBox( 0, 100000 );
+    //_randomSeedsFrame->addWidget( new VLineItem("Number of random seeds", _randomSeedSpinBox ) );
+    _randomSeedsSliderEdit = new VSliderEdit();
+    _randomSeedsFrame->addWidget(new VLineItem("Seed count", _randomSeedsSliderEdit));
+    connect(_randomSeedsSliderEdit, SIGNAL(ValueChanged(double)), this,
+            SLOT(_rakeNumOfSeedsChanged()));
 
     _biasVariableComboBox = new VComboBox(std::vector<std::string>());
     _randomSeedsFrame->addWidget(new VLineItem("Bias variable", _biasVariableComboBox));
@@ -217,11 +223,6 @@ void FlowSeedingSubtab::_createIntegrationSection() {
             SLOT(_velocityMultiplierChanged(const std::string &)));
     _integrationSection->AddWidget(
         new VLineItem("Velocity multiplier", _velocityMultiplierLineEdit));
-    VLineEdit *test = new VLineEdit("test");
-    test->SetIsDouble(true);
-    connect(test, SIGNAL(ValueChanged(const std::string &)), this,
-            SLOT(_velocityMultiplierChanged(const std::string &)));
-    _integrationSection->AddWidget(new VLineItem("test", test));
 
     _configureFlowType();
 }
@@ -324,6 +325,47 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
     else
         _flowTypeCombo->SetValue(UNSTEADY_STRING);
 
+    _updateSteadyFlowWidgets(dataMgr);
+    _updateUnsteadyFlowWidgets(dataMgr);
+
+    // Periodicity checkboxes
+    auto bools = _params->GetPeriodic();
+    _periodicXCheckBox->SetValue(bools[X]);
+    _periodicYCheckBox->SetValue(bools[Y]);
+    _periodicZCheckBox->SetValue(bools[Z]);
+
+    // Velocity multiplier
+    auto mltp = _params->GetVelocityMultiplier();
+    _velocityMultiplierLineEdit->SetValue(std::to_string(mltp));
+
+    // Update seeding tab
+    //
+    int mode = _params->GetSeedGenMode();
+    if (mode == (int)VAPoR::FlowSeedMode::UNIFORM)
+        _seedTypeCombo->SetValue(GRIDDED_STRING);
+    else if (mode == (int)VAPoR::FlowSeedMode::RANDOM)
+        _seedTypeCombo->SetValue(RANDOM_STRING);
+    else if (mode == (int)VAPoR::FlowSeedMode::LIST)
+        _seedTypeCombo->SetValue(LIST_STRING);
+
+    std::vector<long> seedVec = _params->GetRakeNumOfSeeds();
+    _xSeedSliderEdit->SetValue(seedVec[X]);
+    _ySeedSliderEdit->SetValue(seedVec[Y]);
+    _zSeedSliderEdit->SetValue(seedVec[Z]);
+    _randomSeedsSliderEdit->SetValue(seedVec[RANDOM_INDEX]);
+
+    /*_xSeedSliderEdit
+    _ySeedSliderEdit
+    _zSeedSliderEdit
+    _randomSeedsSliderEdit
+    _biasVariableComboBox;
+    _biasWeightSliderEdit
+    _listOfSeedsFileReader;
+
+    _exportGeometryFileWriter*/
+}
+
+void FlowSeedingSubtab::_updateSteadyFlowWidgets(VAPoR::DataMgr *dataMgr) {
     // Steady flow direction combo
     int dir = _params->GetFlowDirection();
     if (dir >= 0 && dir < _pathlineDirectionCombo->GetCount())
@@ -339,12 +381,10 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
     _pathlineLengthSliderEdit->SetValue(steadyNumOfSteps);
     int numTS = dataMgr->GetNumTimeSteps();
     _pathlineLengthSliderEdit->SetRange(0, numTS - 1);
+}
 
-    // Periodicity checkboxes
-    auto bools = _params->GetPeriodic();
-    _periodicXCheckBox->SetValue(bools[0]);
-    _periodicYCheckBox->SetValue(bools[1]);
-    _periodicZCheckBox->SetValue(bools[2]);
+void FlowSeedingSubtab::_updateUnsteadyFlowWidgets(VAPoR::DataMgr *dataMgr) {
+    int numTS = dataMgr->GetNumTimeSteps();
 
     // Unsteady flow integration length
     _streamlineLengthSliderEdit->SetRange(0, numTS - 1);
@@ -367,10 +407,8 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
     } else {
         _streamlineInjIntervalSliderEdit->SetValue(injIntv);
     }
-
-    auto mltp = _params->GetVelocityMultiplier();
-    _velocityMultiplierLineEdit->SetValue(std::to_string(mltp));
 }
+
 /*
     int steadyNumOfSteps    = _params->GetSteadyNumOfSteps();
     _steadyNumOfSteps->SetEditText( QString::number( steadyNumOfSteps ) );
@@ -622,14 +660,20 @@ void FlowSeedingSubtab::_configureSeedType(const std::string &value) {
         _griddedSeedsFrame->show();
         _listOfSeedsFrame->hide();
         _randomSeedsFrame->hide();
+        if (_params != nullptr)
+            _params->SetSeedGenMode((int)VAPoR::FlowSeedMode::UNIFORM);
     } else if (value == LIST_STRING) {
         _griddedSeedsFrame->hide();
         _listOfSeedsFrame->show();
         _randomSeedsFrame->hide();
+        if (_params != nullptr)
+            _params->SetSeedGenMode((int)VAPoR::FlowSeedMode::LIST);
     } else if (value == RANDOM_STRING) {
         _griddedSeedsFrame->hide();
         _listOfSeedsFrame->hide();
         _randomSeedsFrame->show();
+        if (_params != nullptr)
+            _params->SetSeedGenMode((int)VAPoR::FlowSeedMode::RANDOM);
     }
 }
 
@@ -735,61 +779,68 @@ FlowSeedingSubtab::_rakeBiasStrengthChanged()
 */
 
 void FlowSeedingSubtab::_rakeNumOfSeedsChanged() {
-    if (_params->GetSeedGenMode() == (int)VAPoR::FlowSeedMode::RANDOM) {
-        std::cout << "RANDOM" << std::endl;
-    }
-    /*
-        // These fields should ALWAYS contain legal values, even when not in use.
-        //   That's why we validate every one of them!
-
-        const std::vector<long> oldVal = _params->GetRakeNumOfSeeds();
-        std::vector<long> newVal( 4, -1 );
-
-        std::vector<VLineEdit*> pointers = {_rakeXNum, _rakeYNum, _rakeZNum, _rakeTotalNum};
-        for( int i = 0; i < 4; i++ )
-        {
-            long tmp;
-            try
-            {
-                tmp = std::stol( pointers[i]->GetEditText() );
-            }
-            catch( const std::invalid_argument& e ) // If not a long number
-            {
-                std::cerr << "bad input: " << pointers[i]->GetEditText() << std::endl;
-                newVal[i] = oldVal[i];
-                pointers[i]->SetEditText( QString::number( oldVal[i] ) );
-                continue;
-            }
-
-            if( tmp > 0 )   // In the valid range, which is positive here
-            {
-                newVal[i] = tmp;
-                // std::stol() would convert "383aaa" without throwing an exception.
-                // We set the correct text based on the number identified.
-                pointers[i]->SetEditText( QString::number( tmp ) );
-            }
-            else
-            {
-                newVal[i] = oldVal[i];
-                pointers[i]->SetEditText( QString::number( oldVal[i] ) );
-            }
-        }
-
-        // Only write back to _params when newVal is different from oldVal
-        bool diff = false;
-        for( int i = 0; i < 4; i++ )
-        {
-            if( newVal[i] != oldVal[i] )
-            {
-                diff = true;
-                break;
-            }
-        }
-        if( diff )
-        {
-            _params->SetRakeNumOfSeeds( newVal );
-        }*/
+    std::vector<long> seedsVector(4, (long)1.0);
+    seedsVector[0] = _xSeedSliderEdit->GetValue();
+    seedsVector[1] = _ySeedSliderEdit->GetValue();
+    seedsVector[2] = _zSeedSliderEdit->GetValue();
+    seedsVector[3] = _randomSeedsSliderEdit->GetValue();
+    _params->SetRakeNumOfSeeds(seedsVector);
+    std::cout << "_rakeNumOfSeedsChanged to " << _params->GetRakeNumOfSeeds()[0] << " "
+              << _params->GetRakeNumOfSeeds()[1] << " " << _params->GetRakeNumOfSeeds()[2] << " "
+              << _params->GetRakeNumOfSeeds()[3] << std::endl;
 }
+/*
+    // These fields should ALWAYS contain legal values, even when not in use.
+    //   That's why we validate every one of them!
+
+    const std::vector<long> oldVal = _params->GetRakeNumOfSeeds();
+    std::vector<long> newVal( 4, -1 );
+
+    std::vector<VLineEdit*> pointers = {_rakeXNum, _rakeYNum, _rakeZNum, _rakeTotalNum};
+    for( int i = 0; i < 4; i++ )
+    {
+        long tmp;
+        try
+        {
+            tmp = std::stol( pointers[i]->GetEditText() );
+        }
+        catch( const std::invalid_argument& e ) // If not a long number
+        {
+            std::cerr << "bad input: " << pointers[i]->GetEditText() << std::endl;
+            newVal[i] = oldVal[i];
+            pointers[i]->SetEditText( QString::number( oldVal[i] ) );
+            continue;
+        }
+
+        if( tmp > 0 )   // In the valid range, which is positive here
+        {
+            newVal[i] = tmp;
+            // std::stol() would convert "383aaa" without throwing an exception.
+            // We set the correct text based on the number identified.
+            pointers[i]->SetEditText( QString::number( tmp ) );
+        }
+        else
+        {
+            newVal[i] = oldVal[i];
+            pointers[i]->SetEditText( QString::number( oldVal[i] ) );
+        }
+    }
+
+    // Only write back to _params when newVal is different from oldVal
+    bool diff = false;
+    for( int i = 0; i < 4; i++ )
+    {
+        if( newVal[i] != oldVal[i] )
+        {
+            diff = true;
+            break;
+        }
+    }
+    if( diff )
+    {
+        _params->SetRakeNumOfSeeds( newVal );
+    }
+}*/
 
 /*
 void

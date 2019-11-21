@@ -19,6 +19,15 @@ VSlider::VSlider(double min, double max) : VContainer(this), _isInt(false) {
 }
 
 void VSlider::SetValue(double value) {
+    //_adjustValue( value );
+    value = (value - _minValid) / (_maxValid - _minValid);
+    _slider->blockSignals(true);
+    _slider->setValue(value);
+    _slider->blockSignals(false);
+}
+
+void VSlider::_adjustValue(double &value) const {
+    std::cout << "from " << value << std::endl;
     if (value > _maxValid)
         value = _maxValid;
     if (value < _minValid)
@@ -34,10 +43,7 @@ void VSlider::SetValue(double value) {
     } else {
         value = (value - _minValid) / _stepSize;
     }
-
-    _slider->blockSignals(true);
-    _slider->setValue(value);
-    _slider->blockSignals(false);
+    std::cout << "to   " << value << std::endl;
 }
 
 void VSlider::SetRange(double min, double max) {
@@ -58,9 +64,10 @@ void VSlider::SetRange(double min, double max) {
 
 double VSlider::GetValue() const {
     double value = _stepSize * _slider->value() + _minValid;
+    //_adjustValue( value );
 
-    if (_isInt)
-        value = round(value);
+    // if (_isInt)
+    //    value = round(value);
 
     return value;
 }

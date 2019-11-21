@@ -4,6 +4,7 @@
 #include "VLineEdit.h"
 #include "VSlider.h"
 #include "VSliderEdit.h"
+#include "vapor/VAssert.h"
 
 VSliderEdit::VSliderEdit(double min, double max, double value)
     : VContainer(this), _isIntType(false) {
@@ -49,8 +50,7 @@ void VSliderEdit::SetRange(double min, double max) {
         max = round(max);
     }
 
-    if (min >= max)
-        max = min;
+    VAssert(min < max);
     if (_value < min)
         _value = min;
     if (_value > max)

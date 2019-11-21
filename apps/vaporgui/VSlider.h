@@ -20,6 +20,8 @@ class VSlider : public VContainer {
     double GetValue() const;
 
   private:
+    void _adjustValue(double &value) const;
+
     QSlider *_slider;
     double _minValid;
     double _maxValid;
