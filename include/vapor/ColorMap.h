@@ -102,6 +102,8 @@ class PARAMS_API ColorMap : public ParamsBase {
     float minValue() const { return (GetDataBounds()[0]); }
     float maxValue() const { return (GetDataBounds()[1]); }
 
+    void Reverse();
+
     // Get static string identifier for this params class
     //
     static string GetClassType() { return ("ColorMapParams"); }
