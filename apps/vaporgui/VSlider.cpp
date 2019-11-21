@@ -1,10 +1,12 @@
-#include "VSlider.h"
 #include <cmath>
 #include <iostream>
 
+#include "VSlider.h"
+#include <vapor/VAssert.h>
+
 #define NUM_STEPS 100
 
-VSlider::VSlider(double min, double max) : VContainer(this), _isInt(false) {
+VSlider::VSlider(double min, double max) : VContainer(this) {
     _slider = new QSlider;
     _slider->setOrientation(Qt::Horizontal);
     _slider->setMinimum(0);
@@ -13,49 +15,26 @@ VSlider::VSlider(double min, double max) : VContainer(this), _isInt(false) {
     SetValue((max - min) / 2);
     layout()->addWidget(_slider);
 
-    connect(_slider, SIGNAL(sliderMoved(int)), this, SLOT(emitSliderChangedIntermediate(int)));
+    connect(_slider, SIGNAL(sliderMoved(int)), this, SLOT(_sliderChangedIntermediate(int)));
 
-    connect(_slider, SIGNAL(sliderReleased()), this, SLOT(emitSliderChanged()));
+    connect(_slider, SIGNAL(sliderReleased()), this, SLOT(_sliderChanged()));
 }
 
 void VSlider::SetValue(double value) {
-    //_adjustValue( value );
-    value = (value - _minValid) / (_maxValid - _minValid);
-    _slider->blockSignals(true);
-    _slider->setValue(value);
-    _slider->blockSignals(false);
-}
-
-void VSlider::_adjustValue(double &value) const {
-    std::cout << "from " << value << std::endl;
     if (value > _maxValid)
         value = _maxValid;
     if (value < _minValid)
         value = _minValid;
 
-    if (_isInt) {
-        // Nudge value to nearest whole number
-        value = round(value);
-        // Offset our value by _minValid
-        value = value - _minValid;
-        // Nudge again, to the nearest increment supported by the slider's discretization
-        value = round(value * NUM_STEPS / (_maxValid - _minValid));
-    } else {
-        value = (value - _minValid) / _stepSize;
-    }
-    std::cout << "to   " << value << std::endl;
+    // value = (value-_minValid) / (_maxValid - _minValid);
+    value = value / _stepSize;
+    _slider->blockSignals(true);
+    _slider->setValue(value);
+    _slider->blockSignals(false);
 }
 
 void VSlider::SetRange(double min, double max) {
-    if (_isInt) {
-        min = round(min);
-        max = round(max);
-    }
-
-    if (min > max)
-        min = max;
-    if (max < min)
-        max = min;
+    VAssert(min < max);
 
     _stepSize = (max - min) / NUM_STEPS;
     _minValid = min;
@@ -63,30 +42,27 @@ void VSlider::SetRange(double min, double max) {
 }
 
 double VSlider::GetValue() const {
+    int sliderVal = _slider->value();
+
+    // Return min/max values if the slider is at the end.
+    // note - Qt does not move the sliders to positions 0, 1, 99, or 100 until
+    // the mouse is released.
+    if (sliderVal <= 2) // positions 0, 1 and 2
+        return _minValid;
+    if (sliderVal >= NUM_STEPS - 2) // positions 98, 99, and 100
+        return _maxValid;
+
     double value = _stepSize * _slider->value() + _minValid;
-    //_adjustValue( value );
-
-    // if (_isInt)
-    //    value = round(value);
-
     return value;
 }
 
-void VSlider::SetIntType(bool isInt) { _isInt = isInt; }
-
-void VSlider::emitSliderChanged() {
+void VSlider::_sliderChanged() {
     double value = GetValue();
-
-    // Nudge the current value to nearest whole number if we are of nt type,
-    // which is done in the SetValue() method.
-    if (_isInt) {
-        SetValue(value);
-    }
-
+    std::cout << "void VSlider::_sliderChanged() { " << value << std::endl;
     emit ValueChanged(value);
 }
 
-void VSlider::emitSliderChangedIntermediate(int position) {
+void VSlider::_sliderChangedIntermediate(int position) {
     double value = GetValue();
     emit ValueChangedIntermediate(value);
 }
