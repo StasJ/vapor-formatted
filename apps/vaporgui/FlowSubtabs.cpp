@@ -94,7 +94,7 @@ void FlowSeedingSubtab::_createSeedingSection() {
     _seedDistributionSection = new VSection("Seed Distribution Settings");
     layout()->addWidget(_seedDistributionSection);
 
-    std::vector<std::string> values = {GRIDDED, RANDOM, LISTOFSEEDS};
+    std::vector<std::string> values = {GRIDDED_STRING, RANDOM_STRING, LIST_STRING};
     _seedTypeCombo = new VComboBox(values);
     _seedDistributionSection->AddWidget(new VLineItem("Seed distribution type", _seedTypeCombo));
     connect(_seedTypeCombo, SIGNAL(ValueChanged(std::string)), this,
@@ -140,14 +140,14 @@ void FlowSeedingSubtab::_createSeedingSection() {
     _biasWeightSliderEdit = new VSliderEdit();
     _randomSeedsFrame->addWidget(new VLineItem("Bias weight", _biasWeightSliderEdit));
 
-    _configureSeedType(GRIDDED);
+    _configureSeedType(GRIDDED_STRING);
 }
 
 void FlowSeedingSubtab::_createIntegrationSection() {
     _integrationSection = new VSection("Flow Integration Settings");
     layout()->addWidget(_integrationSection);
 
-    std::vector<std::string> values = {STEADY, UNSTEADY};
+    std::vector<std::string> values = {STEADY_STRING, UNSTEADY_STRING};
     _flowTypeCombo = new VComboBox(values);
     _integrationSection->AddWidget(new VLineItem("Flow type", _flowTypeCombo));
     connect(_flowTypeCombo, SIGNAL(ValueChanged(std::string)), this,
@@ -270,9 +270,9 @@ _seedInjIntervalChanged(int) ));
 
     // Index numbers are in agreement with what's in FlowRenderer.h
     _seedGenMode->AddOption( "From a Rake, Uniformly", static_cast<int>(FlowSeedMode::UNIFORM) );
-    _seedGenMode->AddOption( "From a Rake, Randomly",  static_cast<int>(FlowSeedMode::RANDOM) );
-    _seedGenMode->AddOption( "From a Rake, Randomly with Bias",
-                             static_cast<int>(FlowSeedMode::RANDOM_BIAS) );
+    _seedGenMode->AddOption( "From a Rake, Randomly",  static_cast<int>(FlowSeedMode::RANDOM_STRING)
+); _seedGenMode->AddOption( "From a Rake, Randomly with Bias",
+                             static_cast<int>(FlowSeedMode::RANDOM_STRING_BIAS) );
     _seedGenMode->AddOption( "From a List",            static_cast<int>(FlowSeedMode::LIST) );
     _layout->addWidget( _seedGenMode );
     connect( _seedGenMode, SIGNAL( _indexChanged(int) ), this, SLOT( _seedGenModeChanged(int) ) );
@@ -320,9 +320,9 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
     //
     bool isSteady = _params->GetIsSteady();
     if (isSteady)
-        _flowTypeCombo->SetValue(STEADY);
+        _flowTypeCombo->SetValue(STEADY_STRING);
     else
-        _flowTypeCombo->SetValue(UNSTEADY);
+        _flowTypeCombo->SetValue(UNSTEADY_STRING);
 
     // Steady flow direction combo
     int dir = _params->GetFlowDirection();
@@ -583,7 +583,7 @@ void FlowSeedingSubtab::_pathlineLengthChanged(int newval) {
 
 void FlowSeedingSubtab::_configureFlowType(const std::string &value) {
     bool isSteady = true;
-    if (value == UNSTEADY) {
+    if (value == UNSTEADY_STRING) {
         isSteady = false;
         _streamlineLengthSliderEdit->Show();
         _streamlineInjIntervalSliderEdit->Show();
@@ -618,15 +618,15 @@ void FlowSeedingSubtab::_configureFlowType(const std::string &value) {
 }
 
 void FlowSeedingSubtab::_configureSeedType(const std::string &value) {
-    if (value == GRIDDED) {
+    if (value == GRIDDED_STRING) {
         _griddedSeedsFrame->show();
         _listOfSeedsFrame->hide();
         _randomSeedsFrame->hide();
-    } else if (value == LISTOFSEEDS) {
+    } else if (value == LIST_STRING) {
         _griddedSeedsFrame->hide();
         _listOfSeedsFrame->show();
         _randomSeedsFrame->hide();
-    } else if (value == RANDOM) {
+    } else if (value == RANDOM_STRING) {
         _griddedSeedsFrame->hide();
         _listOfSeedsFrame->hide();
         _randomSeedsFrame->show();
@@ -673,7 +673,7 @@ FlowSeedingSubtab::_hideShowWidgets()
         _rakeBiasVariable->hide();
         _rakeBiasStrength->hide();
     }
-    else if( genMod == static_cast<int>(FlowSeedMode::RANDOM) )
+    else if( genMod == static_cast<int>(FlowSeedMode::RANDOM_STRING) )
     {
         _rake->show();
         _rakeXNum->hide();
@@ -683,7 +683,7 @@ FlowSeedingSubtab::_hideShowWidgets()
         _rakeBiasVariable->hide();
         _rakeBiasStrength->hide();
     }
-    else if( genMod == static_cast<int>(FlowSeedMode::RANDOM_BIAS) )
+    else if( genMod == static_cast<int>(FlowSeedMode::RANDOM_STRING_BIAS) )
     {
         _rake->show();
         _rakeXNum->hide();
@@ -735,48 +735,60 @@ FlowSeedingSubtab::_rakeBiasStrengthChanged()
 */
 
 void FlowSeedingSubtab::_rakeNumOfSeedsChanged() {
-    // These fields should ALWAYS contain legal values, even when not in use.
-    //   That's why we validate every one of them!
+    if (_params->GetSeedGenMode() == (int)VAPoR::FlowSeedMode::RANDOM) {
+        std::cout << "RANDOM" << std::endl;
+    }
+    /*
+        // These fields should ALWAYS contain legal values, even when not in use.
+        //   That's why we validate every one of them!
 
-    const std::vector<long> oldVal = _params->GetRakeNumOfSeeds();
-    std::vector<long> newVal(4, -1);
+        const std::vector<long> oldVal = _params->GetRakeNumOfSeeds();
+        std::vector<long> newVal( 4, -1 );
 
-    std::vector<VLineEdit *> pointers = {_rakeXNum, _rakeYNum, _rakeZNum, _rakeTotalNum};
-    for (int i = 0; i < 4; i++) {
-        long tmp;
-        try {
-            tmp = std::stol(pointers[i]->GetEditText());
-        } catch (const std::invalid_argument &e) // If not a long number
+        std::vector<VLineEdit*> pointers = {_rakeXNum, _rakeYNum, _rakeZNum, _rakeTotalNum};
+        for( int i = 0; i < 4; i++ )
         {
-            std::cerr << "bad input: " << pointers[i]->GetEditText() << std::endl;
-            newVal[i] = oldVal[i];
-            pointers[i]->SetEditText(QString::number(oldVal[i]));
-            continue;
+            long tmp;
+            try
+            {
+                tmp = std::stol( pointers[i]->GetEditText() );
+            }
+            catch( const std::invalid_argument& e ) // If not a long number
+            {
+                std::cerr << "bad input: " << pointers[i]->GetEditText() << std::endl;
+                newVal[i] = oldVal[i];
+                pointers[i]->SetEditText( QString::number( oldVal[i] ) );
+                continue;
+            }
+
+            if( tmp > 0 )   // In the valid range, which is positive here
+            {
+                newVal[i] = tmp;
+                // std::stol() would convert "383aaa" without throwing an exception.
+                // We set the correct text based on the number identified.
+                pointers[i]->SetEditText( QString::number( tmp ) );
+            }
+            else
+            {
+                newVal[i] = oldVal[i];
+                pointers[i]->SetEditText( QString::number( oldVal[i] ) );
+            }
         }
 
-        if (tmp > 0) // In the valid range, which is positive here
+        // Only write back to _params when newVal is different from oldVal
+        bool diff = false;
+        for( int i = 0; i < 4; i++ )
         {
-            newVal[i] = tmp;
-            // std::stol() would convert "383aaa" without throwing an exception.
-            // We set the correct text based on the number identified.
-            pointers[i]->SetEditText(QString::number(tmp));
-        } else {
-            newVal[i] = oldVal[i];
-            pointers[i]->SetEditText(QString::number(oldVal[i]));
+            if( newVal[i] != oldVal[i] )
+            {
+                diff = true;
+                break;
+            }
         }
-    }
-
-    // Only write back to _params when newVal is different from oldVal
-    bool diff = false;
-    for (int i = 0; i < 4; i++) {
-        if (newVal[i] != oldVal[i]) {
-            diff = true;
-            break;
-        }
-    }
-    if (diff) {
-        _params->SetRakeNumOfSeeds(newVal);
-    }
+        if( diff )
+        {
+            _params->SetRakeNumOfSeeds( newVal );
+        }*/
 }
 
 /*
