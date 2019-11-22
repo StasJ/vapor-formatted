@@ -121,14 +121,12 @@ void FlowSeedingSubtab::_createSeedingSection() {
     connect(_zSeedSliderEdit, SIGNAL(ValueChanged(double)), this, SLOT(_rakeNumOfSeedsChanged()));
 
     // List of seeds selection
-    //_listOfSeedsFrame = new VFrame();
-    //_seedDistributionSection->AddWidget( _listOfSeedsFrame );
-
-    _listOfSeedsFileReader = new VFileReader("Read seeds from file");
-    _seedDistributionSection->AddWidget(_listOfSeedsFileReader);
-    //_listOfSeedsFrame->addWidget( new VLineItem("List of seeds file", _listOfSeedsFileReader ) );
+    _listOfSeedsFileReader = new VFileReader();
     connect(_listOfSeedsFileReader, SIGNAL(ValueChanged(const std::string &)), this,
             SLOT(_seedListFileChanged(const std::string &)));
+    _listOfSeedsFrame = new VFrame();
+    _listOfSeedsFrame->addWidget(new VLineItem("List of seeds file", _listOfSeedsFileReader));
+    _seedDistributionSection->AddWidget(_listOfSeedsFrame);
 
     // Random distribution selection
     _randomSeedsFrame = new VFrame();
@@ -139,12 +137,15 @@ void FlowSeedingSubtab::_createSeedingSection() {
     connect(_randomSeedsSliderEdit, SIGNAL(ValueChanged(double)), this,
             SLOT(_rakeNumOfSeedsChanged()));
 
-    _biasWeightSliderEdit = new VSliderEdit();
+    _biasWeightSliderEdit = new VSliderEdit(-1, 1, 0);
     _randomSeedsFrame->addWidget(new VLineItem("Bias weight", _biasWeightSliderEdit));
+    connect(_biasWeightSliderEdit, SIGNAL(ValueChanged(double)), this,
+            SLOT(_biasWeightChanged(double)));
 
     _biasVariableComboBox = new VComboBox(std::vector<std::string>());
     _randomSeedsFrame->addWidget(new VLineItem("Bias variable", _biasVariableComboBox));
-    // connect
+    connect(_biasVariableComboBox, SIGNAL(ValueChanged(const std::string &)), this,
+            SLOT(_biasVariableChanged(const std::string &)));
 
     _configureSeedType(GRIDDED_STRING);
 }
@@ -348,6 +349,16 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
     else if (mode == (int)VAPoR::FlowSeedMode::LIST)
         _seedTypeCombo->SetValue(LIST_STRING);
 
+    // Random rake values
+    std::vector<std::string> vars = dataMgr->GetDataVarNames(3); // Do we support 2D flow?
+    _biasVariableComboBox->SetOptions(vars);
+    std::string var = _params->GetRakeBiasVariable();
+    _biasVariableComboBox->SetValue(var);
+
+    double bias = _params->GetRakeBiasStrength();
+    _biasWeightSliderEdit->SetValue(bias);
+
+    // Random and Gridded # seeds
     std::vector<long> seedVec = _params->GetRakeNumOfSeeds();
     _xSeedSliderEdit->SetValue(seedVec[X]);
     _ySeedSliderEdit->SetValue(seedVec[Y]);
@@ -377,7 +388,6 @@ void FlowSeedingSubtab::_updateSteadyFlowWidgets(VAPoR::DataMgr *dataMgr) {
 
     // Steady flow integration length (flowNumOfSteps)
     int steadyNumOfSteps = _params->GetSteadyNumOfSteps();
-    cout << "steadyNumOfSteps " << steadyNumOfSteps << endl;
     _pathlineLengthSliderEdit->SetValue(steadyNumOfSteps);
     int numTS = dataMgr->GetNumTimeSteps();
     _pathlineLengthSliderEdit->SetRange(0, numTS - 1);
@@ -658,19 +668,19 @@ void FlowSeedingSubtab::_configureFlowType(const std::string &value) {
 void FlowSeedingSubtab::_configureSeedType(const std::string &value) {
     if (value == GRIDDED_STRING) {
         _griddedSeedsFrame->show();
-        _listOfSeedsFileReader->hide();
+        _listOfSeedsFrame->hide();
         _randomSeedsFrame->hide();
         if (_params != nullptr)
             _params->SetSeedGenMode((int)VAPoR::FlowSeedMode::UNIFORM);
     } else if (value == LIST_STRING) {
         _griddedSeedsFrame->hide();
-        _listOfSeedsFileReader->show();
+        _listOfSeedsFrame->show();
         _randomSeedsFrame->hide();
         if (_params != nullptr)
             _params->SetSeedGenMode((int)VAPoR::FlowSeedMode::LIST);
     } else if (value == RANDOM_STRING) {
         _griddedSeedsFrame->hide();
-        _listOfSeedsFileReader->hide();
+        _listOfSeedsFrame->hide();
         _randomSeedsFrame->show();
         if (_params != nullptr)
             _params->SetSeedGenMode((int)VAPoR::FlowSeedMode::RANDOM);
@@ -750,33 +760,13 @@ FlowSeedingSubtab::_hideShowWidgets()
 }
 */
 
-/*
-void
-FlowSeedingSubtab::_rakeBiasVariableChanged( int idx )
-{
-    // idx is always a valid value, since it's returned by the GUI
-    auto varGUI     = _rakeBiasVariable->GetCurrentText();
-    auto varParams  = _params->GetRakeBiasVariable();
-    if(  varGUI.compare( varParams ) != 0 )
-    {
-        _params->SetRakeBiasVariable( varGUI );
-    }
+void FlowSeedingSubtab::_biasVariableChanged(const std::string &variable) {
+    _params->SetRakeBiasVariable(variable);
 }
-*/
 
-/*
-void
-FlowSeedingSubtab::_rakeBiasStrengthChanged()
-{
-    // The value returned from the GUI is always valid
-    auto strenGUI  = _rakeBiasStrength->GetCurrentValue();
-    if(  strenGUI != _params->GetRakeBiasStrength() )
-    {
-        _rakeBiasStrength->SetCurrentValue( strenGUI );
-        _params->SetRakeBiasStrength( strenGUI );
-    }
+void FlowSeedingSubtab::_biasStrengthChanged(double strength) {
+    _params->SetRakeBiasStrength(strength);
 }
-*/
 
 void FlowSeedingSubtab::_rakeNumOfSeedsChanged() {
     std::vector<long> seedsVector(4, (long)1.0);
@@ -844,10 +834,8 @@ void FlowSeedingSubtab::_rakeNumOfSeedsChanged() {
 }*/
 
 void FlowSeedingSubtab::_seedListFileChanged(const std::string &value) {
-    std::cout << "_params->SetSeedInputFilename( value ) to " << value << endl;
     _params->SetSeedInputFilename(value);
-    std::cout << "_params->GetSeedInputFilename()        to " << _params->GetSeedInputFilename()
-              << endl;
+    std::cout << "_params->GetSeedInputFilename is " << _params->GetSeedInputFilename() << endl;
 }
 
 /*

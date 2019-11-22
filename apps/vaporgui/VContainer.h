@@ -16,26 +16,22 @@ class VContainer : public QWidget {
     Q_OBJECT
 
   public:
-    void Hide() {
-        QWidget *parent = parentWidget();
-        if (parent != nullptr) {
-            parent->hide();
-        }
-    }
-    void Show() {
-        QWidget *parent = parentWidget();
-        if (parent != nullptr)
-            parent->show();
-    }
+    void Hide();
+    void Show();
 
   protected:
-    VContainer(QWidget *containee) {
-        QHBoxLayout *layout = new QHBoxLayout;
-        layout->setContentsMargins(LEFT_MARGIN, TOP_MARGIN, RIGHT_MARGIN, BOTTOM_MARGIN);
-        setLayout(layout);
+    VContainer(QWidget *containee);
+};
 
-        setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
-    }
+// Helper object for disabling the mouse scroll-wheel on a given widget.
+//
 
-    ~VContainer(){};
+#include <QObject>
+
+class MouseWheelWidgetAdjustmentGuard : public QObject {
+  public:
+    explicit MouseWheelWidgetAdjustmentGuard(QObject *parent);
+
+  protected:
+    bool eventFilter(QObject *o, QEvent *e) override;
 };

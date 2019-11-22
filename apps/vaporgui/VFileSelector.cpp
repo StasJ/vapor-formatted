@@ -1,5 +1,7 @@
 #include "VFileSelector.h"
 
+#include <iostream>
+
 #include "ErrorReporter.h"
 #include "FileOperationChecker.h"
 
@@ -44,8 +46,10 @@ bool VFileSelector::SetValue(const std::string &file) {
 
 void VFileSelector::OpenFileDialog() {
     std::string file = _launchFileDialog();
-    if (SetValue(file))
+    if (SetValue(file)) {
         emit ValueChanged(_filePath);
+        std::cout << "VFileSelector " << _filePath << std::endl;
+    }
 }
 
 void VFileSelector::SetPathFromLineEdit(const std::string &file) {
