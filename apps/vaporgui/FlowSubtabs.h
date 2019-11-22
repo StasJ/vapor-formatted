@@ -27,6 +27,7 @@ class VFileWriter;
 class VGeometry;
 class VFrame;
 class VSpinBox;
+class VGeometry2;
 
 namespace VAPoR {
 class ControlExec;
@@ -112,28 +113,23 @@ class FlowSeedingSubtab : public QVaporSubtab {
   private slots:
     void _configureFlowType(const std::string &value);
     void _configureSeedType(const std::string &value);
+
     void _streamlineLengthChanged(int length);
-    void _flowDirectionChanged();
-    void _periodicClicked();
+    void _streamlineStartTimeChanged(int startTime);
+    void _streamlineEndTimeChanged(int endTime);
+    void _streamlineLifetimeChanged(int lifeTime);
+
+    void _pathlineDirectionChanged();
     void _pathlineLengthChanged(int length);
+
+    void _periodicClicked();
     void _velocityMultiplierChanged(const std::string &multiplier);
-    void _rakeNumOfSeedsChanged();
+
     void _seedGenModeChanged(int newIdx);
+    void _rakeNumOfSeedsChanged();
     void _seedListFileChanged(const std::string &file);
     void _biasVariableChanged(const std::string &variable);
     void _biasStrengthChanged(double bias);
-    // Respond to user input
-    /*void _fileReaderChanged();
-    void _fileWriterChanged();
-
-    void _rakeGeometryChanged();
-    void _rakeNumOfSeedsChanged();
-
-    void _steadyGotClicked();
-    void _pastNumOfTimeStepsChanged( int );
-    void _seedInjIntervalChanged( int );
-
-    void _selectedTabChanged(int index);*/
 
   private:
     void _createIntegrationSection();
@@ -150,12 +146,12 @@ class FlowSeedingSubtab : public QVaporSubtab {
     VComboBox *_flowTypeCombo;
 
     //  Pathline integration options
-    VFrame *_pathlineWidgetFrame;
+    VFrame *_pathlineFrame;
     VSliderEdit *_pathlineLengthSliderEdit;
     VComboBox *_pathlineDirectionCombo;
 
     //  Streamline integration options
-    VFrame *_streamlineWidgetFrame;
+    VFrame *_streamlineFrame;
     VSliderEdit *_streamlineLengthSliderEdit;
     VSliderEdit *_streamlineInjIntervalSliderEdit;
     VSliderEdit *_streamlineStartSliderEdit;
@@ -181,6 +177,7 @@ class FlowSeedingSubtab : public QVaporSubtab {
     VSliderEdit *_xSeedSliderEdit;
     VSliderEdit *_ySeedSliderEdit;
     VSliderEdit *_zSeedSliderEdit;
+    VGeometry2 *_rakeWidget;
 
     //  Seeds read from a text file
     VFrame *_listOfSeedsFrame;

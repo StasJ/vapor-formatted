@@ -168,12 +168,14 @@ void FlowParams::SetRake(const std::vector<float> &rake) {
 
 void FlowParams::SetRakeNumOfSeeds(const std::vector<long> &num) {
     VAssert(num.size() == 4);
+    cout << "FlowParams::Set " << num[0] << " " << num[1] << " " << num[2] << " " << num[3] << endl;
     SetValueLongVec(_rakeNumOfSeedsTag, "rake num of seeds", num);
 }
 
 std::vector<long> FlowParams::GetRakeNumOfSeeds() const {
     const std::vector<long> tmp(4, 5);
     auto num = GetValueLongVec(_rakeNumOfSeedsTag, tmp);
+    cout << "FlowParams::Get " << num[0] << " " << num[1] << " " << num[2] << " " << num[3] << endl;
     VAssert(num.size() == 4);
     return num;
 }
