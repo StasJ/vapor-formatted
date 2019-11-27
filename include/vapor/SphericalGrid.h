@@ -102,11 +102,6 @@ class VDF_API SphericalGrid : public RegularGrid {
     //!
     virtual void GetBoundingBox(const size_t min[3], const size_t max[3], double extents[6]) const;
 
-    //! \copydoc RegularGrid::GetEnclosingRegion()
-    //!
-    virtual void GetEnclosingRegion(const double minu[3], const double maxu[3], size_t min[3],
-                                    size_t max[3]) const;
-
     //! \copydoc RegularGrid::GetUserCoordinates()
     //!
     int GetUserCoordinates(size_t i, size_t j, size_t k, double *x, double *y, double *z) const;
