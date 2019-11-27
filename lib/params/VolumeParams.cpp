@@ -25,6 +25,7 @@ const std::string VolumeParams::_phongAmbientTag = "PhongAmbientTag";
 const std::string VolumeParams::_phongDiffuseTag = "PhongDiffuseTag";
 const std::string VolumeParams::_phongSpecularTag = "PhongSpecularTag";
 const std::string VolumeParams::_phongShininessTag = "PhongShininessTag";
+const std::string VolumeParams::UseColormapVariableTag = "UseColormapVariable";
 
 VolumeParams::VolumeParams(DataMgr *dataMgr, ParamsBase::StateSave *ssave)
     : RenderParams(dataMgr, ssave, VolumeParams::GetClassType(), 3) {
@@ -79,7 +80,7 @@ void VolumeParams::SetAlgorithmWasManuallySetByUser(bool v) {
     SetValueLong(_algorithmWasManuallySetByUserTag, "User manually changed the algorithm", v);
 }
 
-std::vector<float> VolumeParams::GetSamplingRateMultiples() { return {1, 2, 3, 4}; }
+std::vector<float> VolumeParams::GetSamplingRateMultiples() { return {1, 2, 4, 8, 16}; }
 
 float VolumeParams::GetSamplingMultiplier() const {
     return GetValueDouble(_samplingRateMultiplierTag, 1.0);
