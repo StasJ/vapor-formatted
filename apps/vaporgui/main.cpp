@@ -116,12 +116,6 @@ int main(int argc, char **argv) {
     QApplication::setColorSpec(QApplication::ManyColor);
 #endif
 
-#if defined(Darwin) && !defined(NDEBUG)
-    if (!getenv("VAPOR_DEBUG")) {
-        HideSTDERR();
-    }
-#endif
-
     QApplication a(argc, argv, true);
 
     // All C programs are run with the locale set to "C"
@@ -168,10 +162,6 @@ int main(int argc, char **argv) {
         files.push_back(argv[i]);
     }
     MainForm *mw = new MainForm(files, app);
-
-#if defined(Darwin) && !defined(NDEBUG)
-    RestoreSTDERR();
-#endif
 
     // StartupParams* sParams = new StartupParams(0);
 
