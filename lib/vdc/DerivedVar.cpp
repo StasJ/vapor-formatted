@@ -324,7 +324,7 @@ void resampleToStaggered(float *src, const vector<size_t> &inMin, const vector<s
         inDims.push_back(inMax[i] - inMin[i] + 1);
         outDims.push_back(outMax[i] - outMin[i] + 1);
     }
-    size_t sz = (std::max)(vproduct(outDims), vproduct(inDims));
+    size_t sz = std::max(vproduct(outDims), vproduct(inDims));
 
     float *buf = new float[sz];
 
@@ -1474,7 +1474,7 @@ int DerivedCoordVar_Staggered::ReadRegion(int fd, const vector<size_t> &min,
         inDims.push_back(inMax[i] - inMin[i] + 1);
         outDims.push_back(max[i] - min[i] + 1);
     }
-    size_t sz = (std::max)(vproduct(outDims), vproduct(inDims));
+    size_t sz = std::max(vproduct(outDims), vproduct(inDims));
 
     float *buf = new float[sz];
 
@@ -1620,7 +1620,7 @@ int DerivedCoordVar_UnStaggered::ReadRegion(int fd, const vector<size_t> &min,
         inDims.push_back(inMax[i] - inMin[i] + 1);
         outDims.push_back(max[i] - min[i] + 1);
     }
-    size_t sz = (std::max)(vproduct(outDims), vproduct(inDims));
+    size_t sz = std::max(vproduct(outDims), vproduct(inDims));
 
     float *buf = new float[sz];
 
@@ -1871,7 +1871,7 @@ int DerivedCoordVarStandardWRF_Terrain::ReadRegion(int fd, const vector<size_t> 
         bMax[2] -= 1;
     }
 
-    size_t nElements = (std::max)(numElements(wMin, wMax), numElements(min, max));
+    size_t nElements = std::max(numElements(wMin, wMax), numElements(min, max));
 
     float *buf1 = new float[nElements];
     rc = _getVar(_dc, f->GetTS(), _PHVar, f->GetLevel(), f->GetLOD(), wMin, wMax, buf1);
