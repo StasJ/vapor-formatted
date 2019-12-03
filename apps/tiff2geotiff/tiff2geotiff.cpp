@@ -18,7 +18,7 @@
 #include <cstring>
 #include <ctype.h>
 
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
+//#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
 
 /* GeoTIFF overrides */
 
