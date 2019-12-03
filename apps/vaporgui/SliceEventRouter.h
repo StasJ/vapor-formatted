@@ -35,7 +35,6 @@ class SliceEventRouter : public QTabWidget, public RenderEventRouter {
 
   public:
     SliceEventRouter(QWidget *parent, VAPoR::ControlExec *ce);
-    ~SliceEventRouter();
 
     void GetWebHelp(vector<pair<string, string>> &help) const;
 
