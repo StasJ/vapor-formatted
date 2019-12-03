@@ -1,4 +1,3 @@
-#include <iostream>
 #include <vapor/CFuncs.h>
 #include <vapor/CMakeConfig.h>
 #include <vapor/FileUtils.h>
@@ -92,7 +91,7 @@ std::string Wasp::GetSharePath(const std::string &name) { return GetResourcePath
 #define PYTHON_INSTALLED_PATH ("lib/python" + string(PYTHON_VERSION))
 #endif
 
-std::string Wasp::GetPythonVersion() { return string(PYTHON_VERSION); }
+std::string Wasp::GetPythonVersion() { return std::string(PYTHON_VERSION); }
 
 std::string Wasp::GetPythonPath() {
     string path = GetResourcePath(PYTHON_INSTALLED_PATH);
