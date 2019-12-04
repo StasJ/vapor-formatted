@@ -56,6 +56,8 @@ class VariablesWidget : public QWidget, public Ui_VariablesWidgetGUI {
     virtual void Update(const VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                         VAPoR::RenderParams *rParams);
 
+    DimFlags GetDimFlags() const;
+
   protected slots:
     //! Respond to selecting the single (primary) variable of field
     void setVarName(const QString &);
