@@ -39,6 +39,8 @@ class FlowEventRouter : public QTabWidget, public RenderEventRouter {
     static string GetClassType() { return (VAPoR::FlowRenderer::GetClassType()); }
     string GetType() const { return GetClassType(); }
 
+    virtual DimFlags GetDimFlags() const { return _variables->_variablesWidget->GetDimFlags(); }
+
   protected:
     void _updateTab();
     virtual string _getDescription() const;
