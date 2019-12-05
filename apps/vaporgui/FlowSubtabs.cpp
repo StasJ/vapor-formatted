@@ -81,11 +81,11 @@ void FlowAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *par
 FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
     _params = nullptr;
 
-    _createSeedingSection();
+    _createSeedingSection(parent);
     _createIntegrationSection();
 }
 
-void FlowSeedingSubtab::_createSeedingSection() {
+void FlowSeedingSubtab::_createSeedingSection(QWidget *parent) {
     _seedDistributionSection = new VSection("Seed Distribution Settings");
     layout()->addWidget(_seedDistributionSection);
 
@@ -149,6 +149,9 @@ void FlowSeedingSubtab::_createSeedingSection() {
     _randomSeedsFrame->addWidget(new VLineItem("Bias variable", _biasVariableComboBox));
     connect(_biasVariableComboBox, SIGNAL(ValueChanged(const std::string &)), this,
             SLOT(_biasVariableChanged(const std::string &)));
+
+    VAssert(parent);
+    connect(parent, SIGNAL(currentChanged(int)), this, SLOT(_selectedTabChanged(int)));
 
     _configureSeedType(GRIDDED_STRING);
 }
@@ -745,6 +748,7 @@ void FlowSeedingSubtab::_selectedTabChanged(int index) {
     GUIStateParams *gp = (GUIStateParams *)_paramsMgr->GetParams(GUIStateParams::GetClassType());
 
     gp->SetFlowSeedTabActive(widget == this);
+    cout << "gp->SetFlowSeedTabActive(widget == this); " << (widget == this) << endl;
 }
 
 void FlowSeedingSubtab::_seedGenModeChanged(int newIdx) { _params->SetSeedGenMode(newIdx); }

@@ -140,7 +140,7 @@ class FlowSeedingSubtab : public QVaporSubtab {
 
   private:
     void _createIntegrationSection();
-    void _createSeedingSection();
+    void _createSeedingSection(QWidget *parent);
     void _updateSteadyFlowWidgets(VAPoR::DataMgr *dataMgr);
     void _updateUnsteadyFlowWidgets(VAPoR::DataMgr *dataMgr);
 
