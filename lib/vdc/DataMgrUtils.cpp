@@ -279,8 +279,8 @@ bool DataMgrUtils::GetAxes(const DataMgr *dataMgr, string varname, vector<int> &
     return (true);
 }
 
-bool DataMgrUtils::GetExtents(DataMgr *dataMgr, size_t timestep, string varname,
-                              vector<double> &minExts, vector<double> &maxExts, int refLevel) {
+bool DataMgrUtils::GetExtents(DataMgr *dataMgr, size_t timestep, string varname, int refLevel,
+                              int lod, vector<double> &minExts, vector<double> &maxExts) {
     minExts.clear();
     maxExts.clear();
 
@@ -308,7 +308,7 @@ bool DataMgrUtils::GetExtents(DataMgr *dataMgr, size_t timestep, string varname,
     }
 
     bool errEnabled = MyBase::EnableErrMsg(false);
-    int rc = dataMgr->GetVariableExtents(timestep, varname, refLevel, minExts, maxExts);
+    int rc = dataMgr->GetVariableExtents(timestep, varname, refLevel, lod, minExts, maxExts);
     MyBase::EnableErrMsg(errEnabled);
 
     if (rc < 0)
@@ -318,8 +318,8 @@ bool DataMgrUtils::GetExtents(DataMgr *dataMgr, size_t timestep, string varname,
 }
 
 bool DataMgrUtils::GetExtents(DataMgr *dataMgr, size_t timestep, const vector<string> &varnames,
-                              vector<double> &minExts, vector<double> &maxExts, vector<int> &axes,
-                              int refLevel) {
+                              int refLevel, int lod, vector<double> &minExts,
+                              vector<double> &maxExts, vector<int> &axes) {
     minExts.clear();
     maxExts.clear();
     axes.clear();
@@ -345,8 +345,8 @@ bool DataMgrUtils::GetExtents(DataMgr *dataMgr, size_t timestep, const vector<st
         vector<double> varMaxExts;
         vector<int> varAxes;
 
-        bool status = DataMgrUtils::GetExtents(dataMgr, timestep, varnames[i], varMinExts,
-                                               varMaxExts, refLevel);
+        bool status = DataMgrUtils::GetExtents(dataMgr, timestep, varnames[i], refLevel, lod,
+                                               varMinExts, varMaxExts);
         if (!status)
             continue;
 

@@ -944,12 +944,15 @@ size_t DataMgr::GetNumRefLevels(string varname) const {
 vector<size_t> DataMgr::GetCRatios(string varname) const {
     VAssert(_dc);
 
-    DC::BaseVar var;
-    int rc = GetBaseVarInfo(varname, var);
-    if (rc < 0)
-        return (vector<size_t>(1, 1));
+    if (varname == "")
+        return vector<size_t>(1, 1);
 
-    return (var.GetCRatios());
+    DerivedVar *dvar = _getDerivedVar(varname);
+    if (dvar) {
+        return (dvar->GetCRatios());
+    }
+
+    return (_dc->GetCRatios(varname));
 }
 
 Grid *DataMgr::GetVariable(size_t ts, string varname, int level, int lod, bool lock) {
@@ -1437,12 +1440,18 @@ Grid *DataMgr::GetVariable(size_t ts, string varname, int level, int lod, vector
     return (rg);
 }
 
-int DataMgr::GetVariableExtents(size_t ts, string varname, int level, vector<double> &min,
+int DataMgr::GetVariableExtents(size_t ts, string varname, int level, int lod, vector<double> &min,
                                 vector<double> &max) {
+    SetDiagMsg("DataMgr::GetVariableExtents(%d, %s, %d, %d)", ts, varname.c_str(), level, lod);
+
     min.clear();
     max.clear();
 
-    int rc = _level_correction(varname, level);
+    int rc = _lod_correction(varname, lod);
+    if (rc < 0)
+        return (-1);
+
+    rc = _level_correction(varname, level);
     if (rc < 0)
         return (-1);
 
@@ -1454,7 +1463,7 @@ int DataMgr::GetVariableExtents(size_t ts, string varname, int level, vector<dou
 
     string key = "VariableExtents";
     vector<double> values;
-    if (_varInfoCacheDouble.Get(ts, cvars, level, 0, key, values)) {
+    if (_varInfoCacheDouble.Get(ts, cvars, level, lod, key, values)) {
         int n = values.size();
         for (int i = 0; i < n / 2; i++) {
             min.push_back(values[i]);
@@ -1463,7 +1472,7 @@ int DataMgr::GetVariableExtents(size_t ts, string varname, int level, vector<dou
         return (0);
     }
 
-    Grid *rg = _getVariable(ts, varname, level, -1, false, true);
+    Grid *rg = _getVariable(ts, varname, level, lod, false, true);
     if (!rg)
         return (-1);
 
@@ -1476,7 +1485,7 @@ int DataMgr::GetVariableExtents(size_t ts, string varname, int level, vector<dou
         values.push_back(min[i]);
     for (int i = 0; i < max.size(); i++)
         values.push_back(max[i]);
-    _varInfoCacheDouble.Set(ts, cvars, level, 0, key, values);
+    _varInfoCacheDouble.Set(ts, cvars, level, lod, key, values);
 
     return (0);
 }
@@ -1485,7 +1494,7 @@ int DataMgr::GetDataRange(size_t ts, string varname, int level, int lod, vector<
     SetDiagMsg("DataMgr::GetDataRange(%d,%s)", ts, varname.c_str());
 
     vector<double> min, max;
-    int rc = GetVariableExtents(ts, varname, level, min, max);
+    int rc = GetVariableExtents(ts, varname, level, lod, min, max);
     if (rc < 0)
         return (-1);
 
@@ -3316,7 +3325,10 @@ int DataMgr::_getLatlonExtents(string varname, bool lonflag, float &min, float &
         SetErrMsg("Invalid variable reference : %s", varname.c_str());
         return (-1);
     }
-    VAssert(dims.size() >= 1 && dims.size() <= 2);
+    if (!(dims.size() == 1 || dims.size() == 2)) {
+        SetErrMsg("Unsupported variable dimension for variable \"%s\"", varname.c_str());
+        return (-1);
+    }
 
     float *buf = new float[VProduct(dims)];
 

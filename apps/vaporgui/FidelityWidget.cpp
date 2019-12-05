@@ -22,6 +22,7 @@
 #include "vapor/DataMgr.h"
 #include "vapor/ParamsMgr.h"
 #include "vapor/RenderParams.h"
+#include <QButtonGroup>
 #include <QDesktopWidget>
 #include <QFileDialog>
 #include <qcolordialog.h>
