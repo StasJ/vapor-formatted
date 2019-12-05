@@ -96,19 +96,23 @@ void FlowEventRouter::_updateTab() {
     _annotation->Update(_controlExec->GetParamsMgr(), GetActiveDataMgr(), GetActiveParams());
 
     // Sync selected tab with GUIStateParams
-    /*GUIStateParams *gp = (GUIStateParams
-    *)_controlExec->GetParamsMgr()->GetParams(GUIStateParams::GetClassType()); if
-    (gp->IsFlowSeedTabActive()) { if (currentWidget() != _seedingTab) { blockSignals(true);
+    GUIStateParams *gp =
+        (GUIStateParams *)_controlExec->GetParamsMgr()->GetParams(GUIStateParams::GetClassType());
+    if (gp->IsFlowSeedTabActive()) {
+        if (currentWidget() != _seedingTab) {
+            cout << "A" << endl;
+            blockSignals(true);
             setCurrentWidget(_seedingTab);
             blockSignals(false);
         }
     } else {
         if (currentWidget() == _seedingTab) {
+            cout << "B" << endl;
             blockSignals(true);
-            setCurrentIndex(0);
+            setCurrentIndex(1);
             blockSignals(false);
         }
-    }*/
+    }
 }
 
 string FlowEventRouter::_getDescription() const {

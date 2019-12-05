@@ -26,4 +26,5 @@ class VComboBox : public VContainer {
 
   signals:
     void ValueChanged(std::string value);
+    void ValueChanged(int index);
 };

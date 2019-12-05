@@ -46,4 +46,7 @@ std::string VComboBox::GetCurrentString() const { return _combo->currentText().t
 
 int VComboBox::GetCount() const { return _combo->count(); }
 
-void VComboBox::emitComboChanged(QString value) { emit ValueChanged(value.toStdString()); }
+void VComboBox::emitComboChanged(QString value) {
+    emit ValueChanged(value.toStdString());
+    emit ValueChanged(_combo->currentIndex());
+}

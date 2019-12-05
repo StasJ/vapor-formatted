@@ -72,10 +72,10 @@ SliceVariablesSubtab::SliceVariablesSubtab(QWidget *parent) {
     connect(_fr, SIGNAL(ValueChanged(const std::string &)), this, SLOT(_frChanged()));
     _fw = new VFileWriter("fw");
     layout()->addWidget(new VLineItem("fwline", _fw));
-    connect(_fw, SIGNAL(ValueChanged(const std::string &val)), this, SLOT(_fwChanged()));
+    connect(_fw, SIGNAL(ValueChanged(const std::string &)), this, SLOT(_fwChanged()));
     _ds = new VDirSelector("ds");
     layout()->addWidget(new VLineItem("dsline", _ds));
-    connect(_fw, SIGNAL(ValueChanged(const std::string &val)), this, SLOT(_dsChanged()));
+    connect(_ds, SIGNAL(ValueChanged(const std::string &)), this, SLOT(_dsChanged()));
 }
 
 void SliceVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
