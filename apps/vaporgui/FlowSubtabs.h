@@ -65,21 +65,6 @@ class FlowVariablesSubtab : public QVaporSubtab {
 
   private:
     VAPoR::FlowParams *_params;
-
-    /*    VLineEdit*          _velocityMltp;  // Note on this widget: its name and associated
-       functions
-                                            // use the name "velocity multiplier," while it displays
-                                            // "Field Scale Factor." They'll need to be reconciled
-                                            // before the final merge.
-
-        VCheckBox*          _periodicX;
-        VCheckBox*          _periodicY;
-        VCheckBox*          _periodicZ;*/
-
-  private slots:
-    // Respond to user input
-    /*    void _velocityMultiplierChanged();
-        void _periodicClicked();*/
 };
 
 //
@@ -121,7 +106,7 @@ class FlowSeedingSubtab : public QVaporSubtab {
     void _streamlineLifetimeChanged(int lifeTime);
 
     void _pathlineDirectionChanged(int index);
-    void _pathlineLengthChanged(int length);
+    void _pathlineSamplesChanged(int length);
 
     void _seedInjIntervalChanged(int interval);
 
@@ -136,6 +121,8 @@ class FlowSeedingSubtab : public QVaporSubtab {
 
     void _rakeGeometryChanged(const std::vector<float> &range);
 
+    void _geometryWriterFileChanged(const std::string &file);
+
     void _selectedTabChanged(int index);
 
   private:
@@ -148,13 +135,12 @@ class FlowSeedingSubtab : public QVaporSubtab {
     VAPoR::ParamsMgr *_paramsMgr;
 
     // Integration options
-    //
     VSection *_integrationSection;
     VComboBox *_flowTypeCombo;
 
     //  Pathline integration options
     VFrame *_pathlineFrame;
-    VSliderEdit *_pathlineLengthSliderEdit;
+    VSliderEdit *_pathlineSamplesSliderEdit;
     VComboBox *_pathlineDirectionCombo;
 
     //  Streamline integration options
@@ -172,7 +158,6 @@ class FlowSeedingSubtab : public QVaporSubtab {
     VLineEdit *_velocityMultiplierLineEdit;
 
     // Seed distribution options
-    //
     VSection *_seedDistributionSection;
     VComboBox *_seedTypeCombo;
 
@@ -184,6 +169,9 @@ class FlowSeedingSubtab : public QVaporSubtab {
     VSliderEdit *_xSeedSliderEdit;
     VSliderEdit *_ySeedSliderEdit;
     VSliderEdit *_zSeedSliderEdit;
+
+    //  Rake region selection
+    VSection *_rakeRegionSection;
     VGeometry2 *_rakeWidget;
 
     //  Seeds read from a text file
@@ -192,48 +180,13 @@ class FlowSeedingSubtab : public QVaporSubtab {
 
     //  Random seed distribution
     VFrame *_randomSeedsFrame;
-    // VSpinBox*               _randomSeedSpinBox;
     VSliderEdit *_randomSeedsSliderEdit;
     VComboBox *_biasVariableComboBox;
     VSliderEdit *_biasWeightSliderEdit;
 
-    VFileWriter *_exportGeometryFileWriter;
-
-    VSliderEdit *_pastNumOfTimeSteps;
-    VSliderEdit *_seedInjInterval;
-
-    VComboBox *_seedGenMode;
-    VFileReader *_fileReader;
-    VFileWriter *_fileWriter;
-
-    // Rake related widgets
-    VGeometry *_rake;
-    VLineEdit *_rakeXNum, *_rakeYNum, *_rakeZNum, *_rakeTotalNum;
-    VComboBox *_rakeBiasVariable;
-    VSliderEdit *_rakeBiasStrength;
-
-    /*    // Add some QT widgets
-        VCheckBox*              _steady;
-        VLineEdit*              _steadyNumOfSteps;
-        VSliderEdit*            _pastNumOfTimeSteps;
-        VSliderEdit*            _seedInjInterval;
-
-        VComboBox*              _seedGenMode;
-        VFileReader*            _fileReader;
-        VFileWriter*            _fileWriter;
-        VComboBox*              _flowDirection;
-
-        // Rake related widgets
-        VGeometry*              _rake;
-        VLineEdit              *_rakeXNum, *_rakeYNum, *_rakeZNum, *_rakeTotalNum;
-        VComboBox*              _rakeBiasVariable;
-        VSliderEdit*            _rakeBiasStrength;
-
-        QFrame                  *_hline1, *_hline2;     // horizontal lines
-
-        // Helper functions
-        void _hideShowWidgets(); // hide and show widgets based on the current seed generation mode.
-    */
+    VFileWriter *_geometryWriter;
+    VFrame *_geometryWriterFrame;
+    VSection *_geometryWriterSection;
 };
 
 //
