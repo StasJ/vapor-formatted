@@ -81,8 +81,8 @@ void FlowAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *par
 FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent) : QVaporSubtab(parent) {
     _params = nullptr;
 
-    _createSeedingSection(parent);
     _createIntegrationSection();
+    _createSeedingSection(parent);
 }
 
 void FlowSeedingSubtab::_createSeedingSection(QWidget *parent) {
@@ -340,8 +340,7 @@ void FlowSeedingSubtab::_updateSteadyFlowWidgets(VAPoR::DataMgr *dataMgr) {
     // Steady flow integration length (flowNumOfSteps)
     int steadyNumOfSteps = _params->GetSteadyNumOfSteps();
     _pathlineLengthSliderEdit->SetValue(steadyNumOfSteps);
-    int numTS = dataMgr->GetNumTimeSteps();
-    _pathlineLengthSliderEdit->SetRange(0, numTS - 1);
+    _pathlineLengthSliderEdit->SetRange(0, MAX_PATHLINE_LENGTH);
 }
 
 void FlowSeedingSubtab::_updateUnsteadyFlowWidgets(VAPoR::DataMgr *dataMgr) {
