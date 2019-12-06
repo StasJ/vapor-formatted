@@ -476,7 +476,7 @@ void FlowSeedingSubtab::_configureSeedType(const std::string &value) {
         _randomSeedsFrame->show();
         _rakeRegionSection->show();
         if (_params != nullptr)
-            _params->SetSeedGenMode((int)VAPoR::FlowSeedMode::RANDOM);
+            _params->SetSeedGenMode((int)VAPoR::FlowSeedMode::RANDOM_BIAS);
     }
 }
 
@@ -521,7 +521,14 @@ void FlowSeedingSubtab::_selectedTabChanged(int index) {
     gp->SetFlowSeedTabActive(widget == this);
 }
 
-void FlowSeedingSubtab::_seedGenModeChanged(int newIdx) { _params->SetSeedGenMode(newIdx); }
+void FlowSeedingSubtab::_seedGenModeChanged(int newIdx) {
+#warning FlowSeedingSubtab::_seedGenModeChanged() has a hack to get around numeric values representing seed generation modes
+    cout << newIdx << endl;
+    if (newIdx > 0)
+        newIdx++;
+    cout << newIdx << endl;
+    _params->SetSeedGenMode(newIdx);
+}
 
 void FlowSeedingSubtab::_pathlineDirectionChanged(int index) { _params->SetFlowDirection(index); }
 
