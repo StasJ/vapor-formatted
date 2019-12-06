@@ -452,6 +452,8 @@ void VariablesWidget::Update(const DataMgr *dataMgr, ParamsMgr *paramsMgr, Rende
         orientationFrame->hide();
 }
 
+DimFlags VariablesWidget::GetDimFlags() const { return _dimFlags; }
+
 string VariablesWidget::findVarStartingWithLetter(vector<string> searchVars, char letter) {
     for (auto &element : searchVars) {
         if (element[0] == letter || element[0] == toupper(letter)) {

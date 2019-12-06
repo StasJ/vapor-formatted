@@ -35,7 +35,6 @@ class TwoDDataEventRouter : public QTabWidget, public RenderEventRouter {
 
   public:
     TwoDDataEventRouter(QWidget *parent, VAPoR::ControlExec *ce);
-    ~TwoDDataEventRouter();
 
     void GetWebHelp(vector<pair<string, string>> &help) const;
 
@@ -49,6 +48,8 @@ class TwoDDataEventRouter : public QTabWidget, public RenderEventRouter {
 
     virtual string _getSmallIconImagePath() const { return ("TwoDData_small.png"); }
     virtual string _getIconImagePath() const { return ("TwoDData.png"); }
+
+    virtual DimFlags GetDimFlags() const { return _variables->_variablesWidget->GetDimFlags(); }
 
   private:
     TwoDDataEventRouter() {}

@@ -35,7 +35,6 @@ class ContourEventRouter : public QTabWidget, public RenderEventRouter {
 
   public:
     ContourEventRouter(QWidget *parent, VAPoR::ControlExec *ce);
-    ~ContourEventRouter();
 
     virtual void hookUpTab() {}
 
@@ -46,6 +45,8 @@ class ContourEventRouter : public QTabWidget, public RenderEventRouter {
     static string GetClassType() { return (VAPoR::ContourRenderer::GetClassType()); }
 
     string GetType() const { return GetClassType(); }
+
+    virtual DimFlags GetDimFlags() const { return _variables->_variablesWidget->GetDimFlags(); }
 
   protected:
     virtual void _initializeTab();
