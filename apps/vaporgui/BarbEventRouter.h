@@ -35,7 +35,6 @@ class BarbEventRouter : public QTabWidget, public RenderEventRouter {
 
   public:
     BarbEventRouter(QWidget *parent, VAPoR::ControlExec *ce);
-    ~BarbEventRouter();
 
     virtual void hookUpTab() {}
 
@@ -46,6 +45,8 @@ class BarbEventRouter : public QTabWidget, public RenderEventRouter {
     static string GetClassType() { return (VAPoR::BarbRenderer::GetClassType()); }
 
     string GetType() const { return GetClassType(); }
+
+    virtual DimFlags GetDimFlags() const { return _variables->_variablesWidget->GetDimFlags(); }
 
   protected:
     virtual void _updateTab();

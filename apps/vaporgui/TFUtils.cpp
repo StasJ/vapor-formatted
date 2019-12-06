@@ -54,8 +54,7 @@ void TFUtils::SaveTransferFunction(VAPoR::ParamsMgr *paramsMgr, VAPoR::MapperFun
 
     QString qDefaultDirectory = QString::fromStdString(sp->GetSessionDir());
     QString qSelectedPath = QFileDialog::getSaveFileName(
-        nullptr, "Select a .tf3 file", qDefaultDirectory, "Vapor Transfer Function (*.tf3)", 0,
-        QFileDialog::DontUseNativeDialog);
+        nullptr, "Select a .tf3 file", qDefaultDirectory, "Vapor Transfer Function (*.tf3)", 0);
     if (qSelectedPath.isNull())
         return;
 
