@@ -29,7 +29,7 @@ class VLineEdit : public VContainer {
 
     void SetIsDouble(bool isDouble);
 
-    void UseMenu();
+    void UseDoubleMenu();
 
   private:
     QLineEdit *_lineEdit;

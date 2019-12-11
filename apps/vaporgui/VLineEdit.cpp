@@ -18,7 +18,7 @@ VLineEdit::VLineEdit(const std::string &value)
     connect(_lineEdit, SIGNAL(editingFinished()), this, SLOT(emitLineEditChanged()));
 }
 
-void VLineEdit::UseMenu() {
+void VLineEdit::UseDoubleMenu() {
     _menu = new QMenu();
 
     SpinBoxAction *decimalAction = new SpinBoxAction(tr("Decimal digits"), _decDigits);
