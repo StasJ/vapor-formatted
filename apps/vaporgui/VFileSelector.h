@@ -9,6 +9,12 @@
 class VPushButton;
 class VLineEdit;
 
+//! class VFileSelector
+//!
+//! An abstract class for reading and writing files, or selecting
+//! directory paths.  This class wraps a VLineEdit to display the current
+//! selection, and a VPushButton to open file dialogs.  It also provides
+//! vaporgui's standard setter/getter functions and signals.
 class VFileSelector : public VContainer {
     Q_OBJECT
 
@@ -40,9 +46,10 @@ class VFileSelector : public VContainer {
     void ValueChanged(const std::string &path);
 };
 
-//
-//
-//
+//! class VFileReader
+//!
+//! A class for opening a file-dialog and selecting a file for reading.
+//! This class provides vaporgui's standard setter/getter functions, and signals.
 class VFileReader : public VFileSelector {
     Q_OBJECT
 
@@ -56,9 +63,10 @@ class VFileReader : public VFileSelector {
     virtual bool _isFileOperable(const std::string &file) const;
 };
 
-//
-//
-//
+//! class VFileWriter
+//!
+//! A class for opening a file-dialog and selecting a file for writing.
+//! This class provides vaporgui's standard setter/getter functions, and signals.
 class VFileWriter : public VFileSelector {
     Q_OBJECT
 
@@ -72,9 +80,10 @@ class VFileWriter : public VFileSelector {
     virtual bool _isFileOperable(const std::string &file) const;
 };
 
-//
-//
-//
+//! class VFileSelector
+//!
+//! A class for opening a file-dialog and selecting a directory.
+//! This class provides vaporgui's standard setter/getter functions, and signals.
 class VDirSelector : public VFileSelector {
     Q_OBJECT
 

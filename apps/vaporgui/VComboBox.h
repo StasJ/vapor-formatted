@@ -4,6 +4,11 @@
 #include <QComboBox>
 #include <string>
 
+//! class VComboBox
+//!
+//! Wraps a QComboBox and provides vaporgui's standard setter/getter functions
+//! and signals.
+
 class VComboBox : public VContainer {
     Q_OBJECT
 
