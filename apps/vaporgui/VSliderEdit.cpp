@@ -6,8 +6,7 @@
 #include "VSliderEdit.h"
 #include "vapor/VAssert.h"
 
-VSliderEdit::VSliderEdit(double min, double max, double value)
-    : VContainer(this), _isIntType(false) {
+VSliderEdit::VSliderEdit(double min, double max, double value) : VContainer(), _isIntType(false) {
     _lineEdit = new VLineEdit();
     _slider = new VSlider();
 

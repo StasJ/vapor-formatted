@@ -3,7 +3,7 @@
 
 #include "VContainer.h"
 
-VContainer::VContainer(QWidget *containee) : QWidget() {
+VContainer::VContainer() : QWidget() {
     QHBoxLayout *layout = new QHBoxLayout;
     layout->setContentsMargins(LEFT_MARGIN, TOP_MARGIN, RIGHT_MARGIN, BOTTOM_MARGIN);
     setLayout(layout);

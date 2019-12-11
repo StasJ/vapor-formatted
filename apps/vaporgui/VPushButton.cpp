@@ -1,6 +1,6 @@
 #include "VPushButton.h"
 
-VPushButton::VPushButton(const std::string &buttonText) : VContainer(this) {
+VPushButton::VPushButton(const std::string &buttonText) : VContainer() {
     _pushButton = new QPushButton(QString::fromStdString(buttonText));
     layout()->addWidget(_pushButton);
 
