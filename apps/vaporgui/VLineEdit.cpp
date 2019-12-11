@@ -9,7 +9,7 @@
 #include "VLineEdit.h"
 
 VLineEdit::VLineEdit(const std::string &value)
-    : VContainer(this), _menu(nullptr), _value(value), _isDouble(false), _scientific(false),
+    : VContainer(), _menu(nullptr), _value(value), _isDouble(false), _scientific(false),
       _menuEnabled(false), _decDigits(4) {
     _lineEdit = new QLineEdit;
     SetValue(_value);

@@ -11,19 +11,6 @@ VContainer::VContainer(QWidget *containee) : QWidget() {
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
 }
 
-void VContainer::Hide() {
-    QWidget *parent = parentWidget();
-    if (parent != nullptr) {
-        parent->hide();
-    }
-}
-
-void VContainer::Show() {
-    QWidget *parent = parentWidget();
-    if (parent != nullptr)
-        parent->show();
-}
-
 MouseWheelWidgetAdjustmentGuard::MouseWheelWidgetAdjustmentGuard(QObject *parent)
     : QObject(parent) {}
 
