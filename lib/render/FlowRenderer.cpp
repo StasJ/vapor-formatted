@@ -37,6 +37,10 @@ FlowRenderer::~FlowRenderer() {
     }
 }
 
+std::string FlowRenderer::_getColorbarVariableName() const {
+    return GetActiveParams()->GetColorMapVariableName();
+}
+
 int FlowRenderer::_initializeGL() {
     // First prepare the VelocityField
     _velocityField.AssignDataManager(_dataMgr);
