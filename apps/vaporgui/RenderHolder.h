@@ -142,6 +142,7 @@ class RenderHolder : public QWidget, public Ui_LeftPanel {
 
   private slots:
     void _showNewRendererDialog();
+    void _newRendererDialogAccepted();
     void _deleteRenderer();
     void _itemTextChange(QTableWidgetItem *);
     void _copyInstanceTo(int);
