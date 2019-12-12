@@ -42,11 +42,11 @@ void VComboBox::SetValue(const std::string &value) {
 
 int VComboBox::GetCurrentIndex() const { return _combo->currentIndex(); }
 
-std::string VComboBox::GetCurrentString() const { return _combo->currentText().toStdString(); }
+std::string VComboBox::GetValue() const { return _combo->currentText().toStdString(); }
 
 int VComboBox::GetCount() const { return _combo->count(); }
 
 void VComboBox::emitComboChanged(QString value) {
     emit ValueChanged(value.toStdString());
-    emit ValueChanged(_combo->currentIndex());
+    emit IndexChanged(_combo->currentIndex());
 }

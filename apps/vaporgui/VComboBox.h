@@ -19,8 +19,8 @@ class VComboBox : public VContainer {
     void SetIndex(int index);
     void SetValue(const std::string &value);
 
+    std::string GetValue() const;
     int GetCurrentIndex() const;
-    std::string GetCurrentString() const;
     int GetCount() const;
 
   private:
@@ -31,5 +31,5 @@ class VComboBox : public VContainer {
 
   signals:
     void ValueChanged(std::string value);
-    void ValueChanged(int index);
+    void IndexChanged(int index);
 };

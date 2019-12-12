@@ -40,8 +40,8 @@ class VSliderEdit : public VContainer {
 
   signals:
     void ValueChanged(double value);
-    void ValueChanged(int value);
+    void ValueChangedInt(int value);
 
     void ValueChangedIntermediate(double value);
-    void ValueChangedIntermediate(int value);
+    void ValueChangedIntIntermediate(int value);
 };

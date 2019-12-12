@@ -16,13 +16,12 @@ VSliderEdit::VSliderEdit(double min, double max, double value) : VContainer(), _
     layout()->addWidget(_slider);
     layout()->addWidget(_lineEdit);
 
-    connect(_lineEdit, SIGNAL(ValueChanged(const std::string &)), this,
-            SLOT(_lineEditChanged(const std::string &)));
+    connect(_lineEdit, &VLineEdit::ValueChanged, this, &VSliderEdit::_lineEditChanged);
 
-    connect(_slider, SIGNAL(ValueChanged(double)), this, SLOT(_sliderChanged(double)));
+    connect(_slider, &VSlider::ValueChanged, this, &VSliderEdit::_sliderChanged);
 
-    connect(_slider, SIGNAL(ValueChangedIntermediate(double)), this,
-            SLOT(_sliderChangedIntermediate(double)));
+    connect(_slider, &VSlider::ValueChangedIntermediate, this,
+            &VSliderEdit::_sliderChangedIntermediate);
 }
 
 double VSliderEdit::GetValue() const { return _value; }
@@ -71,7 +70,7 @@ void VSliderEdit::_lineEditChanged(const std::string &value) {
         double newValue = stod(value);
         SetValue(newValue);
         if (_isIntType)
-            emit ValueChanged((int)_value);
+            emit ValueChangedInt((int)_value);
         else
             emit ValueChanged(_value);
     }
@@ -84,16 +83,18 @@ void VSliderEdit::_lineEditChanged(const std::string &value) {
 
 void VSliderEdit::_sliderChanged(double value) {
     SetValue(value);
-    if (_isIntType)
-        emit ValueChanged((int)_value);
-    else
+    if (_isIntType) {
+        std::cout << "_sliderChanged " << (int)_value << std::endl;
+        emit ValueChangedInt((int)_value);
+    } else
         emit ValueChanged(_value);
 }
 
 void VSliderEdit::_sliderChangedIntermediate(double value) {
     if (_isIntType) {
+        std::cout << "_sliderChangedInt " << (int)value << std::endl;
         _lineEdit->SetValue(std::to_string((int)value));
-        emit ValueChangedIntermediate((int)value);
+        emit ValueChangedIntIntermediate((int)value);
     } else {
         _lineEdit->SetValue(std::to_string(value));
         emit ValueChangedIntermediate(value);
