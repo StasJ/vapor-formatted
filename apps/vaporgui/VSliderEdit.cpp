@@ -28,7 +28,7 @@ double VSliderEdit::GetValue() const { return _value; }
 
 void VSliderEdit::SetValue(double value) {
     if (_isIntType)
-        value = round(value);
+        value = std::round(value);
     if (value < _minValid)
         value = _minValid;
     if (value > _maxValid)
