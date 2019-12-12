@@ -10,7 +10,7 @@ PDoubleInput::PDoubleInput(const std::string &tag, const std::string &label)
 }
 
 void PDoubleInput::updateGUI() const {
-    double value = getParams()->GetValueDouble(GetTag(), 0);
+    // double value = getParams()->GetValueDouble(GetTag(), 0);
     // _doubleInput->SetValue(value);
 }
 
