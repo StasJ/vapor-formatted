@@ -49,7 +49,7 @@ void VSliderEdit::SetRange(double min, double max) {
         max = round(max);
     }
 
-    VAssert(min < max);
+    VAssert(min <= max);
     if (_value < min)
         _value = min;
     if (_value > max)
