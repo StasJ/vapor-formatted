@@ -5,7 +5,7 @@ VCheckBox::VCheckBox(bool checked) : VContainer() {
     SetValue(checked);
     layout()->addWidget(_checkBox);
 
-    connect(_checkBox, SIGNAL(clicked(bool)), this, SLOT(emitCheckBoxChanged(bool)));
+    connect(_checkBox, &QCheckBox::clicked, this, &VCheckBox::emitCheckBoxChanged);
 }
 
 // Stas thinks that we should have setValues and setValue instead of Update

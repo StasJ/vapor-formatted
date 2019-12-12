@@ -19,9 +19,8 @@ VFileSelector::VFileSelector(const std::string &buttonText, const std::string &d
     if (_filePath.empty())
         _filePath = QDir::homePath().toStdString();
 
-    connect(_pushButton, SIGNAL(ButtonClicked()), this, SLOT(OpenFileDialog()));
-    connect(_lineEdit, SIGNAL(ValueChanged(const std::string &)), this,
-            SLOT(SetPathFromLineEdit(const std::string &)));
+    connect(_pushButton, &VPushButton::ButtonClicked, this, &VFileSelector::OpenFileDialog);
+    connect(_lineEdit, &VLineEdit::ValueChanged, this, &VFileSelector::SetPathFromLineEdit);
 }
 
 std::string VFileSelector::GetValue() const { return _filePath; }
