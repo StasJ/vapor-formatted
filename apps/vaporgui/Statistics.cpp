@@ -199,7 +199,7 @@ bool Statistics::Update() {
     MinTimestepSpinbox->blockSignals(true);
     MinTimestepSpinbox->setMinimum(0);
     MinTimestepSpinbox->setMaximum(currentDmgr->GetNumTimeSteps() - 1);
-    MinTimestepSpinbox->setValue(statsParams->GetCurrentMinTS());
+    MinTimestepSpinbox->setValue(statsParams->GetCurrentTimestep());
     MinTimestepSpinbox->blockSignals(false);
 
     MaxTimestepSpinbox->blockSignals(true);
@@ -483,8 +483,8 @@ void Statistics::_minTSChanged(int val) {
     _validStats.currentTimeStep[0] = val;
 
     // Add this minTS to parameter if different
-    if (val != statsParams->GetCurrentMinTS()) {
-        statsParams->SetCurrentMinTS(val);
+    if (val != statsParams->GetCurrentTimestep()) {
+        statsParams->SetCurrentTimestep(val);
         _validStats.InvalidAll();
 
         if (val > statsParams->GetCurrentMaxTS()) {
@@ -516,9 +516,9 @@ void Statistics::_maxTSChanged(int val) {
         statsParams->SetCurrentMaxTS(val);
         _validStats.InvalidAll();
 
-        if (val < statsParams->GetCurrentMinTS()) {
+        if (val < statsParams->GetCurrentTimestep()) {
             _validStats.currentTimeStep[0] = val;
-            statsParams->SetCurrentMinTS(val);
+            statsParams->SetCurrentTimestep(val);
             MinTimestepSpinbox->setValue(val);
         }
     }
@@ -601,7 +601,7 @@ void Statistics::_newVarChanged(int index) {
 
     // Test if the selected variable available at the specific time step,
     //   compression level, etc.
-    if (!currentDmgr->VariableExists(statsParams->GetCurrentMinTS(), varName,
+    if (!currentDmgr->VariableExists(statsParams->GetCurrentTimestep(), varName,
                                      statsParams->GetRefinementLevel(),
                                      statsParams->GetCompressionLevel())) {
         MSG_WARN("Selected variable not available at this settings!");
@@ -658,7 +658,7 @@ bool Statistics::_calc3M(std::string varname) {
         _controlExec->GetParamsMgr()->GetAppRenderParams(dsName, StatisticsParams::GetClassType()));
     VAPoR::DataMgr *currentDmgr = _controlExec->GetDataStatus()->GetDataMgr(dsName);
 
-    int minTS = statsParams->GetCurrentMinTS();
+    int minTS = statsParams->GetCurrentTimestep();
     int maxTS = statsParams->GetCurrentMaxTS();
     if (!currentDmgr->IsTimeVarying(varname))
         maxTS = minTS;
@@ -691,6 +691,8 @@ bool Statistics::_calc3M(std::string varname) {
                     count++;
                 }
             }
+
+            delete grid; // delete the grid after using it!
         }
     }
 
@@ -716,7 +718,7 @@ bool Statistics::_calcMedian(std::string varname) {
         _controlExec->GetParamsMgr()->GetAppRenderParams(dsName, StatisticsParams::GetClassType()));
     VAPoR::DataMgr *currentDmgr = _controlExec->GetDataStatus()->GetDataMgr(dsName);
 
-    int minTS = statsParams->GetCurrentMinTS();
+    int minTS = statsParams->GetCurrentTimestep();
     int maxTS = statsParams->GetCurrentMaxTS();
     if (!currentDmgr->IsTimeVarying(varname))
         maxTS = minTS;
@@ -761,7 +763,7 @@ bool Statistics::_calcStddev(std::string varname) {
         _controlExec->GetParamsMgr()->GetAppRenderParams(dsName, StatisticsParams::GetClassType()));
     VAPoR::DataMgr *currentDmgr = _controlExec->GetDataStatus()->GetDataMgr(dsName);
 
-    int minTS = statsParams->GetCurrentMinTS();
+    int minTS = statsParams->GetCurrentTimestep();
     int maxTS = statsParams->GetCurrentMaxTS();
     if (!currentDmgr->IsTimeVarying(varname))
         maxTS = minTS;
@@ -967,7 +969,7 @@ bool Statistics::ValidStats::HaveSameParams(const VAPoR::StatisticsParams *rhs) 
         paramsMax.push_back((float)myMax[i]);
     }
     return (_variables == rhs->GetAuxVariableNames() && currentExtentMin == paramsMin &&
-            currentExtentMax == paramsMax && currentTimeStep[0] == rhs->GetCurrentMinTS() &&
+            currentExtentMax == paramsMax && currentTimeStep[0] == rhs->GetCurrentTimestep() &&
             currentTimeStep[1] == rhs->GetCurrentMaxTS() &&
             currentLOD == rhs->GetCompressionLevel() && currentRefLev == rhs->GetRefinementLevel());
 }
@@ -980,7 +982,7 @@ bool Statistics::ValidStats::UpdateMyParams(const VAPoR::StatisticsParams *rhs) 
     std::vector<double> myMin, myMax;
     rhs->GetBox()->GetExtents(myMin, myMax);
     this->SetCurrentExtents(myMin, myMax);
-    currentTimeStep[0] = rhs->GetCurrentMinTS();
+    currentTimeStep[0] = rhs->GetCurrentTimestep();
     currentTimeStep[1] = rhs->GetCurrentMaxTS();
     currentLOD = rhs->GetCompressionLevel();
     currentRefLev = rhs->GetRefinementLevel();
@@ -1103,7 +1105,7 @@ void Statistics::_exportTextClicked() {
         file << endl;
 
         file << "#Temporal Extents:" << endl;
-        file << "Minimum Timestep = " << statsParams->GetCurrentMinTS() << endl;
+        file << "Minimum Timestep = " << statsParams->GetCurrentTimestep() << endl;
         file << "Maximum Timestep = " << statsParams->GetCurrentMaxTS() << endl;
         file << endl;
 
