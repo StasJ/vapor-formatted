@@ -3,6 +3,13 @@
 
 #include "VContainer.h"
 
+namespace {
+int LEFT_MARGIN = 0;
+int TOP_MARGIN = 0;
+int RIGHT_MARGIN = 0;
+int BOTTOM_MARGIN = 0;
+} // namespace
+
 VContainer::VContainer() : QWidget() {
     QHBoxLayout *layout = new QHBoxLayout;
     layout->setContentsMargins(LEFT_MARGIN, TOP_MARGIN, RIGHT_MARGIN, BOTTOM_MARGIN);
