@@ -113,7 +113,7 @@ template <class T> void CopyVar(string ncdffile, string datafile, T dummy) {
     if (rc < 0)
         exit(1);
 
-    FILE *fp = fopen(datafile.c_str(), "w");
+    FILE *fp = fopen(datafile.c_str(), "wb");
     if (!fp) {
         MyBase::SetErrMsg("fopen(%s) : %M", datafile.c_str());
         exit(1);
