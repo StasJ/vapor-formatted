@@ -212,32 +212,32 @@ void FlowSeedingSubtab::_createIntegrationSection() {
             &FlowSeedingSubtab::_pathlineLengthChanged);
     _pathlineFrame->addWidget(new VLineItem("Streamline length", _pathlineLengthSliderEdit));
 
-    _pathlineStartSliderEdit = new VSliderEdit();
+    /*_pathlineStartSliderEdit= new VSliderEdit();
     _pathlineStartSliderEdit->SetIntType(true);
-    connect(_pathlineStartSliderEdit, &VSliderEdit::ValueChangedInt, this,
-            &FlowSeedingSubtab::_pathlineStartTimeChanged);
-    _pathlineFrame->addWidget(new VLineItem("Injection start time", _pathlineStartSliderEdit));
+    connect( _pathlineStartSliderEdit, &VSliderEdit::ValueChangedInt,
+        this, &FlowSeedingSubtab::_pathlineStartTimeChanged );
+    _pathlineFrame->addWidget( new VLineItem("Injection start time", _pathlineStartSliderEdit));
     _pathlineStartSliderEdit->setEnabled(false);
 
     _pathlineEndSliderEdit = new VSliderEdit();
     _pathlineEndSliderEdit->SetIntType(true);
-    connect(_pathlineEndSliderEdit, &VSliderEdit::ValueChangedInt, this,
-            &FlowSeedingSubtab::_pathlineEndTimeChanged);
-    _pathlineFrame->addWidget(new VLineItem("Injection end time", _pathlineEndSliderEdit));
+    connect( _pathlineEndSliderEdit, &VSliderEdit::ValueChangedInt,
+        this, &FlowSeedingSubtab::_pathlineEndTimeChanged );
+    _pathlineFrame->addWidget( new VLineItem("Injection end time", _pathlineEndSliderEdit));
     _pathlineEndSliderEdit->setEnabled(false);
 
     _pathlineInjIntervalSliderEdit = new VSliderEdit();
     _pathlineInjIntervalSliderEdit->SetIntType(true);
-    connect(_pathlineInjIntervalSliderEdit, &VSliderEdit::ValueChangedInt, this,
-            &FlowSeedingSubtab::_seedInjIntervalChanged);
-    _pathlineFrame->addWidget(new VLineItem("Injection interval", _pathlineInjIntervalSliderEdit));
+    connect( _pathlineInjIntervalSliderEdit,  &VSliderEdit::ValueChangedInt,
+        this, &FlowSeedingSubtab::_seedInjIntervalChanged );
+    _pathlineFrame->addWidget( new VLineItem("Injection interval", _pathlineInjIntervalSliderEdit));
 
     _pathlineLifetimeSliderEdit = new VSliderEdit();
     _pathlineLifetimeSliderEdit->SetIntType(true);
-    connect(_pathlineLifetimeSliderEdit, &VSliderEdit::ValueChangedInt, this,
-            &FlowSeedingSubtab::_pathlineLifetimeChanged);
-    _pathlineFrame->addWidget(new VLineItem("Seed lifetime", _pathlineLifetimeSliderEdit));
-    _pathlineLifetimeSliderEdit->setEnabled(false);
+    connect( _pathlineLifetimeSliderEdit,  &VSliderEdit::ValueChangedInt,
+        this, &FlowSeedingSubtab::_pathlineLifetimeChanged );
+    _pathlineFrame->addWidget( new VLineItem("Seed lifetime", _pathlineLifetimeSliderEdit) );
+    _pathlineLifetimeSliderEdit->setEnabled(false);*/
 
     // Universal options: Velocity multiplier and periodicity checkboxes
     //
@@ -311,7 +311,12 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
     std::vector<std::string> vars = dataMgr->GetDataVarNames(3); // Do we support 2D flow?
     _biasVariableComboBox->SetOptions(vars);
     std::string var = _params->GetRakeBiasVariable();
-    _biasVariableComboBox->SetValue(var);
+    if (var.empty()) // The variable isn't set by the user yet. Let's set it!
+    {
+        auto varDefault = _biasVariableComboBox->GetValue();
+        _params->SetRakeBiasVariable(varDefault);
+    } else
+        _biasVariableComboBox->SetValue(var);
 
     double bias = _params->GetRakeBiasStrength();
     _biasWeightSliderEdit->SetValue(bias);
@@ -377,16 +382,20 @@ void FlowSeedingSubtab::_updatePathlineWidgets(VAPoR::DataMgr *dataMgr) {
         _pathlineLengthSliderEdit->SetValue(valParams);
     }
 
+    /*
     // Seed injection interval
-    _pathlineInjIntervalSliderEdit->SetRange(0, numTS - 1);
+    _pathlineInjIntervalSliderEdit->SetRange(0, numTS - 1 );
     int injIntv = _params->GetSeedInjInterval();
-    if (injIntv < 0) // initial value, we set it to 0
+    if( injIntv < 0 )       // initial value, we set it to 0
     {
-        _pathlineInjIntervalSliderEdit->SetValue(0);
-        _params->SetSeedInjInterval(0);
-    } else {
-        _pathlineInjIntervalSliderEdit->SetValue(injIntv);
+        _pathlineInjIntervalSliderEdit->SetValue( 0 );
+        _params->SetSeedInjInterval( 0 );
     }
+    else
+    {
+        _pathlineInjIntervalSliderEdit->SetValue( injIntv );
+    }
+    */
 }
 
 void FlowSeedingSubtab::_periodicClicked() {
@@ -518,14 +527,6 @@ void FlowSeedingSubtab::_selectedTabChanged(int index) {
     GUIStateParams *gp = (GUIStateParams *)_paramsMgr->GetParams(GUIStateParams::GetClassType());
 
     gp->SetFlowSeedTabActive(widget == this);
-}
-
-void FlowSeedingSubtab::_seedGenModeChanged(int newIdx) {
-    // This is a hack to get around numeric values representing seed generation modes
-    //
-    if (newIdx > 0)
-        newIdx++;
-    _params->SetSeedGenMode(newIdx);
 }
 
 void FlowSeedingSubtab::_streamlineDirectionChanged(int index) { _params->SetFlowDirection(index); }
