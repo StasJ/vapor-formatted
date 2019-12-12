@@ -242,6 +242,7 @@ void FlowSeedingSubtab::_createIntegrationSection() {
     //
     _velocityMultiplierLineEdit = new VLineEdit();
     _velocityMultiplierLineEdit->SetIsDouble(true);
+    _velocityMultiplierLineEdit->UseDoubleMenu();
     connect(_velocityMultiplierLineEdit, SIGNAL(ValueChanged(const std::string &)), this,
             SLOT(_velocityMultiplierChanged(const std::string &)));
     _integrationSection->layout()->addWidget(
