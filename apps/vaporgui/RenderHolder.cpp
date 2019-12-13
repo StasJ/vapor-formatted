@@ -230,6 +230,8 @@ void RenderHolder::_makeConnections() {
     connect(newButton, SIGNAL(clicked()), this, SLOT(_showNewRendererDialog()));
     connect(deleteButton, SIGNAL(clicked()), this, SLOT(_deleteRenderer()));
     connect(dupCombo, SIGNAL(activated(int)), this, SLOT(_copyInstanceTo(int)));
+    connect(_newRendererDialog, &NewRendererDialog::accepted, this,
+            &RenderHolder::_newRendererDialogAccepted);
 }
 
 void RenderHolder::_initializeSplitter() {
@@ -289,9 +291,12 @@ void RenderHolder::_showNewRendererDialog() {
     vector<string> dataSetNames = paramsMgr->GetDataMgrNames();
 
     _initializeNewRendererDialog(dataSetNames);
-    if (_newRendererDialog->exec() != QDialog::Accepted) {
-        return;
-    }
+    _newRendererDialog->open();
+}
+
+void RenderHolder::_newRendererDialogAccepted() {
+    ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
+    vector<string> dataSetNames = paramsMgr->GetDataMgrNames();
 
     string rendererType = _newRendererDialog->GetSelectedRenderer();
     _showIntelDriverWarning(rendererType);
@@ -351,7 +356,10 @@ void RenderHolder::_deleteRenderer() {
     // Get the currently selected renderer.
     //
     string rendererName, rendererType, dataSetName;
-    _getRowInfo(_currentRow, rendererName, rendererType, dataSetName);
+
+    rendererName = _getActiveRendererInst();
+    int row = _getRow(rendererName);
+    _getRowInfo(row, rendererName, rendererType, dataSetName);
 
     ParamsMgr *paramsMgr = _controlExec->GetParamsMgr();
     paramsMgr->BeginSaveStateGroup("Delete renderer");

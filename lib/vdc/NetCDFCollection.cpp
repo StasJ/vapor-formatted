@@ -11,6 +11,8 @@ using namespace std;
 
 namespace {
 
+const string derivedTimeDimName = "derivedTimeDim";
+
 bool readSliceOK(vector<size_t> dims, size_t start[], size_t count[]) {
     if (dims.size() == 3) {
         if (count[0] != 1)
@@ -92,6 +94,7 @@ void NetCDFCollection::ReInitialize() {
 
 int NetCDFCollection::Initialize(const vector<string> &files, const vector<string> &time_dimnames,
                                  const vector<string> &time_coordvars) {
+    vector<string> l_time_dimnames = time_dimnames;
 
     ReInitialize();
 
@@ -100,10 +103,21 @@ int NetCDFCollection::Initialize(const vector<string> &files, const vector<strin
     // to its time coordinates
     //
     int file_org; // case 1, 2, 3 (3a or 3b)
-    int rc = NetCDFCollection::_InitializeTimesMap(files, time_dimnames, time_coordvars, _timesMap,
-                                                   _times, file_org);
+    int rc = NetCDFCollection::_InitializeTimesMap(files, l_time_dimnames, time_coordvars,
+                                                   _timesMap, _times, file_org);
     if (rc < 0)
         return (-1);
+
+    //
+    // If no time dimension specified we create one. Really only need
+    // to do this if there are multiple files with the same variable(s)
+    // appearing in multiple files.
+    //
+    if (l_time_dimnames.empty() && _times.size() > 1) {
+        l_time_dimnames.push_back(derivedTimeDimName);
+        _dimNames.push_back(derivedTimeDimName);
+        _dimLens.push_back(_times.size());
+    }
 
     for (int i = 0; i < files.size(); i++) {
         NetCDFSimple *netcdf = new NetCDFSimple();
@@ -135,8 +149,8 @@ int NetCDFCollection::Initialize(const vector<string> &files, const vector<strin
             // if this is a time dimension and it hasn't shown up in another
             // file we increment the dimension length
             //
-            else if (find(time_dimnames.begin(), time_dimnames.end(), dimnames[j]) !=
-                     time_dimnames.end()) {
+            else if (find(l_time_dimnames.begin(), l_time_dimnames.end(), dimnames[j]) !=
+                     l_time_dimnames.end()) {
                 _dimLens[itr - _dimNames.begin()] += dims[j];
             } else if (_dimLens[itr - _dimNames.begin()] != dims[j]) {
                 SetErrMsg("Spatial dimension %s changed size", dimnames[j].c_str());
@@ -170,7 +184,7 @@ int NetCDFCollection::Initialize(const vector<string> &files, const vector<strin
 
             bool enable = EnableErrMsg(false);
             int rc =
-                tvvref.Insert(netcdf, variables[j], files[i], time_dimnames, _timesMap, file_org);
+                tvvref.Insert(netcdf, variables[j], files[i], l_time_dimnames, _timesMap, file_org);
             (void)EnableErrMsg(enable);
             if (rc < 0) {
                 SetErrCode(0);
@@ -265,7 +279,7 @@ vector<string> NetCDFCollection::GetVariableNames(int ndims, bool spatial) const
     for (; p != _variableList.end(); ++p) {
         const TimeVaryingVar &tvvars = p->second;
         int myndims = tvvars.GetSpatialDims().size();
-        if (!spatial && tvvars.GetTimeVarying() && !tvvars.GetTimeDimName().empty()) {
+        if (!spatial && tvvars.GetTimeVarying()) {
             myndims++;
         }
         if (myndims == ndims) {
@@ -534,8 +548,11 @@ void NetCDFCollection::GetAtt(string varname, string attname, std::vector<long> 
 void NetCDFCollection::GetAtt(string varname, string attname, string &values) const {
     values.clear();
 
-    if (NetCDFCollection::IsDerivedVar(varname))
-        return;
+    if (NetCDFCollection::IsDerivedVar(varname)) {
+        NetCDFCollection::DerivedVar *derivedVar;
+        derivedVar = _derivedVarsMap.find(varname)->second;
+        return (derivedVar->GetAtt(attname, values));
+    }
 
     //
     // See if global attribute
@@ -644,6 +661,12 @@ bool NetCDFCollection::_GetVariableInfo(string varname, NetCDFSimple::Variable &
     }
     const TimeVaryingVar &tvvars = p->second;
     tvvars.GetVariableInfo(varinfo);
+
+    vector<string> dimnames = tvvars.GetSpatialDimNames();
+    if (!(tvvars.GetTimeDimName().empty())) {
+        dimnames.insert(dimnames.begin(), tvvars.GetTimeDimName());
+    }
+    varinfo.SetDimNames(dimnames);
 
     return (true);
 }
@@ -770,7 +793,8 @@ int NetCDFCollection::ReadNative(size_t start[], size_t count[], float *data, in
     }
 
     int idx = 0;
-    if (fh._tvvars.GetTimeVarying() && !fh._tvvars.GetTimeDimName().empty()) {
+    if (fh._tvvars.GetTimeVarying() && !(fh._tvvars.GetTimeDimName().empty() ||
+                                         fh._tvvars.GetTimeDimName() == derivedTimeDimName)) {
         mystart[idx] = fh._local_ts;
         mycount[idx] = 1;
         idx++;
@@ -801,7 +825,8 @@ int NetCDFCollection::ReadNative(size_t start[], size_t count[], int *data, int 
     }
 
     int idx = 0;
-    if (fh._tvvars.GetTimeVarying() && !fh._tvvars.GetTimeDimName().empty()) {
+    if (fh._tvvars.GetTimeVarying() && !(fh._tvvars.GetTimeDimName().empty() ||
+                                         fh._tvvars.GetTimeDimName() == derivedTimeDimName)) {
         mystart[idx] = fh._local_ts;
         mycount[idx] = 1;
         idx++;
@@ -832,7 +857,8 @@ int NetCDFCollection::ReadNative(size_t start[], size_t count[], char *data, int
     }
 
     int idx = 0;
-    if (fh._tvvars.GetTimeVarying() && !fh._tvvars.GetTimeDimName().empty()) {
+    if (fh._tvvars.GetTimeVarying() && !(fh._tvvars.GetTimeDimName().empty() ||
+                                         fh._tvvars.GetTimeDimName() == derivedTimeDimName)) {
         mystart[idx] = fh._local_ts;
         mycount[idx] = 1;
         idx++;
@@ -1777,9 +1803,9 @@ int NetCDFCollection::TimeVaryingVar::Insert(const NetCDFSimple *netcdf,
 
         // Handle ITVV case
         //
-        if (time_dimnames.empty() && timesmap.size() > 1) {
+        if (time_dimnames.size() == 1 && time_dimnames[0] == derivedTimeDimName) {
             time_varying = true;
-            time_name = "";
+            time_name = derivedTimeDimName;
         } else if (find(time_dimnames.begin(), time_dimnames.end(), s) != time_dimnames.end()) {
             time_varying = true;
             time_name = s;
@@ -1807,9 +1833,8 @@ int NetCDFCollection::TimeVaryingVar::Insert(const NetCDFSimple *netcdf,
         // If this isn't the first variable to be inserted the new variable
         // must match the existing ones
         //
-        //		if (!( _spatial_dims == space_dims && _time_varying == time_varying && _time_name ==
-        //time_name)) {
-        if (!(variable == _variable)) {
+        if (!((variable.GetDimNames() == _variable.GetDimNames()) &&
+              variable.GetXType() == _variable.GetXType())) {
             SetErrMsg("Multiple definitions of variable \"%s\"", variable.GetName().c_str());
             return (-1);
         }
