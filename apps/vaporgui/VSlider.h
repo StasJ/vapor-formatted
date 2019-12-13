@@ -21,7 +21,7 @@ class VSlider : public VContainer {
     void SetValue(double value);
     void SetRange(double min, double max);
 
-    double GetValue(bool released = false) const;
+    double GetValue() const;
 
   private:
     QSlider *_slider;
