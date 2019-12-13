@@ -4,7 +4,7 @@
 #include "VSlider.h"
 #include <vapor/VAssert.h>
 
-#define NUM_STEPS 2000000000
+#define NUM_STEPS 100
 
 VSlider::VSlider(double min, double max)
     : VContainer(), _minValid(0.0), _maxValid(0.0), _stepSize(1.0) {
