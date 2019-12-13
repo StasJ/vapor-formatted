@@ -24,6 +24,7 @@
 #include <sstream>
 #include <string>
 #include <vapor/DataMgr.h>
+#include <vapor/DataMgrUtils.h>
 #include <vapor/RenderParams.h>
 
 using namespace VAPoR;
@@ -68,14 +69,22 @@ string string_replace(string s, string olds, string news) {
 }; // namespace
 
 void RenderParams::SetDefaultVariables(int dim = 3, bool secondaryColormapVariable = false) {
+
+    // Find the first variable in the data collection of
+    // the requested dimesion that exists and make it the default.
+    //
+    string varname;
+    size_t ts;
+    bool ok = DataMgrUtils::GetFirstExistingVariable(_dataMgr, 0, 0, dim, varname, ts);
+    if (!ok)
+        varname = "";
+    SetVariableName(varname);
+
+    // Now set the rest of the variable name fields. It's not important
+    // that these exist or not
+    //
     vector<string> varnames;
     varnames = _dataMgr->GetDataVarNames(dim);
-
-    string varname = "";
-    if (varnames.size()) {
-        varname = varnames[0];
-    }
-    SetVariableName(varname);
 
     vector<string> fieldVarNames(3, "");
     fieldVarNames[0] = _findVarStartingWithLetter(varnames, 'u');
@@ -107,7 +116,6 @@ void RenderParams::_init() {
 }
 
 void RenderParams::InitBox() {
-    int rc;
     vector<double> minExt, maxExt;
 
     //
@@ -115,38 +123,24 @@ void RenderParams::InitBox() {
     // variable returned by GetVariableName(). If not available,
     // look for others
     //
-    vector<string> varNames;
-    varNames.push_back(GetVariableName());
-    for (int dim = 3; dim > 1; dim--) {
-        vector<string> v = _dataMgr->GetDataVarNames(dim);
-        varNames.insert(varNames.end(), v.begin(), v.end());
-    }
-
-    string varname;
-    for (auto it = varNames.begin(); it != varNames.end(); ++it) {
-        if (_dataMgr->VariableExists(0, *it, 0, 0)) {
-            varname = *it;
-            break;
-        }
+    string varname = GetVariableName();
+    size_t ts = 0;
+    if (!_dataMgr->VariableExists(ts, varname, 0, 0)) {
+        bool ok = DataMgrUtils::GetFirstExistingVariable(_dataMgr, 0, 0, _maxDim, varname, ts);
+        if (!ok)
+            varname = "";
     }
 
     if (varname.empty())
         return;
 
-    bool prev = EnableErrMsg(false); // no error handling
-    rc = _dataMgr->GetVariableExtents(0, varname, 0, 0, minExt, maxExt);
-    if (rc < 0) {
-        minExt = {0.0, 0.0, 0.0};
-        maxExt = {1.0, 1.0, 1.0};
-    }
-    EnableErrMsg(prev);
+    int rc = _dataMgr->GetVariableExtents(ts, varname, 0, 0, minExt, maxExt);
+    VAssert(rc >= 0);
 
     VAssert(minExt.size() == maxExt.size() && (minExt.size() == 2 || minExt.size() == 3));
 
     bool planar = minExt.size() == 2;
     if (planar) {
-        minExt.push_back(0.0);
-        maxExt.push_back(0.0);
         _Box->SetOrientation(VAPoR::Box::XY);
     } else {
         _Box->SetOrientation(VAPoR::Box::XYZ);
