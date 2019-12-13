@@ -95,7 +95,7 @@ int PNGWriter::Write(const unsigned char *buffer, const unsigned int width,
     png_infop info_ptr = NULL;
     png_bytep row = NULL;
 
-    fp = fopen(file, "w");
+    fp = fopen(file, "wb");
     if (!fp)
         return -1;
 
