@@ -26,6 +26,8 @@ class VLineEdit : public VContainer {
     void SetValue(const std::string &value);
     std::string GetValue() const;
 
+    // Note: VLineEdit does NOT support an integer type at this point.
+    // When isDouble == false, it represents a string.
     void SetIsDouble(bool isDouble);
 
     void UseDoubleMenu();
