@@ -1,5 +1,6 @@
 #include <QLabel>
 #include <QVBoxLayout>
+#include <iostream>
 
 #include <vapor/VAssert.h>
 
@@ -59,12 +60,6 @@ void VGeometry2::SetRange(const std::vector<float> &range) {
 void VGeometry2::SetValue(const std::vector<float> &vals) {
     int dim = vals.size() / 2;
     VAssert(dim == 2 || dim == 3);
-    VAssert(vals[XMIN] >= _range[XMIN]);
-    VAssert(vals[XMAX] <= _range[XMAX]);
-    VAssert(vals[YMIN] >= _range[YMIN]);
-    VAssert(vals[YMAX] <= _range[YMAX]);
-    VAssert(vals[ZMIN] >= _range[ZMIN]);
-    VAssert(vals[ZMAX] <= _range[ZMAX]);
 
     _values = vals;
 
@@ -81,6 +76,7 @@ void VGeometry2::SetValue(const std::vector<float> &vals) {
 void VGeometry2::GetValue(std::vector<float> &vals) const { vals = _values; }
 
 void VGeometry2::_xRangeChanged(float min, float max) {
+    std::cout << "VGeometry2::_xRangeChanged " << min << " " << max << std::endl;
     VAssert(min >= _range[XMIN]);
     VAssert(max <= _range[XMAX]);
 
