@@ -26,7 +26,7 @@ class VFileReader;
 class VFileWriter;
 class VGeometry;
 class VFrame;
-class VSpinBox;
+class VIntSpinBox;
 class VGeometry2;
 class VPushButton;
 
@@ -163,9 +163,9 @@ class FlowSeedingSubtab : public QVaporSubtab {
 
     //  Gridded seed distribution
     VFrame *_griddedSeedsFrame;
-    VSpinBox *_xSeedSpinBox;
-    VSpinBox *_ySeedSpinBox;
-    VSpinBox *_zSeedSpinBox;
+    VIntSpinBox *_xSeedSpinBox;
+    VIntSpinBox *_ySeedSpinBox;
+    VIntSpinBox *_zSeedSpinBox;
     VSliderEdit *_xSeedSliderEdit;
     VSliderEdit *_ySeedSliderEdit;
     VSliderEdit *_zSeedSliderEdit;

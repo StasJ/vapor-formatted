@@ -7,11 +7,11 @@
 #include "VFileSelector.h"
 #include "VFrame.h"
 #include "VGeometry2.h"
+#include "VIntSpinBox.h"
 #include "VLineEdit.h"
 #include "VLineItem.h"
 #include "VPushButton.h"
 #include "VSliderEdit.h"
-#include "VSpinBox.h"
 
 #include <QScrollArea>
 
