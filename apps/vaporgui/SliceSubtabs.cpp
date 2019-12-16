@@ -1,5 +1,6 @@
 #include "SliceSubtabs.h"
 #include "TFEditor.h"
+#include "VLineItem.h"
 #include <QButtonGroup>
 
 #define MIN_SAMPLES 1
