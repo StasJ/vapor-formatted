@@ -48,6 +48,7 @@
 #include <vapor/debug.h>
 #include <vapor/glutil.h> // Must be included first!!!
 #define INCLUDE_DEPRECATED_LEGACY_VECTOR_MATH
+#include "hide_std_error_util.h"
 #include <vapor/LegacyVectorMath.h>
 
 using namespace VAPoR;
@@ -660,7 +661,9 @@ void VizWin::Render(bool fast) {
 #endif
     }
 
+    HideSTDERR();
     swapBuffers();
+    RestoreSTDERR();
 
     rc = CheckGLErrorMsg("VizWindowPaintGL");
     if (rc < 0) {
