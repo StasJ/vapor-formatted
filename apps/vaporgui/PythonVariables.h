@@ -158,6 +158,7 @@ class NewItemDialog : public QDialog {
                 std::vector<int> categoryItems = std::vector<int>());
     string GetItemName() const;
     string GetOptionName() const;
+    int GetType() const;
 
   private:
     void _connectWidgets();
