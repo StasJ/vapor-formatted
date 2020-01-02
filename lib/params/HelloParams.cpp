@@ -23,16 +23,7 @@ HelloParams::HelloParams(DataMgr *dataMgr, ParamsBase::StateSave *ssave)
 }
 
 HelloParams::HelloParams(DataMgr *dataMgr, ParamsBase::StateSave *ssave, XmlNode *node)
-    : RenderParams(dataMgr, ssave, node) {
-
-    // If node isn't tagged correctly we correct the tag and reinitialize
-    // from scratch;
-    //
-    if (node->GetTag() != HelloParams::GetClassType()) {
-        node->SetTag(HelloParams::GetClassType());
-        _init();
-    }
-}
+    : RenderParams(dataMgr, ssave, node) {}
 
 HelloParams::~HelloParams() {}
 
