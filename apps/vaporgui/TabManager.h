@@ -142,7 +142,14 @@ class TabManager : public QTabWidget {
     void UseHomeViewpoint() { _navigationEventRouter->UseHomeViewpoint(); }
     void ViewAll() { _navigationEventRouter->ViewAll(); }
     void SetHomeViewpoint() { _navigationEventRouter->SetHomeViewpoint(); }
-    void AlignView(int axis) { _navigationEventRouter->AlignView(axis); }
+    void AlignView(int axis) {
+        _navigationEventRouter->AlignView(axis);
+
+        QComboBox *cb = (QComboBox *)sender();
+        cb->blockSignals(true);
+        cb->setCurrentIndex(0);
+        cb->blockSignals(false);
+    }
     void CenterSubRegion() { _navigationEventRouter->CenterSubRegion(); }
 
     void AnimationPlayForward() { _animationEventRouter->AnimationPlayForward(); }
