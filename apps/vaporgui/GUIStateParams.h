@@ -126,6 +126,9 @@ class GUIStateParams : public VAPoR::ParamsBase {
     bool IsFlowSeedTabActive() const;
     void SetFlowSeedTabActive(bool b);
 
+    int GetFlowDimensionality() const;
+    void SetFlowDimensionality(int nDims);
+
     void SetProjectionString(string proj4String) {
         SetValueString(m_proj4StringTag, "Set Proj4 projection string", proj4String);
     }
@@ -201,6 +204,7 @@ class GUIStateParams : public VAPoR::ParamsBase {
     static const string m_proj4StringTag;
     static const string m_openDataSetsTag;
     static const string _isFlowSeedTabActiveTag;
+    static const string _flowDimensionalityTag;
 
     MouseModeParams *m_mouseModeParams;
 

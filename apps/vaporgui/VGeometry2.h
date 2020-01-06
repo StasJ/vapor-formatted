@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QRangeSliderTextCombo.h"
+#include <QLabel>
 #include <QWidget>
 
 //! class VGeometry2
@@ -32,4 +33,5 @@ class VGeometry2 : public QWidget {
     std::vector<float> _values;
     std::vector<float> _range;
     QRangeSliderTextCombo *_xRange, *_yRange, *_zRange;
+    QLabel *_zLabel;
 };
