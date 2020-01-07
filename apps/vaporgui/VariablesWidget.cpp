@@ -273,6 +273,16 @@ void VariablesWidget::setDefaultVectorVar(std::vector<string> vars) {
             defaultVars.push_back(defaultVar);
         } else
             defaultVars.push_back("");
+
+        // If we have no variables that resemble U, V, or W, default to the
+        // first variable in the currently active dimension for GUI initialization
+        // purposes ( TFWidget, GeometryWidget, etc )
+        if (defaultVars[0] == "" && defaultVars[1] == "" && defaultVars[2] == "") {
+            std::vector<std::string> vars = _dataMgr->GetDataVarNames(_activeDim);
+            if (vars.size())
+                defaultVars[0] = vars[0];
+        }
+
         _rParams->SetFieldVariableNames(defaultVars);
     }
 }
