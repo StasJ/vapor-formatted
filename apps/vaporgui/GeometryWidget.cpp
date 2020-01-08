@@ -438,11 +438,7 @@ void GeometryWidget::_resetBoxIfNeeded(const std::vector<double> &minFullExt,
     // Now check to see if the box is entirely outside of the variable's extents
     //
     for (int i = 0; i < minFullExt.size(); i++) {
-        if (boxMin[i] < minFullExt[i] && boxMax[i] < minFullExt[i]) {
-            _box->SetExtents(minFullExt, maxFullExt);
-            return;
-        }
-        if (boxMin[i] > maxFullExt[i] && boxMax[i] > maxFullExt[i]) {
+        if (boxMax[i] < minFullExt[i] || boxMin[i] > maxFullExt[i]) {
             _box->SetExtents(minFullExt, maxFullExt);
             return;
         }
