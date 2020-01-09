@@ -454,13 +454,7 @@ void VariablesWidget::updateDimCombo() {
 }
 
 void VariablesWidget::Update(const DataMgr *dataMgr, ParamsMgr *paramsMgr, RenderParams *rParams) {
-    VAssert(dataMgr);
-    VAssert(paramsMgr);
-    VAssert(rParams);
-
-    _dataMgr = dataMgr;
-    _paramsMgr = paramsMgr;
-    _rParams = rParams;
+    SetParams(dataMgr, paramsMgr, rParams);
 
     vector<string> setVarsReq = _rParams->GetFieldVariableNames();
 
@@ -475,6 +469,17 @@ void VariablesWidget::Update(const DataMgr *dataMgr, ParamsMgr *paramsMgr, Rende
         if (_variableFlags & HEIGHT)
             heightVariableFrame->show();
     }
+}
+
+void VariablesWidget::SetParams(const VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
+                                VAPoR::RenderParams *rParams) {
+    VAssert(dataMgr);
+    VAssert(paramsMgr);
+    VAssert(rParams);
+
+    _dataMgr = dataMgr;
+    _paramsMgr = paramsMgr;
+    _rParams = rParams;
 }
 
 DimFlags VariablesWidget::GetDimFlags() const { return _dimFlags; }

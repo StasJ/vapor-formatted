@@ -55,6 +55,8 @@ class VariablesWidget : public QWidget, public Ui_VariablesWidgetGUI {
 
     virtual void Update(const VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                         VAPoR::RenderParams *rParams);
+    void SetParams(const VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
+                   VAPoR::RenderParams *rParams);
 
     DimFlags GetDimFlags() const;
 
