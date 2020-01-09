@@ -421,7 +421,7 @@ void FlowSeedingSubtab::_updateRake(VAPoR::DataMgr *dataMgr) {
                                     _params->GetFieldVariableNames(), _params->GetRefinementLevel(),
                                     _params->GetCompressionLevel(), minExt, maxExt, axes);
 
-    // If there are no valid extents to set the rake with, set them to 0
+    // If there are no valid extents to set the rake with, set them to 0 and 1,
     // and set _noValidVars to true.  This function will continue to try
     // initializing our rake until we have valid variables.
     //
