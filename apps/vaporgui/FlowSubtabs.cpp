@@ -121,7 +121,7 @@ FlowAppearanceSubtab::FlowAppearanceSubtab(QWidget *parent) : QVaporSubtab(paren
 void FlowAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                                   VAPoR::RenderParams *rParams) {
     _params = dynamic_cast<VAPoR::FlowParams *>(rParams);
-    assert(_params);
+    VAssert(_params);
     _TFEditor->Update(dataMgr, paramsMgr, rParams);
 }
 
@@ -130,7 +130,8 @@ void FlowAppearanceSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *par
 //
 FlowSeedingSubtab::FlowSeedingSubtab(QWidget *parent)
     : QVaporSubtab(parent), _numDims(-1), // Initial value.  Will be configured during Update().
-      _oldZRakeNumSeeds(5), _oldZRakeMin(FLT_MIN), _oldZRakeMax(FLT_MAX), _oldZPeriodicity(false) {
+      _oldZRakeNumSeeds(5), _oldZRakeMin(FLT_MIN), _oldZRakeMax(FLT_MAX), _oldZPeriodicity(false),
+      _noValidVars(false) {
     _params = nullptr;
 
     _createIntegrationSection();
@@ -316,15 +317,17 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
     _paramsMgr = paramsMgr;
     VAssert(_params);
 
-    _updateRake(dataMgr);
-
     GUIStateParams *gp =
         dynamic_cast<GUIStateParams *>(_paramsMgr->GetParams(GUIStateParams::GetClassType()));
     int newDims = gp->GetFlowDimensionality();
+
     if (_numDims != newDims) {
         _numDims = newDims;
         _resizeFlowParamsVectors();
     }
+
+    _updateRake(dataMgr);
+
     // Update integration tab
     //
     bool isSteady = _params->GetIsSteady();
@@ -335,7 +338,6 @@ void FlowSeedingSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *params
         _flowTypeCombo->SetValue(STEADY_STRING);
     else
         _flowTypeCombo->SetValue(UNSTEADY_STRING);
-
     _updatePathlineWidgets(dataMgr);
     _updateStreamlineWidgets(dataMgr);
 
@@ -418,25 +420,31 @@ void FlowSeedingSubtab::_updateRake(VAPoR::DataMgr *dataMgr) {
     VAPoR::DataMgrUtils::GetExtents(dataMgr, _params->GetCurrentTimestep(),
                                     _params->GetFieldVariableNames(), _params->GetRefinementLevel(),
                                     _params->GetCompressionLevel(), minExt, maxExt, axes);
-    // If there are no valid extents to set the rake with, just return
+
+    // If there are no valid extents to set the rake with, set them to 0
+    // and set _noValidVars to true.  This function will continue to try
+    // initializing our rake until we have valid variables.
     //
     int minSize = minExt.size();
     int maxSize = maxExt.size();
-    if (minSize != 3 && minSize != 2)
-        return;
-    else if (maxSize != 3 && maxSize != 2)
-        return;
+    if (minSize != 3 && minSize != 2) {
+        VAssert(maxSize != 3 && maxSize != 2); // minSize and maxSize should match
+        minExt.resize(_numDims, 0);
+        maxExt.resize(_numDims, 1);
+        _noValidVars = true;
+    }
 
     std::vector<float> range;
-    for (int i = 0; i < axes.size(); i++) {
+    for (int i = 0; i < _numDims; i++) {
         range.push_back(float(minExt[i]));
         range.push_back(float(maxExt[i]));
     }
     _rakeWidget->SetRange(range);
     auto rakeVals = _params->GetRake();
+
     /* In case the user hasn't set the rake, set the current value to be the rake extents,
        plus update the params.  Otherwise, apply the actual rake values.*/
-    if (std::isnan(rakeVals[0])) {
+    if (std::isnan(rakeVals[0]) || _noValidVars) {
         _rakeWidget->SetValue(range);
         _params->SetRake(range);
 
@@ -449,6 +457,12 @@ void FlowSeedingSubtab::_updateRake(VAPoR::DataMgr *dataMgr) {
     } else {
         _rakeWidget->SetValue(rakeVals);
     }
+
+    // Now that our initialization tests have been processed, test to see if
+    // we've initialized the rake with valid variables.  This is indicated by
+    // the axes variable containing values.
+    if (axes.size())
+        _noValidVars = false;
 }
 
 void FlowSeedingSubtab::_resizeFlowParamsVectors() {

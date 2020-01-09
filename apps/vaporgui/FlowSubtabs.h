@@ -137,6 +137,7 @@ class FlowSeedingSubtab : public QVaporSubtab {
     float _oldZRakeMin;
     float _oldZRakeMax;
     bool _oldZPeriodicity;
+    bool _noValidVars;
 
     void _blockUnblockSignals(bool block);
     void _resizeFlowParamsVectors();
