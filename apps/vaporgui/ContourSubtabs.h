@@ -54,7 +54,6 @@ class ContourAppearanceSubtab : public QWidget, public Ui_ContourAppearanceGUI {
     VAPoR::ContourParams *_cParams;
     VAPoR::DataMgr *_dataMgr;
     VAPoR::ParamsMgr *_paramsMgr;
-    Combo *_lineWidthCombo;
     Combo *_countCombo;
     Combo *_cMinCombo;
     Combo *_spacingCombo;
