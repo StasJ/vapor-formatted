@@ -785,9 +785,7 @@ void PythonVariables::InitControlExec(VAPoR::ControlExec *ce) {
 
 void PythonVariables::ShowMe() {
     Update(true);
-    show();
-    raise();
-    activateWindow();
+    open();
 }
 
 NewItemDialog::NewItemDialog(QWidget *parent) : QDialog(parent) {
