@@ -229,7 +229,7 @@ string ParamsBase::GetValueString(const string tag, string defaultVal) const {
     if (!_node->HasElementString(tag))
         return (defaultVal);
 
-    string v = GetValueStringVec(tag)[0];
+    string v = _node->GetElementString(tag);
     if (v == "NULL") {
         v = "";
     }
