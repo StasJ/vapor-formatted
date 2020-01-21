@@ -1,6 +1,7 @@
 #ifndef BARBSUBTABS_H
 #define BARBSUBTABS_H
 
+#include "ParamsWidgets.h"
 #include "ui_BarbAnnotationGUI.h"
 #include "ui_BarbAppearanceGUI.h"
 #include "ui_BarbGeometryGUI.h"
@@ -58,6 +59,8 @@ class BarbAppearanceSubtab : public QWidget, public Ui_BarbAppearanceGUI {
     Combo *_lengthCombo;
     Combo *_thicknessCombo;
     TFEditor *_tfe;
+    ParamsWidgetCheckbox *_colorByVarCheckbox;
+    ParamsWidgetColor *_constantColorSelector;
 };
 
 class BarbGeometrySubtab : public QWidget, public Ui_BarbGeometryGUI {
