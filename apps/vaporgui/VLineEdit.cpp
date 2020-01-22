@@ -9,9 +9,8 @@
 #include "VLineEdit.h"
 
 VLineEdit::VLineEdit(const std::string &value)
-    : VContainer(),
-      //_menu( nullptr ),
-      _value(value), _isDouble(false), _scientific(false), _menuEnabled(false), _decDigits(4) {
+    : VContainer(), _value(value), _isDouble(false), _scientific(false), _menuEnabled(false),
+      _decDigits(10) {
     _lineEdit = new QLineEdit;
     SetValue(_value);
     layout()->addWidget(_lineEdit);
