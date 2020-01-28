@@ -218,6 +218,15 @@ void SliceRenderer::_resetTextureCoordinates() {
     texMinY = (boxMin[yAxis] - domainMin[yAxis]) / (domainMax[yAxis] - domainMin[yAxis]);
     texMaxY = (boxMax[yAxis] - domainMin[yAxis]) / (domainMax[yAxis] - domainMin[yAxis]);
 
+    if (texMinX < 0)
+        texMinX = 0;
+    if (texMinY < 0)
+        texMinY = 0;
+    if (texMaxX > 1)
+        texMinX = 1;
+    if (texMaxY > 1)
+        texMinY = 1;
+
     _texCoords.clear();
     _texCoords = {texMinX, texMinY, texMaxX, texMinY, texMinX, texMaxY,
                   texMaxX, texMinY, texMaxX, texMaxY, texMinX, texMaxY};
