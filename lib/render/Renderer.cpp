@@ -325,6 +325,8 @@ std::string Renderer::_getColorbarVariableName() const {
     return rParams->GetVariableName();
 }
 
+#include <vapor/VolumeIsoParams.h>
+
 int Renderer::makeColorbarTexture() {
 
     if (_colorbarTexture)
@@ -407,6 +409,10 @@ int Renderer::makeColorbarTexture() {
     // Draw colors
     // With no tics, use the whole scale
     bool useConstantColor = rParams->UseSingleColor();
+    VolumeIsoParams *vip;
+    if ((vip = dynamic_cast<VolumeIsoParams *>(rParams)))
+        useConstantColor = !vip->GetValueLong(VolumeParams::UseColormapVariableTag, 0);
+
     float rgb[3];
     if (useConstantColor)
         rParams->GetConstantColor(rgb);
@@ -500,7 +506,7 @@ void Renderer::renderColorbarText(ColorbarPbase *cbpb, float fbWidth, float fbHe
                                   float lly, float urx, float ury) {
 
     RenderParams *rParams = GetActiveParams();
-    MapperFunction *mf = rParams->GetMapperFunc(rParams->GetVariableName());
+    MapperFunction *mf = rParams->GetMapperFunc(_getColorbarVariableName());
     float numEntries = mf->getNumEntries();
 
     vector<double> bgc = cbpb->GetBackgroundColor();
