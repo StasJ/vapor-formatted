@@ -165,7 +165,7 @@ void WireFrameRenderer::_drawCell(const GLuint *cellNodeIndices, int n, bool lay
 // list of vertices.
 //
 void WireFrameRenderer::_buildCacheVertices(const Grid *grid, const Grid *heightGrid,
-                                            vector<GLuint> &nodeMap) const {
+                                            vector<GLuint> &nodeMap, bool *GPUOutOfMemory) const {
 
     double mv = grid->GetMissingValue();
     float defaultZ = GetDefaultZ(_dataMgr, _cacheParams.ts);
@@ -224,13 +224,18 @@ void WireFrameRenderer::_buildCacheVertices(const Grid *grid, const Grid *height
     glBindBuffer(GL_ARRAY_BUFFER, _VBO);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(VertexData), vertices.data(),
                  GL_DYNAMIC_DRAW);
+
+    GLenum err;
+    while ((err = glGetError()) != GL_NO_ERROR)
+        if (err == GL_OUT_OF_MEMORY)
+            *GPUOutOfMemory = true;
 }
 
 //
 // Generate connectivity list for line segments joining cell nodes.
 //
-size_t WireFrameRenderer::_buildCacheConnectivity(const Grid *grid,
-                                                  const vector<GLuint> &nodeMap) const {
+size_t WireFrameRenderer::_buildCacheConnectivity(const Grid *grid, const vector<GLuint> &nodeMap,
+                                                  bool *GPUOutOfMemory) const {
 
     size_t invalidIndex = std::numeric_limits<size_t>::max();
     size_t numNodes = Wasp::VProduct(grid->GetDimensions());
@@ -288,6 +293,11 @@ size_t WireFrameRenderer::_buildCacheConnectivity(const Grid *grid,
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+    GLenum err;
+    while ((err = glGetError()) != GL_NO_ERROR)
+        if (err == GL_OUT_OF_MEMORY)
+            *GPUOutOfMemory = true;
+
     return (indices.size());
 }
 
@@ -318,10 +328,11 @@ int WireFrameRenderer::_buildCache() {
     size_t numNodes = Wasp::VProduct(grid->GetDimensions());
     GLuint invalidIndex = std::numeric_limits<GLuint>::max();
     vector<GLuint> nodeMap(numNodes, invalidIndex);
+    _GPUOutOfMemory = false;
 
-    _buildCacheVertices(grid, heightGrid, nodeMap);
+    _buildCacheVertices(grid, heightGrid, nodeMap, &_GPUOutOfMemory);
 
-    _nIndices = _buildCacheConnectivity(grid, nodeMap);
+    _nIndices = _buildCacheConnectivity(grid, nodeMap, &_GPUOutOfMemory);
 
     if (grid)
         delete grid;
@@ -334,6 +345,11 @@ int WireFrameRenderer::_paintGL(bool fast) {
     int rc = 0;
     if (_isCacheDirty())
         rc = _buildCache();
+
+    if (_GPUOutOfMemory) {
+        SetErrMsg("GPU out of memory");
+        return -1;
+    }
 
     RenderParams *rp = GetActiveParams();
     MapperFunction *tf = rp->GetMapperFunc(rp->GetVariableName());
