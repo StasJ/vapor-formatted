@@ -181,12 +181,6 @@ int SliceRenderer::_resetBoxCache() {
         return rc;
     }
 
-    // Moving domain allows area outside of data to be selected
-    for (int i = 0; i < _cacheParams.boxMax.size(); i++) {
-        _cacheParams.boxMin[i] = max(_cacheParams.boxMin[i], _cacheParams.domainMin[i]);
-        _cacheParams.boxMax[i] = min(_cacheParams.boxMax[i], _cacheParams.domainMax[i]);
-    }
-
     _setVertexPositions();
     _resetTextureCoordinates();
     return rc;
@@ -217,15 +211,6 @@ void SliceRenderer::_resetTextureCoordinates() {
     texMaxX = (boxMax[xAxis] - domainMin[xAxis]) / (domainMax[xAxis] - domainMin[xAxis]);
     texMinY = (boxMin[yAxis] - domainMin[yAxis]) / (domainMax[yAxis] - domainMin[yAxis]);
     texMaxY = (boxMax[yAxis] - domainMin[yAxis]) / (domainMax[yAxis] - domainMin[yAxis]);
-
-    if (texMinX < 0)
-        texMinX = 0;
-    if (texMinY < 0)
-        texMinY = 0;
-    if (texMaxX > 1)
-        texMinX = 1;
-    if (texMaxY > 1)
-        texMinY = 1;
 
     _texCoords.clear();
     _texCoords = {texMinX, texMinY, texMaxX, texMinY, texMinX, texMaxY,
@@ -550,15 +535,23 @@ void SliceRenderer::_resetState() {
 }
 
 void SliceRenderer::_setVertexPositions() {
-    std::vector<double> min = _cacheParams.boxMin;
-    std::vector<double> max = _cacheParams.boxMax;
+    std::vector<double> trimmedMin(3, 0.f);
+    std::vector<double> trimmedMax(3, 1.f);
+
+    // If the box is outside of our domain, trim the vertex coordinates to be within
+    // the domain.
+    for (int i = 0; i < _cacheParams.boxMax.size(); i++) {
+        trimmedMin[i] = max(_cacheParams.boxMin[i], _cacheParams.domainMin[i]);
+        trimmedMax[i] = min(_cacheParams.boxMax[i], _cacheParams.domainMax[i]);
+    }
+
     int orientation = _cacheParams.orientation;
     if (orientation == XY)
-        _setXYVertexPositions(min, max);
+        _setXYVertexPositions(trimmedMin, trimmedMax);
     else if (orientation == XZ)
-        _setXZVertexPositions(min, max);
+        _setXZVertexPositions(trimmedMin, trimmedMax);
     else if (orientation == YZ)
-        _setYZVertexPositions(min, max);
+        _setYZVertexPositions(trimmedMin, trimmedMax);
 
     glBindBuffer(GL_ARRAY_BUFFER, _vertexVBO);
     glBufferSubData(GL_ARRAY_BUFFER, 0, 6 * 3 * sizeof(double), _vertexCoords.data());
