@@ -193,7 +193,7 @@ int ControlExec::ActivateRender(string winName, string dataSetName, string rende
 
     rp->SetEnabled(on);
     v->MoveRendererToFront(renderType, renderName);
-    v->MoveRenderersOfTypeToFront(VolumeIsoRenderer::GetClassType());
+    //    v->MoveRenderersOfTypeToFront(VolumeIsoRenderer::GetClassType());
     v->MoveRenderersOfTypeToFront(VolumeRenderer::GetClassType());
 
     _paramsMgr->EndSaveStateGroup();
@@ -249,7 +249,7 @@ int ControlExec::ActivateRender(string winName, string dataSetName, const Render
 
     newRP->SetEnabled(on);
     v->MoveRendererToFront(renderType, renderName);
-    v->MoveRenderersOfTypeToFront(VolumeIsoRenderer::GetClassType());
+    //    v->MoveRenderersOfTypeToFront(VolumeIsoRenderer::GetClassType());
     v->MoveRenderersOfTypeToFront(VolumeRenderer::GetClassType());
 
     _paramsMgr->EndSaveStateGroup();
