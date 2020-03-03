@@ -156,6 +156,8 @@ bool LayeredGrid::_getCellAndWeights(const double coords[3], size_t indices0[3],
     // Calculate interpolation weights. We always interpolate along
     // the varying dimension last (the kwgt)
     //
+    // cout << "getCell0      " << indices0[0] << " " << indices0[1] << " " << indices0[2] << endl;
+    // cout << "getCell1      " << indices0[0] << " " << indices0[1] << " " << indices1[2] << endl;
     z0 = _interpolateVaryingCoord(indices0[0], indices0[1], indices0[2], x, y);
     z1 = _interpolateVaryingCoord(indices0[0], indices0[1], indices1[2], x, y);
 
@@ -190,6 +192,8 @@ float LayeredGrid::GetValueNearestNeighbor(const std::vector<double> &coords) co
         indices[1] += 1;
     if (wgts[2] > 0.5)
         indices[2] += 1;
+
+    // cout << "indices       " << indices[0] << " " << indices[1] << " " << indices[2] << endl;
 
     return (AccessIJK(indices[0], indices[1], indices[2]));
 }
@@ -356,7 +360,9 @@ bool LayeredGrid::GetIndicesCell(const std::vector<double> &coords,
         }
 
         if (_delta[i] != 0.0) {
+            // cout << "indices going from " << " " << indices[i];
             indices[i] = (size_t)floor((clampedCoords[i] - _minu[i]) / _delta[i]);
+            // cout << " to " << indices[i] << " at index " << i << endl;
         }
 
         VAssert(indices[i] < dims[i]);
