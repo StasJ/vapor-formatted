@@ -3,7 +3,10 @@
 #include <QLabel>
 #include <vapor/RenderParams.h>
 
-TFHistogramInfoWidget::TFHistogramInfoWidget() { _valueEdit->setReadOnly(true); }
+TFHistogramInfoWidget::TFHistogramInfoWidget(const std::string &variableNameTag)
+    : TFInfoWidget(variableNameTag) {
+    _valueEdit->setReadOnly(true);
+}
 
 void TFHistogramInfoWidget::SetControlPoint(float value) {
     this->setEnabled(true);

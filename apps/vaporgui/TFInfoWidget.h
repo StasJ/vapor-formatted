@@ -19,9 +19,7 @@ class TFInfoWidget : public QWidget {
   public:
     enum ValueFormat { Mapped = 0, Percent = 1 };
 
-    bool UsingColormapVariable = false;
-
-    TFInfoWidget();
+    TFInfoWidget(const std::string &variableNameTag);
 
     void Update(VAPoR::RenderParams *rParams);
     void DeselectControlPoint();
@@ -48,6 +46,7 @@ class TFInfoWidget : public QWidget {
 
   protected:
     float _value;
+    const std::string _variableNameTag;
 
   private slots:
     void valueEditTypeChanged(int);

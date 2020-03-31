@@ -5,20 +5,21 @@
 #include "TFMapGroupWidget.h"
 #include "TFMappingRangeSelector.h"
 #include "TFOpacityWidget.h"
+#include <vapor/RenderParams.h>
 
-TFEditor::TFEditor(bool usingColormapVariable) : VSection("Transfer Function") {
+using VAPoR::RenderParams;
+
+TFEditor::TFEditor(bool usingColormapVariable)
+    : TFEditor(usingColormapVariable ? RenderParams::_colorMapVariableNameTag
+                                     : RenderParams::_variableNameTag) {}
+
+TFEditor::TFEditor(const std::string &tag) : VSection("Transfer Function") {
     _maps = new TFMapGroupWidget;
-    _opacityMap = new TFOpacityMap;
-    _histogramMap = new TFHistogramMap;
-    _colorMap = new TFColorMap;
-    _isoMap = new TFIsoValueMap;
-    _range = new TFMappingRangeSelector;
-
-    _opacityMap->UsingColormapVariable = usingColormapVariable;
-    _histogramMap->UsingColormapVariable = usingColormapVariable;
-    _colorMap->UsingColormapVariable = usingColormapVariable;
-    _isoMap->UsingColormapVariable = usingColormapVariable;
-    _range->UsingColormapVariable = usingColormapVariable;
+    _opacityMap = new TFOpacityMap(tag);
+    _histogramMap = new TFHistogramMap(tag);
+    _colorMap = new TFColorMap(tag);
+    _isoMap = new TFIsoValueMap(tag);
+    _range = new TFMappingRangeSelector(tag);
 
     _maps->Add({_opacityMap, _histogramMap});
     _maps->Add(_isoMap);
@@ -42,6 +43,7 @@ TFEditor::TFEditor(bool usingColormapVariable) : VSection("Transfer Function") {
 
 void TFEditor::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                       VAPoR::RenderParams *rParams) {
+
     _maps->Update(dataMgr, paramsMgr, rParams);
     _mapsInfo->Update(rParams);
     _range->Update(dataMgr, paramsMgr, rParams);
