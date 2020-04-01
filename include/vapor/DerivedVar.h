@@ -124,6 +124,8 @@ class VDF_API DerivedCFVertCoordVar : public DerivedCoordVar {
 
     virtual bool GetCoordVarInfo(DC::CoordVar &cvar) const = 0;
 
+    static bool ValidFormula(const vector<string> &required_terms, string formula);
+
   protected:
     DC *_dc;
     string _mesh;
@@ -573,6 +575,7 @@ class VDF_API DerivedCoordVarStandardOceanSCoordinateG2 : public DerivedCFVertCo
     static bool ValidFormula(string formula);
 
   private:
+    string _standard_name;
     string _sVar;
     string _CVar;
     string _etaVar;
@@ -589,6 +592,12 @@ class VDF_API DerivedCoordVarStandardOceanSCoordinateG2 : public DerivedCFVertCo
 
     int initialize_missing_values();
     int initialize_stagger_flags();
+    void compute_g1(const vector<size_t> &min, const vector<size_t> &max, const float *s,
+                    const float *C, const float *eta, const float *depth, float depth_c,
+                    float *region) const;
+    void compute_g2(const vector<size_t> &min, const vector<size_t> &max, const float *s,
+                    const float *C, const float *eta, const float *depth, float depth_c,
+                    float *region) const;
 };
 
 }; // namespace VAPoR
