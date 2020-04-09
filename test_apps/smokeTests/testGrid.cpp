@@ -63,6 +63,7 @@
 //  Grid::SetInterpolationOrder(int order)
 
 #include "vapor/VAssert.h"
+#include <algorithm>
 #include <cstdio>
 #include <iomanip>
 #include <iostream>
