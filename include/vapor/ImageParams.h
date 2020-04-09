@@ -13,6 +13,8 @@ class PARAMS_API ImageParams : public RenderParams {
 
     virtual ~ImageParams();
 
+    virtual int Initialize() override;
+
     static std::string GetClassType() { return ("ImageParams"); }
 
     //
@@ -60,14 +62,6 @@ class PARAMS_API ImageParams : public RenderParams {
     //
     int GetOrientation() const { return GetValueLong(_orientationTag, 2); }
     void SetOrientation(int val) { SetValueLong(_orientationTag, "set orientation value", val); }
-
-    //
-    // (Pure virtual methods from RenderParams)
-    //
-    virtual bool IsOpaque() const override { return false; }
-    virtual bool usingVariable(const std::string &varname) override {
-        return false; // since this class is for an image, not rendering a variable.
-    }
 
   private:
     static const std::string _fileNameTag;
