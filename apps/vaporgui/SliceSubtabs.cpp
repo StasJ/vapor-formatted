@@ -26,10 +26,19 @@ SliceVariablesSubtab::SliceVariablesSubtab(QWidget *parent) {
     QComboBox *refinementCombo = _variablesWidget->_fidelityWidget->refinementCombo;
     connect(refinementCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(_setDefaultSampleRate()));
 
-    _PEnumHLI = new PEnumDropdownHLI<RenderParams>("PEnumDropdownHLI ( Refinement )", {}, {},
-                                                   &RenderParams::GetRefinementLevel(),
-                                                   &RenderParams::SetRefinementLevel());
-    layout->addWidget(_PEnumHLI);
+    _pg = new PGroup;
+    _pg->Add(new PEnumDropdownHLI<RenderParams>("PEnumDropdownHLI ( Refinement )", {}, {},
+                                                &RenderParams::GetRefinementLevel(),
+                                                &RenderParams::SetRefinementLevel()));
+
+    /*_PEnumHLI = new PEnumDropdownHLI<RenderParams>(
+        "PEnumDropdownHLI ( Refinement )",
+        {},
+        {},
+        &RenderParams::GetRefinementLevel(),
+        &RenderParams::SetRefinementLevel()
+    );
+    layout->addWidget( _PEnumHLI );*/
 }
 
 void SliceVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -38,7 +47,7 @@ void SliceVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *par
     VAssert(_params);
     _variablesWidget->Update(dataMgr, paramsMgr, rParams);
 
-    _PEnumHLI->Update(dataMgr, paramsMgr, rParams);
+    //_PEnumHLI->Update(dataMgr, paramsMgr, rParams);
 }
 
 void SliceVariablesSubtab::_setDefaultSampleRate() {
