@@ -2184,7 +2184,7 @@ int DerivedCoordVarStandardOceanSCoordinate::initialize_missing_values() {
         return (-1);
     }
     if (dataInfo.GetHasMissing())
-        _CVarMV = dataInfo.GetHasMissing();
+        _CVarMV = dataInfo.GetMissingValue();
 
     status = _dc->GetDataVarInfo(_etaVar, dataInfo);
     if (!status) {
@@ -2192,7 +2192,7 @@ int DerivedCoordVarStandardOceanSCoordinate::initialize_missing_values() {
         return (-1);
     }
     if (dataInfo.GetHasMissing())
-        _etaVarMV = dataInfo.GetHasMissing();
+        _etaVarMV = dataInfo.GetMissingValue();
 
     status = _dc->GetDataVarInfo(_depthVar, dataInfo);
     if (!status) {
@@ -2200,7 +2200,7 @@ int DerivedCoordVarStandardOceanSCoordinate::initialize_missing_values() {
         return (-1);
     }
     if (dataInfo.GetHasMissing())
-        _depthVarMV = dataInfo.GetHasMissing();
+        _depthVarMV = dataInfo.GetMissingValue();
 
     return (0);
 }
