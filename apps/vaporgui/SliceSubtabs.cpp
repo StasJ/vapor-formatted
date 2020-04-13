@@ -27,8 +27,8 @@ SliceVariablesSubtab::SliceVariablesSubtab(QWidget *parent) {
     connect(refinementCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(_setDefaultSampleRate()));
 
     layout()->addWidget(_pg = new PGroup);
-    _pg->Add(new PEnumDropdownHLI<RenderParams>("PEnumDropdownHLI ( Refinement )", {}, {},
-                                                &RenderParams::GetRefinementLevel(),
+    _pg->Add(new PEnumDropdownHLI<RenderParams>("PEnumDropdownHLI ( Refinement )", {"2", "3"},
+                                                {2, 3}, &RenderParams::GetRefinementLevel(),
                                                 &RenderParams::SetRefinementLevel()));
 }
 
