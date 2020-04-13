@@ -3,6 +3,8 @@
 #include "VLineItem.h"
 #include <QButtonGroup>
 
+#include "vapor/RenderParams.h"
+
 #define MIN_SAMPLES 1
 #define MAX_SAMPLES 2000
 #define MIN_QUALITY 1
@@ -26,8 +28,11 @@ SliceVariablesSubtab::SliceVariablesSubtab(QWidget *parent) {
     QComboBox *refinementCombo = _variablesWidget->_fidelityWidget->refinementCombo;
     connect(refinementCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(_setDefaultSampleRate()));
 
-    _vw2 = new VariablesWidget2();
-    layout->addWidget(_vw2);
+    _PStrHLI = new PStringDropdownHLI("PStringDropdownHLI", {}, &RenderParams::GetVariableName,
+                                      &RenderParams::SetVariableName);
+    layout->addWidget(_PStrHLI);
+    //_PVarHLI = new PVariableSelectorHLI( "PVariableSelectorHLI", &RenderParams::GetVariableName,
+    //&RenderParams::SetVariableName);
 }
 
 void SliceVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -36,7 +41,8 @@ void SliceVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *par
     VAssert(_params);
     _variablesWidget->Update(dataMgr, paramsMgr, rParams);
 
-    _vw2->Update(dataMgr, paramsMgr, rParams);
+    //_PVarHLI->Update(dataMgr, paramsMgr, rParams);
+    _PStrHLI->Update(dataMgr, paramsMgr, rParams);
 }
 
 void SliceVariablesSubtab::_setDefaultSampleRate() {
