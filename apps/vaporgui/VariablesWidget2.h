@@ -27,7 +27,8 @@ class VariablesWidget2 : public VSection {
     PStringDropdown *_dimSelector;
 
     PVariableSelector *_scalarVar;
-    PFieldVariableSelector _fieldVars;
-    PVariableSelector *_colorVar;
-    PVariableSelector *_heightVar;
+    PVariableSelectorHLI *_scalarVarHLI;
+    // PFieldVariableSelector  _fieldVars;
+    // PVariableSelector*      _colorVar;
+    // PVariableSelector*      _heightVar;
 };
