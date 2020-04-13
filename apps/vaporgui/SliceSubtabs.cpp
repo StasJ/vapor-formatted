@@ -28,8 +28,8 @@ SliceVariablesSubtab::SliceVariablesSubtab(QWidget *parent) {
 
     layout()->addWidget(_pg = new PGroup);
     _pg->Add(new PEnumDropdownHLI<RenderParams>("PEnumDropdownHLI ( Refinement )", {"2", "3"},
-                                                {2, 3}, &RenderParams::GetRefinementLevel(),
-                                                &RenderParams::SetRefinementLevel()));
+                                                {2, 3}, &RenderParams::GetRefinementLevel,
+                                                &RenderParams::SetRefinementLevel));
 }
 
 void SliceVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
