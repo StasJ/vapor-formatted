@@ -9,8 +9,7 @@
 
 #include <vapor/SliceParams.h>
 
-#include "PStringDropdownHLI.h"
-#include "PVariableSelectorHLI.h"
+#include "PEnumDropdownHLI.h"
 
 namespace VAPoR {
 class ControlExec;
@@ -35,8 +34,7 @@ class SliceVariablesSubtab : public QWidget, public Ui_SliceVariablesGUI {
 
   private:
     VAPoR::SliceParams *_params;
-    PStringDropdownHLI *_PStrHLI;
-    PVariableSelectorHLI *_PVarHLI;
+    PEnumDropdownHLI *_PEnumHLI;
 };
 
 class SliceAppearanceSubtab : public QWidget, public Ui_SliceAppearanceGUI {
