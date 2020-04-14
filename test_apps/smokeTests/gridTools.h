@@ -15,7 +15,7 @@ void MakeRamp(VAPoR::Grid *grid, float minVal, float maxVal);
 
 void MakeRampOnAxis(VAPoR::Grid *grid, float minVal, float maxVal, size_t axis);
 
-int CompareIndexToCoords(
+bool CompareIndexToCoords(
     VAPoR::Grid *grid,
     double &rms,              // Root Mean Square error
     size_t &numMissingValues, // Counter for receiving MissingValue upon query
@@ -27,9 +27,9 @@ size_t TestNodeIterator(const VAPoR::Grid *g, int &count, double &time);
 
 void PrintStats(double rms, size_t numMissingValues, size_t disagreements);
 
-int RunTest(VAPoR::Grid *grid);
+bool RunTest(VAPoR::Grid *grid);
 
-int RunTests(VAPoR::Grid *grid, const std::vector<std::string> &tests, float minVal, float maxVal);
+bool RunTests(VAPoR::Grid *grid, const std::vector<std::string> &tests, float minVal, float maxVal);
 
 VAPoR::StretchedGrid *MakeStretchedGrid(const std::vector<size_t> &dims,
                                         const std::vector<size_t> &bs,
