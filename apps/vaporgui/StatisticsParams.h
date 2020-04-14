@@ -55,10 +55,6 @@ class StatisticsParams : public RenderParams {
 
     static string GetClassType() { return ("StatisticsParams"); }
 
-    // virtual functions required by RenderParams
-    virtual bool IsOpaque() const { return true; }
-    virtual bool usingVariable(const std::string &varname) { return false; }
-
   private:
     static const string _maxTSTag;
     static const string _autoUpdateTag;
