@@ -1,4 +1,5 @@
 #include "vapor/GLManager.h"
+#include "vapor/FontManager.h"
 #include "vapor/LegacyGL.h"
 #include "vapor/STLUtils.h"
 #include "vapor/glutil.h"
