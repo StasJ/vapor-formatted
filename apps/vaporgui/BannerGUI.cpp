@@ -1,6 +1,7 @@
 
 #include "BannerGUI.h"
 #include <QDesktopServices>
+#include <QScreen>
 #include <QTranslator>
 #include <QUrl>
 #include <qapplication.h>
@@ -9,6 +10,7 @@
 #include <qmessagebox.h>
 #include <qtimer.h>
 #include <vapor/ResourcePath.h>
+#include <vapor/VAssert.h>
 
 BannerGUI::BannerGUI(QWidget *parent, std::string imagefile, int maxwait, bool center, QString text,
                      QString url) {
@@ -64,7 +66,12 @@ BannerGUI::BannerGUI(QWidget *parent, std::string imagefile, int maxwait, bool c
                 move(mpos.x() + (this->width() / 2) - (image.width() / 2),
                      mpos.y() + (this->height() / 2) - (image.height() / 2));
             } else {
-                QRect screenGeometry = QApplication::desktop()->screenGeometry();
+                // QRect screenGeometry = QApplication::desktop()->screenGeometry();
+                QList<QScreen *> screens = QGuiApplication::screens();
+                VAssert(screens.size() > 0);
+
+                QRect screenGeometry = screens[0]->geometry();
+
                 int x = (screenGeometry.width() - image.size().width()) / 2;
                 int y = (screenGeometry.height() - image.size().height()) / 2;
                 move(x, y);
