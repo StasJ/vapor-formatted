@@ -394,6 +394,8 @@ bool DC::_getDataVarDimensions(string varname, bool spatial,
         return (false);
 
     string mname = var.GetMeshName();
+    if (mname.empty())
+        return (true); // 0-d variable
 
     Mesh mesh;
     status = GetMesh(mname, mesh);
