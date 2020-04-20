@@ -191,33 +191,6 @@ void make2D(float *lonBuf, float *latBuf, vector<size_t> dims) {
     }
 }
 
-bool parse_formula(string formula_terms, map<string, string> &parsed_terms) {
-    parsed_terms.clear();
-
-    // Remove ":" to ease parsing. It's superflous
-    //
-    replace(formula_terms.begin(), formula_terms.end(), ':', ' ');
-
-    string buf;                     // Have a buffer string
-    stringstream ss(formula_terms); // Insert the string into a stream
-
-    vector<string> tokens; // Create vector to hold our words
-
-    while (ss >> buf) {
-        tokens.push_back(buf);
-    }
-
-    if (tokens.size() % 2)
-        return (false);
-
-    for (int i = 0; i < tokens.size(); i += 2) {
-        parsed_terms[tokens[i]] = tokens[i + 1];
-        if (parsed_terms[tokens[i]].empty())
-            return (false);
-    }
-    return (true);
-}
-
 // Transpose a 1D, 2D, or 3D array. For 1D 'a' is simply copied
 // to 'b'. Otherwise 'b' contains a permuted version of 'a' as follows:
 //
@@ -1791,10 +1764,37 @@ bool DerivedCoordVar_UnStaggered::VariableExists(size_t ts, int reflevel, int lo
 //
 //////////////////////////////////////////////////////////////////////////////
 
+bool DerivedCFVertCoordVar::ParseFormula(string formula_terms, map<string, string> &parsed_terms) {
+    parsed_terms.clear();
+
+    // Remove ":" to ease parsing. It's superflous
+    //
+    replace(formula_terms.begin(), formula_terms.end(), ':', ' ');
+
+    string buf;                     // Have a buffer string
+    stringstream ss(formula_terms); // Insert the string into a stream
+
+    vector<string> tokens; // Create vector to hold our words
+
+    while (ss >> buf) {
+        tokens.push_back(buf);
+    }
+
+    if (tokens.size() % 2)
+        return (false);
+
+    for (int i = 0; i < tokens.size(); i += 2) {
+        parsed_terms[tokens[i]] = tokens[i + 1];
+        if (parsed_terms[tokens[i]].empty())
+            return (false);
+    }
+    return (true);
+}
+
 bool DerivedCFVertCoordVar::ValidFormula(const vector<string> &required_terms, string formula) {
 
     map<string, string> formulaMap;
-    if (!parse_formula(formula, formulaMap)) {
+    if (!ParseFormula(formula, formulaMap)) {
         return (false);
     }
 
@@ -1857,7 +1857,7 @@ DerivedCoordVarStandardWRF_Terrain::DerivedCoordVarStandardWRF_Terrain(DC *dc, s
 int DerivedCoordVarStandardWRF_Terrain::Initialize() {
 
     map<string, string> formulaMap;
-    if (!parse_formula(_formula, formulaMap)) {
+    if (!ParseFormula(_formula, formulaMap)) {
         SetErrMsg("Invalid conversion formula \"%s\"", _formula.c_str());
         return (-1);
     }
@@ -2184,7 +2184,7 @@ int DerivedCoordVarStandardOceanSCoordinate::initialize_missing_values() {
         return (-1);
     }
     if (dataInfo.GetHasMissing())
-        _CVarMV = dataInfo.GetHasMissing();
+        _CVarMV = dataInfo.GetMissingValue();
 
     status = _dc->GetDataVarInfo(_etaVar, dataInfo);
     if (!status) {
@@ -2192,7 +2192,7 @@ int DerivedCoordVarStandardOceanSCoordinate::initialize_missing_values() {
         return (-1);
     }
     if (dataInfo.GetHasMissing())
-        _etaVarMV = dataInfo.GetHasMissing();
+        _etaVarMV = dataInfo.GetMissingValue();
 
     status = _dc->GetDataVarInfo(_depthVar, dataInfo);
     if (!status) {
@@ -2200,7 +2200,7 @@ int DerivedCoordVarStandardOceanSCoordinate::initialize_missing_values() {
         return (-1);
     }
     if (dataInfo.GetHasMissing())
-        _depthVarMV = dataInfo.GetHasMissing();
+        _depthVarMV = dataInfo.GetMissingValue();
 
     return (0);
 }
@@ -2239,7 +2239,7 @@ int DerivedCoordVarStandardOceanSCoordinate::initialize_stagger_flags() {
 int DerivedCoordVarStandardOceanSCoordinate::Initialize() {
 
     map<string, string> formulaMap;
-    if (!parse_formula(_formula, formulaMap)) {
+    if (!ParseFormula(_formula, formulaMap)) {
         SetErrMsg("Invalid conversion formula \"%s\"", _formula.c_str());
         return (-1);
     }
@@ -2341,7 +2341,7 @@ bool DerivedCoordVarStandardOceanSCoordinate::GetCoordVarInfo(DC::CoordVar &cvar
 vector<string> DerivedCoordVarStandardOceanSCoordinate::GetInputs() const {
 
     map<string, string> formulaMap;
-    bool ok = parse_formula(_formula, formulaMap);
+    bool ok = ParseFormula(_formula, formulaMap);
     VAssert(ok);
 
     vector<string> inputs;
