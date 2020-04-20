@@ -4,6 +4,7 @@
 #include "PVariableSelectorHLI.h"
 #include "TFEditor.h"
 #include "VLineItem.h"
+#include "VariablesWidget2.h"
 #include <QButtonGroup>
 
 #define MIN_SAMPLES 1
@@ -29,13 +30,15 @@ SliceVariablesSubtab::SliceVariablesSubtab(QWidget *parent) {
     QComboBox *refinementCombo = _variablesWidget->_fidelityWidget->refinementCombo;
     connect(refinementCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(_setDefaultSampleRate()));
 
-    layout()->addWidget(_pg = new PGroup);
+    layout()->addWidget(_pg = new PGroup());
     _pg->Add(new PEnumDropdownHLI<VAPoR::RenderParams>(
-        "PEnumDropdownHLI ( Refinement )", {"2", "3"}, {2, 3},
+        "PEnumDropdownHLI ( Refinement )", {"2D", "3D"}, {2, 3},
         &VAPoR::RenderParams::GetRefinementLevel, &VAPoR::RenderParams::SetRefinementLevel));
     _pg->Add(new PVariableSelectorHLI<VAPoR::RenderParams>("PVariableSelector ( Scalar )",
                                                            &VAPoR::RenderParams::GetVariableName,
                                                            &VAPoR::RenderParams::SetVariableName));
+
+    _pg->Add(new VariablesWidget2());
     /*_pg->Add(
         new PVariableSelectorHLI<VAPoR::RenderParams>(
             "PVariableSelector ( Color )",
