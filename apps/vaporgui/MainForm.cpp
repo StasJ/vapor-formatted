@@ -405,8 +405,9 @@ MainForm::MainForm(vector<QString> files, QApplication *app, QWidget *parent)
  *  Destroys the object and frees any allocated resources
  */
 MainForm::~MainForm() {
-    if (_paramsWidgetDemo)
+    if (_paramsWidgetDemo) {
         _paramsWidgetDemo->close();
+    }
 
     if (_modeStatusWidget)
         delete _modeStatusWidget;
