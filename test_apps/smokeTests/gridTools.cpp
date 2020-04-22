@@ -157,6 +157,8 @@ bool CompareIndexToCoords(
     size_t &numMissingValues, // Counter for receiving MissingValue upon query
     size_t &disagreements     // Counter for when AccessIJK() and GetValue() disagree
 ) {
+    bool rc = true;
+
     rms = 0.f;
     disagreements = 0;
     numMissingValues = 0;
@@ -202,8 +204,8 @@ bool CompareIndexToCoords(
     rms = sqrt(sum / (x * y * z));
 
     if (rms != 0 || disagreements > 0)
-        return 1;
-    return 0;
+        rc = false;
+    return rc;
 }
 
 bool isNotEqual(double x, double y) {
@@ -211,7 +213,13 @@ bool isNotEqual(double x, double y) {
     return std::abs(x - y) > epsilon * std::abs(x);
 }
 
-size_t TestConstNodeIterator(const Grid *g, size_t &count, size_t &disagreements, double &time) {
+bool TestConstNodeIterator(const Grid *g, size_t &count, size_t &expectedCount,
+                           size_t &disagreements, double &time) {
+    bool rc = true;
+    count = 0;
+    expectedCount = 1;
+    disagreements = 0;
+
     Grid::ConstNodeIterator itr;
     Grid::ConstNodeIterator enditr = g->ConstNodeEnd();
 
@@ -219,30 +227,37 @@ size_t TestConstNodeIterator(const Grid *g, size_t &count, size_t &disagreements
     itr = g->ConstNodeBegin();
 
     std::vector<size_t> dims = g->GetDimensions();
+    for (auto dim : dims)
+        expectedCount *= dim;
 
     for (; itr != enditr; ++itr) {
-        size_t i = count % dims[X];
-        size_t j = (count / dims[X]) % dims[Y];
-        size_t k = count / (dims[X] * dims[Y]);
+        std::vector<size_t> ijk = Wasp::VectorizeCoords(count, dims);
 
         double itrData = g->GetValueAtIndex((*itr).data());
-        double gridData = g->AccessIJK(i, j, k);
-        if (isNotEqual(itrData, gridData))
+        double gridData = g->AccessIJK(ijk[X], ijk[Y], ijk[Z]);
+
+        if (isNotEqual(itrData, gridData)) {
             disagreements++;
+        }
 
         count++;
     }
 
-    size_t expectedCount = 1;
-    for (auto dim : dims)
-        expectedCount *= dim;
-
     time = Wasp::GetTime() - t0;
 
-    return expectedCount;
+    if (expectedCount != count || disagreements > 0) {
+        rc = false;
+    }
+    return rc;
 }
 
-size_t TestIterator(Grid *g, size_t &count, size_t &disagreements, double &time) {
+bool TestIterator(Grid *g, size_t &count, size_t &expectedCount, size_t &disagreements,
+                  double &time) {
+    bool rc = true;
+    count = 0;
+    expectedCount = 1;
+    disagreements = 0;
+
     Grid::Iterator itr;
     Grid::Iterator enditr = g->end();
 
@@ -250,29 +265,34 @@ size_t TestIterator(Grid *g, size_t &count, size_t &disagreements, double &time)
     itr = g->begin();
 
     std::vector<size_t> dims = g->GetDimensions();
+    for (auto dim : dims)
+        expectedCount *= dim;
 
     for (; itr != enditr; ++itr) {
-        size_t i = count % dims[X];
-        size_t j = (count / dims[X]) % dims[Y];
-        // size_t j = count / dims[X];
-        size_t k = count / (dims[X] * dims[Y]);
+        std::vector<size_t> ijk = Wasp::VectorizeCoords(count, dims);
 
-        if (isNotEqual(*itr, g->AccessIJK(i, j, k)))
+        if (isNotEqual(*itr, g->AccessIJK(ijk[X], ijk[Y], ijk[Z]))) {
             disagreements++;
+        }
 
         count++;
     }
 
-    size_t expectedCount = 1;
-    for (auto dim : dims)
-        expectedCount *= dim;
-
     time = Wasp::GetTime() - t0;
 
-    return expectedCount;
+    if (expectedCount != count || disagreements > 0) {
+        rc = false;
+    }
+    return rc;
 }
 
-size_t TestConstCoordItr(const Grid *g, size_t &count, size_t &disagreements, double &time) {
+bool TestConstCoordItr(const Grid *g, size_t &count, size_t &expectedCount, size_t &disagreements,
+                       double &time) {
+    bool rc = true;
+    count = 0;
+    expectedCount = 1;
+    disagreements = 0;
+
     Grid::ConstCoordItr itr;
     Grid::ConstCoordItr enditr = g->ConstCoordEnd();
 
@@ -280,12 +300,12 @@ size_t TestConstCoordItr(const Grid *g, size_t &count, size_t &disagreements, do
     itr = g->ConstCoordBegin();
 
     std::vector<size_t> dims = g->GetDimensions();
+    for (auto dim : dims)
+        expectedCount *= dim;
 
     for (; itr != enditr; ++itr) {
-        size_t i = count % dims[X];
-        size_t j = (count / dims[X]) % dims[Y];
-        size_t k = count / (dims[X] * dims[Y]);
-        size_t ijk[] = {i, j, k};
+        std::vector<size_t> ijkVec = Wasp::VectorizeCoords(count, dims);
+        size_t ijk[] = {ijkVec[X], ijkVec[Y], ijkVec[Z]};
         double coords[3];
 
         bool disagree = false;
@@ -302,13 +322,12 @@ size_t TestConstCoordItr(const Grid *g, size_t &count, size_t &disagreements, do
         count++;
     }
 
-    size_t expectedCount = 1;
-    for (auto dim : dims)
-        expectedCount *= dim;
-
     time = Wasp::GetTime() - t0;
 
-    return expectedCount;
+    if (expectedCount != count || disagreements > 0) {
+        rc = false;
+    }
+    return rc;
 }
 
 void PrintStats(double rms, size_t numMissingValues, size_t disagreements) {
@@ -319,14 +338,14 @@ void PrintStats(double rms, size_t numMissingValues, size_t disagreements) {
 }
 
 bool RunTest(Grid *grid) {
-    bool rc = 0;
+    bool rc = true;
     double rms;
     size_t numMissingValues;
     size_t disagreements;
 
-    if (CompareIndexToCoords(grid, rms, numMissingValues, disagreements)) {
-        cout << "       *** Error reported in " << grid->GetType() << " grid***" << endl;
-        rc = 1;
+    if (CompareIndexToCoords(grid, rms, numMissingValues, disagreements) == false) {
+        cerr << "       *** Error reported in " << grid->GetType() << " grid***" << endl;
+        rc = false;
     }
 
     if (grid->GetInterpolationOrder() == 0)
@@ -347,7 +366,7 @@ bool RunTests(Grid *grid, const std::vector<std::string> &tests, float minVal, f
     if (dims.size() == 3)
         z = dims[Z];
 
-    int rc = 0;
+    bool rc = true;
     std::string type = grid->GetType();
 
     cout << "=======================================================" << endl << endl;
@@ -356,12 +375,12 @@ bool RunTests(Grid *grid, const std::vector<std::string> &tests, float minVal, f
         MakeConstantField(grid, maxVal);
 
         grid->SetInterpolationOrder(linear);
-        if (RunTest(grid) != 0)
-            rc = 1;
+        if (RunTest(grid) == false)
+            rc = false;
 
         grid->SetInterpolationOrder(nearestNeighbor);
-        if (RunTest(grid) != 0)
-            rc = 1;
+        if (RunTest(grid) == false)
+            rc = false;
     }
 
     if (std::find(tests.begin(), tests.end(), "Ramp") != tests.end()) {
@@ -369,24 +388,24 @@ bool RunTests(Grid *grid, const std::vector<std::string> &tests, float minVal, f
         MakeRamp(grid, minVal, maxVal);
 
         grid->SetInterpolationOrder(linear);
-        if (RunTest(grid) != 0)
-            rc = 1;
+        if (RunTest(grid) == false)
+            rc = false;
 
         grid->SetInterpolationOrder(nearestNeighbor);
-        if (RunTest(grid) != 0)
-            rc = 1;
+        if (RunTest(grid) == false)
+            rc = false;
     }
 
     if (std::find(tests.begin(), tests.end(), "RampOnAxis") != tests.end()) {
         cout << type << " " << x << "x" << y << "x" << z << " Ramp up on Z axis:" << endl;
         MakeRampOnAxis(grid, minVal, maxVal, Z);
         grid->SetInterpolationOrder(linear);
-        if (RunTest(grid) != 0)
-            rc = 1;
+        if (RunTest(grid) == false)
+            rc = false;
 
         grid->SetInterpolationOrder(nearestNeighbor);
-        if (RunTest(grid) != 0)
-            rc = 1;
+        if (RunTest(grid) == false)
+            rc = false;
     }
 
     if (std::find(tests.begin(), tests.end(), "Triangle") != tests.end()) {
@@ -394,39 +413,38 @@ bool RunTests(Grid *grid, const std::vector<std::string> &tests, float minVal, f
         MakeTriangle(grid, minVal, maxVal);
 
         grid->SetInterpolationOrder(linear);
-        if (RunTest(grid) != 0)
-            rc = 1;
+        if (RunTest(grid) == false)
+            rc = false;
         RunTest(grid);
 
         grid->SetInterpolationOrder(nearestNeighbor);
-        if (RunTest(grid) != 0)
-            rc = 1;
+        if (RunTest(grid) == false)
+            rc = false;
     }
 
     // Iterator tests
 
+    size_t count;
+    size_t expectedCount;
+    size_t disagreements;
     double time;
-    size_t count = 0;
-    size_t disagreements = 0;
-    size_t expectedCount = TestIterator(grid, count, disagreements, time);
-    if (expectedCount != count)
-        rc = 1;
+
+    if (TestIterator(grid, count, expectedCount, disagreements, time) == false) {
+        rc = false;
+    }
+
     PrintGridIteratorResults(type, "Iterator", count, expectedCount, disagreements, time);
 
-    count = 0;
-    disagreements = 0;
-    expectedCount = TestConstCoordItr(grid, count, disagreements, time);
-    time = 0.0;
-    if (expectedCount != count)
-        rc = 1;
+    if (TestConstCoordItr(grid, count, expectedCount, disagreements, time) == false) {
+        rc = false;
+    }
+
     PrintGridIteratorResults(type, "ConstCoordIterator", count, expectedCount, disagreements, time);
 
-    count = 0;
-    disagreements = 0;
-    expectedCount = TestConstNodeIterator(grid, count, disagreements, time);
-    time = 0.0;
-    if (expectedCount != count)
-        rc = 1;
+    if (TestConstNodeIterator(grid, count, expectedCount, disagreements, time) == false) {
+        rc = false;
+    }
+
     PrintGridIteratorResults(type, "ConstNodeIterator", count, expectedCount, disagreements, time);
 
     return rc;
