@@ -155,7 +155,7 @@ bool CompareIndexToCoords(
     VAPoR::Grid *grid,
     double &rms,              // Root Mean Square error
     size_t &numMissingValues, // Counter for receiving MissingValue upon query
-    size_t &disagreements     // Counter for when AccessIJK() and GetValue() disagree
+    size_t &disagreements     // Counter for when GetValueAtIndex() and GetValue() disagree
 ) {
     bool rc = true;
 
@@ -176,7 +176,6 @@ bool CompareIndexToCoords(
         for (size_t j = 0; j < y; j++) {
             for (size_t i = 0; i < x; i++) {
                 size_t indices[3] = {i, j, k};
-                // float trueValue = grid.AccessIJK( i, j, k );
                 double trueValue = grid->GetValueAtIndex({i, j, k});
 
                 double coords[3];
@@ -234,7 +233,7 @@ bool TestConstNodeIterator(const Grid *g, size_t &count, size_t &expectedCount,
         std::vector<size_t> ijk = Wasp::VectorizeCoords(count, dims);
 
         double itrData = g->GetValueAtIndex((*itr).data());
-        double gridData = g->AccessIJK(ijk[X], ijk[Y], ijk[Z]);
+        double gridData = g->GetValueAtIndex(ijk);
 
         if (isNotEqual(itrData, gridData)) {
             disagreements++;
@@ -271,7 +270,7 @@ bool TestIterator(Grid *g, size_t &count, size_t &expectedCount, size_t &disagre
     for (; itr != enditr; ++itr) {
         std::vector<size_t> ijk = Wasp::VectorizeCoords(count, dims);
 
-        if (isNotEqual(*itr, g->AccessIJK(ijk[X], ijk[Y], ijk[Z]))) {
+        if (isNotEqual(*itr, g->GetValueAtIndex(ijk))) {
             disagreements++;
         }
 
@@ -331,9 +330,9 @@ bool TestConstCoordItr(const Grid *g, size_t &count, size_t &expectedCount, size
 }
 
 void PrintStats(double rms, size_t numMissingValues, size_t disagreements) {
-    cout << "    RMS error:                                     " << rms << endl;
-    cout << "    Missing value count:                           " << numMissingValues << endl;
-    cout << "    AccessIJK() vs GetValue() disagreement count:  " << disagreements << endl;
+    cout << "    RMS error:                                           " << rms << endl;
+    cout << "    Missing value count:                                 " << numMissingValues << endl;
+    cout << "    GetValueAtIndex() vs GetValue() disagreement count:  " << disagreements << endl;
     cout << endl;
 }
 
