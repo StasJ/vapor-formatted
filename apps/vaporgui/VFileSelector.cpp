@@ -13,8 +13,13 @@ VFileSelector::VFileSelector(const std::string &buttonText, const std::string &d
     : VContainer(), _filePath(defaultPath), _filter(filter) {
     _pushButton = new VPushButton(buttonText);
     _lineEdit = new VLineEdit(defaultPath);
-    layout()->addWidget(_pushButton);
-    layout()->addWidget(_lineEdit);
+
+    QHBoxLayout *qHBoxLayout = qobject_cast<QHBoxLayout *>(layout());
+    qHBoxLayout->addWidget(_pushButton, 1, Qt::AlignRight);
+    qHBoxLayout->addWidget(_lineEdit, 1, Qt::AlignRight);
+    setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    // layout()->addWidget(_pushButton);
+    // layout()->addWidget(_lineEdit);
 
     if (_filePath.empty())
         _filePath = QDir::homePath().toStdString();
