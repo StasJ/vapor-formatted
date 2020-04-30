@@ -18,6 +18,7 @@
 //		a widget that is inserted in the "Variables" tab of various Renderer GUIs
 //
 #include "VariablesWidget.h"
+#include "PEnumDropdownHLI.h"
 #include "vapor/DataMgr.h"
 #include "vapor/ParamsMgr.h"
 #include "vapor/RenderParams.h"
