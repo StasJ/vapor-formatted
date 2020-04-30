@@ -18,6 +18,7 @@
 //		a widget that is inserted in the "Variables" tab of various Renderer GUIs
 //
 #include "VariablesWidget.h"
+#include "PEnumDropdownHLI.h"
 #include "vapor/DataMgr.h"
 #include "vapor/ParamsMgr.h"
 #include "vapor/RenderParams.h"
@@ -41,6 +42,13 @@ VariablesWidget::VariablesWidget(QWidget *parent) : QWidget(parent), Ui_Variable
     _activeDim = THREEDIMS;
 
     setupUi(this);
+
+    _pg = new PGroup();
+    _dropdown = new PEnumDropdownHLI<VAPoR::RenderParams>(
+        "PEnumDropdownHLI", {"foo", "bar"}, {1, 2}, &VAPoR::RenderParams::GetVariableName,
+        &VAPoR::RenderParams::SetVariableName);
+    _pg->Add(_dropdown);
+    layout()->addWidget(_pg);
 
     connect(varnameCombo, SIGNAL(activated(const QString &)), this,
             SLOT(setVarName(const QString &)));
@@ -462,6 +470,8 @@ void VariablesWidget::Update(const DataMgr *dataMgr, ParamsMgr *paramsMgr, Rende
     _dataMgr = dataMgr;
     _paramsMgr = paramsMgr;
     _rParams = rParams;
+
+    _pg->Update(paramsMgr, rParams, dataMgr);
 
     vector<string> setVarsReq = _rParams->GetFieldVariableNames();
 
