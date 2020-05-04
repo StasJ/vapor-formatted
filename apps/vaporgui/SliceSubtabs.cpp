@@ -1,6 +1,9 @@
 #include "SliceSubtabs.h"
+#include "PEnumDropdownHLI.h"
+#include "PGroup.h"
 #include "TFEditor.h"
 #include "VLineItem.h"
+#include "VariablesWidget2.h"
 #include <QButtonGroup>
 
 #define MIN_SAMPLES 1
@@ -21,10 +24,23 @@ SliceVariablesSubtab::SliceVariablesSubtab(QWidget *parent) {
     setupUi(this);
     _variablesWidget->Reinit((VariableFlags)(SCALAR), (DimFlags)(THREED));
 
-    QButtonGroup *fidelityButtons = _variablesWidget->_fidelityWidget->GetFidelityButtons();
+    QButtonGroup *fidelityButtons;
+    fidelityButtons = _variablesWidget->_fidelityWidget->GetFidelityButtons();
     connect(fidelityButtons, SIGNAL(buttonClicked(int)), this, SLOT(_setDefaultSampleRate()));
-    QComboBox *refinementCombo = _variablesWidget->_fidelityWidget->refinementCombo;
+    QComboBox *refinementCombo;
+    refinementCombo = _variablesWidget->_fidelityWidget->refinementCombo;
+
     connect(refinementCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(_setDefaultSampleRate()));
+
+    _variablesWidget2 = new VariablesWidget2();
+    layout()->addWidget(_variablesWidget2);
+
+    VariableFlags variableFlags = (VariableFlags)(SCALAR);
+    _variablesWidget2->Reinit(variableFlags, (DimFlags)(THREED));
+
+    //_fidelityWidget2 = new FidelityWidget2();
+    // layout()->addWidget( _fidelityWidget2 );
+    //_fidelityWidget2->Reinit( variableFlags );
 }
 
 void SliceVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
@@ -32,6 +48,7 @@ void SliceVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *par
     _params = dynamic_cast<VAPoR::SliceParams *>(rParams);
     VAssert(_params);
     _variablesWidget->Update(dataMgr, paramsMgr, rParams);
+    _variablesWidget2->Update(dataMgr, paramsMgr, rParams);
 }
 
 void SliceVariablesSubtab::_setDefaultSampleRate() {
