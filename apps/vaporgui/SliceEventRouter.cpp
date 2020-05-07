@@ -5,6 +5,7 @@
 
 #include "SliceEventRouter.h"
 #include "EventRouter.h"
+#include "RenderEventRouter.h"
 #include "VariablesWidget.h"
 #include "vapor/SliceParams.h"
 #include "vapor/SliceRenderer.h"
@@ -23,8 +24,11 @@ using namespace VAPoR;
 //
 static RenderEventRouterRegistrar<SliceEventRouter> registrar(SliceEventRouter::GetClassType());
 
+// SliceEventRouter::SliceEventRouter( QWidget *parent, ControlExec *ce)
+//                    : QTabWidget(parent),
+//	                    RenderEventRouter( ce, SliceParams::GetClassType())
 SliceEventRouter::SliceEventRouter(QWidget *parent, ControlExec *ce)
-    : QTabWidget(parent), RenderEventRouter(ce, SliceParams::GetClassType()) {
+    : RenderEventRouter2(ce, SliceParams::GetClassType()) {
     _variables = new SliceVariablesSubtab(this);
     QScrollArea *qsvar = new QScrollArea(this);
     qsvar->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -94,6 +98,10 @@ void SliceEventRouter::GetWebHelp(vector<pair<string, string>> &help) const {
 }
 
 void SliceEventRouter::_updateTab() {
+
+    _variablesWidget->Update(GetActiveDataMgr(), _controlExec->GetParamsMgr(), GetActiveParams());
+    _pVariablesWidget->Update(GetActiveParams(), _controlExec->GetParamsMgr(), GetActiveDataMgr());
+    _pTest->Update(GetActiveParams(), _controlExec->GetParamsMgr(), GetActiveDataMgr());
 
     // The variable tab updates itself:
     //

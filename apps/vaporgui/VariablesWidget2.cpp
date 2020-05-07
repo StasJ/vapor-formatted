@@ -1,7 +1,5 @@
 #include "VariablesWidget2.h"
 
-#include "PDisplay.h"
-
 #include "FidelityWidget.h"
 #include "FidelityWidget2.h"
 #include "VComboBox.h"
@@ -14,23 +12,46 @@
 
 const std::string VariablesWidget2::_sectionTitle = "Variable Selection";
 
-VariablesWidget2::VariablesWidget2() : VSection(_sectionTitle), _activeDim(3), _initialized(false) {
-    _dimCombo = new VComboBox({"3D", "2D"});
-    _dimLineItem = new VLineItem("Variable Dimension", _dimCombo);
-    layout()->addWidget(_dimLineItem);
-    connect(_dimCombo, &VComboBox::ValueChanged, this, &VariablesWidget2::_dimChanged);
+namespace {
+size_t X = 0;
+size_t Y = 1;
+size_t Z = 2;
+} // namespace
 
-    _dimLineItem->hide();
+VariablesWidget2::VariablesWidget2() : VSection(_sectionTitle), _activeDim(3), _initialized(false) {
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
+
+    _dimCombo = new VLineComboBox("Variable Dimension");
+    _dimCombo->SetOptions({"3D", "2D"});
+    layout()->addWidget(_dimCombo);
+    connect(_dimCombo, &VLineComboBox::ValueChanged, this, &VariablesWidget2::_dimChanged);
 
     _scalarCombo = new VLineComboBox("Variable name");
     connect(_scalarCombo, &VLineComboBox::ValueChanged, this, &VariablesWidget2::_scalarVarChanged);
     layout()->addWidget(_scalarCombo);
 
-    _fidelityWidget = new FidelityWidget2();
-    layout()->addWidget(_fidelityWidget);
-    layout()->addWidget(new FidelityWidget(nullptr));
+    _xFieldCombo = new VLineComboBox("  X");
+    connect(_xFieldCombo, &VLineComboBox::ValueChanged, this, &VariablesWidget2::_xFieldVarChanged);
+    layout()->addWidget(_xFieldCombo);
 
-    layout()->addWidget(new VSection("Bar of foo"));
+    _yFieldCombo = new VLineComboBox("  Y");
+    connect(_yFieldCombo, &VLineComboBox::ValueChanged, this, &VariablesWidget2::_yFieldVarChanged);
+    layout()->addWidget(_yFieldCombo);
+
+    _zFieldCombo = new VLineComboBox("  Z");
+    connect(_zFieldCombo, &VLineComboBox::ValueChanged, this, &VariablesWidget2::_zFieldVarChanged);
+    layout()->addWidget(_zFieldCombo);
+
+    _colorCombo = new VLineComboBox("Color mapped variable");
+    connect(_colorCombo, &VLineComboBox::ValueChanged, this, &VariablesWidget2::_colorVarChanged);
+    layout()->addWidget(_colorCombo);
+
+    _heightCombo = new VLineComboBox("Height variable");
+    connect(_heightCombo, &VLineComboBox::ValueChanged, this, &VariablesWidget2::_heightVarChanged);
+    layout()->addWidget(_heightCombo);
+
+    /*_fidelityWidget = new FidelityWidget2();
+    layout()->addWidget( _fidelityWidget );*/
 }
 
 void VariablesWidget2::Reinit(VariableFlags variableFlags, DimFlags dimFlags) {
@@ -55,35 +76,30 @@ void VariablesWidget2::Reinit(VariableFlags variableFlags, DimFlags dimFlags) {
     }
 
     if (_variableFlags & VECTOR) {
-        cout << "showing vecs" << endl;
-        /*_xFieldCombo->show();
+        _xFieldCombo->show();
         _yFieldCombo->show();
         _zFieldCombo->show();
-        _xFieldCombo->setVisible( true );
-        _yFieldCombo->setVisible( true );
-        _zFieldCombo->setVisible( true );*/
     } else {
-        cout << "hiding vecs" << endl;
-        /*_xFieldCombo->hide();
+        _xFieldCombo->hide();
         _yFieldCombo->hide();
         _zFieldCombo->hide();
-        _xFieldCombo->setVisible( false );
-        _yFieldCombo->setVisible( false );
-        _zFieldCombo->setVisible( false );*/
     }
 
     if (_variableFlags & HEIGHT) {
-        //_heightCombo->show();
+        _heightCombo->show();
     } else {
-        //_heightCombo->hide();
+        _heightCombo->hide();
+    }
+
+    if (_variableFlags & COLOR) {
+        _colorCombo->show();
+    } else {
+        _colorCombo->hide();
     }
 
     //_rParams->SetDefaultVariables( _activeDim, false );
 
-    // If the renderer is only 3D, hide the 2D orientation selector
-    /*orientationFrame->hide();
-
-    VariableFlags fdf = (VariableFlags)0;
+    /*VariableFlags fdf = (VariableFlags)0;
     if (_variableFlags & SCALAR)
         fdf = (VariableFlags)(fdf | SCALAR);
 
@@ -93,21 +109,17 @@ void VariablesWidget2::Reinit(VariableFlags variableFlags, DimFlags dimFlags) {
     if (_variableFlags & HEIGHT)
         fdf = (VariableFlags)(fdf | HEIGHT);
 
-    _fidelityWidget->Reinit(fdf); */
+    _fidelityWidget->Reinit(fdf);*/
 
     // variableSelectionWidget->adjustSize();
     // adjustSize();
 }
 
-void VariablesWidget2::Update(
-    // const VAPoR::DataMgr *dataMgr,
-    VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams) {
+void VariablesWidget2::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
+                              VAPoR::RenderParams *rParams) {
     _dataMgr = dataMgr;
     _paramsMgr = paramsMgr;
     _rParams = rParams;
-
-    //_pg->Update( _rParams, _paramsMgr, _dataMgr );
-    _fidelityWidget->Update(_dataMgr, _paramsMgr, _rParams);
 
     std::vector<std::string> twoDVars = _dataMgr->GetDataVarNames(2);
 
@@ -120,6 +132,22 @@ void VariablesWidget2::Update(
 
     _scalarCombo->SetOptions(activeVars);
     _scalarCombo->SetValue(_rParams->GetVariableName());
+
+    _xFieldCombo->SetOptions(activeVars);
+    _yFieldCombo->SetOptions(activeVars);
+    _zFieldCombo->SetOptions(activeVars);
+    std::vector<std::string> fieldVars = _rParams->GetFieldVariableNames();
+    _xFieldCombo->SetValue(fieldVars[X]);
+    _yFieldCombo->SetValue(fieldVars[Y]);
+    _zFieldCombo->SetValue(fieldVars[Z]);
+
+    _colorCombo->SetOptions(activeVars);
+    _colorCombo->SetValue(_rParams->GetColorMapVariableName());
+
+    _heightCombo->SetOptions(activeVars);
+    _heightCombo->SetValue(_rParams->GetHeightVariableName());
+
+    //_fidelityWidget->Update( _dataMgr, _paramsMgr, _rParams );
 };
 
 void VariablesWidget2::_dimChanged() {
@@ -128,13 +156,32 @@ void VariablesWidget2::_dimChanged() {
 
     _rParams->SetDefaultVariables(_activeDim, false);
 
-    Update(_dataMgr, _paramsMgr, _rParams);
+    // Update( _dataMgr, _paramsMgr, _rParams );
 }
 
-void VariablesWidget2::_scalarVarChanged(std::string var) {
-    std::cout << "scalarVarChanged " << var << endl;
-    _rParams->SetVariableName(var);
+void VariablesWidget2::_scalarVarChanged(std::string var) { _rParams->SetVariableName(var); }
+
+void VariablesWidget2::_xFieldVarChanged(std::string var) {
+    std::vector<std::string> fieldVars = _rParams->GetFieldVariableNames();
+    fieldVars[X] = var;
+    _rParams->SetFieldVariableNames(fieldVars);
 }
+
+void VariablesWidget2::_yFieldVarChanged(std::string var) {
+    std::vector<std::string> fieldVars = _rParams->GetFieldVariableNames();
+    fieldVars[Y] = var;
+    _rParams->SetFieldVariableNames(fieldVars);
+}
+
+void VariablesWidget2::_zFieldVarChanged(std::string var) {
+    std::vector<std::string> fieldVars = _rParams->GetFieldVariableNames();
+    fieldVars[Z] = var;
+    _rParams->SetFieldVariableNames(fieldVars);
+}
+
+void VariablesWidget2::_colorVarChanged(std::string var) { _rParams->SetColorMapVariableName(var); }
+
+void VariablesWidget2::_heightVarChanged(std::string var) { _rParams->SetHeightVariableName(var); }
 
 int VariablesWidget2::GetActiveDimension() const {}
 
