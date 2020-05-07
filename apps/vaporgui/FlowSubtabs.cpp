@@ -130,7 +130,7 @@ FlowAppearanceSubtab::FlowAppearanceSubtab(QWidget *parent) : QVaporSubtab(paren
     PSection *ps;
 
     _pw->Add(ps = new PSection("Appearance"));
-    ps->Add(new PEnumDropdown(FlowParams::RenderTypeTag, {"Stream", "Samples"},
+    ps->Add(new PEnumDropdown(FlowParams::RenderTypeTag, {"Lines", "Samples"},
                               {FlowParams::RenderTypeStream, FlowParams::RenderTypeSamples},
                               "Render Type"));
     ps->Add(
@@ -138,11 +138,11 @@ FlowAppearanceSubtab::FlowAppearanceSubtab(QWidget *parent) : QVaporSubtab(paren
                            {FlowParams::GlpyhTypeSphere, FlowParams::GlpyhTypeArrow}, "Glyph Type"))
             ->ShowBasedOnParam(FlowParams::RenderTypeTag, FlowParams::RenderTypeSamples));
     ps->Add(new PCheckbox(FlowParams::RenderGeom3DTag, "3D Geometry"));
-    ps->Add((new PCheckbox(FlowParams::RenderLightAtCameraTag, "Light From Camera"))
-                ->ShowBasedOnParam(FlowParams::RenderGeom3DTag));
-    ps->Add((new PDoubleInput(FlowParams::RenderRadiusBaseTag, "Radius")));
+    //    ps->Add((new PCheckbox(FlowParams::RenderLightAtCameraTag, "Light From
+    //    Camera"))->ShowBasedOnParam(FlowParams::RenderGeom3DTag)); ps->Add((new
+    //    PDoubleInput(FlowParams::RenderRadiusBaseTag, "Radius")));
     ps->Add((new PDoubleSliderEdit(FlowParams::RenderRadiusScalarTag, "Radius Scalar"))
-                ->SetRange(0.1, 3)
+                ->SetRange(0.1, 5)
                 ->EnableDynamicUpdate());
 
     PGroup *streamGroup = new PGroup;
@@ -152,13 +152,15 @@ FlowAppearanceSubtab::FlowAppearanceSubtab(QWidget *parent) : QVaporSubtab(paren
     streamGroup->Add(
         (new PCheckbox(FlowParams::RenderShowStreamDirTag, "Show Stream Direction"))
             ->ShowBasedOnParam(FlowParams::RenderTypeTag, FlowParams::RenderTypeStream));
-    streamGroup->Add((new PIntegerSliderEdit(FlowParams::RenderGlyphStrideTag, "Every N Samples"))
-                         ->SetRange(1, 20)
-                         ->EnableDynamicUpdate()
-                         ->ShowBasedOnParam(FlowParams::RenderShowStreamDirTag));
+    PGroup *showDirGroup = new PSubGroup;
+    showDirGroup->ShowBasedOnParam(FlowParams::RenderShowStreamDirTag);
+    streamGroup->Add(showDirGroup);
+    showDirGroup->Add((new PIntegerSliderEdit(FlowParams::RenderGlyphStrideTag, "Every N Samples"))
+                          ->SetRange(1, 20)
+                          ->EnableDynamicUpdate());
 
     streamGroup->Add((new PCheckbox(FlowParams::RenderFadeTailTag, "Fade Flow Tails")));
-    PGroup *fadeGroup = new PGroup;
+    PGroup *fadeGroup = new PSubGroup;
     fadeGroup->ShowBasedOnParam(FlowParams::RenderFadeTailTag);
     streamGroup->Add(fadeGroup);
     fadeGroup->Add((new PIntegerSliderEdit(FlowParams::RenderFadeTailStartTag, "Fade Start Sample"))
@@ -180,7 +182,20 @@ FlowAppearanceSubtab::FlowAppearanceSubtab(QWidget *parent) : QVaporSubtab(paren
     ps->Add(sampleGroup);
     sampleGroup->Add((new PIntegerSliderEdit(FlowParams::RenderGlyphStrideTag, "Every N Samples"))
                          ->SetRange(1, 20)
-                         ->EnableDynamicUpdate());
+                         ->EnableDynamicUpdate()
+                         ->EnableBasedOnParam(FlowParams::RenderGlyphOnlyLeadingTag, false));
+    sampleGroup->Add(
+        new PCheckbox(FlowParams::RenderGlyphOnlyLeadingTag, "Only Show Leading Sample"));
+
+    _pw->Add(ps = new PSection("Lighting"));
+    ps->EnableBasedOnParam(FlowParams::RenderGeom3DTag);
+    ps->Add((new PDoubleSliderEdit(FlowParams::PhongAmbientTag, "Ambient"))->EnableDynamicUpdate());
+    ps->Add((new PDoubleSliderEdit(FlowParams::PhongDiffuseTag, "Diffuse"))->EnableDynamicUpdate());
+    ps->Add(
+        (new PDoubleSliderEdit(FlowParams::PhongSpecularTag, "Specular"))->EnableDynamicUpdate());
+    ps->Add((new PDoubleSliderEdit(FlowParams::PhongShininessTag, "Specular"))
+                ->SetRange(1, 100)
+                ->EnableDynamicUpdate());
 
 #ifndef NDEBUG
     _pw->Add((ps = new PSection("Debug"))->SetTooltip("Only accessible in debug build."));
