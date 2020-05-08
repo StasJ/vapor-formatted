@@ -8,8 +8,12 @@ const int VContainer::_TOP_MARGIN = 0;
 const int VContainer::_RIGHT_MARGIN = 0;
 const int VContainer::_BOTTOM_MARGIN = 0;
 
-VContainer::VContainer() : QWidget() {
-    QHBoxLayout *layout = new QHBoxLayout;
+VContainer::VContainer(QLayout *layout) : QWidget() {
+    if (layout == nullptr) {
+        // QHBoxLayout* layout = new QHBoxLayout;
+        layout = new QHBoxLayout;
+    }
+
     layout->setContentsMargins(_LEFT_MARGIN, _TOP_MARGIN, _RIGHT_MARGIN, _BOTTOM_MARGIN);
     setLayout(layout);
 

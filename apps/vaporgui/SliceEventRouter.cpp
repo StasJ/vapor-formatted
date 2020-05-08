@@ -24,11 +24,8 @@ using namespace VAPoR;
 //
 static RenderEventRouterRegistrar<SliceEventRouter> registrar(SliceEventRouter::GetClassType());
 
-// SliceEventRouter::SliceEventRouter( QWidget *parent, ControlExec *ce)
-//                    : QTabWidget(parent),
-//	                    RenderEventRouter( ce, SliceParams::GetClassType())
 SliceEventRouter::SliceEventRouter(QWidget *parent, ControlExec *ce)
-    : RenderEventRouter2(ce, SliceParams::GetClassType()) {
+    : QTabWidget(parent), RenderEventRouter(ce, SliceParams::GetClassType()) {
     _variables = new SliceVariablesSubtab(this);
     QScrollArea *qsvar = new QScrollArea(this);
     qsvar->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -57,6 +54,10 @@ SliceEventRouter::SliceEventRouter(QWidget *parent, ControlExec *ce)
     qsAnnotation->setWidget(_annotation);
     qsAnnotation->setWidgetResizable(true);
     addTab(qsAnnotation, "Annotations");
+
+    _pVariablesWidget = new PVariablesWidget();
+    addTab(_pVariablesWidget, "PVW");
+    _pVariablesWidget->Reinit((VariableFlags)(SCALAR), (DimFlags)(THREED));
 
 #if 0	
 	QScrollArea *qsimg = new QScrollArea(this);
@@ -99,10 +100,22 @@ void SliceEventRouter::GetWebHelp(vector<pair<string, string>> &help) const {
 
 void SliceEventRouter::_updateTab() {
 
-    _variablesWidget->Update(GetActiveDataMgr(), _controlExec->GetParamsMgr(), GetActiveParams());
+    /*_variablesWidget->Update(
+        GetActiveDataMgr(),
+        _controlExec->GetParamsMgr(),
+        GetActiveParams()
+    );*/
     _pVariablesWidget->Update(GetActiveParams(), _controlExec->GetParamsMgr(), GetActiveDataMgr());
-    _pTest->Update(GetActiveParams(), _controlExec->GetParamsMgr(), GetActiveDataMgr());
-    _pdse->Update(GetActiveParams(), _controlExec->GetParamsMgr(), GetActiveDataMgr());
+    /*_pTest->Update(
+        GetActiveParams(),
+        _controlExec->GetParamsMgr(),
+        GetActiveDataMgr()
+    );
+    _pdse->Update(
+        GetActiveParams(),
+        _controlExec->GetParamsMgr(),
+        GetActiveDataMgr()
+    );*/
 
     // The variable tab updates itself:
     //

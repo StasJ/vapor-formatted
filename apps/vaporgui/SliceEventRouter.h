@@ -34,7 +34,7 @@ class GLSliceImageWindow;
 //! for variables, geometry, and appearance.
 
 // class SliceEventRouter : public QTabWidget,  public RenderEventRouter {
-class SliceEventRouter : public RenderEventRouter2 {
+class SliceEventRouter : public QTabWidget, public RenderEventRouter {
 
     Q_OBJECT
 
@@ -63,8 +63,8 @@ class SliceEventRouter : public RenderEventRouter2 {
     //! if wheel events also scrolled the tab itself
     void wheelEvent(QWheelEvent *) {}
 
-    // VariablesWidget2* _variablesWidget;
-    // PVariablesWidget* _pVariablesWidget;
+    VariablesWidget2 *_variablesWidget;
+    PVariablesWidget *_pVariablesWidget;
 
     //! VariablesWidget is used as Variables tab
     SliceVariablesSubtab *_variables;
