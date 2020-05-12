@@ -66,8 +66,7 @@ class PWidget : public QWidget {
     VAPoR::ParamsMgr *_paramsMgr = nullptr;
     VAPoR::DataMgr *_dataMgr = nullptr;
 
-    // virtual void updateGUI() const = 0;
-    virtual void updateGUI() = 0;
+    virtual void updateGUI() const = 0;
     virtual bool requireParamsMgr() const { return false; }
     virtual bool requireDataMgr() const { return false; }
 
