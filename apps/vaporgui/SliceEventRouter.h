@@ -3,6 +3,7 @@
 
 #include "GL/glew.h"
 #include "PDoubleInput.h"
+#include "PFidelityWidget.h"
 #include "PIntegerInput.h"
 #include "PSimpleWidget.h"
 #include "PVariablesWidget.h"
@@ -75,6 +76,8 @@ class SliceEventRouter : public QTabWidget, public RenderEventRouter {
     VariablesWidget2 *_variablesWidget;
     PVariablesWidget *_pVariablesWidget;
     PSimpleWidget *_pSimpleWidget;
+    SimpleWidget *_simpleWidget;
+    FidelityWidget3 *_fidelityWidget;
     PIntegerInput *_pIntegerInput;
     PDoubleInput *_pDoubleInput;
 
