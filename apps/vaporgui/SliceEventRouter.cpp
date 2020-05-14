@@ -17,6 +17,8 @@
 #include <vapor/glutil.h>
 #include <vector>
 
+#include "VLineComboBox.h"
+
 using namespace VAPoR;
 
 //
@@ -34,13 +36,6 @@ SliceEventRouter::SliceEventRouter(QWidget *parent, ControlExec *ce)
     qsvar->setWidgetResizable(true);
     addTab(qsvar, "Variables");
 
-    _appearance = new SliceAppearanceSubtab(this);
-    QScrollArea *qsapp = new QScrollArea(this);
-    qsapp->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    qsapp->setWidget(_appearance);
-    qsapp->setWidgetResizable(true);
-    addTab(qsapp, "Appearance");
-
     _geometry = new SliceGeometrySubtab(this);
     QScrollArea *qsgeo = new QScrollArea(this);
     qsgeo->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -55,10 +50,35 @@ SliceEventRouter::SliceEventRouter(QWidget *parent, ControlExec *ce)
     qsAnnotation->setWidgetResizable(true);
     addTab(qsAnnotation, "Annotations");
 
-    _pVariablesWidget = new PVariablesWidget();
-    addTab(_pVariablesWidget, "PVW");
-    _pVariablesWidget->Reinit((VariableFlags)(SCALAR), (DimFlags)(THREED));
+    /*_pVariablesWidget = new PVariablesWidget();
+    addTab( _pVariablesWidget, "PVW" );
+    _pVariablesWidget->Reinit(
+        (VariableFlags)(SCALAR),
+        (DimFlags)(THREED)
+    );*/
 
+    _vLineComboBox = new VLineComboBox("_vLineComboBox");
+    addTab(_vLineComboBox, "VLineComboBox");
+
+    _vSliderEdit = new VSliderEdit();
+    _vli = new VLineItem("VLineItem", _vSliderEdit);
+    // addTab( _vli, "VLineItem/VSliderEdit" );
+
+    _pDoubleInput = new PDoubleInput("demo_double", "PDoubleInput");
+    addTab(_pDoubleInput, "PDoubleInput Tab");
+
+    _appearance = new SliceAppearanceSubtab(this);
+    QScrollArea *qsapp = new QScrollArea(this);
+    qsapp->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    qsapp->setWidget(_appearance);
+    qsapp->setWidgetResizable(true);
+    addTab(qsapp, "Appearance");
+
+    _pIntegerInput = new PIntegerInput("demo_int", "PIntegerInput");
+    // addTab( _pIntegerInput, "PIntegerInput Tab" );
+
+    //_pSimpleWidget = new PSimpleWidget();
+    // addTab( _pSimpleWidget, "PSimpleWidget's Tab" );
 #if 0	
 	QScrollArea *qsimg = new QScrollArea(this);
 	qsimg->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -105,7 +125,21 @@ void SliceEventRouter::_updateTab() {
         _controlExec->GetParamsMgr(),
         GetActiveParams()
     );*/
-    _pVariablesWidget->Update(GetActiveParams(), _controlExec->GetParamsMgr(), GetActiveDataMgr());
+
+    /*_pVariablesWidget->Update(
+        GetActiveParams(),
+        _controlExec->GetParamsMgr(),
+        GetActiveDataMgr()
+    );*/
+
+    _pDoubleInput->Update(GetActiveParams(), _controlExec->GetParamsMgr(), GetActiveDataMgr());
+    _pIntegerInput->Update(GetActiveParams(), _controlExec->GetParamsMgr(), GetActiveDataMgr());
+
+    /*_pSimpleWidget->Update(
+        GetActiveParams(),
+        _controlExec->GetParamsMgr(),
+        GetActiveDataMgr()
+    );*/
     /*_pTest->Update(
         GetActiveParams(),
         _controlExec->GetParamsMgr(),

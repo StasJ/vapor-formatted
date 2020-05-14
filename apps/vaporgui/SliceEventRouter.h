@@ -2,10 +2,15 @@
 #define SLICEEVENTROUTER_H
 
 #include "GL/glew.h"
+#include "PDoubleInput.h"
+#include "PIntegerInput.h"
+#include "PSimpleWidget.h"
 #include "PVariablesWidget.h"
 #include "RenderEventRouter.h"
 #include "RenderEventRouter2.h"
 #include "SliceSubtabs.h"
+#include "VLineComboBox.h"
+#include "VSliderEdit.h"
 #include "VariablesWidget.h"
 #include "VariablesWidget2.h"
 #include "vapor/SliceParams.h"
@@ -63,8 +68,15 @@ class SliceEventRouter : public QTabWidget, public RenderEventRouter {
     //! if wheel events also scrolled the tab itself
     void wheelEvent(QWheelEvent *) {}
 
+    VLineComboBox *_vLineComboBox;
+    VSliderEdit *_vSliderEdit;
+    VLineItem *_vli;
+
     VariablesWidget2 *_variablesWidget;
     PVariablesWidget *_pVariablesWidget;
+    PSimpleWidget *_pSimpleWidget;
+    PIntegerInput *_pIntegerInput;
+    PDoubleInput *_pDoubleInput;
 
     //! VariablesWidget is used as Variables tab
     SliceVariablesSubtab *_variables;
