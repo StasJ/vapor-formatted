@@ -2,11 +2,18 @@
 #define SLICEEVENTROUTER_H
 
 #include "GL/glew.h"
+#include "PDoubleInput.h"
+#include "PIntegerInput.h"
+#include "PSimpleWidget.h"
+#include "PVariablesWidget.h"
 #include "RenderEventRouter.h"
 #include "SliceSubtabs.h"
+#include "VLineComboBox.h"
+#include "VSliderEdit.h"
 #include "VariablesWidget.h"
 #include "vapor/SliceParams.h"
 #include "vapor/SliceRenderer.h"
+#include <QTabWidget>
 #include <qobject.h>
 #include <vapor/MyBase.h>
 
@@ -29,6 +36,7 @@ class GLSliceImageWindow;
 //!	The SliceEventRouter class manages the Slice gui.  There are three sub-tabs,
 //! for variables, geometry, and appearance.
 
+// class SliceEventRouter : public QTabWidget,  public RenderEventRouter {
 class SliceEventRouter : public QTabWidget, public RenderEventRouter {
 
     Q_OBJECT
@@ -52,13 +60,19 @@ class SliceEventRouter : public QTabWidget, public RenderEventRouter {
     virtual string _getIconImagePath() const { return ("Slice.png"); }
 
   private:
-    SliceEventRouter() {}
-
     //! Override default wheel behavior on the tab.  This has the effect of
     //! ignoring wheel events over the tab.  This is because wheel events will always
     //! affect the combo boxes and other widgets in the tab, and it would be confusing
     //! if wheel events also scrolled the tab itself
     void wheelEvent(QWheelEvent *) {}
+
+    VComboBox *_vComboBox;
+    VSliderEdit *_vSliderEdit;
+    VLineItem *_vli1;
+    VLineItem *_vli2;
+
+    PIntegerInput *_pIntegerInput;
+    PDoubleInput *_pDoubleInput;
 
     //! VariablesWidget is used as Variables tab
     SliceVariablesSubtab *_variables;
