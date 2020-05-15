@@ -24,13 +24,23 @@ SliceVariablesSubtab::SliceVariablesSubtab(QWidget *parent) {
     setupUi(this);
     _variablesWidget->Reinit((VariableFlags)(SCALAR), (DimFlags)(THREED));
 
-    QButtonGroup *fidelityButtons;
-    fidelityButtons = _variablesWidget->_fidelityWidget->GetFidelityButtons();
-    connect(fidelityButtons, SIGNAL(buttonClicked(int)), this, SLOT(_setDefaultSampleRate()));
-    QComboBox *refinementCombo;
-    refinementCombo = _variablesWidget->_fidelityWidget->refinementCombo;
+    /*QButtonGroup* fidelityButtons;
+    fidelityButtons  = _variablesWidget->_fidelityWidget->GetFidelityButtons();
+    connect(
+        fidelityButtons,
+        SIGNAL( buttonClicked(int) ),
+        this,
+        SLOT( _setDefaultSampleRate() )
+    );
+    QComboBox* refinementCombo;
+    refinementCombo  = _variablesWidget->_fidelityWidget->refinementCombo;
 
-    connect(refinementCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(_setDefaultSampleRate()));
+    connect(
+        refinementCombo,
+        SIGNAL( currentIndexChanged(int) ),
+        this,
+        SLOT( _setDefaultSampleRate() )
+    );*/
 
     _variablesWidget2 = new VariablesWidget2();
     layout()->addWidget(_variablesWidget2);
@@ -58,7 +68,6 @@ void SliceVariablesSubtab::_setDefaultSampleRate() {
         quality = 1;
     int adjustedRate = quality * SAMPLES_PER_QUALITY;
     _params->SetSampleRate(adjustedRate);
-    cout << "adjustedRate " << adjustedRate << endl;
 }
 
 SliceAppearanceSubtab::SliceAppearanceSubtab(QWidget *parent) {
