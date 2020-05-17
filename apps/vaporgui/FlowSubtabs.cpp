@@ -130,7 +130,7 @@ FlowAppearanceSubtab::FlowAppearanceSubtab(QWidget *parent) : QVaporSubtab(paren
     PSection *ps;
 
     _pw->Add(ps = new PSection("Appearance"));
-    ps->Add(new PEnumDropdown(FlowParams::RenderTypeTag, {"Lines", "Samples"},
+    ps->Add(new PEnumDropdown(FlowParams::RenderTypeTag, {"Tubes", "Samples"},
                               {FlowParams::RenderTypeStream, FlowParams::RenderTypeSamples},
                               "Render Type"));
     ps->Add(
@@ -188,7 +188,7 @@ FlowAppearanceSubtab::FlowAppearanceSubtab(QWidget *parent) : QVaporSubtab(paren
         new PCheckbox(FlowParams::RenderGlyphOnlyLeadingTag, "Only Show Leading Sample"));
 
     _pw->Add(ps = new PSection("Lighting"));
-    ps->EnableBasedOnParam(FlowParams::RenderGeom3DTag);
+    ps->ShowBasedOnParam(FlowParams::RenderGeom3DTag);
     ps->Add((new PDoubleSliderEdit(FlowParams::PhongAmbientTag, "Ambient"))->EnableDynamicUpdate());
     ps->Add((new PDoubleSliderEdit(FlowParams::PhongDiffuseTag, "Diffuse"))->EnableDynamicUpdate());
     ps->Add(
