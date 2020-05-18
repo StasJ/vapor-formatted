@@ -27,7 +27,7 @@ class ControlExec;
 
 class GLSliceImageWindow;
 //#include "PFidelityWidget.h"
-class PFidelityWidget;
+class PFidelityWidget3;
 class FidelityWidget3;
 
 //!
@@ -80,7 +80,7 @@ class SliceEventRouter : public QTabWidget, public RenderEventRouter {
     PSimpleWidget *_pSimpleWidget;
     SimpleWidget *_simpleWidget;
     FidelityWidget3 *_fidelityWidget3;
-    PFidelityWidget *_pFidelityWidget;
+    PFidelityWidget3 *_pFidelityWidget;
     PIntegerInput *_pIntegerInput;
     PDoubleInput *_pDoubleInput;
 
