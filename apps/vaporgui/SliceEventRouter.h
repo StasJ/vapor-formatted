@@ -3,7 +3,6 @@
 
 #include "GL/glew.h"
 #include "PDoubleInput.h"
-#include "PFidelityWidget.h"
 #include "PIntegerInput.h"
 #include "PSimpleWidget.h"
 #include "PVariablesWidget.h"
@@ -27,6 +26,9 @@ class ControlExec;
 }
 
 class GLSliceImageWindow;
+//#include "PFidelityWidget.h"
+class PFidelityWidget;
+class FidelityWidget3;
 
 //!
 //! \class SliceEventRouter

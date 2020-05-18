@@ -17,6 +17,7 @@
 #include <vapor/glutil.h>
 #include <vector>
 
+#include "PFidelityWidget3.h"
 #include "VLineComboBox.h"
 
 using namespace VAPoR;
