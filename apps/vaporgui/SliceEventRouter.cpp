@@ -81,16 +81,13 @@ SliceEventRouter::SliceEventRouter(QWidget *parent, ControlExec *ce)
     addTab(_fidelityWidget3, "FidelityWidget's Tab");
     _fidelityWidget3->Reinit((VariableFlags)(SCALAR));
 
-    /*_pVariablesWidget = new PVariablesWidget();
-    VContainer* vc = new VContainer();
-    vc->layout()->addWidget( _pVariablesWidget );
-    addTab( _pVariablesWidget, "PVariablesWidget" );
-    _pVariablesWidget->Reinit(
-        (VariableFlags)(SCALAR),
-        (DimFlags)(THREED)
-    );
+    _pVariablesWidget = new PVariablesWidget();
+    VContainer *vc = new VContainer();
+    vc->layout()->addWidget(_pVariablesWidget);
+    addTab(_pVariablesWidget, "PVariablesWidget");
+    _pVariablesWidget->Reinit((VariableFlags)(SCALAR), (DimFlags)(THREED));
 
-    _pFidelityWidget = new PFidelityWidget();
+    /*_pFidelityWidget = new PFidelityWidget();
     vc = new VContainer();
     vc->layout()->addWidget( _pFidelityWidget );
     addTab( vc, "PFidelityWidget's Tab" );
@@ -168,11 +165,7 @@ void SliceEventRouter::_updateTab() {
         GetActiveParams()
     );*/
 
-    /*_pVariablesWidget->Update(
-        GetActiveParams(),
-        _controlExec->GetParamsMgr(),
-        GetActiveDataMgr()
-    );*/
+    _pVariablesWidget->Update(GetActiveParams(), _controlExec->GetParamsMgr(), GetActiveDataMgr());
 
     /*_pFidelityWidget->Update(
         GetActiveParams(),
