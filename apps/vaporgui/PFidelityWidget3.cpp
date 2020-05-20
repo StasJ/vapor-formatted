@@ -197,9 +197,7 @@ void FidelityWidget3::getCmpFactors(string varname, vector<long> &lodCF, vector<
     // Now get the "levels of detail" compression factors
     //
     vector<size_t> cratios = _dataMgr->GetCRatios(varname);
-    cout << "FidelityWidget dataMgr " << _dataMgr << endl;
     for (int i = 0; i < cratios.size(); i++) {
-        cout << "FidelityWidget cratios " << cratios[i] << endl;
         ostringstream oss;
         lodCF.push_back((float)1.0 / cratios[i]);
 
@@ -283,7 +281,6 @@ void FidelityWidget3::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, ParamsBase 
     }
 
     if (varname.empty()) {
-        std::cout << "PFidelityWidget3 setting enabled to false" << std::endl;
         setEnabled(false);
         return;
     }
