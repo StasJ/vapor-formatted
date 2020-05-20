@@ -9,10 +9,6 @@
 #include <QObject>
 #include <vapor/MyBase.h>
 
-#include "PDoubleInput.h"
-#include "PIntegerInput.h"
-#include "VLineComboBox.h"
-
 QT_USE_NAMESPACE
 
 namespace VAPoR {
@@ -70,8 +66,4 @@ class VolumeEventRouter : public QTabWidget, public RenderEventRouter {
     GLVolumeImageWindow *_glVolumeImageWindow;
     VolumeAppearanceSubtab *_appearance;
     VolumeAnnotationSubtab *_annotation;
-
-    VLineComboBox *_vLineComboBox;
-    PDoubleInput *_pDoubleInput;
-    PIntegerInput *_pIntegerInput;
 };
