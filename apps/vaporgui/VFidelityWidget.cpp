@@ -13,30 +13,19 @@
 #include "vapor/ParamsMgr.h"
 #include "vapor/RenderParams.h"
 
-#include "PFidelityWidget3.h"
+#include "PGroup.h"
 #include "PLODSelector.h"
 #include "PRefinementSelector.h"
 #include "PRefinementSelectorHLI.h"
-#include "PSection.h"
+#include "PVFidelityWidget.h"
 #include "VLineComboBox.h"
 #include "VSection.h"
 
 using namespace VAPoR;
 
-const std::string FidelityWidget3::_sectionTitle = "Data Fidelity";
+const std::string VFidelityWidget::_sectionTitle = "Data Fidelity";
 
-PFidelityWidget3::PFidelityWidget3()
-    : PWidget("", _fidelityWidget = new FidelityWidget3())
-//: PWidget( "", _fidelityWidget = new FidelityWidget() )
-{}
-
-void PFidelityWidget3::updateGUI() const { _fidelityWidget->Update(_dataMgr, _paramsMgr, _params); }
-
-void PFidelityWidget3::Reinit(VariableFlags variableFlags) {
-    _fidelityWidget->Reinit(variableFlags);
-}
-
-FidelityWidget3::FidelityWidget3() : VSection("FidelityWidget3") {
+VFidelityWidget::VFidelityWidget() : VSection("VFidelityWidget") {
     //_fidelityFrame    = new QFrame();
     //_fidelityBox      = new QGroupBox( _fidelityFrame );
     _fidelityBox = new QGroupBox("low <--> high");
@@ -46,74 +35,36 @@ FidelityWidget3::FidelityWidget3() : VSection("FidelityWidget3") {
     hlay->setAlignment(Qt::AlignHCenter);
     _fidelityButtons->setExclusive(true);
     _fidelityBox->setLayout(hlay);
-    int dpi = logicalDpiX();
-    if (dpi > 96) {
-        _fidelityBox->setMinimumHeight(100);
-    }
 
     _vle = new VLineItem("Fidelity", _fidelityBox);
     layout()->addWidget(_vle);
+
     _fidelityBox->layout()->addWidget(new QPushButton("foo"));
+
+    int dpi = logicalDpiX();
+    if (dpi > 96) {
+        _fidelityFrame->setMinimumHeight(100);
+    }
+
     connect(_fidelityButtons, SIGNAL(buttonClicked(int)), this, SLOT(setFidelity(int)));
 
-    //
-    // VWidgets
-    //
-
-    VSection *vSection = new VSection("VWidgets");
-    layout()->addWidget(vSection);
-
     _lodCombo = new VLineComboBox("V Level of detail");
-    // layout()->addWidget( _lodCombo );
-    vSection->layout()->addWidget(_lodCombo);
-    connect(_lodCombo, &VLineComboBox::IndexChanged, this, &FidelityWidget3::setCompRatio);
+    layout()->addWidget(_lodCombo);
+    connect(_lodCombo, &VLineComboBox::IndexChanged, this, &VFidelityWidget::setCompRatio);
 
     _refCombo = new VLineComboBox("V Refinement Level");
-    connect(_refCombo, &VLineComboBox::IndexChanged, this, &FidelityWidget3::setNumRefinements);
-    // layout()->addWidget( _refCombo );
-    vSection->layout()->addWidget(_refCombo);
-
-    //
-    // PWidgets
-    //
-
-    _ps1 = new PSection("Pure PWidets");
-    layout()->addWidget(_ps1);
-
-    _plodSelector = new PLODSelector();
-    _plodSelector->Reinit((VariableFlags)SCALAR);
-    _ps1->Add(_plodSelector);
-
-    _refinementSelector = new PRefinementSelector();
-    _refinementSelector->Reinit((VariableFlags)SCALAR);
-    _ps1->Add(_refinementSelector);
-
-    //
-    // PWidgetHLI
-    //
-
-    _ps2 = new PSection("PWidetsHLI");
-    layout()->addWidget(_ps2);
-
-    _plodHLI = new PLODSelectorHLI<VAPoR::RenderParams>(&RenderParams::GetCompressionLevel,
-                                                        &RenderParams::SetCompressionLevel);
-    _plodHLI->Reinit((VariableFlags)SCALAR);
-    _ps2->Add(_plodHLI);
-
-    _pRefHLI = new PRefinementSelectorHLI<VAPoR::RenderParams>(&RenderParams::GetRefinementLevel,
-                                                               &RenderParams::SetRefinementLevel);
-    _pRefHLI->Reinit((VariableFlags)SCALAR);
-    _ps2->Add(_pRefHLI);
+    connect(_refCombo, &VLineComboBox::IndexChanged, this, &VFidelityWidget::setNumRefinements);
+    layout()->addWidget(_refCombo);
 }
 
-void FidelityWidget3::Reinit(VariableFlags flags) {
+void VFidelityWidget::Reinit(VariableFlags flags) {
     _variableFlags = flags;
 
     _plodSelector->Reinit(flags);
     _refinementSelector->Reinit(flags);
 }
 
-void FidelityWidget3::setNumRefinements(int num) {
+void VFidelityWidget::setNumRefinements(int num) {
     VAssert(_rParams);
 
     _rParams->SetRefinementLevel(num);
@@ -125,7 +76,7 @@ void FidelityWidget3::setNumRefinements(int num) {
 
 // Occurs when user clicks a fidelity radio button
 //
-void FidelityWidget3::setFidelity(int buttonID) {
+void VFidelityWidget::setFidelity(int buttonID) {
     VAssert(_rParams);
 
     VAssert(buttonID >= 0 && buttonID < _fidelityLodIdx.size());
@@ -143,11 +94,11 @@ void FidelityWidget3::setFidelity(int buttonID) {
     _paramsMgr->EndSaveStateGroup();
 }
 
-QButtonGroup *FidelityWidget3::GetFidelityButtons() { return _fidelityButtons; }
+QButtonGroup *VFidelityWidget::GetFidelityButtons() { return _fidelityButtons; }
 
-std::vector<int> FidelityWidget3::GetFidelityLodIdx() const { return _fidelityLodIdx; }
+std::vector<int> VFidelityWidget::GetFidelityLodIdx() const { return _fidelityLodIdx; }
 
-void FidelityWidget3::getCmpFactors(string varname, vector<long> &lodCF, vector<string> &lodStr,
+void VFidelityWidget::getCmpFactors(string varname, vector<long> &lodCF, vector<string> &lodStr,
                                     vector<long> &multiresCF, vector<string> &multiresStr) const {
 
     VAssert(!varname.empty());
@@ -206,7 +157,7 @@ void FidelityWidget3::getCmpFactors(string varname, vector<long> &lodCF, vector<
     }
 }
 
-void FidelityWidget3::uncheckFidelity() {
+void VFidelityWidget::uncheckFidelity() {
 
     // Unset all fidelity buttons
     //
@@ -221,7 +172,7 @@ void FidelityWidget3::uncheckFidelity() {
     }
 }
 
-void FidelityWidget3::setCompRatio(int num) {
+void VFidelityWidget::setCompRatio(int num) {
     VAssert(_rParams);
 
     _rParams->SetCompressionLevel(num);
@@ -233,7 +184,7 @@ void FidelityWidget3::setCompRatio(int num) {
     uncheckFidelity();
 }
 
-void FidelityWidget3::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, ParamsBase *params) {
+void VFidelityWidget::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, ParamsBase *params) {
     VAssert(dataMgr);
     VAssert(paramsMgr);
     VAssert(params);
@@ -242,8 +193,7 @@ void FidelityWidget3::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, ParamsBase 
     _paramsMgr = paramsMgr;
     _rParams = dynamic_cast<RenderParams *>(params);
 
-    _ps1->Update(params, _paramsMgr, _dataMgr);
-    _ps2->Update(params, _paramsMgr, _dataMgr);
+    _pg->Update(params, _paramsMgr, _dataMgr);
 
     string varname;
     if (_variableFlags & SCALAR) {
@@ -281,6 +231,7 @@ void FidelityWidget3::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, ParamsBase 
     }
 
     if (varname.empty()) {
+        std::cout << "PVFidelityWidget setting enabled to false" << std::endl;
         setEnabled(false);
         return;
     }
@@ -391,7 +342,6 @@ void FidelityWidget3::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, ParamsBase 
     }
     _fidelityButtons->blockSignals(false);
 
-    //_pg->Update( _rParams, _paramsMgr, _dataMgr ); // takes non-const _dataMgr
     /*std::vector< std::string > lods;
     for ( int i=0; i<lodStrs.size(); i++ ) {
         lods.push_back( lodStrs[i] );
@@ -411,6 +361,6 @@ void FidelityWidget3::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr, ParamsBase 
     //_refCombo->Update( _rParams, _paramsMgr, _dataMgr );
 }
 
-std::string FidelityWidget3::GetCurrentLodString() const { return _currentLodStr; }
+std::string VFidelityWidget::GetCurrentLodString() const { return _currentLodStr; }
 
-std::string FidelityWidget3::GetCurrentMultiresString() const { return _currentMultiresStr; }
+std::string VFidelityWidget::GetCurrentMultiresString() const { return _currentMultiresStr; }

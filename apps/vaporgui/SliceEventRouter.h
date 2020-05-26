@@ -2,22 +2,22 @@
 #define SLICEEVENTROUTER_H
 
 #include "GL/glew.h"
+#include "RenderEventRouter.h"
+#include "RenderEventRouter2.h"
+#include "VariablesWidget.h"
+#include "vapor/SliceParams.h"
+#include "vapor/SliceRenderer.h"
+#include <qobject.h>
+#include <vapor/MyBase.h>
+//#include "PVariablesWidget.h"
 #include "PDoubleInput.h"
 #include "PIntegerInput.h"
 #include "PSimpleWidget.h"
-#include "PVariablesWidget.h"
-#include "RenderEventRouter.h"
-#include "RenderEventRouter2.h"
 #include "SliceSubtabs.h"
 #include "VLineComboBox.h"
 #include "VSliderEdit.h"
-#include "VariablesWidget.h"
 #include "VariablesWidget2.h"
-#include "vapor/SliceParams.h"
-#include "vapor/SliceRenderer.h"
 #include <QTabWidget>
-#include <qobject.h>
-#include <vapor/MyBase.h>
 
 QT_USE_NAMESPACE
 
@@ -28,6 +28,8 @@ class ControlExec;
 class GLSliceImageWindow;
 //#include "PFidelityWidget.h"
 class PFidelityWidget3;
+class VVariablesWidget;
+class PVariablesWidget;
 class FidelityWidget3;
 
 //!
@@ -76,6 +78,7 @@ class SliceEventRouter : public QTabWidget, public RenderEventRouter {
     VLineItem *_vli;
 
     VariablesWidget2 *_variablesWidget;
+    VVariablesWidget *_vVariablesWidget;
     PVariablesWidget *_pVariablesWidget;
     PSimpleWidget *_pSimpleWidget;
     SimpleWidget *_simpleWidget;
