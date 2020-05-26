@@ -20,7 +20,7 @@
 #include "PFidelityWidget3.h"
 #include "PVariablesWidget.h"
 #include "VLineComboBox.h"
-#include "VVariablesWidget.h"
+#include "VVariablesContainer.h"
 
 using namespace VAPoR;
 
@@ -88,13 +88,13 @@ SliceEventRouter::SliceEventRouter(QWidget *parent, ControlExec *ce)
     qsfw->setWidgetResizable(true);
     addTab(qsfw,"fw3");*/
 
-    _vVariablesWidget = new VVariablesWidget();
-    _vVariablesWidget->Reinit((VariableFlags)(SCALAR), (DimFlags)(THREED));
+    _vVariablesContainer = new VVariablesContainer();
+    _vVariablesContainer->Reinit((VariableFlags)(SCALAR), (DimFlags)(THREED));
     QScrollArea *qsvvw = new QScrollArea(this);
     qsvvw->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    qsvvw->setWidget(_vVariablesWidget);
+    qsvvw->setWidget(_vVariablesContainer);
     qsvvw->setWidgetResizable(true);
-    addTab(qsvvw, "vvw");
+    addTab(qsvvw, "VVariablesContainer");
 
     _pVariablesWidget = new PVariablesWidget();
     // VContainer* vc = new VContainer();
@@ -193,7 +193,8 @@ void SliceEventRouter::_updateTab() {
         GetActiveParams()
     );*/
 
-    _vVariablesWidget->Update(GetActiveParams(), _controlExec->GetParamsMgr(), GetActiveDataMgr());
+    _vVariablesContainer->Update(GetActiveParams(), _controlExec->GetParamsMgr(),
+                                 GetActiveDataMgr());
     _pVariablesWidget->Update(GetActiveParams(), _controlExec->GetParamsMgr(), GetActiveDataMgr());
 
     /*_pFidelityWidget->Update(

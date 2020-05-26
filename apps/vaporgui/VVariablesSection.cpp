@@ -1,4 +1,4 @@
-#include "VVariablesWidget.h"
+#include "VVariablesSection.h"
 
 #include "VComboBox.h"
 #include "VContainer.h"
@@ -11,7 +11,7 @@
 #include <QLayout>
 #include <QSpacerItem>
 
-const std::string VVariablesWidget::_sectionTitle = "Variable Selection";
+const std::string VVariablesSection::_sectionTitle = "VVariablesSection";
 
 namespace {
 size_t X = 0;
@@ -19,7 +19,8 @@ size_t Y = 1;
 size_t Z = 2;
 } // namespace
 
-VVariablesWidget::VVariablesWidget() : VSection(_sectionTitle), _activeDim(3), _initialized(false) {
+VVariablesSection::VVariablesSection()
+    : VSection(_sectionTitle), _activeDim(3), _initialized(false) {
     // setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
     // setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
     // setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
@@ -28,39 +29,46 @@ VVariablesWidget::VVariablesWidget() : VSection(_sectionTitle), _activeDim(3), _
     _dimCombo = new VLineComboBox("Variable Dimension");
     _dimCombo->SetOptions({"3D", "2D"});
     layout()->addWidget(_dimCombo);
-    connect(_dimCombo, &VLineComboBox::ValueChanged, this, &VVariablesWidget::_dimChanged);
+    connect(_dimCombo, &VLineComboBox::ValueChanged, this, &VVariablesSection::_dimChanged);
 
     _scalarCombo = new VLineComboBox("Variable name");
-    connect(_scalarCombo, &VLineComboBox::ValueChanged, this, &VVariablesWidget::_scalarVarChanged);
+    connect(_scalarCombo, &VLineComboBox::ValueChanged, this,
+            &VVariablesSection::_scalarVarChanged);
     layout()->addWidget(_scalarCombo);
 
     _xFieldCombo = new VLineComboBox("  X");
-    connect(_xFieldCombo, &VLineComboBox::ValueChanged, this, &VVariablesWidget::_xFieldVarChanged);
+    connect(_xFieldCombo, &VLineComboBox::ValueChanged, this,
+            &VVariablesSection::_xFieldVarChanged);
     layout()->addWidget(_xFieldCombo);
 
     _yFieldCombo = new VLineComboBox("  Y");
-    connect(_yFieldCombo, &VLineComboBox::ValueChanged, this, &VVariablesWidget::_yFieldVarChanged);
+    connect(_yFieldCombo, &VLineComboBox::ValueChanged, this,
+            &VVariablesSection::_yFieldVarChanged);
     layout()->addWidget(_yFieldCombo);
 
     _zFieldCombo = new VLineComboBox("  Z");
-    connect(_zFieldCombo, &VLineComboBox::ValueChanged, this, &VVariablesWidget::_zFieldVarChanged);
+    connect(_zFieldCombo, &VLineComboBox::ValueChanged, this,
+            &VVariablesSection::_zFieldVarChanged);
     layout()->addWidget(_zFieldCombo);
 
     _colorCombo = new VLineComboBox("Color mapped variable");
-    connect(_colorCombo, &VLineComboBox::ValueChanged, this, &VVariablesWidget::_colorVarChanged);
+    connect(_colorCombo, &VLineComboBox::ValueChanged, this, &VVariablesSection::_colorVarChanged);
     layout()->addWidget(_colorCombo);
 
     _heightCombo = new VLineComboBox("Height variable");
-    connect(_heightCombo, &VLineComboBox::ValueChanged, this, &VVariablesWidget::_heightVarChanged);
+    connect(_heightCombo, &VLineComboBox::ValueChanged, this,
+            &VVariablesSection::_heightVarChanged);
     layout()->addWidget(_heightCombo);
 
-    _fidelitySection = new VFidelitySection();
-    layout()->addWidget(_fidelitySection);
+    //_fidelitySection = new VFidelitySection();
+    // layout()->addWidget( _fidelitySection );
 
-    layout()->addItem(new QSpacerItem(1, 2000, QSizePolicy::Minimum, QSizePolicy::Maximum));
+    // layout()->addItem(
+    //    new QSpacerItem( 1, 2000, QSizePolicy::Minimum, QSizePolicy::Maximum )
+    //);
 }
 
-void VVariablesWidget::Reinit(VariableFlags variableFlags, DimFlags dimFlags) {
+void VVariablesSection::Reinit(VariableFlags variableFlags, DimFlags dimFlags) {
     _variableFlags = variableFlags;
     _dimFlags = dimFlags;
 
@@ -113,14 +121,14 @@ void VVariablesWidget::Reinit(VariableFlags variableFlags, DimFlags dimFlags) {
     if (_variableFlags & HEIGHT)
         fdf = (VariableFlags)(fdf | HEIGHT);
 
-    _fidelitySection->Reinit(fdf);
+    //_fidelitySection->Reinit(fdf);
 
     // variableSelectionWidget->adjustSize();
     // adjustSize();
 }
 
-void VVariablesWidget::Update(VAPoR::RenderParams *rParams, VAPoR::ParamsMgr *paramsMgr,
-                              VAPoR::DataMgr *dataMgr) {
+void VVariablesSection::Update(VAPoR::RenderParams *rParams, VAPoR::ParamsMgr *paramsMgr,
+                               VAPoR::DataMgr *dataMgr) {
 
     VAssert(dataMgr);
     VAssert(paramsMgr);
@@ -155,10 +163,10 @@ void VVariablesWidget::Update(VAPoR::RenderParams *rParams, VAPoR::ParamsMgr *pa
     _heightCombo->SetOptions(activeVars);
     _heightCombo->SetValue(rParams->GetHeightVariableName());
 
-    _fidelitySection->Update(_rParams, _paramsMgr, _dataMgr);
+    //_fidelitySection->Update( _rParams, _paramsMgr, _dataMgr );
 };
 
-void VVariablesWidget::_dimChanged() {
+void VVariablesSection::_dimChanged() {
     // Index 0 is 3D, 1 is 2D
     _activeDim = _dimCombo->GetCurrentIndex() == 0 ? 3 : 2;
 
@@ -167,22 +175,24 @@ void VVariablesWidget::_dimChanged() {
     // Update( _dataMgr, _paramsMgr, _params );
 }
 
-void VVariablesWidget::_scalarVarChanged(std::string var) { _rParams->SetVariableName(var); }
+void VVariablesSection::_scalarVarChanged(std::string var) { _rParams->SetVariableName(var); }
 
-void VVariablesWidget::_xFieldVarChanged(std::string var) { _rParams->SetXFieldVariableName(var); }
+void VVariablesSection::_xFieldVarChanged(std::string var) { _rParams->SetXFieldVariableName(var); }
 
-void VVariablesWidget::_yFieldVarChanged(std::string var) { _rParams->SetYFieldVariableName(var); }
+void VVariablesSection::_yFieldVarChanged(std::string var) { _rParams->SetYFieldVariableName(var); }
 
-void VVariablesWidget::_zFieldVarChanged(std::string var) { _rParams->SetZFieldVariableName(var); }
+void VVariablesSection::_zFieldVarChanged(std::string var) { _rParams->SetZFieldVariableName(var); }
 
-void VVariablesWidget::_colorVarChanged(std::string var) { _rParams->SetColorMapVariableName(var); }
+void VVariablesSection::_colorVarChanged(std::string var) {
+    _rParams->SetColorMapVariableName(var);
+}
 
-void VVariablesWidget::_heightVarChanged(std::string var) { _rParams->SetHeightVariableName(var); }
+void VVariablesSection::_heightVarChanged(std::string var) { _rParams->SetHeightVariableName(var); }
 
-int VVariablesWidget::GetActiveDimension() const {}
+int VVariablesSection::GetActiveDimension() const {}
 
-DimFlags VVariablesWidget::GetDimFlags() const {}
+DimFlags VVariablesSection::GetDimFlags() const {}
 
-void VVariablesWidget::Configure2DFieldVars() {}
+void VVariablesSection::Configure2DFieldVars() {}
 
-void VVariablesWidget::Configure3DFieldVars() {}
+void VVariablesSection::Configure3DFieldVars() {}

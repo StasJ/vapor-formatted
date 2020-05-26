@@ -26,8 +26,8 @@ class CompressionWidget {
 
   protected:
     void getCompressionFactors(VAPoR::RenderParams *rParams, VAPoR::DataMgr *dataMgr,
-                               VariableFlags variableFlags, vector<long> &lodCF,
-                               vector<long> &multiresCF, std::vector<std::string> &lodStr,
+                               VariableFlags variableFlags, vector<float> &lodCF,
+                               vector<float> &multiresCF, std::vector<std::string> &lodStr,
                                std::vector<std::string> &multiresStr);
 
     std::string getCurrentVariableName(VariableFlags variableFlags, VAPoR::RenderParams *rParams,

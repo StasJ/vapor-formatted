@@ -31,6 +31,7 @@ class PFidelityWidget3;
 class VVariablesWidget;
 class PVariablesWidget;
 class FidelityWidget3;
+class VVariablesContainer;
 
 //!
 //! \class SliceEventRouter
@@ -76,6 +77,8 @@ class SliceEventRouter : public QTabWidget, public RenderEventRouter {
     VLineComboBox *_vLineComboBox;
     VSliderEdit *_vSliderEdit;
     VLineItem *_vli;
+
+    VVariablesContainer *_vVariablesContainer;
 
     VariablesWidget2 *_variablesWidget;
     VVariablesWidget *_vVariablesWidget;
