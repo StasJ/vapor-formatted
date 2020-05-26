@@ -101,16 +101,12 @@ SliceEventRouter::SliceEventRouter(QWidget *parent, ControlExec *ce)
     // vc->layout()->addWidget( _pVariablesWidget );
     // addTab( _pVariablesWidget, "PVariablesWidget" );
     _pVariablesWidget->Reinit((VariableFlags)(SCALAR), (DimFlags)(THREED));
-
     QScrollArea *qspvw = new QScrollArea(this);
     qspvw->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     qspvw->setWidget(_pVariablesWidget);
-    // qspvw->setWidget(_fidelityWidget3);
-    // qspvw->setWidget(vc);
-    // QWidget* qw = new QWidget(this);
     // qspvw->setWidget( qw );
     qspvw->setWidgetResizable(true);
-    addTab(qspvw, "pvw");
+    addTab(qspvw, "PVariablesWidget");
 
     // qspvw->adjustSize();
     //_pVariablesWidget->adjustSize();

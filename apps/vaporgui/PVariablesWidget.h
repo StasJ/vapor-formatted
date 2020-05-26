@@ -17,6 +17,7 @@ class RenderParams;
 class VLineComboBox;
 class VContainer;
 class PFidelityWidget3;
+class FidelityWidget3;
 class PSection;
 // class VLineItem;
 // class FidelityWidget2;
@@ -62,6 +63,7 @@ class PVariablesWidget : public PWidget {
     VLineComboBox *_heightCombo;
 
     PFidelityWidget3 *_fidelityWidget;
+    // FidelityWidget3* _fidelityWidget;
 
     //
     // PWidgets
