@@ -16,6 +16,7 @@ class RenderParams;
 // class VComboBox;
 class VLineComboBox;
 class VContainer;
+class VPFidelitySection;
 class PFidelityWidget3;
 class FidelityWidget3;
 class PSection;
@@ -44,37 +45,15 @@ class PVariablesWidget : public PWidget {
   private:
     size_t _activeDim;
     bool _initialized;
-
     VariableFlags _variableFlags;
     DimFlags _dimFlags;
 
+    static const std::string _sectionTitle;
+
     VSection *_vSection;
+    VContainer *_container;
     VLineComboBox *_dimCombo;
 
-    VContainer *_container;
-
-    // We cannot hide PVariableSelector, so use
-    // VLineComboBox and signal/slot connections
-    VLineComboBox *_scalarCombo;
-    VLineComboBox *_xFieldCombo;
-    VLineComboBox *_yFieldCombo;
-    VLineComboBox *_zFieldCombo;
-    VLineComboBox *_colorCombo;
-    VLineComboBox *_heightCombo;
-
-    PFidelityWidget3 *_fidelityWidget;
-    // FidelityWidget3* _fidelityWidget;
-
-    //
-    // PWidgets
-    //
-    VSection *_vs1;
-
-    //
-    // PWidgetHLI
-    //
-
-    VSection *_vs2;
     PVariableSelector2DHLI<VAPoR::RenderParams> *_pscalarHLI2D;
     PVariableSelector3DHLI<VAPoR::RenderParams> *_pscalarHLI3D;
     PVariableSelector2DHLI<VAPoR::RenderParams> *_pXFieldHLI2D;
@@ -101,7 +80,7 @@ class PVariablesWidget : public PWidget {
     VContainer *_pcolorHLIContainer2D;
     VContainer *_pcolorHLIContainer3D;
 
-    static const std::string _sectionTitle;
+    VPFidelitySection *_fidelityWidget;
 
   private slots:
     void _dimChanged();

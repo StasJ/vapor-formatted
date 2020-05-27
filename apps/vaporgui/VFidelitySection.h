@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Flags.h"
-#include "PWidget.h"
 #include "VLineItem.h"
 #include "VSection.h"
 #include "vapor/MyBase.h"
@@ -9,22 +8,17 @@
 
 QT_USE_NAMESPACE
 
-namespace VAPoR {
-class RenderParams;
-class ParamsMgr;
-class DataMgr;
-} // namespace VAPoR
-
 class QGroupBox;
 class VLineComboBox;
-class FidelityWidget3;
 class VFidelityButtons;
 
 class CompressionWidget {
-  public:
-    void Reinit(VariableFlags variableFlags);
+    // public:
+    //    void Reinit(VariableFlags variableFlags);
 
   protected:
+    CompressionWidget(){};
+
     void getCompressionFactors(VAPoR::RenderParams *rParams, VAPoR::DataMgr *dataMgr,
                                VariableFlags variableFlags, vector<float> &lodCF,
                                vector<float> &multiresCF, std::vector<std::string> &lodStr,
