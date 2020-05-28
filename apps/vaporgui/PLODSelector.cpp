@@ -12,7 +12,6 @@
 using VAPoR::Box;
 using VAPoR::RenderParams;
 
-// PLODSelector::PLODSelector(const std::string &tag, const std::string &label)
 PLODSelector::PLODSelector() : PEnumDropdown("", {}, {}, "Level of Detail (HLI)") {}
 
 void PLODSelector::Reinit(VariableFlags varFlags) { _variableFlags = varFlags; }
@@ -37,8 +36,9 @@ void PLODSelector::updateGUI() const {
     assert(rParams && "Params must be RenderParams");
     static_cast<void>(rParams); // Silence unused variable warning
 
-    VariableGetter varGetter(rParams, _dataMgr, _variableFlags);
-    std::string varName = varGetter.getCurrentVariable();
+    // VariableGetter varGetter( rParams, _dataMgr, _variableFlags );
+    // std::string varName = varGetter.getCurrentVariable();
+    std::string varName = getCurrentVariable(rParams, _dataMgr, _variableFlags);
 
     std::vector<long> lodCFs;
     std::vector<std::string> lodStrs;

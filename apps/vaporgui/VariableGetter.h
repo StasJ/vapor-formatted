@@ -6,61 +6,44 @@
 //! A class that takes flags that indicate variable type on construction,
 //! and looks up the currently active variable for that type.
 
-class VariableGetter {
-
-  public:
-    VariableGetter(VAPoR::RenderParams *params, VAPoR::DataMgr *dataMgr,
-                   VariableFlags variableFlags) {
-        _variableFlags = variableFlags;
-        _dataMgr = dataMgr;
-        _rParams = params;
-    }
-
-    std::string getCurrentVariable() const {
-        string varName;
-        if (_variableFlags & SCALAR) {
-            varName = _rParams->GetVariableName();
-        } else if (_variableFlags & VECTOR) {
-            vector<string> varNames = _rParams->GetFieldVariableNames();
-            if (varNames.size() > 0) {
-                varName = varNames[0];
-                size_t vardim;
-                for (int i = 0; i < varNames.size(); i++) {
-                    vardim = _dataMgr->GetNumDimensions(varNames[i]);
-                    if (vardim == 3) {
-                        varName = varNames[i];
-                        break;
-                    }
+namespace {
+std::string getCurrentVariable(VAPoR::RenderParams *params, VAPoR::DataMgr *dataMgr,
+                               VariableFlags variableFlags) {
+    string varName;
+    if (variableFlags & SCALAR) {
+        varName = params->GetVariableName();
+    } else if (variableFlags & VECTOR) {
+        vector<string> varNames = params->GetFieldVariableNames();
+        if (varNames.size() > 0) {
+            varName = varNames[0];
+            size_t vardim;
+            for (int i = 0; i < varNames.size(); i++) {
+                vardim = dataMgr->GetNumDimensions(varNames[i]);
+                if (vardim == 3) {
+                    varName = varNames[i];
+                    break;
                 }
             }
-        } else if (_variableFlags & HEIGHT) {
-            varName = _rParams->GetHeightVariableName();
-        } else if (_variableFlags & AUXILIARY) {
-            vector<string> varNames = _rParams->GetAuxVariableNames();
-            if (varNames.size() > 0) {
-                varName = varNames[0];
-                size_t vardim;
-                for (int i = 0; i < varNames.size(); i++) {
-                    vardim = _dataMgr->GetNumDimensions(varNames[i]);
-                    if (vardim == 3) {
-                        varName = varNames[i];
-                        break;
-                    }
-                }
-            }
-        } else if (_variableFlags & COLOR) {
-            varName = _rParams->GetColorMapVariableName();
         }
-
-        // if (varName.empty()) {
-        //    setEnabled(false);
-        //    return "";
-        //}
-        return varName;
+    } else if (variableFlags & HEIGHT) {
+        varName = params->GetHeightVariableName();
+    } else if (variableFlags & AUXILIARY) {
+        vector<string> varNames = params->GetAuxVariableNames();
+        if (varNames.size() > 0) {
+            varName = varNames[0];
+            size_t vardim;
+            for (int i = 0; i < varNames.size(); i++) {
+                vardim = dataMgr->GetNumDimensions(varNames[i]);
+                if (vardim == 3) {
+                    varName = varNames[i];
+                    break;
+                }
+            }
+        }
+    } else if (variableFlags & COLOR) {
+        varName = params->GetColorMapVariableName();
     }
 
-  private:
-    VAPoR::RenderParams *_rParams;
-    VAPoR::DataMgr *_dataMgr;
-    VariableFlags _variableFlags;
-};
+    return varName;
+}
+} // namespace

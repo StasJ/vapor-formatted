@@ -37,8 +37,9 @@ void PRefinementSelector::updateGUI() const {
     assert(rParams && "Params must be RenderParams");
     static_cast<void>(rParams); // Silence unused variable warning
 
-    VariableGetter varGetter(rParams, _dataMgr, _variableFlags);
-    std::string varName = varGetter.getCurrentVariable();
+    // VariableGetter varGetter( rParams, _dataMgr, _variableFlags );
+    // std::string varName = varGetter.getCurrentVariable();
+    std::string varName = getCurrentVariable(rParams, _dataMgr, _variableFlags);
 
     vector<long> multiresCFs;
     vector<string> multiresStrs;

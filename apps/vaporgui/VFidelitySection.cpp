@@ -35,8 +35,9 @@ void getCompressionFactors(VAPoR::RenderParams *rParams, VAPoR::DataMgr *dataMgr
     multiresCFs.clear();
     multiresStrs.clear();
 
-    VariableGetter varGetter(rParams, dataMgr, variableFlags);
-    std::string varName = varGetter.getCurrentVariable();
+    // VariableGetter varGetter( rParams, dataMgr, variableFlags );
+    // std::string varName = varGetter.getCurrentVariable();
+    std::string varName = getCurrentVariable(rParams, dataMgr, variableFlags);
     VAssert(!varName.empty());
     int numLevels = dataMgr->GetNumRefLevels(varName);
 
