@@ -16,6 +16,7 @@
 #include "VFidelitySection.h"
 #include "VLineComboBox.h"
 #include "VSection.h"
+#include "VariableGetter.h"
 
 using namespace VAPoR;
 
@@ -24,23 +25,20 @@ const std::string VFidelitySection::_sectionTitle = "Data Fidelity (VFidelitySec
 // This namespace provides a function for the three Fidelity Widgets
 // (FidelityButtons, and comboBoxes for lod and ref) to acquire strings
 // that correspond to different refinement and compression factors.
-void CompressionWidget::getCompressionFactors(VAPoR::RenderParams *rParams, VAPoR::DataMgr *dataMgr,
-                                              VariableFlags variableFlags,
-                                              std::vector<float> &lodCFs,
-                                              std::vector<float> &multiresCFs,
-                                              std::vector<std::string> &lodStrs,
-                                              std::vector<std::string> &multiresStrs) {
+namespace {
+void getCompressionFactors(VAPoR::RenderParams *rParams, VAPoR::DataMgr *dataMgr,
+                           VariableFlags variableFlags, std::vector<float> &lodCFs,
+                           std::vector<float> &multiresCFs, std::vector<std::string> &lodStrs,
+                           std::vector<std::string> &multiresStrs) {
     lodCFs.clear();
     lodStrs.clear();
     multiresCFs.clear();
     multiresStrs.clear();
 
-    std::string varName = getCurrentVariableName(variableFlags, rParams, dataMgr);
+    VariableGetter varGetter(rParams, dataMgr, variableFlags);
+    std::string varName = varGetter.getCurrentVariable();
     VAssert(!varName.empty());
     int numLevels = dataMgr->GetNumRefLevels(varName);
-
-    // First get compression factors that are based on grid multiresolution
-    //
 
     // Compute sorted list of number of grids points
     // at each level in multiresolution hierarchy
@@ -85,57 +83,8 @@ void CompressionWidget::getCompressionFactors(VAPoR::RenderParams *rParams, VAPo
         oss << i << " (" << cratios[i] << ":1)";
         lodStrs.push_back(oss.str());
     }
-
-    /*int lodReq = rParams->GetCompressionLevel();
-    int refLevelReq = rParams->GetRefinementLevel();
-
-    int lod = lodReq < 0 ? 0 : lodReq;
-    lod = lodReq >= lodCFs.size() ? lodCFs.size()-1 : lodReq;
-
-    int refLevel = refLevelReq < 0 ? 0 : refLevelReq;
-    refLevel = refLevelReq >= multiresCFs.size() ? multiresCFs.size()-1 : refLevelReq;*/
 }
-
-std::string CompressionWidget::getCurrentVariableName(VariableFlags varFlags,
-                                                      VAPoR::RenderParams *rParams,
-                                                      VAPoR::DataMgr *dataMgr) const {
-    std::string varName;
-    if (varFlags & SCALAR) {
-        varName = rParams->GetVariableName();
-    } else if (varFlags & VECTOR) {
-        vector<string> varNames = rParams->GetFieldVariableNames();
-        if (varNames.size() > 0) {
-            varName = varNames[0];
-            size_t vardim;
-            for (int i = 0; i < varNames.size(); i++) {
-                vardim = dataMgr->GetNumDimensions(varNames[i]);
-                if (vardim == 3) {
-                    varName = varNames[i];
-                    break;
-                }
-            }
-        }
-    } else if (varFlags & HEIGHT) {
-        varName = rParams->GetHeightVariableName();
-    } else if (varFlags & AUXILIARY) {
-        vector<string> varNames = rParams->GetAuxVariableNames();
-        if (varNames.size() > 0) {
-            varName = varNames[0];
-            size_t vardim;
-            for (int i = 0; i < varNames.size(); i++) {
-                vardim = dataMgr->GetNumDimensions(varNames[i]);
-                if (vardim == 3) {
-                    varName = varNames[i];
-                    break;
-                }
-            }
-        }
-    } else if (varFlags & COLOR) {
-        varName = rParams->GetColorMapVariableName();
-    }
-
-    return varName;
-}
+} // namespace
 
 VFidelitySection::VFidelitySection() : VSection(_sectionTitle) {
     _fidelityButtons = new VFidelityButtons();
@@ -169,25 +118,14 @@ void VFidelitySection::Update(VAPoR::RenderParams *rParams, VAPoR::ParamsMgr *pa
 
     vector<float> lodCFs, multiresCFs;
     vector<string> lodStrs, multiresStrs;
-    CompressionWidget::getCompressionFactors(_rParams, _dataMgr, _variableFlags, lodCFs,
-                                             multiresCFs, lodStrs, multiresStrs);
-
-    /*int lodReq = rParams->GetCompressionLevel();
-    int refLevelReq = rParams->GetRefinementLevel();
-
-    int lod = lodReq < 0 ? 0 : lodReq;
-    lod = lodReq >= lodCFs.size() ? lodCFs.size()-1 : lodReq;
-
-    int refLevel = refLevelReq < 0 ? 0 : refLevelReq;
-    refLevel = refLevelReq >= multiresCFs.size() ? multiresCFs.size()-1 : refLevelReq;*/
+    getCompressionFactors(_rParams, _dataMgr, _variableFlags, lodCFs, multiresCFs, lodStrs,
+                          multiresStrs);
 
     _lodCombo->SetOptions(lodStrs);
     _lodCombo->SetIndex(_rParams->GetCompressionLevel());
-    //_lodCombo->SetIndex( lod );
 
     _refCombo->SetOptions(multiresStrs);
     _refCombo->SetIndex(_rParams->GetRefinementLevel());
-    //_refCombo->SetIndex( refLevel );
 }
 
 void VFidelitySection::setNumRefinements(int num) { _rParams->SetRefinementLevel(num); }
@@ -195,7 +133,7 @@ void VFidelitySection::setNumRefinements(int num) { _rParams->SetRefinementLevel
 void VFidelitySection::setCompRatio(int num) { _rParams->SetCompressionLevel(num); }
 
 VFidelityButtons::VFidelityButtons()
-    : VLineItem("Fidelity", _fidelityBox = new QGroupBox("low <--> high")), CompressionWidget() {
+    : VLineItem("Fidelity", _fidelityBox = new QGroupBox("low <--> high")) {
     //_fidelityBox      = new QGroupBox("low <--> high");
     _fidelityBox->setAlignment(Qt::AlignHCenter);
     _fidelityButtons = new QButtonGroup(_fidelityBox);
@@ -228,37 +166,17 @@ void VFidelityButtons::Update(VAPoR::RenderParams *params, VAPoR::ParamsMgr *par
     //
     vector<float> lodCFs, multiresCFs;
     vector<string> lodStrs, multiresStrs;
-    CompressionWidget::getCompressionFactors(_rParams, _dataMgr, _variableFlags, lodCFs,
-                                             multiresCFs, lodStrs, multiresStrs);
-
-    // int lodReq = _rParams->GetCompressionLevel();
-    // int refLevelReq = _rParams->GetRefinementLevel();
+    getCompressionFactors(_rParams, _dataMgr, _variableFlags, lodCFs, multiresCFs, lodStrs,
+                          multiresStrs);
 
     int lod = _rParams->GetCompressionLevel();
     int refLevel = _rParams->GetRefinementLevel();
-
-    /*int lod = lodReq < 0 ? 0 : lodReq;
-    lod = lodReq >= lodCFs.size() ? lodCFs.size()-1 : lodReq;
-
-    int refLevel = refLevelReq < 0 ? 0 : refLevelReq;
-    refLevel = refLevelReq >= multiresCFs.size() ?
-        multiresCFs.size()-1 : refLevelReq;*/
 
     // set up the refinement and LOD combos
     //
     for (int i = 0; i < lodStrs.size(); i++) {
         QString s = QString::fromStdString(lodStrs[i]);
     }
-    //_currentLodStr = lodStrs.at(lod);
-
-    //_currentMultiresStr = multiresStrs.at(refLevel);
-
-    /*if (lodReq != lod) {
-        _rParams->SetCompressionLevel(lod);
-    }
-    if (refLevelReq != refLevel) {
-        _rParams->SetRefinementLevel(refLevel);
-    }*/
 
     _fidelityBox->adjustSize();
 
@@ -321,9 +239,9 @@ void VFidelityButtons::Update(VAPoR::RenderParams *params, VAPoR::ParamsMgr *par
     _fidelityButtons->blockSignals(false);
 }
 
-std::string VFidelitySection::GetCurrentLodString() const { return _currentLodStr; }
+std::string VFidelitySection::GetCurrentLodString() const { return _lodCombo->GetValue(); }
 
-std::string VFidelitySection::GetCurrentMultiresString() const { return _currentMultiresStr; }
+std::string VFidelitySection::GetCurrentMultiresString() const { return _refCombo->GetValue(); }
 
 void VFidelityButtons::setFidelity(int buttonID) {
     VAssert(_rParams);
