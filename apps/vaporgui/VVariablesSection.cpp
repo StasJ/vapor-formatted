@@ -1,15 +1,11 @@
-#include "VVariablesSection.h"
-
-#include "VComboBox.h"
-#include "VContainer.h"
-#include "VFidelitySection.h"
-#include "VLineComboBox.h"
-
 #include "vapor/RenderParams.h"
 
-#include <QLabel>
-#include <QLayout>
-#include <QSpacerItem>
+#include "VLineComboBox.h"
+#include "VVariablesSection.h"
+
+//#include <QLayout>
+//#include <QLabel>
+//#include <QSpacerItem>
 
 const std::string VVariablesSection::_sectionTitle = "Variable Selection (VVariablesSection)";
 
@@ -21,11 +17,6 @@ size_t Z = 2;
 
 VVariablesSection::VVariablesSection()
     : VSection(_sectionTitle), _activeDim(3), _initialized(false) {
-    // setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-    // setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
-    // setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
-    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
-
     _dimCombo = new VLineComboBox("Variable Dimension");
     _dimCombo->SetOptions({"3D", "2D"});
     layout()->addWidget(_dimCombo);
@@ -59,13 +50,6 @@ VVariablesSection::VVariablesSection()
     connect(_heightCombo, &VLineComboBox::ValueChanged, this,
             &VVariablesSection::_heightVarChanged);
     layout()->addWidget(_heightCombo);
-
-    //_fidelitySection = new VFidelitySection();
-    // layout()->addWidget( _fidelitySection );
-
-    // layout()->addItem(
-    //    new QSpacerItem( 1, 2000, QSizePolicy::Minimum, QSizePolicy::Maximum )
-    //);
 }
 
 void VVariablesSection::Reinit(VariableFlags variableFlags, DimFlags dimFlags) {
@@ -110,21 +94,6 @@ void VVariablesSection::Reinit(VariableFlags variableFlags, DimFlags dimFlags) {
     } else {
         _colorCombo->hide();
     }
-
-    VariableFlags fdf = (VariableFlags)0;
-    if (_variableFlags & SCALAR)
-        fdf = (VariableFlags)(fdf | SCALAR);
-
-    if (_variableFlags & VECTOR)
-        fdf = (VariableFlags)(fdf | VECTOR);
-
-    if (_variableFlags & HEIGHT)
-        fdf = (VariableFlags)(fdf | HEIGHT);
-
-    //_fidelitySection->Reinit(fdf);
-
-    // variableSelectionWidget->adjustSize();
-    // adjustSize();
 }
 
 void VVariablesSection::Update(VAPoR::RenderParams *rParams, VAPoR::ParamsMgr *paramsMgr,
@@ -162,8 +131,6 @@ void VVariablesSection::Update(VAPoR::RenderParams *rParams, VAPoR::ParamsMgr *p
 
     _heightCombo->SetOptions(activeVars);
     _heightCombo->SetValue(rParams->GetHeightVariableName());
-
-    //_fidelitySection->Update( _rParams, _paramsMgr, _dataMgr );
 };
 
 void VVariablesSection::_dimChanged() {
@@ -189,10 +156,10 @@ void VVariablesSection::_colorVarChanged(std::string var) {
 
 void VVariablesSection::_heightVarChanged(std::string var) { _rParams->SetHeightVariableName(var); }
 
-int VVariablesSection::GetActiveDimension() const {}
+int VVariablesSection::GetActiveDimension() const { return _activeDim; }
 
-DimFlags VVariablesSection::GetDimFlags() const {}
+DimFlags VVariablesSection::GetDimFlags() const { return _dimFlags; }
 
-void VVariablesSection::Configure2DFieldVars() {}
+void VVariablesSection::Configure2DFieldVars() { _rParams->SetDefaultVariables(2, false); }
 
-void VVariablesSection::Configure3DFieldVars() {}
+void VVariablesSection::Configure3DFieldVars() { _rParams->SetDefaultVariables(3, false); }

@@ -1,8 +1,6 @@
 #include "vapor/RenderParams.h"
 
 #include "PVariablesWidget.h"
-//#include "VPFidelitySection.h"
-#include "VComboBox.h"
 #include "VContainer.h"
 #include "VLineComboBox.h"
 
@@ -21,11 +19,6 @@ size_t Z = 2;
 PVariablesWidget::PVariablesWidget()
     : PWidget("", _container = new VContainer(new QVBoxLayout)), _activeDim(3),
       _initialized(false) {
-    // setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-    // setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
-    // setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
-    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
-
     _vSection = new VSection("Variable Selection (VSection)");
     _container->layout()->addWidget(_vSection);
 
@@ -80,10 +73,8 @@ PVariablesWidget::PVariablesWidget()
 
     _pscalarHLIContainer2D = new VContainer();
     _pscalarHLI2D = new PVariableSelector2DHLI<VAPoR::RenderParams>(
-        "Variable name (HLI)",
-        //&VAPoR::RenderParams::SetVariableName,
-        //&VAPoR::RenderParams::GetVariableName
-        &VAPoR::RenderParams::GetVariableName, &VAPoR::RenderParams::SetVariableName);
+        "Variable name (HLI)", &VAPoR::RenderParams::GetVariableName,
+        &VAPoR::RenderParams::SetVariableName);
     _pscalarHLIContainer2D->layout()->addWidget(_pscalarHLI2D);
     _vSection->layout()->addWidget(_pscalarHLIContainer2D);
 
@@ -137,9 +128,6 @@ void PVariablesWidget::Reinit(VariableFlags variableFlags, DimFlags dimFlags) {
         }
     }
 
-    //
-    // PWidgetHLI
-    //
     if (_activeDim == 2) {
         _pscalarHLIContainer3D->hide();
         _pXFieldHLI3D->hide();
@@ -208,21 +196,7 @@ void PVariablesWidget::Reinit(VariableFlags variableFlags, DimFlags dimFlags) {
         }
     }
 
-    // VAPoR::RenderParams* rParams = dynamic_cast<VAPoR::RenderParams*>(_params);
-    // rParams->SetDefaultVariables( _activeDim, false );
-
-    VariableFlags fdf = (VariableFlags)0;
-    if (_variableFlags & SCALAR)
-        fdf = (VariableFlags)(fdf | SCALAR);
-
-    if (_variableFlags & VECTOR)
-        fdf = (VariableFlags)(fdf | VECTOR);
-
-    if (_variableFlags & HEIGHT)
-        fdf = (VariableFlags)(fdf | HEIGHT);
-
-    _fidelityWidget->Reinit(fdf);
-    _fidelityWidget->Reinit((VariableFlags)(SCALAR));
+    _fidelityWidget->Reinit(_variableFlags);
 }
 
 void PVariablesWidget::updateGUI() const {
@@ -240,7 +214,7 @@ void PVariablesWidget::updateGUI() const {
     _fidelityWidget->Update(rParams, _paramsMgr, _dataMgr);
 
     //
-    // Our widgets must be updated manually because they cannot
+    // These widgets must be updated manually because they cannot
     // be added to a PGroup, which would otherwise update them.
     //
     // They cannot be added to a PGroup becuase they need to be
@@ -305,10 +279,16 @@ void PVariablesWidget::_heightVarChanged(std::string var) {
     rParams->SetHeightVariableName(var);
 }
 
-int PVariablesWidget::GetActiveDimension() const {}
+int PVariablesWidget::GetActiveDimension() const { return _activeDim; }
 
-DimFlags PVariablesWidget::GetDimFlags() const {}
+DimFlags PVariablesWidget::GetDimFlags() const { return _dimFlags; }
 
-void PVariablesWidget::Configure2DFieldVars() {}
+void PVariablesWidget::Configure2DFieldVars() {
+    VAPoR::RenderParams *rParams = dynamic_cast<VAPoR::RenderParams *>(_params);
+    rParams->SetDefaultVariables(2, false);
+}
 
-void PVariablesWidget::Configure3DFieldVars() {}
+void PVariablesWidget::Configure3DFieldVars() {
+    VAPoR::RenderParams *rParams = dynamic_cast<VAPoR::RenderParams *>(_params);
+    rParams->SetDefaultVariables(3, false);
+}
