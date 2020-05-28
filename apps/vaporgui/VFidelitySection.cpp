@@ -217,7 +217,7 @@ void VFidelityButtons::Update(VAPoR::RenderParams *params, VAPoR::ParamsMgr *par
 
     _dataMgr = dataMgr;
     _paramsMgr = paramsMgr;
-    _rParams = dynamic_cast<RenderParams *>(params);
+    _rParams = params;
 
     setEnabled(true);
     show();
@@ -314,32 +314,11 @@ void VFidelityButtons::Update(VAPoR::RenderParams *params, VAPoR::ParamsMgr *par
 
         rd->setToolTip(qs);
 
-        cout << "V lod " << lod << " " << _fidelityLodIdx[i] << endl;
-        cout << "V ref " << refLevel << " " << _fidelityMultiresIdx[i] << endl;
-
         if (lod == _fidelityLodIdx[i] && refLevel == _fidelityMultiresIdx[i]) {
-            cout << "VBOOM" << endl;
             rd->setChecked(true);
         }
     }
     _fidelityButtons->blockSignals(false);
-
-    cout << "V _fidelityLodIdx,  size " << _fidelityLodIdx.size() << endl;
-    for (int i = 0; i < _fidelityLodIdx.size(); i++) {
-        cout << "    " << _fidelityLodIdx[i] << endl;
-    }
-    cout << "V _fidelityLodStrs, size " << _fidelityLodStrs.size() << endl;
-    for (int i = 0; i < _fidelityLodStrs.size(); i++) {
-        cout << "    " << _fidelityLodStrs[i] << endl;
-    }
-    cout << "V _fidelityMultiresIdx, size " << _fidelityMultiresIdx.size() << endl;
-    for (int i = 0; i < _fidelityMultiresIdx.size(); i++) {
-        cout << "    " << _fidelityMultiresIdx[i] << endl;
-    }
-    cout << "V _fidelityMultiresStrs, size " << _fidelityMultiresStrs.size() << endl;
-    for (int i = 0; i < _fidelityMultiresStrs.size(); i++) {
-        cout << "    " << _fidelityMultiresStrs[i] << endl;
-    }
 }
 
 std::string VFidelitySection::GetCurrentLodString() const { return _currentLodStr; }
@@ -353,8 +332,6 @@ void VFidelityButtons::setFidelity(int buttonID) {
 
     int lod = _fidelityLodIdx[buttonID];
     int ref = _fidelityMultiresIdx[buttonID];
-
-    cout << "Lod/Ref " << lod << " " << ref << endl;
 
     _paramsMgr->BeginSaveStateGroup("Set variable fidelity");
     _rParams->SetCompressionLevel(lod);

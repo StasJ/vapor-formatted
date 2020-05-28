@@ -4,6 +4,7 @@
 #include "PWidget.h"
 #include "VSection.h"
 
+#include "PLODSelectorHLI.h"
 #include "PVariableSelectorHLI.h"
 
 namespace VAPoR {
@@ -16,7 +17,8 @@ class RenderParams;
 // class VComboBox;
 class VLineComboBox;
 class VContainer;
-class VPFidelitySection;
+// class VPFidelitySection;
+#include "VPFidelitySection.h"
 class PFidelityWidget3;
 class FidelityWidget3;
 class PSection;

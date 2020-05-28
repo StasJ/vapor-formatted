@@ -13,7 +13,6 @@ class PLODSelector : public PEnumDropdown {
     Q_OBJECT
 
   public:
-    // PLODSelector(const std::string &tag, const std::string &label="");
     PLODSelector();
     void Reinit(VariableFlags varFlags);
 

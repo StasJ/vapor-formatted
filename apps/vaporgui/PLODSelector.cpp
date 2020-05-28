@@ -13,7 +13,7 @@ using VAPoR::Box;
 using VAPoR::RenderParams;
 
 // PLODSelector::PLODSelector(const std::string &tag, const std::string &label)
-PLODSelector::PLODSelector() : PEnumDropdown("", {}, {}, "P Level of Detail") {}
+PLODSelector::PLODSelector() : PEnumDropdown("", {}, {}, "Level of Detail (HLI)") {}
 
 void PLODSelector::Reinit(VariableFlags varFlags) { _variableFlags = varFlags; }
 

@@ -12,8 +12,7 @@
 using VAPoR::Box;
 using VAPoR::RenderParams;
 
-// PRefinementSelector::PRefinementSelector(const std::string &tag, const std::string &label)
-PRefinementSelector::PRefinementSelector() : PEnumDropdown("", {}, {}, "P Refinement level") {}
+PRefinementSelector::PRefinementSelector() : PEnumDropdown("", {}, {}, "Refinement level HLI") {}
 
 void PRefinementSelector::Reinit(VariableFlags varFlags) { _variableFlags = varFlags; }
 

@@ -1,10 +1,10 @@
 #include "vapor/RenderParams.h"
 
 #include "PVariablesWidget.h"
+//#include "VPFidelitySection.h"
 #include "VComboBox.h"
 #include "VContainer.h"
 #include "VLineComboBox.h"
-#include "VPFidelitySection.h"
 
 #include <QLabel>
 #include <QLayout>
@@ -221,7 +221,7 @@ void PVariablesWidget::Reinit(VariableFlags variableFlags, DimFlags dimFlags) {
     if (_variableFlags & HEIGHT)
         fdf = (VariableFlags)(fdf | HEIGHT);
 
-    //_fidelityWidget->Reinit(fdf);
+    _fidelityWidget->Reinit(fdf);
     _fidelityWidget->Reinit((VariableFlags)(SCALAR));
 }
 
