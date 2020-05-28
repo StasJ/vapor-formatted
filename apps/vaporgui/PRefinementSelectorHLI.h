@@ -3,8 +3,6 @@
 #include "PRefinementSelector.h"
 #include "PWidgetHLI.h"
 
-// CreateHLI(PRefinementSelector, long);
-
 template <class P>
 class PRefinementSelectorHLI : public PRefinementSelector, public PWidgetHLIBase<P, long> {
   public:

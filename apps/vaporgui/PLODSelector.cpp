@@ -2,15 +2,10 @@
 #include <sstream>
 
 #include <VComboBox.h>
-#include <vapor/ParamsBase.h>
 #include <vapor/RenderParams.h>
 
 #include "PLODSelector.h"
-#include "VLineItem.h"
 #include "VariableGetter.h"
-
-using VAPoR::Box;
-using VAPoR::RenderParams;
 
 PLODSelector::PLODSelector() : PEnumDropdown("", {}, {}, "Level of Detail (HLI)") {}
 
@@ -32,12 +27,10 @@ void PLODSelector::dropdownIndexChanged(int index) {
 }
 
 void PLODSelector::updateGUI() const {
-    RenderParams *rParams = dynamic_cast<RenderParams *>(getParams());
+    VAPoR::RenderParams *rParams = dynamic_cast<VAPoR::RenderParams *>(getParams());
     assert(rParams && "Params must be RenderParams");
     static_cast<void>(rParams); // Silence unused variable warning
 
-    // VariableGetter varGetter( rParams, _dataMgr, _variableFlags );
-    // std::string varName = varGetter.getCurrentVariable();
     std::string varName = getCurrentVariable(rParams, _dataMgr, _variableFlags);
 
     std::vector<long> lodCFs;

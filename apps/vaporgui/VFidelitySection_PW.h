@@ -10,8 +10,9 @@
 QT_USE_NAMESPACE
 
 class QGroupBox;
-class VFidelityButtons;
+class PGroup;
 class PLODSelector;
+class VFidelityButtons;
 
 class VFidelitySection_PW : public VSection {
     Q_OBJECT
@@ -36,6 +37,8 @@ class VFidelitySection_PW : public VSection {
     VariableFlags _variableFlags;
 
     VFidelityButtons *_fidelityButtons;
+
+    PGroup *_pGroup;
     PLODSelectorHLI<VAPoR::RenderParams> *_plodHLI;
     PRefinementSelectorHLI<VAPoR::RenderParams> *_pRefHLI;
 
