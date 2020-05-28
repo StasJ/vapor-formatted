@@ -3,16 +3,17 @@
 #include "vapor/RenderParams.h"
 
 // I don't understand why we need to include PWidget.h to use HLI widgets.
-// Commend the line below, and many errors arise that are not clear to me.
+// Comment the line below, and many errors arise that are not clear to me.
 // -Scott
 #include "PWidget.h"
 
-#include "VFidelitySection.h"
-#include "VPFidelitySection.h"
+#include "VFidelitySection_PW.h"
 
-const std::string VPFidelitySection::_sectionTitle = "Data Fidelity (VPFidelitySection)";
+#include "VFidelitySection.h" // This is where VFidelityButtons is defined
 
-VPFidelitySection::VPFidelitySection() : VSection(_sectionTitle) {
+const std::string VFidelitySection_PW::_sectionTitle = "Data Fidelity (VFidelitySection_PW)";
+
+VFidelitySection_PW::VFidelitySection_PW() : VSection(_sectionTitle) {
     _fidelityButtons = new VFidelityButtons();
     layout()->addWidget(_fidelityButtons);
 
@@ -25,7 +26,7 @@ VPFidelitySection::VPFidelitySection() : VSection(_sectionTitle) {
     layout()->addWidget(_pRefHLI);
 }
 
-void VPFidelitySection::Reinit(VariableFlags varFlags) {
+void VFidelitySection_PW::Reinit(VariableFlags varFlags) {
     _variableFlags = varFlags;
 
     _fidelityButtons->Reinit(_variableFlags);
@@ -33,8 +34,8 @@ void VPFidelitySection::Reinit(VariableFlags varFlags) {
     _pRefHLI->Reinit(_variableFlags);
 }
 
-void VPFidelitySection::Update(VAPoR::RenderParams *rParams, VAPoR::ParamsMgr *paramsMgr,
-                               VAPoR::DataMgr *dataMgr) {
+void VFidelitySection_PW::Update(VAPoR::RenderParams *rParams, VAPoR::ParamsMgr *paramsMgr,
+                                 VAPoR::DataMgr *dataMgr) {
     VAssert(dataMgr);
     VAssert(paramsMgr);
     VAssert(rParams);
@@ -48,10 +49,10 @@ void VPFidelitySection::Update(VAPoR::RenderParams *rParams, VAPoR::ParamsMgr *p
     _fidelityButtons->Update(_rParams, _paramsMgr, _dataMgr);
 }
 
-void VPFidelitySection::setNumRefinements(int num) { _rParams->SetRefinementLevel(num); }
+void VFidelitySection_PW::setNumRefinements(int num) { _rParams->SetRefinementLevel(num); }
 
-void VPFidelitySection::setCompRatio(int num) { _rParams->SetCompressionLevel(num); }
+void VFidelitySection_PW::setCompRatio(int num) { _rParams->SetCompressionLevel(num); }
 
-std::string VPFidelitySection::GetCurrentLodString() const { return _currentLodStr; }
+std::string VFidelitySection_PW::GetCurrentLodString() const { return _currentLodStr; }
 
-std::string VPFidelitySection::GetCurrentMultiresString() const { return _currentMultiresStr; }
+std::string VFidelitySection_PW::GetCurrentMultiresString() const { return _currentMultiresStr; }
