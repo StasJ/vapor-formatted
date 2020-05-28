@@ -85,10 +85,4 @@ class PVariablesWidget : public PWidget {
 
   private slots:
     void _dimChanged();
-    void _scalarVarChanged(std::string var);
-    void _xFieldVarChanged(std::string var);
-    void _yFieldVarChanged(std::string var);
-    void _zFieldVarChanged(std::string var);
-    void _colorVarChanged(std::string var);
-    void _heightVarChanged(std::string var);
 };
