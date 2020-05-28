@@ -5,7 +5,6 @@
 
 #include "SliceEventRouter.h"
 #include "EventRouter.h"
-#include "RenderEventRouter.h"
 #include "VariablesWidget.h"
 #include "vapor/SliceParams.h"
 #include "vapor/SliceRenderer.h"
@@ -18,7 +17,6 @@
 #include <vector>
 
 #include "PVariablesWidget.h"
-#include "VLineComboBox.h"
 #include "VVariablesContainer.h"
 
 using namespace VAPoR;
@@ -38,6 +36,13 @@ SliceEventRouter::SliceEventRouter(QWidget *parent, ControlExec *ce)
     qsvar->setWidgetResizable(true);
     addTab(qsvar, "Variables");
 
+    _appearance = new SliceAppearanceSubtab(this);
+    QScrollArea *qsapp = new QScrollArea(this);
+    qsapp->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    qsapp->setWidget(_appearance);
+    qsapp->setWidgetResizable(true);
+    addTab(qsapp, "Appearance");
+
     _geometry = new SliceGeometrySubtab(this);
     QScrollArea *qsgeo = new QScrollArea(this);
     qsgeo->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -51,13 +56,6 @@ SliceEventRouter::SliceEventRouter(QWidget *parent, ControlExec *ce)
     qsAnnotation->setWidget(_annotation);
     qsAnnotation->setWidgetResizable(true);
     addTab(qsAnnotation, "Annotations");
-
-    _appearance = new SliceAppearanceSubtab(this);
-    QScrollArea *qsapp = new QScrollArea(this);
-    qsapp->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    qsapp->setWidget(_appearance);
-    qsapp->setWidgetResizable(true);
-    addTab(qsapp, "Appearance");
 
     _vVariablesContainer = new VVariablesContainer();
     _vVariablesContainer->Reinit((VariableFlags)(SCALAR), (DimFlags)(THREED));
