@@ -2,11 +2,11 @@
 
 #include "Flags.h"
 #include "PWidget.h"
-#include "VSection.h"
 
 #include "PLODSelectorHLI.h"
 #include "PVariableSelectorHLI.h"
 
+class VSection;
 class VLineComboBox;
 class VContainer;
 class VFidelitySection_PW;

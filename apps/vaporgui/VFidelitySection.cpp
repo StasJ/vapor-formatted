@@ -1,13 +1,8 @@
 #include <QButtonGroup>
-#include <QDesktopWidget>
-#include <QFileDialog>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QRadioButton>
-#include <qwidget.h>
 #include <sstream>
-
-#include <QPushButton>
 
 #include "vapor/DataMgr.h"
 #include "vapor/ParamsMgr.h"
@@ -20,7 +15,7 @@
 
 using namespace VAPoR;
 
-const std::string VFidelitySection::_sectionTitle = "Data Fidelity (VFidelitySection)";
+const std::string VFidelitySection::_sectionTitle = "Data Fidelity";
 
 // This namespace provides a function for the three Fidelity Widgets
 // (FidelityButtons, and comboBoxes for lod and ref) to acquire strings
@@ -35,8 +30,6 @@ void getCompressionFactors(VAPoR::RenderParams *rParams, VAPoR::DataMgr *dataMgr
     multiresCFs.clear();
     multiresStrs.clear();
 
-    // VariableGetter varGetter( rParams, dataMgr, variableFlags );
-    // std::string varName = varGetter.getCurrentVariable();
     std::string varName = getCurrentVariable(rParams, dataMgr, variableFlags);
     VAssert(!varName.empty());
     int numLevels = dataMgr->GetNumRefLevels(varName);
@@ -91,11 +84,11 @@ VFidelitySection::VFidelitySection() : VSection(_sectionTitle) {
     _fidelityButtons = new VFidelityButtons();
     layout()->addWidget(_fidelityButtons);
 
-    _lodCombo = new VLineComboBox("Level of detail (VLineComboBox)");
+    _lodCombo = new VLineComboBox("Level of detail");
     layout()->addWidget(_lodCombo);
     connect(_lodCombo, &VLineComboBox::IndexChanged, this, &VFidelitySection::setCompRatio);
 
-    _refCombo = new VLineComboBox("Refinement Level (VLineComboBox)");
+    _refCombo = new VLineComboBox("Refinement level");
     layout()->addWidget(_refCombo);
     connect(_refCombo, &VLineComboBox::IndexChanged, this, &VFidelitySection::setNumRefinements);
 }
@@ -135,7 +128,6 @@ void VFidelitySection::setCompRatio(int num) { _rParams->SetCompressionLevel(num
 
 VFidelityButtons::VFidelityButtons()
     : VLineItem("Fidelity", _fidelityBox = new QGroupBox("low <--> high")) {
-    //_fidelityBox      = new QGroupBox("low <--> high");
     _fidelityBox->setAlignment(Qt::AlignHCenter);
     _fidelityButtons = new QButtonGroup(_fidelityBox);
     QHBoxLayout *hlay = new QHBoxLayout(_fidelityBox);

@@ -12,7 +12,7 @@
 #include "VFidelitySection.h" // This is where VFidelityButtons is defined
 #include "VFidelitySection_PW.h"
 
-const std::string VFidelitySection_PW::_sectionTitle = "Data Fidelity (VFidelitySection_PW)";
+const std::string VFidelitySection_PW::_sectionTitle = "Data Fidelity";
 
 VFidelitySection_PW::VFidelitySection_PW() : VSection(_sectionTitle) {
     _fidelityButtons = new VFidelityButtons();
