@@ -7,7 +7,7 @@
 #include "PLODSelector.h"
 #include "VariableGetter.h"
 
-PLODSelector::PLODSelector() : PEnumDropdown("", {}, {}, "Level of Detail (HLI)") {}
+PLODSelector::PLODSelector() : PEnumDropdown("", {}, {}, "Level of Detail") {}
 
 void PLODSelector::Reinit(VariableFlags varFlags) { _variableFlags = varFlags; }
 
