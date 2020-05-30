@@ -10,6 +10,7 @@
 class PGroup : public PWidget {
     Q_OBJECT
 
+    QWidget *_widget;
     std::vector<PWidget *> _children;
 
   public:
@@ -18,8 +19,6 @@ class PGroup : public PWidget {
     PGroup *Add(PWidget *pw);
 
   protected:
-    QWidget *_widget;
-
     PGroup(QWidget *w);
     void updateGUI() const override;
 };
