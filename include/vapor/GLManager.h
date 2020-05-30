@@ -2,7 +2,6 @@
 
 #include "vapor/MatrixManager.h"
 #include "vapor/ShaderManager.h"
-//#include "vapor/FontManager.h"
 
 namespace VAPoR {
 
