@@ -21,10 +21,7 @@ class ControlExec;
 }
 
 class GLSliceImageWindow;
-// class PFidelityWidget3;
-// class VVariablesWidget;
 class PVariablesWidget;
-// class FidelityWidget3;
 class VVariablesContainer;
 
 //!
@@ -38,7 +35,6 @@ class VVariablesContainer;
 //!	The SliceEventRouter class manages the Slice gui.  There are three sub-tabs,
 //! for variables, geometry, and appearance.
 
-// class SliceEventRouter : public QTabWidget,  public RenderEventRouter {
 class SliceEventRouter : public QTabWidget, public RenderEventRouter {
 
     Q_OBJECT
