@@ -28,8 +28,8 @@
 #include "PGroup.h"
 #endif
 
-#include "VFidelitySection.h"    // This is where VFidelityButtons is defined
-#include "VFidelitySection_PW.h" //
+#include "VFidelitySection.h" // This is where VFidelityButtons is defined
+#include "VFidelitySection_PW.h"
 
 const std::string VFidelitySection_PW::_sectionTitle = "Data Fidelity";
 
