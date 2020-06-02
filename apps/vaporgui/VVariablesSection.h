@@ -12,6 +12,11 @@ class RenderParams;
 class VLineComboBox;
 class VContainer;
 
+//! class VVariablesSection
+//! A VSection that holds a series of VLineComboBoxes, which allow for
+//! variable selection.  Updates, hides, and reinitializes VLineComboBoxes
+//! as necessary.
+
 class VVariablesSection : public VSection {
 
     Q_OBJECT

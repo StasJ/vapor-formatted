@@ -7,7 +7,6 @@
 #include "VLineComboBox.h"
 #include "VSliderEdit.h"
 #include "VariablesWidget.h"
-#include "VariablesWidget2.h"
 #include "vapor/SliceParams.h"
 #include "vapor/SliceRenderer.h"
 #include <QTabWidget>

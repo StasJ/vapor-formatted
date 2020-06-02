@@ -4,13 +4,9 @@ VLineComboBox::VLineComboBox(const std::string &label)
     : VLineItem(label, _combo = new VComboBox()) {
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
-    // We are forced to used SIGNAL/SLOT macros here because there are two
-    // signatures for QComboBox::currentIndexChanged
     connect(_combo, SIGNAL(ValueChanged(std::string)), this, SLOT(emitComboChanged(std::string)));
 }
 
-// Stas thinks that we should have setValues and setValue instead of Update
-//
 void VLineComboBox::SetOptions(const std::vector<std::string> &values) {
     _combo->SetOptions(values);
 }

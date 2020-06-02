@@ -9,16 +9,12 @@ const int VLineItem::_BOTTOM_MARGIN = 0;
 
 VLineItem::VLineItem(const std::string &label, QLayoutItem *centerItem, QWidget *rightWidget)
     : VLineItem(label) {
-    setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-
     layout()->addItem(centerItem);
     layout()->addWidget(rightWidget);
 }
 
 VLineItem::VLineItem(const std::string &label, QWidget *centerWidget, QWidget *rightWidget)
     : VLineItem(label) {
-    setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-
     layout()->addWidget(centerWidget);
     layout()->addWidget(rightWidget);
 }
@@ -30,12 +26,8 @@ VLineItem::VLineItem(const std::string &label, QWidget *rightWidget)
           rightWidget) {}
 
 VLineItem::VLineItem(const std::string &label) {
-    setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-
     setLayout(new QHBoxLayout);
     layout()->setContentsMargins(_LEFT_MARGIN, _TOP_MARGIN, _RIGHT_MARGIN, _BOTTOM_MARGIN);
 
     layout()->addWidget(new QLabel(label.c_str()));
-
-    // QWidgetItem broke in Qt5 so this class had to be refactored not to use it.
 }
