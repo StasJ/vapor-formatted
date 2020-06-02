@@ -11,9 +11,6 @@ PRefinementSelector::PRefinementSelector() : PEnumDropdown("", {}, {}, "Refineme
 
 void PRefinementSelector::Reinit(VariableFlags varFlags) { _variableFlags = varFlags; }
 
-// Override PEnumDropdown::dropdownIndexChanged to call
-// RenderParams setter directly, instead of PWidget::setParamsLong.
-// PWidget::setParamsLong depends on a tag, which we are not using
 void PRefinementSelector::dropdownIndexChanged(int index) {
     int value;
     if (_enumMap.empty()) {
@@ -24,9 +21,6 @@ void PRefinementSelector::dropdownIndexChanged(int index) {
     }
 
     setParamsLong((long)index);
-    // VAPoR::ParamsBase* params = getParams();
-    // VAPoR::RenderParams* rParams = dynamic_cast<VAPoR::RenderParams*>( params );
-    // rParams->SetRefinementLevel(value);
 }
 
 void PRefinementSelector::updateGUI() const {
