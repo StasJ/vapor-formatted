@@ -1,11 +1,19 @@
 #pragma once
 
 #include "Flags.h"
-#include "PLODSelectorHLI.h"
-#include "PRefinementSelectorHLI.h"
 #include "VSection.h"
 #include "vapor/MyBase.h"
 #include <QObject>
+
+//
+// Include HLI template objects instead of predeclaring them, as per
+// Google's C++ style guide.
+//
+// https://google.github.io/styleguide/cppguide.html#Forward_Declarations
+//
+
+#include "PLODSelectorHLI.h"
+#include "PRefinementSelectorHLI.h"
 
 QT_USE_NAMESPACE
 
