@@ -240,6 +240,15 @@ string ParamsBase::GetValueString(const string tag, string defaultVal) const {
     return (v);
 }
 
+/*template <typename T>
+bool ParamsBase::_validate(
+    const std::string& tag,
+    const T& value
+) {
+    std::function validator = _validationMap[tag];
+    return validator( value );
+}*/
+
 void ParamsBase::SetValueLong(const string &tag, string description, long value) {
     vector<long> values(1, value);
     ParamsBase::SetValueLongVec(tag, description, values);
