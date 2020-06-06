@@ -17,9 +17,12 @@ class BarbParams;
 
 class TFEditor;
 
+#include "PVariablesWidget.h"
+
 class BarbVariablesSubtab : public QWidget, public Ui_BarbVariablesGUI {
 
     Q_OBJECT
+    PGroup *pg;
 
   public:
     BarbVariablesSubtab(QWidget *parent);
