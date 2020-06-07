@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Flags.h"
+#include "PGroup.h"
+#include "PVariablesWidget.h"
 #include "ui_VolumeAnnotationGUI.h"
 #include "ui_VolumeAppearanceGUI.h"
 #include "ui_VolumeGeometryGUI.h"
@@ -18,8 +20,6 @@ class DataMgr;
 class TFEditorVolume;
 class QSliderEdit;
 class PGroup;
-
-#include "PVariablesWidget.h"
 
 class VolumeVariablesSubtab : public QWidget, public Ui_VolumeVariablesGUI {
 

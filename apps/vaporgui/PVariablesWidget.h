@@ -1,15 +1,9 @@
 #pragma once
 
 #include "PFidelityWidget.h"
-#include "PGroup.h"
 #include "PLineItem.h"
 #include "PVariableSelector.h"
 class VComboBox;
-
-class PFieldVariablesSelector : public PGroup {
-  public:
-    PFieldVariablesSelector();
-};
 
 class PDimensionSelector : public PLineItem {
     Q_OBJECT
@@ -37,4 +31,16 @@ class PColorMapVariableSelector : public PVariableSelector {
 class PHeightVariableSelector : public PVariableSelector2D {
   public:
     PHeightVariableSelector();
+};
+class PXFieldVariableSelector : public PVariableSelector {
+  public:
+    PXFieldVariableSelector();
+};
+class PYFieldVariableSelector : public PVariableSelector {
+  public:
+    PYFieldVariableSelector();
+};
+class PZFieldVariableSelector : public PVariableSelector {
+  public:
+    PZFieldVariableSelector();
 };

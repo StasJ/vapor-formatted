@@ -2,6 +2,8 @@
 #define WIREFRAMESUBTABS_H
 
 #include "Flags.h"
+#include "PGroup.h"
+#include "PVariablesWidget.h"
 #include "TFEditor.h"
 #include "ui_WireFrameAnnotationGUI.h"
 #include "ui_WireFrameAppearanceGUI.h"
@@ -14,8 +16,6 @@ class RenderParams;
 class ParamsMgr;
 class DataMgr;
 } // namespace VAPoR
-
-#include "PVariablesWidget.h"
 
 class WireFrameVariablesSubtab : public QWidget, public Ui_WireFrameVariablesGUI {
 

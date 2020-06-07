@@ -1,4 +1,6 @@
 #include "BarbSubtabs.h"
+#include "PGroup.h"
+#include "PVariablesWidget.h"
 #include "TFEditor.h"
 #include "vapor/BarbParams.h"
 #include <cmath>
@@ -23,7 +25,9 @@ BarbVariablesSubtab::BarbVariablesSubtab(QWidget *parent) {
     ((QVBoxLayout *)layout())->insertWidget(1, pg = new PGroup);
     PSection *vars = new PSection("Variable Selection");
     vars->Add(new PDimensionSelector);
-    vars->Add(new PFieldVariablesSelector);
+    vars->Add(new PXFieldVariableSelector);
+    vars->Add(new PYFieldVariableSelector);
+    vars->Add(new PZFieldVariableSelector);
     vars->Add(new PColorMapVariableSelector);
     vars->Add(new PHeightVariableSelector);
     pg->Add(vars);
