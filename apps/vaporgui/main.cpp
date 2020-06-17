@@ -27,6 +27,7 @@
 #include <qapplication.h>
 #include <qfont.h>
 #include <vapor/CMakeConfig.h>
+#include <vapor/OSPRay.h>
 #include <vapor/ResourcePath.h>
 #ifdef WIN32
 #include "Windows.h"
@@ -98,6 +99,8 @@ int main(int argc, char **argv) {
 #ifdef IRIX
     QApplication::setColorSpec(QApplication::ManyColor);
 #endif
+
+    VOSP::Initialize(&argc, argv);
 
     QApplication a(argc, argv, true);
 
@@ -177,6 +180,7 @@ int main(int argc, char **argv) {
     a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
     int estatus = a.exec();
 
+    VOSP::Shutdown();
     if (diagfp)
         fclose(diagfp);
     if (errfp)
