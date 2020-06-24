@@ -30,6 +30,7 @@
 #include "images/vapor-icon-32.xpm"
 #include "qdatetime.h"
 #include "vapor/FileUtils.h"
+#include "vapor/FontManager.h"
 #include "vapor/GLManager.h"
 #include "vapor/LegacyGL.h"
 #include "vapor/VAssert.h"
