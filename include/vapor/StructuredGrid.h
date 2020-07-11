@@ -97,7 +97,7 @@ class VDF_API StructuredGrid : public Grid {
 
     size_t GetMaxVertexPerCell() const override { return ((GetTopologyDim() == 3) ? 8 : 4); };
 
-    virtual void ClampCoord(std::vector<double> &coords) const override;
+    virtual void ClampCoord(const double coords[3], double cCoords[3]) const override;
 
     //! \copydoc Grid::HasInvertedCoordinateSystemHandiness()
     //!

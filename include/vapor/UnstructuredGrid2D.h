@@ -64,8 +64,7 @@ class VDF_API UnstructuredGrid2D : public UnstructuredGrid {
 
     virtual void GetUserCoordinates(const size_t indices[], double coords[]) const override;
 
-    bool GetIndicesCell(const std::vector<double> &coords,
-                        std::vector<size_t> &indices) const override {
+    bool GetIndicesCell(const double coords[3], size_t indices[3]) const override {
 
         std::vector<double> lambda;
         std::vector<std::vector<size_t>> nodes;
@@ -78,14 +77,14 @@ class VDF_API UnstructuredGrid2D : public UnstructuredGrid {
     //! \param[out] lambda Interpolation weights that may be applied to values
     //! at nodes identified by \p nodes
     //!
-    bool GetIndicesCell(const std::vector<double> &coords, std::vector<size_t> &indices,
+    bool GetIndicesCell(const double coords[3], size_t indices[3],
                         std::vector<std::vector<size_t>> &nodes, std::vector<double> &lambda) const;
 
-    bool InsideGrid(const std::vector<double> &coords) const override;
+    bool InsideGrid(const double coords[3]) const override;
 
-    float GetValueNearestNeighbor(const std::vector<double> &coords) const override;
+    float GetValueNearestNeighbor(const double coords[3]) const override;
 
-    float GetValueLinear(const std::vector<double> &coords) const override;
+    float GetValueLinear(const double coords[3]) const override;
 
     /////////////////////////////////////////////////////////////////////////////
     //
@@ -142,14 +141,14 @@ class VDF_API UnstructuredGrid2D : public UnstructuredGrid {
     UnstructuredGridCoordless _zug;
     std::shared_ptr<const QuadTreeRectangle<float, size_t>> _qtr;
 
-    bool _insideGrid(const std::vector<double> &coords, size_t &face, std::vector<size_t> &nodes,
+    bool _insideGrid(const double coords[2], size_t &face, std::vector<size_t> &nodes,
                      double *lambda, int &nlambda) const;
 
-    bool _insideGridNodeCentered(const std::vector<double> &coords, size_t &face,
-                                 std::vector<size_t> &nodes, double *lambda, int &nlambda) const;
+    bool _insideGridNodeCentered(const double coords[2], size_t &face, std::vector<size_t> &nodes,
+                                 double *lambda, int &nlambda) const;
 
-    bool _insideGridFaceCentered(const std::vector<double> &coords, size_t &face,
-                                 std::vector<size_t> &nodes, double *lambda, int &nlambda) const;
+    bool _insideGridFaceCentered(const double coords[2], size_t &face, std::vector<size_t> &nodes,
+                                 double *lambda, int &nlambda) const;
 
     bool _pointInsideBoundingRectangle(const double pt[], const double verts[], int n) const;
 

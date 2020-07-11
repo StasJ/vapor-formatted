@@ -174,12 +174,7 @@ class VDF_API UnstructuredGrid : public Grid {
     size_t GetBoundaryID() const { return (_boundaryID); }
     void SetBoundaryID(size_t v) { _boundaryID = v; }
 
-    virtual void ClampCoord(std::vector<double> &coords) const override {
-        VAssert(coords.size() >= GetGeometryDim());
-        while (coords.size() > GetGeometryDim()) {
-            coords.pop_back();
-        }
-    }
+    virtual void ClampCoord(const double coords[3], double cCoords[3]) const override {}
 
     // A no-op for unstructured grids. Needs to be set in the constuctor :-(
     //

@@ -99,11 +99,11 @@ bool UnstructuredGridLayered::GetEnclosingRegion(const vector<double> &minu,
                                                  const vector<double> &maxu, vector<size_t> &min,
                                                  vector<size_t> &max) const {
 
-    vector<double> cMinu = minu;
-    ClampCoord(cMinu);
+    double cMinu[3];
+    ClampCoord(minu.data(), cMinu);
 
-    vector<double> cMaxu = maxu;
-    ClampCoord(cMaxu);
+    double cMaxu[3];
+    ClampCoord(maxu.data(), cMaxu);
 
     VAssert(0 && "Not implemented");
     return (true);
@@ -120,22 +120,20 @@ void UnstructuredGridLayered::GetUserCoordinates(const size_t indices[], double 
     coords[2] = _zug.GetValueAtIndex(cIndices);
 }
 
-bool UnstructuredGridLayered::_insideGrid(const std::vector<double> &coords,
-                                          std::vector<size_t> &cindices,
+bool UnstructuredGridLayered::_insideGrid(const double coords[3], size_t cindices[2],
                                           std::vector<size_t> &nodes2D, std::vector<double> &lambda,
                                           float zwgt[2]) const {
     VAssert(_location == NODE);
 
-    cindices.clear();
     nodes2D.clear();
     lambda.clear();
 
-    vector<double> cCoords = coords;
-    ClampCoord(cCoords);
+    double cCoords[3];
+    ClampCoord(coords, cCoords);
 
     // Find the 2D horizontal cell containing the X,Y coordinates
     //
-    vector<double> coords2D = {cCoords[0], cCoords[1]};
+    double coords2D[] = {cCoords[0], cCoords[1]};
     std::vector<std::vector<size_t>> nodes;
 
     bool status = _ug2d.GetIndicesCell(coords2D, cindices, nodes, lambda);
@@ -166,7 +164,7 @@ bool UnstructuredGridLayered::_insideGrid(const std::vector<double> &coords,
         return (false);
 
     VAssert(k >= 0 && k < nz);
-    cindices.push_back(k);
+    cindices[1] = k;
 
     float z = cCoords[2];
     zwgt[0] = 1.0 - (z - zcoords[k]) / (zcoords[k + 1] - zcoords[k]);
@@ -175,9 +173,7 @@ bool UnstructuredGridLayered::_insideGrid(const std::vector<double> &coords,
     return (true);
 }
 
-bool UnstructuredGridLayered::GetIndicesCell(const std::vector<double> &coords,
-                                             std::vector<size_t> &indices) const {
-    indices.clear();
+bool UnstructuredGridLayered::GetIndicesCell(const double coords[3], size_t indices[3]) const {
 
     vector<size_t> nodes2D;
     vector<double> lambda;
@@ -186,9 +182,9 @@ bool UnstructuredGridLayered::GetIndicesCell(const std::vector<double> &coords,
     return (_insideGrid(coords, indices, nodes2D, lambda, zwgt));
 }
 
-bool UnstructuredGridLayered::InsideGrid(const std::vector<double> &coords) const {
+bool UnstructuredGridLayered::InsideGrid(const double coords[3]) const {
 
-    std::vector<size_t> indices;
+    size_t indices[2];
     std::vector<size_t> nodes2D;
     vector<double> lambda;
     float zwgt[2];
@@ -196,8 +192,8 @@ bool UnstructuredGridLayered::InsideGrid(const std::vector<double> &coords) cons
     return (_insideGrid(coords, indices, nodes2D, lambda, zwgt));
 }
 
-float UnstructuredGridLayered::GetValueNearestNeighbor(const std::vector<double> &coords) const {
-    std::vector<size_t> indices;
+float UnstructuredGridLayered::GetValueNearestNeighbor(const double coords[3]) const {
+    size_t indices[2];
     std::vector<size_t> nodes2D;
     vector<double> lambda;
     float zwgt[2];
@@ -230,9 +226,9 @@ float UnstructuredGridLayered::GetValueNearestNeighbor(const std::vector<double>
     return (AccessIJK(nodes2D[max_nodes2d_index], max_vert_id));
 }
 
-float UnstructuredGridLayered::GetValueLinear(const std::vector<double> &coords) const {
+float UnstructuredGridLayered::GetValueLinear(const double coords[3]) const {
 
-    std::vector<size_t> indices;
+    size_t indices[2];
     std::vector<size_t> nodes2D;
     vector<double> lambda;
     float zwgt[2];

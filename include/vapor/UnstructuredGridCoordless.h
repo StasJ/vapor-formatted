@@ -69,17 +69,13 @@ class VDF_API UnstructuredGridCoordless : public UnstructuredGrid {
 
     virtual void GetUserCoordinates(const size_t indices[], double coords[]) const override {}
 
-    bool GetIndicesCell(const std::vector<double> &, std::vector<size_t> &indices) const override {
-        return (false);
-    }
+    bool GetIndicesCell(const double *, size_t *) const override { return (false); }
 
-    bool InsideGrid(const std::vector<double> &coords) const override { return (false); }
+    bool InsideGrid(const double coords[3]) const override { return (false); }
 
-    float GetValueNearestNeighbor(const std::vector<double> &coords) const override {
-        return (0.0);
-    }
+    float GetValueNearestNeighbor(const double coords[3]) const override { return (0.0); }
 
-    float GetValueLinear(const std::vector<double> &coords) const override { return (0.0); }
+    float GetValueLinear(const double coords[3]) const override { return (0.0); }
 
     virtual size_t GetGeometryDim() const override { return (0); }
 

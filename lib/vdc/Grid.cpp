@@ -174,27 +174,26 @@ void Grid::GetRange(std::vector<size_t> min, std::vector<size_t> max, float rang
     }
 }
 
-float Grid::GetValue(const std::vector<double> &coords) const {
+float Grid::GetValue(const double coords[3]) const {
     if (!_blks.size())
         return (GetMissingValue());
 
-    vector<double> clampedCoords = coords;
-
     // Clamp coordinates on periodic boundaries to grid extents
     //
-    ClampCoord(clampedCoords);
+    double cCoords[3];
+    ClampCoord(coords, cCoords);
 
 #ifdef VAPOR3_0_0_ALPHA
     // At this point xyz should be within the grid bounds
     //
-    if (!InsideGrid(clampedCoords))
+    if (!InsideGrid(cCoords))
         return (_missingValue);
 #endif
 
     if (_interpolationOrder == 0) {
-        return (GetValueNearestNeighbor(clampedCoords));
+        return (GetValueNearestNeighbor(cCoords));
     } else {
-        return (GetValueLinear(clampedCoords));
+        return (GetValueLinear(cCoords));
     }
 }
 
@@ -202,13 +201,8 @@ void Grid::GetUserCoordinates(const std::vector<size_t> &indices,
                               std::vector<double> &coords) const {
     coords.clear();
 
-    double coordsArray[3];
-    GetUserCoordinates(indices.data(), coordsArray);
-
     coords.resize(GetGeometryDim());
-    for (int i = 0; i < GetGeometryDim(); i++) {
-        coords[i] = coordsArray[i];
-    }
+    GetUserCoordinates(indices.data(), coords.data());
 }
 
 void Grid::_getUserCoordinatesHelper(const vector<double> &coords, double &x, double &y,

@@ -127,16 +127,12 @@ bool LayeredGrid::_getCellAndWeights(const double coords[3], size_t indices0[3],
     // Get the indecies of the cell containing the point. No raw pointer
     // version of GetIndicesCell()
     //
-    vector<double> coordsv = {coords[0], coords[1], coords[2]};
-    vector<size_t> indices0v;
-    if (!GetIndicesCell(coordsv, indices0v))
+    if (!GetIndicesCell(coords, indices0))
         return (false);
-    VAssert(indices0v.size() == 3);
 
     size_t indices1[3];
     for (int i = 0; i < 3; i++) {
-        indices0[i] = indices0v[i];
-        indices1[i] = indices0v[i] + 1;
+        indices1[i] = indices0[i] + 1;
     }
 
     // Get user coordinates of cell containing point
@@ -178,12 +174,11 @@ bool LayeredGrid::_getCellAndWeights(const double coords[3], size_t indices0[3],
     return (true);
 }
 
-float LayeredGrid::GetValueNearestNeighbor(const std::vector<double> &coords) const {
-    VAssert(coords.size() == 3);
+float LayeredGrid::GetValueNearestNeighbor(const double coords[3]) const {
 
     size_t indices[3];
     double wgts[3];
-    bool found = _getCellAndWeights(coords.data(), indices, wgts);
+    bool found = _getCellAndWeights(coords, indices, wgts);
     if (!found)
         return (GetMissingValue());
 
@@ -197,12 +192,11 @@ float LayeredGrid::GetValueNearestNeighbor(const std::vector<double> &coords) co
     return (AccessIJK(indices[0], indices[1], indices[2]));
 }
 
-float LayeredGrid::GetValueLinear(const std::vector<double> &coords) const {
-    VAssert(coords.size() == 3);
+float LayeredGrid::GetValueLinear(const double coords[3]) const {
 
     size_t indices0[3];
     double wgts[3];
-    bool found = _getCellAndWeights(coords.data(), indices0, wgts);
+    bool found = _getCellAndWeights(coords, indices0, wgts);
     if (!found)
         return (GetMissingValue());
 
@@ -280,14 +274,14 @@ float LayeredGrid::GetValueLinear(const std::vector<double> &coords) const {
     return (c0 + kwgt * (c1 - c0));
 }
 
-float LayeredGrid::GetValue(const std::vector<double> &coords) const {
+float LayeredGrid::GetValue(const double coords[3]) const {
 
     // Clamp coordinates on periodic boundaries to grid extents
     //
-    vector<double> clampedCoords = coords;
-    ClampCoord(clampedCoords);
+    double cCoords[3];
+    ClampCoord(coords, cCoords);
 
-    if (!LayeredGrid::InsideGrid(clampedCoords))
+    if (!LayeredGrid::InsideGrid(cCoords))
         return (GetMissingValue());
 
     const vector<size_t> &dims = GetDimensions();
@@ -301,12 +295,12 @@ float LayeredGrid::GetValue(const std::vector<double> &coords) const {
     }
 
     if (interp_order == 0) {
-        return (GetValueNearestNeighbor(clampedCoords));
+        return (GetValueNearestNeighbor(cCoords));
     } else if (interp_order == 1) {
-        return (GetValueLinear(clampedCoords));
+        return (GetValueLinear(cCoords));
     }
 
-    return _getValueQuadratic(clampedCoords);
+    return _getValueQuadratic(cCoords);
 }
 
 void LayeredGrid::SetInterpolationOrder(int order) {
@@ -339,27 +333,23 @@ void LayeredGrid::GetUserCoordinates(const size_t indices[], double coords[]) co
     coords[2] = _rg.GetValueAtIndex(cIndices);
 }
 
-bool LayeredGrid::GetIndicesCell(const std::vector<double> &coords,
-                                 std::vector<size_t> &indices) const {
+bool LayeredGrid::GetIndicesCell(const double coords[3], size_t indices[3]) const {
 
-    indices.clear();
-
-    std::vector<double> clampedCoords = coords;
-    ClampCoord(clampedCoords);
+    double cCoords[3];
+    ClampCoord(coords, cCoords);
 
     vector<size_t> dims = GetDimensions();
 
     // Get horizontal indices from regular grid
     //
     for (int i = 0; i < 2; i++) {
-        indices.push_back(0);
 
-        if (clampedCoords[i] < _minu[i] || clampedCoords[i] > _maxu[i]) {
+        if (cCoords[i] < _minu[i] || cCoords[i] > _maxu[i]) {
             return (false);
         }
 
         if (_delta[i] != 0.0) {
-            indices[i] = (size_t)floor((clampedCoords[i] - _minu[i]) / _delta[i]);
+            indices[i] = (size_t)floor((cCoords[i] - _minu[i]) / _delta[i]);
 
             // Edge case
             //
@@ -373,26 +363,25 @@ bool LayeredGrid::GetIndicesCell(const std::vector<double> &coords,
     // Now find index for layered grid
     //
     size_t k;
-    int rc = _bsearchKIndexCell(indices[0], indices[1], clampedCoords[2], k);
+    int rc = _bsearchKIndexCell(indices[0], indices[1], cCoords[2], k);
     if (rc != 0)
         return (false);
 
-    indices.push_back(k);
+    indices[2] = k;
 
     return (true);
 }
 
-bool LayeredGrid::InsideGrid(const std::vector<double> &coords) const {
-    VAssert(coords.size() == 3);
+bool LayeredGrid::InsideGrid(const double coords[3]) const {
 
     // Clamp coordinates on periodic boundaries to reside within the
     // grid extents (vary-dimensions can not have periodic boundaries)
     //
-    vector<double> clampedCoords = coords;
-    ClampCoord(clampedCoords);
+    double cCoords[3];
+    ClampCoord(coords, cCoords);
 
-    vector<size_t> indices;
-    bool found = GetIndicesCell(clampedCoords, indices);
+    size_t indices[3];
+    bool found = GetIndicesCell(cCoords, indices);
     return (found);
 }
 
@@ -488,16 +477,15 @@ void LayeredGrid::ConstCoordItrLayered::next(const long &offset) {
     _coords[2] = *_zCoordItr;
 }
 
-void LayeredGrid::_getBilinearWeights(const vector<double> &coords, double &iwgt,
-                                      double &jwgt) const {
+void LayeredGrid::_getBilinearWeights(const double coords[3], double &iwgt, double &jwgt) const {
 
     vector<size_t> dims = GetDimensions();
 
-    vector<size_t> indices0;
+    size_t indices0[3];
     bool found = GetIndicesCell(coords, indices0);
     VAssert(found);
 
-    vector<size_t> indices1 = indices0;
+    size_t indices1[3] = {indices0[0], indices0[1], indices0[2]};
     if (indices0[0] != dims[0] - 1) {
         indices1[0] += 1;
     }
@@ -505,9 +493,9 @@ void LayeredGrid::_getBilinearWeights(const vector<double> &coords, double &iwgt
         indices1[1] += 1;
     }
 
-    vector<double> coords0, coords1;
-    Grid::GetUserCoordinates(indices0, coords0);
-    Grid::GetUserCoordinates(indices1, coords1);
+    double coords0[3], coords1[3];
+    GetUserCoordinates(indices0, coords0);
+    GetUserCoordinates(indices1, coords1);
     double x = coords[0];
     double y = coords[1];
     double x0 = coords0[0];
@@ -579,7 +567,7 @@ double LayeredGrid::_bilinearElevation(size_t i0, size_t i1, size_t j0, size_t j
     return result;
 }
 
-float LayeredGrid::_getValueQuadratic(const std::vector<double> &coords) const {
+float LayeredGrid::_getValueQuadratic(const double coords[3]) const {
 
     double mv = GetMissingValue();
     vector<size_t> dims = GetDimensions();
@@ -589,7 +577,7 @@ float LayeredGrid::_getValueQuadratic(const std::vector<double> &coords) const {
     // k1 = level below the point
     // k2 = two levels below the point
     //
-    vector<size_t> indices;
+    size_t indices[3];
     bool found = GetIndicesCell(coords, indices);
     if (!found)
         return (GetMissingValue());

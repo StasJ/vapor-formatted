@@ -118,13 +118,12 @@ void StretchedGrid::GetUserCoordinates(const size_t indices[], double coords[]) 
     }
 }
 
-bool StretchedGrid::GetIndicesCell(const std::vector<double> &coords,
-                                   std::vector<size_t> &indices) const {
+bool StretchedGrid::GetIndicesCell(const double coords[3], size_t indices[3]) const {
 
     // Clamp coordinates on periodic boundaries to grid extents
     //
-    vector<double> cCoords = coords;
-    ClampCoord(cCoords);
+    double cCoords[3];
+    ClampCoord(coords, cCoords);
 
     double x = cCoords[0];
     double y = cCoords[1];
@@ -137,29 +136,30 @@ bool StretchedGrid::GetIndicesCell(const std::vector<double> &coords,
     if (!inside)
         return (false);
 
-    indices.push_back(i);
-    indices.push_back(j);
+    indices[0] = i;
+    indices[1] = j;
 
     if (GetGeometryDim() == 2)
         return (true);
 
-    indices.push_back(k);
+    indices[2] = k;
 
     return (true);
 }
 
-bool StretchedGrid::InsideGrid(const std::vector<double> &coords) const {
+bool StretchedGrid::InsideGrid(const double coords[3]) const {
 
     // Clamp coordinates on periodic boundaries to reside within the
     // grid extents
     //
-    vector<double> cCoords = coords;
-    ClampCoord(cCoords);
+    double cCoords[3];
+    ClampCoord(coords, cCoords);
 
     // Do a quick check to see if the point is completely outside of
     // the grid bounds.
     //
-    for (int i = 0; i < cCoords.size(); i++) {
+    VAssert(GetGeometryDim() <= 3);
+    for (int i = 0; i < GetGeometryDim(); i++) {
         if (cCoords[i] < _minu[i] || cCoords[i] > _maxu[i])
             return (false);
     }
@@ -273,12 +273,12 @@ void StretchedGrid::ConstCoordItrSG::next(const long &offset) {
     _coords[2] = _sg->_zcoords[_index[2]];
 }
 
-float StretchedGrid::GetValueNearestNeighbor(const std::vector<double> &coords) const {
+float StretchedGrid::GetValueNearestNeighbor(const double coords[3]) const {
 
     // Clamp coordinates on periodic boundaries to grid extents
     //
-    vector<double> cCoords = coords;
-    ClampCoord(cCoords);
+    double cCoords[3];
+    ClampCoord(coords, cCoords);
 
     double xwgt[2], ywgt[2], zwgt[2];
     size_t i, j, k;
@@ -300,12 +300,12 @@ float StretchedGrid::GetValueNearestNeighbor(const std::vector<double> &coords) 
     return (AccessIJK(i, j, k));
 }
 
-float StretchedGrid::GetValueLinear(const std::vector<double> &coords) const {
+float StretchedGrid::GetValueLinear(const double coords[3]) const {
 
     // Clamp coordinates on periodic boundaries to grid extents
     //
-    vector<double> cCoords = coords;
-    ClampCoord(cCoords);
+    double cCoords[3];
+    ClampCoord(coords, cCoords);
 
     // handlese case where grid is 2D. I.e. if 2d then zwgt[0] == 1 &&
     // zwgt[1] = 0.0

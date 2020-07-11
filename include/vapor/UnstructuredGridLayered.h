@@ -62,14 +62,13 @@ class VDF_API UnstructuredGridLayered : public UnstructuredGrid {
 
     virtual void GetUserCoordinates(const size_t indices[], double coords[]) const override;
 
-    bool GetIndicesCell(const std::vector<double> &coords,
-                        std::vector<size_t> &indices) const override;
+    bool GetIndicesCell(const double coords[3], size_t indices[3]) const override;
 
-    bool InsideGrid(const std::vector<double> &coords) const override;
+    bool InsideGrid(const double coords[3]) const override;
 
-    float GetValueNearestNeighbor(const std::vector<double> &coords) const override;
+    float GetValueNearestNeighbor(const double coords[3]) const override;
 
-    float GetValueLinear(const std::vector<double> &coords) const override;
+    float GetValueLinear(const double coords[3]) const override;
 
     /////////////////////////////////////////////////////////////////////////////
     //
@@ -124,9 +123,8 @@ class VDF_API UnstructuredGridLayered : public UnstructuredGrid {
     UnstructuredGrid2D _ug2d;
     UnstructuredGridCoordless _zug;
 
-    bool _insideGrid(const std::vector<double> &coords, std::vector<size_t> &cindices,
-                     std::vector<size_t> &nodes2D, std::vector<double> &lambda,
-                     float zwgt[2]) const;
+    bool _insideGrid(const double coords[3], size_t cindices[2], std::vector<size_t> &nodes2D,
+                     std::vector<double> &lambda, float zwgt[2]) const;
 };
 }; // namespace VAPoR
 

@@ -200,21 +200,18 @@ class VDF_API Grid {
     //! \sa GetInterpolationOrder(), HasPeriodic(), GetMissingValue()
     //! \sa GetUserExtents()
     //!
-    virtual float GetValue(const std::vector<double> &coords) const;
+    virtual float GetValue(const std::vector<double> &coords) const {
+        return (GetValue(coords.data()));
+    };
 
-    virtual float GetValue(const double coords[]) const {
-        std::vector<double> coordsVec(GetGeometryDim(), 0);
-        for (int i = 0; i < coordsVec.size(); i++)
-            coordsVec[i] = coords[i];
-        return (GetValue(coordsVec));
-    }
+    virtual float GetValue(const double coords[]) const;
 
     virtual float GetValue(double x, double y) const {
-        std::vector<double> coords = {x, y};
+        double coords[] = {x, y, 0.0};
         return (GetValue(coords));
     }
     virtual float GetValue(double x, double y, double z) const {
-        std::vector<double> coords = {x, y, z};
+        double coords[] = {x, y, z};
         return (GetValue(coords));
     }
 
@@ -390,8 +387,13 @@ class VDF_API Grid {
     //! \retval status true on success, false if the point is not contained
     //! by any cell.
     //!
+    virtual bool GetIndicesCell(const double coords[3], size_t indices[3]) const = 0;
+
     virtual bool GetIndicesCell(const std::vector<double> &coords,
-                                std::vector<size_t> &indices) const = 0;
+                                std::vector<size_t> &indices) const {
+        indices.resize(GetNodeDimensions().size());
+        return (GetIndicesCell(coords.data(), indices.data()));
+    }
 
     //! Return the min and max data value
     //!
@@ -415,7 +417,10 @@ class VDF_API Grid {
     //!
     //! \retval bool True if point is inside the grid
     //!
-    virtual bool InsideGrid(const std::vector<double> &coords) const = 0;
+    virtual bool InsideGrid(const double coords[3]) const = 0;
+    virtual bool InsideGrid(const std::vector<double> &coords) const {
+        return (InsideGrid(coords.data()));
+    }
 
     //! Get the indices of the nodes that define a cell
     //!
@@ -496,10 +501,11 @@ class VDF_API Grid {
     //! exceed the number of allowable coordinates as returned by
     //! GetGeometryDim().
     //!
-    //! \param[in,out] coords A coordinate vector
+    //! \param[in] coords A coordinate vector
+    //! \param[out] cCoords The clamped coordintes \p coords
     //! \sa GetGeometryDim()
     //
-    virtual void ClampCoord(std::vector<double> &coords) const = 0;
+    virtual void ClampCoord(const double coords[3], double cCoords[3]) const = 0;
 
     //! Clamp grid array indices
     //!
@@ -1043,9 +1049,9 @@ class VDF_API Grid {
     ConstIterator cend() const { return (ConstIterator(this, false)); }
 
   protected:
-    virtual float GetValueNearestNeighbor(const std::vector<double> &coords) const = 0;
+    virtual float GetValueNearestNeighbor(const double coords[3]) const = 0;
 
-    virtual float GetValueLinear(const std::vector<double> &coords) const = 0;
+    virtual float GetValueLinear(const double coords[3]) const = 0;
 
     virtual float *GetValueAtIndex(const std::vector<float *> &blks, const size_t indices[3]) const;
 

@@ -191,12 +191,11 @@ class VDF_API CurvilinearGrid : public StructuredGrid {
 
     //! \copydoc Grid::GetIndicesCell
     //!
-    virtual bool GetIndicesCell(const std::vector<double> &coords,
-                                std::vector<size_t> &indices) const override;
+    virtual bool GetIndicesCell(const double coords[3], size_t indices[3]) const override;
 
     // \copydoc GetGrid::InsideGrid()
     //
-    virtual bool InsideGrid(const std::vector<double> &coords) const override;
+    virtual bool InsideGrid(const double coords[3]) const override;
 
     //! Returns reference to RegularGrid instance containing X user coordinates
     //!
@@ -262,9 +261,9 @@ class VDF_API CurvilinearGrid : public StructuredGrid {
     }
 
   protected:
-    virtual float GetValueNearestNeighbor(const std::vector<double> &coords) const override;
+    virtual float GetValueNearestNeighbor(const double coords[3]) const override;
 
-    virtual float GetValueLinear(const std::vector<double> &coords) const override;
+    virtual float GetValueLinear(const double coords[3]) const override;
 
   private:
     std::vector<double> _zcoords;

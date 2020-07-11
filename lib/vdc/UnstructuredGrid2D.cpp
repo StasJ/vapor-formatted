@@ -129,11 +129,11 @@ void UnstructuredGrid2D::GetBoundingBox(const vector<size_t> &min, const vector<
 bool UnstructuredGrid2D::GetEnclosingRegion(const vector<double> &minu, const vector<double> &maxu,
                                             vector<size_t> &min, vector<size_t> &max) const {
 
-    vector<double> cMinu = minu;
-    ClampCoord(cMinu);
+    double cMinu[3];
+    ClampCoord(minu.data(), cMinu);
 
-    vector<double> cMaxu = maxu;
-    ClampCoord(cMaxu);
+    double cMaxu[3];
+    ClampCoord(maxu.data(), cMaxu);
 
     VAssert(0 && "Not implemented");
     return (true);
@@ -151,16 +151,14 @@ void UnstructuredGrid2D::GetUserCoordinates(const size_t indices[], double coord
     }
 }
 
-bool UnstructuredGrid2D::GetIndicesCell(const std::vector<double> &coords,
-                                        std::vector<size_t> &cindices,
+bool UnstructuredGrid2D::GetIndicesCell(const double coords[3], size_t cindices[3],
                                         std::vector<std::vector<size_t>> &nodes,
                                         std::vector<double> &lambdav) const {
-    cindices.clear();
     nodes.clear();
     lambdav.clear();
 
-    vector<double> cCoords = coords;
-    ClampCoord(cCoords);
+    double cCoords[3];
+    ClampCoord(coords, cCoords);
 
     double *lambda = new double[_maxVertexPerFace];
     int nlambda;
@@ -172,7 +170,7 @@ bool UnstructuredGrid2D::GetIndicesCell(const std::vector<double> &coords,
     bool status = _insideGridNodeCentered(cCoords, my_index, my_nodes, lambda, nlambda);
 
     if (status) {
-        cindices.push_back(my_index);
+        cindices[0] = my_index;
         for (int i = 0; i < nlambda; i++) {
             lambdav.push_back(lambda[i]);
             nodes.push_back(vector<size_t>(1, my_nodes[i]));
@@ -184,9 +182,10 @@ bool UnstructuredGrid2D::GetIndicesCell(const std::vector<double> &coords,
     return (status);
 }
 
-bool UnstructuredGrid2D::InsideGrid(const std::vector<double> &coords) const {
-    vector<double> cCoords = coords;
-    ClampCoord(cCoords);
+bool UnstructuredGrid2D::InsideGrid(const double coords[3]) const {
+
+    double cCoords[3];
+    ClampCoord(coords, cCoords);
 
     double *lambda = new double[_maxVertexPerFace];
     int nlambda;
@@ -202,13 +201,13 @@ bool UnstructuredGrid2D::InsideGrid(const std::vector<double> &coords) const {
     return (status);
 }
 
-float UnstructuredGrid2D::GetValueNearestNeighbor(const std::vector<double> &coords) const {
+float UnstructuredGrid2D::GetValueNearestNeighbor(const double coords[3]) const {
 
     // Clamp coordinates on periodic boundaries to reside within the
     // grid extents
     //
-    vector<double> cCoords = coords;
-    ClampCoord(cCoords);
+    double cCoords[3];
+    ClampCoord(coords, cCoords);
 
     double *lambda = new double[_maxVertexPerFace];
     int nlambda;
@@ -241,13 +240,13 @@ float UnstructuredGrid2D::GetValueNearestNeighbor(const std::vector<double> &coo
     return ((float)value);
 }
 
-float UnstructuredGrid2D::GetValueLinear(const std::vector<double> &coords) const {
+float UnstructuredGrid2D::GetValueLinear(const double coords[3]) const {
 
     // Clamp coordinates on periodic boundaries to reside within the
     // grid extents
     //
-    vector<double> cCoords = coords;
-    ClampCoord(cCoords);
+    double cCoords[3];
+    ClampCoord(coords, cCoords);
 
     double *lambda = new double[_maxVertexPerFace];
     int nlambda;
@@ -355,8 +354,8 @@ std::ostream &operator<<(std::ostream &o, const UnstructuredGrid2D &ug) {
 // the face containing the point in XY, and the linear
 // interpolation weights/coordinates along Z.
 //
-bool UnstructuredGrid2D::_insideGrid(const vector<double> &coords, size_t &face,
-                                     vector<size_t> &nodes, double *lambda, int &nlambda) const {
+bool UnstructuredGrid2D::_insideGrid(const double coords[2], size_t &face, vector<size_t> &nodes,
+                                     double *lambda, int &nlambda) const {
     nodes.clear();
 
     if (_location == NODE) {
@@ -366,19 +365,17 @@ bool UnstructuredGrid2D::_insideGrid(const vector<double> &coords, size_t &face,
     }
 }
 
-bool UnstructuredGrid2D::_insideGridFaceCentered(const vector<double> &coords, size_t &face,
+bool UnstructuredGrid2D::_insideGridFaceCentered(const double coords[2], size_t &face,
                                                  vector<size_t> &nodes, double *lambda,
                                                  int &nlambda) const {
     VAssert(0 && "Not supported");
     return false;
 }
 
-bool UnstructuredGrid2D::_insideGridNodeCentered(const vector<double> &coords, size_t &face_index,
+bool UnstructuredGrid2D::_insideGridNodeCentered(const double coords[2], size_t &face_index,
                                                  vector<size_t> &nodes, double *lambda,
                                                  int &nlambda) const {
     nodes.clear();
-
-    VAssert(coords.size() == 2);
 
     double pt[] = {coords[0], coords[1]};
 
