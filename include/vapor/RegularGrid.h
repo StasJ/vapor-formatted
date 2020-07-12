@@ -54,11 +54,6 @@ class VDF_API RegularGrid : public StructuredGrid {
     static std::string GetClassType() { return ("Regular"); }
     std::string GetType() const override { return (GetClassType()); }
 
-    //! \copydoc Grid::GetUserExtents()
-    //
-    virtual void GetUserExtents(std::vector<double> &minu,
-                                std::vector<double> &maxu) const override;
-
     //! \copydoc Grid::GetBoundingBox()
     //
     virtual void GetBoundingBox(const std::vector<size_t> &min, const std::vector<size_t> &max,
@@ -123,6 +118,10 @@ class VDF_API RegularGrid : public StructuredGrid {
     virtual float GetValueNearestNeighbor(const double coords[3]) const override;
 
     virtual float GetValueLinear(const double coords[3]) const override;
+
+    //! \copydoc Grid::GetUserExtents()
+    //
+    virtual void GetUserExtentsHelper(double minu[3], double maxu[3]) const override;
 
   private:
     void _SetExtents(const std::vector<double> &minu, const std::vector<double> &maxu);

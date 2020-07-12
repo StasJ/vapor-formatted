@@ -236,9 +236,11 @@ float RegularGrid::GetValueLinear(const double coords[3]) const {
     return (c0 + kwgt * (c1 - c0));
 }
 
-void RegularGrid::GetUserExtents(vector<double> &minu, vector<double> &maxu) const {
-    minu = _minu;
-    maxu = _maxu;
+void RegularGrid::GetUserExtentsHelper(double minu[3], double maxu[3]) const {
+    for (int i = 0; i < _minu.size(); i++) {
+        minu[i] = _minu[i];
+        maxu[i] = _maxu[i];
+    }
 }
 
 void RegularGrid::GetBoundingBox(const vector<size_t> &min, const vector<size_t> &max,

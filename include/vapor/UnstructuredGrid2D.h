@@ -52,9 +52,6 @@ class VDF_API UnstructuredGrid2D : public UnstructuredGrid {
     static std::string GetClassType() { return ("Unstructured2D"); }
     std::string GetType() const override { return (GetClassType()); }
 
-    virtual void GetUserExtents(std::vector<double> &minu,
-                                std::vector<double> &maxu) const override;
-
     virtual void GetBoundingBox(const std::vector<size_t> &min, const std::vector<size_t> &max,
                                 std::vector<double> &minu,
                                 std::vector<double> &maxu) const override;
@@ -134,6 +131,9 @@ class VDF_API UnstructuredGrid2D : public UnstructuredGrid {
     }
 
     VDF_API friend std::ostream &operator<<(std::ostream &o, const UnstructuredGrid2D &sg);
+
+  protected:
+    virtual void GetUserExtentsHelper(double minu[3], double maxu[3]) const override;
 
   private:
     UnstructuredGridCoordless _xug;

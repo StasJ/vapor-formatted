@@ -229,7 +229,13 @@ class VDF_API Grid {
     //!
     //! \sa GetDimensions(), Grid()
     //!
-    virtual void GetUserExtents(std::vector<double> &minu, std::vector<double> &maxu) const = 0;
+    virtual void GetUserExtents(double minu[3], double maxu[3]) const;
+
+    virtual void GetUserExtents(std::vector<double> &minu, std::vector<double> &maxu) const {
+        minu.resize(GetGeometryDim());
+        maxu.resize(GetGeometryDim());
+        return (GetUserExtents(minu.data(), maxu.data()));
+    }
 
     //! Return the extents of the axis-aligned bounding box enclosign a region
     //!
@@ -547,7 +553,7 @@ class VDF_API Grid {
     //! Check for periodic boundaries
     //!
     //
-    virtual std::vector<bool> GetPeriodic() const { return (_periodic); }
+    virtual const std::vector<bool> &GetPeriodic() const { return (_periodic); }
 
     //! Get topological dimension of the mesh
     //!
@@ -1053,6 +1059,8 @@ class VDF_API Grid {
 
     virtual float GetValueLinear(const double coords[3]) const = 0;
 
+    virtual void GetUserExtentsHelper(double minu[3], double maxu[3]) const = 0;
+
     virtual float *GetValueAtIndex(const std::vector<float *> &blks, const size_t indices[3]) const;
 
     virtual float *GetValueAtIndex(const std::vector<float *> &blks,
@@ -1115,6 +1123,8 @@ class VDF_API Grid {
     int _interpolationOrder = 0; // Order of interpolation
     long _nodeIDOffset = 0;
     long _cellIDOffset = 0;
+    mutable std::vector<double> _minuCache;
+    mutable std::vector<double> _maxuCache;
 
     virtual void _getUserCoordinatesHelper(const std::vector<double> &coords, double &x, double &y,
                                            double &z) const;

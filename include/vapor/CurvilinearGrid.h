@@ -168,17 +168,6 @@ class VDF_API CurvilinearGrid : public StructuredGrid {
 
     virtual size_t GetGeometryDim() const override { return (GetTopologyDim()); };
 
-    // \copydoc GetGrid::GetUserExtents()
-    //
-    virtual void GetUserExtents(std::vector<double> &minu,
-                                std::vector<double> &maxu) const override {
-        if (!_minu.size()) {
-            _GetUserExtents(_minu, _maxu);
-        }
-        minu = _minu;
-        maxu = _maxu;
-    }
-
     // \copydoc GetGrid::GetBoundingBox()
     //
     virtual void GetBoundingBox(const std::vector<size_t> &min, const std::vector<size_t> &max,
@@ -265,6 +254,10 @@ class VDF_API CurvilinearGrid : public StructuredGrid {
 
     virtual float GetValueLinear(const double coords[3]) const override;
 
+    // \copydoc GetGrid::GetUserExtents()
+    //
+    virtual void GetUserExtentsHelper(double minu[3], double maxu[3]) const override;
+
   private:
     std::vector<double> _zcoords;
     mutable std::vector<double> _minu;
@@ -284,8 +277,6 @@ class VDF_API CurvilinearGrid : public StructuredGrid {
     void _curvilinearGrid(const RegularGrid &xrg, const RegularGrid &yrg, const RegularGrid &zrg,
                           const std::vector<double> &zcoords,
                           std::shared_ptr<const QuadTreeRectangle<float, size_t>> qtr);
-
-    void _GetUserExtents(std::vector<double> &minu, std::vector<double> &maxu) const;
 
     bool _insideFace(const std::vector<size_t> &face, double pt[2], double lambda[4]) const;
 

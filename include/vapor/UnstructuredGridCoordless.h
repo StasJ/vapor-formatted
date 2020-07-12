@@ -47,12 +47,6 @@ class VDF_API UnstructuredGridCoordless : public UnstructuredGrid {
     static std::string GetClassType() { return ("UnstructuredCoordless"); }
     std::string GetType() const override { return (GetClassType()); }
 
-    virtual void GetUserExtents(std::vector<double> &minu,
-                                std::vector<double> &maxu) const override {
-        minu.clear();
-        maxu.clear();
-    }
-
     virtual void GetBoundingBox(const std::vector<size_t> &, const std::vector<size_t> &,
                                 std::vector<double> &minu,
                                 std::vector<double> &maxu) const override {
@@ -118,6 +112,14 @@ class VDF_API UnstructuredGridCoordless : public UnstructuredGrid {
     }
 
     VDF_API friend std::ostream &operator<<(std::ostream &o, const UnstructuredGridCoordless &sg);
+
+  protected:
+    virtual void GetUserExtentsHelper(double minu[3], double maxu[3]) const override {
+        for (int i = 0; i < GetGeometryDim(); i++) {
+            minu[i] = 0.0;
+            maxu[i] = 0.0;
+        }
+    }
 
   private:
 };

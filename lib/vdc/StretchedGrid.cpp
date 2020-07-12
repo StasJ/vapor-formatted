@@ -27,7 +27,9 @@ void StretchedGrid::_stretchedGrid(const vector<double> &xcoords, const vector<d
 
     // Get the user extents now. Do this only once.
     //
-    _GetUserExtents(_minu, _maxu);
+    _minu.resize(3);
+    _maxu.resize(3);
+    GetUserExtentsHelper(_minu.data(), _maxu.data());
 }
 
 StretchedGrid::StretchedGrid(const vector<size_t> &dims, const vector<size_t> &bs,
@@ -343,7 +345,7 @@ float StretchedGrid::GetValueLinear(const double coords[3]) const {
     return (v0 * zwgt[0] + v1 * zwgt[1]);
 }
 
-void StretchedGrid::_GetUserExtents(vector<double> &minext, vector<double> &maxext) const {
+void StretchedGrid::GetUserExtentsHelper(double minext[3], double maxext[3]) const {
 
     vector<size_t> dims = StructuredGrid::GetDimensions();
 
@@ -353,7 +355,12 @@ void StretchedGrid::_GetUserExtents(vector<double> &minext, vector<double> &maxe
         max.push_back(dims[i] - 1);
     }
 
-    StretchedGrid::GetBoundingBox(min, max, minext, maxext);
+    vector<double> minv, maxv;
+    StretchedGrid::GetBoundingBox(min, max, minv, maxv);
+    for (int i = 0; i < minv.size(); i++) {
+        minext[i] = minv[i];
+        maxext[i] = maxv[i];
+    }
 }
 
 // Search for a point inside the grid. If the point is inside return true,

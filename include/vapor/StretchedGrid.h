@@ -66,14 +66,6 @@ class VDF_API StretchedGrid : public StructuredGrid {
     static std::string GetClassType() { return ("Stretched"); }
     std::string GetType() const override { return (GetClassType()); }
 
-    // \copydoc GetGrid::GetUserExtents()
-    //
-    virtual void GetUserExtents(std::vector<double> &minu,
-                                std::vector<double> &maxu) const override {
-        minu = _minu;
-        maxu = _maxu;
-    }
-
     // \copydoc GetGrid::GetBoundingBox()
     //
     virtual void GetBoundingBox(const std::vector<size_t> &min, const std::vector<size_t> &max,
@@ -156,6 +148,8 @@ class VDF_API StretchedGrid : public StructuredGrid {
 
     virtual float GetValueLinear(const double coords[3]) const override;
 
+    void GetUserExtentsHelper(double minu[3], double maxu[3]) const override;
+
   private:
     std::vector<double> _xcoords;
     std::vector<double> _ycoords;
@@ -165,8 +159,6 @@ class VDF_API StretchedGrid : public StructuredGrid {
 
     void _stretchedGrid(const std::vector<double> &xcoords, const std::vector<double> &ycoords,
                         const std::vector<double> &zcoords);
-
-    void _GetUserExtents(std::vector<double> &minu, std::vector<double> &maxu) const;
 
     bool _insideGrid(double x, double y, double z, size_t &i, size_t &j, size_t &k, double xwgt[2],
                      double ywgt[2], double zwgt[2]) const;

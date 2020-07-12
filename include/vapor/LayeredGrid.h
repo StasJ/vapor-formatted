@@ -80,11 +80,6 @@ class VDF_API LayeredGrid : public StructuredGrid {
     //!
     virtual void SetInterpolationOrder(int order) override;
 
-    //! \copydoc Grid::GetUserExtents()
-    //!
-    virtual void GetUserExtents(std::vector<double> &minu,
-                                std::vector<double> &maxu) const override;
-
     //! \copydoc Grid::GetBoundingBox()
     //!
     virtual void GetBoundingBox(const std::vector<size_t> &min, const std::vector<size_t> &max,
@@ -170,6 +165,11 @@ class VDF_API LayeredGrid : public StructuredGrid {
         return ConstCoordItr(
             std::unique_ptr<ConstCoordItrAbstract>(new ConstCoordItrLayered(this, false)));
     }
+
+  protected:
+    //! \copydoc Grid::GetUserExtents()
+    //!
+    virtual void GetUserExtentsHelper(double minu[3], double maxu[3]) const override;
 
   private:
     RegularGrid _rg;

@@ -64,9 +64,11 @@ vector<size_t> LayeredGrid::GetCoordDimensions(size_t dim) const {
     }
 }
 
-void LayeredGrid::GetUserExtents(vector<double> &minu, vector<double> &maxu) const {
-    minu = _minu;
-    maxu = _maxu;
+void LayeredGrid::GetUserExtentsHelper(double minu[3], double maxu[3]) const {
+    for (int i = 0; i < _minu.size(); i++) {
+        minu[i] = _minu[i];
+        maxu[i] = _maxu[i];
+    }
 }
 
 void LayeredGrid::GetBoundingBox(const vector<size_t> &min, const vector<size_t> &max,

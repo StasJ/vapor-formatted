@@ -59,9 +59,7 @@ vector<size_t> UnstructuredGridLayered::GetCoordDimensions(size_t dim) const {
 
 size_t UnstructuredGridLayered::GetGeometryDim() const { return (3); }
 
-void UnstructuredGridLayered::GetUserExtents(vector<double> &minu, vector<double> &maxu) const {
-    minu.clear();
-    maxu.clear();
+void UnstructuredGridLayered::GetUserExtentsHelper(double minu[3], double maxu[3]) const {
 
     // Get horizontal extents from base class
     //
@@ -71,8 +69,8 @@ void UnstructuredGridLayered::GetUserExtents(vector<double> &minu, vector<double
     //
     float range[2];
     _zug.GetRange(range);
-    minu.push_back(range[0]);
-    maxu.push_back(range[1]);
+    minu[2] = range[0];
+    maxu[2] = range[1];
 }
 
 void UnstructuredGridLayered::GetBoundingBox(const vector<size_t> &min, const vector<size_t> &max,

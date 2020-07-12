@@ -65,26 +65,24 @@ size_t UnstructuredGrid2D::GetGeometryDim() const {
     return (_zug.GetDimensions().size() == 0 ? 2 : 3);
 }
 
-void UnstructuredGrid2D::GetUserExtents(vector<double> &minu, vector<double> &maxu) const {
-    minu.clear();
-    maxu.clear();
+void UnstructuredGrid2D::GetUserExtentsHelper(double minu[3], double maxu[3]) const {
 
     float range[2];
 
     _xug.GetRange(range);
-    minu.push_back(range[0]);
-    maxu.push_back(range[1]);
+    minu[0] = range[0];
+    maxu[0] = range[1];
 
     _yug.GetRange(range);
-    minu.push_back(range[0]);
-    maxu.push_back(range[1]);
+    minu[1] = range[0];
+    maxu[1] = range[1];
 
     if (GetGeometryDim() < 3)
         return;
 
     _zug.GetRange(range);
-    minu.push_back(range[0]);
-    maxu.push_back(range[1]);
+    minu[2] = range[0];
+    maxu[2] = range[1];
 }
 
 void UnstructuredGrid2D::GetBoundingBox(const vector<size_t> &min, const vector<size_t> &max,
@@ -448,7 +446,7 @@ UnstructuredGrid2D::_makeQuadTreeRectangle() const {
     size_t coordDim = GetGeometryDim();
     VAssert(coordDim == 2);
 
-    vector<double> minu, maxu;
+    double minu[3], maxu[3];
     GetUserExtents(minu, maxu);
 
     const vector<size_t> &dims = GetDimensions();

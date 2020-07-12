@@ -524,10 +524,7 @@ float CurvilinearGrid::GetValueLinear(const double coords[3]) const {
         return (v0 * zwgt[0] + v1 * zwgt[1]);
 }
 
-void CurvilinearGrid::_GetUserExtents(vector<double> &minu, vector<double> &maxu) const {
-
-    minu.clear();
-    maxu.clear();
+void CurvilinearGrid::GetUserExtentsHelper(double minu[3], double maxu[3]) const {
 
     // Get the horiztonal (X & Y) extents by visiting every point
     // on a single plane (horizontal coordinates are constant over Z).
@@ -536,10 +533,10 @@ void CurvilinearGrid::_GetUserExtents(vector<double> &minu, vector<double> &maxu
     _xrg.GetRange(xrange);
     _yrg.GetRange(yrange);
 
-    minu.push_back(xrange[0]);
-    minu.push_back(yrange[0]);
-    maxu.push_back(xrange[1]);
-    maxu.push_back(yrange[1]);
+    minu[0] = xrange[0];
+    minu[1] = yrange[0];
+    maxu[0] = xrange[1];
+    maxu[1] = yrange[1];
 
     // We're done if 2D grid
     //
@@ -550,11 +547,11 @@ void CurvilinearGrid::_GetUserExtents(vector<double> &minu, vector<double> &maxu
         float zrange[2];
         _zrg.GetRange(zrange);
 
-        minu.push_back(zrange[0]);
-        maxu.push_back(zrange[1]);
+        minu[2] = zrange[0];
+        maxu[2] = zrange[1];
     } else {
-        minu.push_back(_zcoords[0]);
-        maxu.push_back(_zcoords[_zcoords.size() - 1]);
+        minu[2] = _zcoords[0];
+        maxu[2] = _zcoords[_zcoords.size() - 1];
     }
 }
 
@@ -753,8 +750,9 @@ bool CurvilinearGrid::_insideGrid(double x, double y, double z, size_t &i, size_
 
 std::shared_ptr<QuadTreeRectangle<float, size_t>> CurvilinearGrid::_makeQuadTreeRectangle() const {
 
-    vector<double> minu, maxu;
-    GetUserExtents(minu, maxu);
+    _minu.resize(GetGeometryDim());
+    _maxu.resize(GetGeometryDim());
+    GetUserExtentsHelper(_minu.data(), _maxu.data());
 
     const vector<size_t> &dims = GetDimensions();
     const vector<size_t> dims2d = {dims[0], dims[1]};
@@ -762,7 +760,7 @@ std::shared_ptr<QuadTreeRectangle<float, size_t>> CurvilinearGrid::_makeQuadTree
 
     std::shared_ptr<QuadTreeRectangle<float, size_t>> qtr =
         std::make_shared<QuadTreeRectangle<float, size_t>>(
-            (float)minu[0], (float)minu[1], (float)maxu[0], (float)maxu[1], 16, reserve_size);
+            (float)_minu[0], (float)_minu[1], (float)_maxu[0], (float)_maxu[1], 16, reserve_size);
 
     // Loop over horizontal dimensions only - the grid, if 3D, is layered.
     // There are dims2d[i]-1 cells (faces) along each dimension.
