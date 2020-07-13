@@ -10,7 +10,8 @@ using namespace VAPoR;
 
 static VolumeAlgorithmRegistrar<VolumeRegular> registration;
 
-VolumeRegular::VolumeRegular(GLManager *gl) : VolumeAlgorithm(gl), _hasSecondData(false) {
+VolumeRegular::VolumeRegular(GLManager *gl, VolumeRenderer *renderer)
+    : VolumeGLSL(gl, renderer), _hasSecondData(false) {
     _data.Generate();
     _missing.Generate();
 }
@@ -18,6 +19,7 @@ VolumeRegular::VolumeRegular(GLManager *gl) : VolumeAlgorithm(gl), _hasSecondDat
 VolumeRegular::~VolumeRegular() {}
 
 int VolumeRegular::LoadData(const Grid *grid) {
+    VolumeGLSL::LoadData(grid);
     _dataDimensions = grid->GetDimensions();
     _hasSecondData = false;
     return _loadDataDirect(grid, &_data, &_missing, &_hasMissingData);

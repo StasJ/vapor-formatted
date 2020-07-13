@@ -75,10 +75,10 @@ void MatrixManager::Rotate(float angle, float x, float y, float z) {
 void MatrixManager::Perspective(float fovy, float aspect, float zNear, float zFar) {
     top() = glm::perspective(fovy, aspect, zNear, zFar);
 
-#ifndef NDEBUG
     Near = zNear;
     Far = zFar;
-#endif
+    FOV = fovy;
+    Aspect = aspect;
 }
 
 void MatrixManager::Ortho(float left, float right, float bottom, float top) {

@@ -27,7 +27,6 @@ class RENDER_API VolumeRenderer : public Renderer {
 
     virtual std::string _getColorbarVariableName() const;
 
-    virtual void _setShaderUniforms(const ShaderProgram *shader, const bool fast) const;
     void _drawScreenQuad();
     void _drawScreenQuadChuncked();
     void _generateChunkedRenderMesh(const float chunks);
@@ -42,12 +41,6 @@ class RENDER_API VolumeRenderer : public Renderer {
     int _initializeAlgorithm();
     int _loadData();
     int _loadSecondaryData();
-    virtual void _getLUTFromTF(const MapperFunction *tf, float *LUT) const;
-    void _loadTF();
-    void _loadTF(Texture1D *texture, MapperFunction *tf, MapperFunction **cacheTF);
-    glm::vec3 _getVolumeScales() const;
-    void _getExtents(glm::vec3 *dataMin, glm::vec3 *dataMax, glm::vec3 *userMin,
-                     glm::vec3 *userMax) const;
     virtual std::string _getDefaultAlgorithmForGrid(const Grid *grid) const;
     bool _needToSetDefaultAlgorithm() const;
 
@@ -56,9 +49,6 @@ class RENDER_API VolumeRenderer : public Renderer {
     unsigned int _VAOChunked = (int)NULL;
     unsigned int _VBOChunked = (int)NULL;
     VolumeAlgorithm *_algorithm = nullptr;
-    Texture1D _LUTTexture;
-    Texture1D _LUT2Texture;
-    Texture2D _depthTexture;
     Framebuffer _framebuffer;
 
     int _nChunks;
@@ -90,40 +80,18 @@ class RENDER_API VolumeRenderer : public Renderer {
         std::vector<double> minExt;
         std::vector<double> maxExt;
 
-        bool ospEnabled;
         int ospMaxCells;
         int ospTestCellId;
         bool ospPT;
         bool osp_force_regular;
         bool osp_test_volume;
+        bool osp_decompose;
+        bool osp_enable_clipping;
 
         bool needsUpdate;
     } _cache;
 
-    Texture2D _ospRenderTexture;
-
-    OSPRenderer _ospRenderer = nullptr;
-    OSPWorld _ospWorld = nullptr;
-    OSPCamera _ospCamera = nullptr;
-    OSPTransferFunction _ospTF = nullptr;
-    OSPInstance _ospInstance = nullptr;
-    OSPVolumetricModel _ospVolumeModel = nullptr;
-    OSPLight _ospLightDistant = nullptr;
-
-    bool _ospEnabled();
-    int _ospInit();
-    int _ospRender(bool fast);
-    void _ospSetupRenderer(bool fast);
-    void _ospSetupCamera();
-    void _ospLoadTF();
-    void _ospApplyTransform();
-    int _ospLoadData(const Grid *grid);
-    float _ospGuessSamplingRateScalar(const Grid *grid) const;
-    OSPVolume _ospLoadVolumeRegular(const Grid *grid);
-    OSPVolume _ospLoadVolumeStructured(const Grid *grid);
-    OSPVolume _ospLoadVolumeUnstructured(const Grid *grid);
-    OSPVolume _ospLoadVolumeTest(const Grid *grid);
-    void _ospDelete();
+    friend class VolumeAlgorithm;
 };
 
 }; // namespace VAPoR

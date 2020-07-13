@@ -28,13 +28,9 @@ class PWidget : public QWidget {
     VAPoR::DataMgr *_dataMgr = nullptr;
     const std::string _tag;
 
-    bool _showBasedOnParam = false;
-    std::string _showBasedOnParamTag = "";
-    int _showBasedOnParamValue;
-
-    bool _enableBasedOnParam = false;
-    std::string _enableBasedOnParamTag = "";
-    int _enableBasedOnParamValue;
+    class ParamTester;
+    std::unique_ptr<ParamTester> _showBasedOnParam = nullptr;
+    std::unique_ptr<ParamTester> _enableBasedOnParam = nullptr;
 
     bool _dynamicUpdateIsOn = false;
     bool _dynamicUpdateInsideGroup = false;
@@ -57,8 +53,12 @@ class PWidget : public QWidget {
     //! is equal to whenEqualTo, the current widget will be shown/enabled, and hidden/disabled
     //! otherwise.
     PWidget *ShowBasedOnParam(const std::string &tag, int whenEqualTo = true);
+    PWidget *ShowBasedOnParam(const std::string &tag, const std::string &whenEqualTo,
+                              bool invert = false);
     //! @copydoc PWidget::ShowBasedOnParam()
     PWidget *EnableBasedOnParam(const std::string &tag, int whenEqualTo = true);
+    PWidget *EnableBasedOnParam(const std::string &tag, const std::string &whenEqualTo,
+                                bool invert = false);
     //! Wrapping QWidget::setToolTip in case we want to add additional functionality such as
     //! automatic tool-tips without having to refactor.
     PWidget *SetTooltip(const std::string &text);
@@ -91,4 +91,36 @@ class PWidget : public QWidget {
 
     friend class PDynamicMixin;
     template <class, typename> friend class PWidgetHLIBase;
+
+    class ParamTester {
+      public:
+        ParamTester(const std::string &tag, bool not_) : _tag(tag), _not(not_) {}
+        virtual ~ParamTester() {}
+        bool IsEqual(VAPoR::ParamsBase *p) const { return _not != _isEqual(p); }
+
+      protected:
+        const std::string _tag;
+        const bool _not;
+        virtual bool _isEqual(VAPoR::ParamsBase *p) const = 0;
+    };
+
+    class ParamsTesterLong : public ParamTester {
+        const long _value;
+
+      public:
+        ParamsTesterLong(const std::string &tag, long v, bool not_)
+            : ParamTester(tag, not_), _value(v) {}
+
+      protected:
+        bool _isEqual(VAPoR::ParamsBase *p) const;
+    };
+
+    class ParamsTesterString : public ParamTester {
+        const std::string _value;
+
+      public:
+        ParamsTesterString(const std::string &tag, const std::string &v, bool not_)
+            : ParamTester(tag, not_), _value(v) {}
+        bool _isEqual(VAPoR::ParamsBase *p) const;
+    };
 };

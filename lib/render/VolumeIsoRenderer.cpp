@@ -7,6 +7,7 @@
 #include <vapor/glutil.h>
 
 #include <vapor/VolumeCellTraversal.h>
+#include <vapor/VolumeOSPRay.h>
 #include <vapor/VolumeRegular.h>
 
 using glm::mat4;
@@ -50,7 +51,7 @@ bool VolumeIsoRenderer::_usingColorMapData() const {
 }
 
 void VolumeIsoRenderer::_setShaderUniforms(const ShaderProgram *shader, const bool fast) const {
-    VolumeRenderer::_setShaderUniforms(shader, fast);
+    //    VolumeRenderer::_setShaderUniforms(shader, fast);
 
     vector<double> isoValuesD = GetActiveParams()->GetIsoValues();
     vector<float> isoValues(isoValuesD.begin(), isoValuesD.end());
@@ -74,6 +75,8 @@ std::string VolumeIsoRenderer::_getDefaultAlgorithmForGrid(const Grid *grid) con
         return VolumeRegularIso ::GetName();
     if (dynamic_cast<const StructuredGrid *>(grid))
         return VolumeCellTraversalIso::GetName();
+    if (dynamic_cast<const UnstructuredGrid *>(grid))
+        return VolumeOSPRayIso ::GetName();
     MyBase::SetErrMsg("Unsupported grid type: %s", grid->GetType().c_str());
     return "";
 }

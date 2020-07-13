@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vapor/Texture.h>
-#include <vapor/VolumeAlgorithm.h>
+#include <vapor/VolumeGLSL.h>
 
 namespace VAPoR {
 
@@ -18,9 +18,9 @@ namespace VAPoR {
 //!
 //! The glsl code does a standard sampled ray tracing of the volume.
 
-class VolumeRegular : public VolumeAlgorithm {
+class VolumeRegular : public VolumeGLSL {
   public:
-    VolumeRegular(GLManager *gl);
+    VolumeRegular(GLManager *gl, VolumeRenderer *renderer);
     ~VolumeRegular();
 
     static std::string GetName() { return "Regular"; }
@@ -64,7 +64,7 @@ class VolumeRegular : public VolumeAlgorithm {
 
 class VolumeRegularIso : public VolumeRegular {
   public:
-    VolumeRegularIso(GLManager *gl) : VolumeRegular(gl) {}
+    VolumeRegularIso(GLManager *gl, VolumeRenderer *renderer) : VolumeRegular(gl, renderer) {}
     static std::string GetName() { return "Iso Regular"; }
     static Type GetType() { return Type::Iso; }
     virtual ShaderProgram *GetShader() const;
