@@ -133,7 +133,9 @@ VolumeOSPRay::~VolumeOSPRay() {
 void VolumeOSPRay::SaveDepthBuffer(bool fast) {
     if (!fast) {
         _copyDepth();
-        _copyBackplate();
+
+        if (GetParams()->GetValueLong("osp_useBackplate", false))
+            _copyBackplate();
     }
 }
 
@@ -790,7 +792,6 @@ OSPVolume VolumeOSPRay::_loadVolumeStructured(const Grid *grid) {
     ospCommit(data);
     ospSetObject(volume, "index", data);
     ospRelease(data);
-    //    delete [] indices;
     Progress::Update(3);
 
     data = VOSP::NewCopiedData(startIndex.data(), OSP_UINT, startIndex.size());
