@@ -24,6 +24,7 @@
 #endif
 #include <QScrollArea>
 #include <QTextEdit>
+#include <cfloat>
 #include <fstream>
 #include <iostream>
 #include <qcheckbox.h>

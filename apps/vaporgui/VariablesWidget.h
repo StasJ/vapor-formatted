@@ -2,7 +2,6 @@
 #define VARIABLESWIDGET_H
 
 #include "Flags.h"
-#include "VaporTable.h"
 #include "ui_VariablesWidgetGUI.h"
 #include "vapor/MyBase.h"
 #include <QObject>
