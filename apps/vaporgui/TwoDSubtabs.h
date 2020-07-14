@@ -29,8 +29,8 @@ class TwoDVariablesSubtab : public QWidget, public Ui_TwoDVariablesGUI {
         //_variablesWidget->hide();
         ((QVBoxLayout *)layout())->insertWidget(1, pg = new PGroup);
         PSection *vars = new PSection("Variable Selection");
-        vars->Add(new PScalarVariableSelector);
-        vars->Add(new PHeightVariableSelector);
+        vars->Add(new PScalarVariableSelectorHLI);
+        vars->Add(new PHeightVariableSelectorHLI);
         pg->Add(vars);
         pg->Add(new PFidelityWidget);
     }

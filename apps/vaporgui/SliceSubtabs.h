@@ -7,6 +7,8 @@
 #include "ui_SliceGeometryGUI.h"
 #include "ui_SliceVariablesGUI.h"
 
+//#include "PVariableSelectorHLI.h"
+
 #include <vapor/SliceParams.h>
 
 namespace VAPoR {

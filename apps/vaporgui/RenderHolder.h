@@ -27,8 +27,9 @@ class NewRendererDialog : public QDialog, public Ui_NewRendererDialog {
   public:
     NewRendererDialog(QWidget *parent, std::vector<string> rendererNames,
                       std::vector<string> descriptions, std::vector<string> iconPaths,
-                      std::vector<string> smallIconPaths, std::vector<bool> dim2DSupport,
-                      std::vector<bool> dim3DSupport);
+                      std::vector<string> smallIconPaths);
+    // std::vector<bool> dim2DSupport,
+    // std::vector<bool> dim3DSupport);
 
     std::string GetSelectedRenderer() { return _selectedRenderer; }
     void InitializeDataSources(VAPoR::DataStatus *dataStatus);
@@ -49,8 +50,8 @@ class NewRendererDialog : public QDialog, public Ui_NewRendererDialog {
     std::vector<string> _descriptions;
     std::vector<string> _iconPaths;
     std::vector<string> _smallIconPaths;
-    std::vector<bool> _dim2DSupport;
-    std::vector<bool> _dim3DSupport;
+    // std::vector<bool> _dim2DSupport;
+    // std::vector<bool> _dim3DSupport;
     std::vector<QPushButton *> _buttons;
 
     VAPoR::DataStatus *_dataStatus;
@@ -94,8 +95,10 @@ class RenderHolder : public QWidget, public Ui_LeftPanel {
     //
     RenderHolder(QWidget *parent, VAPoR::ControlExec *ce, const std::vector<QWidget *> &widgets,
                  const std::vector<string> &widgetNames, const std::vector<string> &descriptions,
-                 const std::vector<string> &iconPaths, const std::vector<string> &smallIconPaths,
-                 const std::vector<bool> &dim2DSupport, const std::vector<bool> &dim3DSupport);
+                 const std::vector<string> &iconPaths, const std::vector<string> &smallIconPaths);
+    // const std::vector <bool>   &dim2DSupport,
+    // const std::vector <bool>   &dim3DSupport
+    //);
 
     virtual ~RenderHolder() {}
 
