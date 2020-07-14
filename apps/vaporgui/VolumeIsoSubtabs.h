@@ -5,6 +5,8 @@
 #include "ui_VolumeIsoGeometryGUI.h"
 #include "ui_VolumeIsoVariablesGUI.h"
 
+#include "PGroup.h"
+#include "PVariablesWidget.h"
 #include "TFEditorIsoSurface.h"
 #include "vapor/VolumeIsoParams.h"
 
@@ -24,6 +26,13 @@ class VolumeIsoVariablesSubtab : public QWidget, public Ui_VolumeIsoVariablesGUI
     VolumeIsoVariablesSubtab(QWidget *parent) {
         setupUi(this);
         _variablesWidget->Reinit((VariableFlags)(SCALAR | COLOR), (DimFlags)(THREED));
+        _variablesWidget->hide();
+        ((QVBoxLayout *)layout())->insertWidget(1, pg = new PGroup);
+        PSection *vars = new PSection("Variable Selection");
+        vars->Add(new PScalarVariableSelector);
+        vars->Add(new PColorMapVariableSelector);
+        pg->Add(vars);
+        pg->Add(new PFidelityWidget);
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *params);
@@ -32,6 +41,7 @@ class VolumeIsoVariablesSubtab : public QWidget, public Ui_VolumeIsoVariablesGUI
 
   private:
     VAPoR::VolumeIsoParams *_isoParams;
+    PGroup *pg;
 };
 
 class VolumeIsoAppearanceSubtab : public QWidget, public Ui_VolumeIsoAppearanceGUI {

@@ -9,6 +9,8 @@
 using VAPoR::Box;
 using VAPoR::RenderParams;
 
+#define NULL_TEXT "<none>"
+
 PVariableSelector::PVariableSelector(const std::string &tag, const std::string &label)
     : PStringDropdown(tag, {}, label) {}
 
@@ -20,13 +22,36 @@ void PVariableSelector::updateGUI() const {
     int nDims = getDimensionality();
 
     auto varNames = getDataMgr()->GetDataVarNames(nDims);
-    SetItems(varNames);
 
+    if (_addNull)
+        varNames.insert(varNames.begin(), NULL_TEXT);
+
+    SetItems(varNames);
     PStringDropdown::updateGUI();
 }
 
-int PVariableSelector::getDimensionality() const {
-    // return rp->GetBox()->GetOrientation() == Box::XY ? 2 : 3;
+bool PVariableSelector::isShown() const {
+    if (_onlyShowForDim > 0)
+        return getRendererDimension() == _onlyShowForDim;
+    return true;
+}
 
-    return getDataMgr()->GetNumDimensions(getParamsString());
+int PVariableSelector::getRendererDimension() const {
+    RenderParams *rp = dynamic_cast<RenderParams *>(getParams());
+    return rp->GetBox()->GetOrientation() == Box::XYZ ? 3 : 2;
+}
+
+int PVariableSelector::getDimensionality() const {
+    int dims = getDataMgr()->GetNumDimensions(getParamsString());
+    if (dims > 0)
+        return dims;
+
+    return getRendererDimension();
+}
+
+void PVariableSelector::dropdownTextChanged(std::string text) {
+    if (_addNull && text == NULL_TEXT)
+        text = "";
+
+    PStringDropdown::dropdownTextChanged(text);
 }

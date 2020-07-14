@@ -2,6 +2,8 @@
 #define IMAGESUBTABS_H
 
 #include "Flags.h"
+#include "PGroup.h"
+#include "PVariablesWidget.h"
 #include "RangeCombos.h"
 #include "ui_ImageAppearanceGUI.h"
 #include "ui_ImageGeometryGUI.h"
@@ -21,16 +23,24 @@ class DataMgr;
 class ImageVariablesSubtab : public QWidget, public Ui_ImageVariablesGUI {
 
     Q_OBJECT
+    PGroup *pg;
 
   public:
     ImageVariablesSubtab(QWidget *parent) {
         setupUi(this);
         _variablesWidget->Reinit((VariableFlags)(HEIGHT), (DimFlags)(TWOD));
+        _variablesWidget->hide();
+        ((QVBoxLayout *)layout())->insertWidget(1, pg = new PGroup);
+        PSection *vars = new PSection("Variable Selection");
+        vars->Add(new PHeightVariableSelector);
+        pg->Add(vars);
+        pg->Add(new PFidelityWidget);
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                 VAPoR::RenderParams *rParams) {
-        _variablesWidget->Update(dataMgr, paramsMgr, rParams);
+        //		_variablesWidget->Update(dataMgr, paramsMgr, rParams);
+        pg->Update(rParams, paramsMgr, dataMgr);
     }
 };
 

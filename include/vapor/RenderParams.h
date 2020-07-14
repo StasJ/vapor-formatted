@@ -392,6 +392,9 @@ class PARAMS_API RenderParams : public ParamsBase {
     static const string _variableNameTag;
     static const string _colorMapVariableNameTag;
     static const string _heightVariableNameTag;
+    static const string _xFieldVariableNameTag;
+    static const string _yFieldVariableNameTag;
+    static const string _zFieldVariableNameTag;
     static const string _useSingleColorTag;
     static const string _constantColorTag;
 };
