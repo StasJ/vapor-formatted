@@ -83,6 +83,10 @@
 #include "Statistics.h"
 #include "windowsUtils.h"
 
+#include <QOpenGLContext>
+#include <QProgressDialog>
+#include <vapor/Progress.h>
+
 // Following shortcuts are provided:
 // CTRL_N: new session
 // CTRL_O: open session
@@ -352,6 +356,8 @@ MainForm::MainForm(vector<QString> files, QApplication *app, QWidget *parent)
     createMenus();
 
     createToolBars();
+
+    _createProgressWidget();
 
     addMouseModes();
     (void)statusBar();
@@ -630,6 +636,71 @@ void MainForm::createToolBars() {
     _createModeToolBar();
     _createAnimationToolBar();
     _createVizToolBar();
+}
+
+void MainForm::_createProgressWidget() {
+    if (_progressEnabled)
+        return;
+
+    // The modal version adds an animation that takes a little less than
+    // a second however on OSX the non-modal version is broken.
+
+    if (!_progressDialog) {
+        _progressDialog = new QProgressDialog("Title", "Cancel", 0, 100, this);
+        _progressDialog->close();
+        _progressDialog->setWindowModality(Qt::WindowModal);
+        _progressDialog->setAutoClose(false);
+        _progressDialog->setMinimumDuration(1500);
+    }
+
+    Progress::Start_t start = [this](const std::string &name, long total, bool cancelable) {
+        if (QOpenGLContext::currentContext() && _progressSavedFB < 0) {
+            glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &_progressSavedFB);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        }
+
+        _progressDialog->reset();
+        if (cancelable)
+            _progressDialog->setCancelButtonText(QString("Cancel"));
+        else
+            _progressDialog->setCancelButton(nullptr);
+        _progressDialog->setLabelText(QString::fromStdString(name));
+        _progressDialog->setValue(0);
+        _progressDialog->setMaximum(total);
+    };
+
+    Progress::Finish_t finish = [this]() {
+        _progressDialog->close();
+
+        if (QOpenGLContext::currentContext() && _progressSavedFB >= 0) {
+            glBindFramebuffer(GL_FRAMEBUFFER, _progressSavedFB);
+            _progressSavedFB = -1;
+        }
+    };
+
+    Progress::Update_t update = [this, finish](long done, bool *cancelled) {
+        _progressDialog->setValue(done);
+        if (_progressDialog->wasCanceled()) {
+            *cancelled = true;
+            finish();
+        }
+    };
+
+    Progress::SetHandlers(start, update, finish);
+    _progressEnabled = true;
+    if (_progressEnabledMenuItem)
+        _progressEnabledMenuItem->setChecked(true);
+}
+
+void MainForm::_disableProgressWidget() {
+    if (!_progressEnabled)
+        return;
+
+    Progress::Finish();
+    Progress::SetHandlers([](const string &, long, bool) {}, [](long, bool *) {}, []() {});
+    _progressEnabled = false;
+    if (_progressEnabledMenuItem)
+        _progressEnabledMenuItem->setChecked(false);
 }
 
 void MainForm::hookupSignals() {
@@ -911,6 +982,18 @@ void MainForm::_createDeveloperMenu() {
 
     _developerMenu = menuBar()->addMenu("Developer");
     _developerMenu->addAction("Show PWidget Demo", _paramsWidgetDemo, &QWidget::show);
+
+    QAction *enableProgress = new QAction(QString("Enable Progress Bar"), nullptr);
+    enableProgress->setCheckable(true);
+    enableProgress->setChecked(_progressEnabled);
+    QObject::connect(enableProgress, &QAction::toggled, [this](bool checked) {
+        if (checked)
+            _createProgressWidget();
+        else
+            _disableProgressWidget();
+    });
+    _developerMenu->addAction(enableProgress);
+    _progressEnabledMenuItem = enableProgress;
 }
 
 void MainForm::createMenus() {
@@ -1431,11 +1514,13 @@ void MainForm::_setAnimationOnOff(bool on) {
         enableAnimationWidgets(false);
 
         _App->removeEventFilter(this);
+        _disableProgressWidget(); // Need to disable as popup prevents users from pressing pause
     } else {
         _playForwardAction->setChecked(false);
         _playBackwardAction->setChecked(false);
         enableAnimationWidgets(true);
         _App->installEventFilter(this);
+        _createProgressWidget();
 
         // Generate an event and force an update
         //

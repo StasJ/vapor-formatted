@@ -52,6 +52,7 @@ class QMdiArea;
 class QDockWindow;
 class QLabel;
 class QSpinBox;
+class QProgressDialog;
 
 class VizWindow;
 class VizWinMgr;
@@ -171,6 +172,12 @@ class MainForm : public QMainWindow {
     QSpinBox *_interactiveRefinementSpin;
     QDockWidget *_tabDockWindow;
 
+    QProgressDialog *_progressDialog = nullptr;
+    int _progressSavedFB = -1;
+    bool _progressEnabled = false;
+    QAction *_progressEnabledMenuItem = nullptr;
+    ;
+
     Statistics *_stats;
     Plot *_plot;
     PythonVariables *_pythonVariables;
@@ -283,6 +290,8 @@ class MainForm : public QMainWindow {
     void _createAnimationToolBar();
     void _createVizToolBar();
     void createToolBars();
+    void _createProgressWidget();
+    void _disableProgressWidget();
     virtual void sessionOpenHelper(string fileName);
 
     template <class T> bool isDatasetValidFormat(const std::vector<std::string> &paths) const;
