@@ -65,7 +65,6 @@ class SliceEventRouter : public QTabWidget, public RenderEventRouter {
     void wheelEvent(QWheelEvent *) {}
 
     //! VariablesWidget is used as Variables tab
-    // SliceVariablesSubtab *_variables;
     PGroup *_pVarGroup;
     SliceGeometrySubtab *_geometry;
     GLSliceImageWindow *_glSliceImageWindow;
