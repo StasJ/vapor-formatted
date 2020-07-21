@@ -56,6 +56,8 @@ class SliceEventRouter : public QTabWidget, public RenderEventRouter {
   private:
     SliceEventRouter() {}
 
+    void _setDefaultSampleRate();
+
     //! Override default wheel behavior on the tab.  This has the effect of
     //! ignoring wheel events over the tab.  This is because wheel events will always
     //! affect the combo boxes and other widgets in the tab, and it would be confusing
