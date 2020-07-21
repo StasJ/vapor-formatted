@@ -5,6 +5,10 @@
 
 #include "SliceEventRouter.h"
 #include "EventRouter.h"
+#include "PFidelitySection.h"
+#include "PGroup.h"
+#include "PSection.h"
+#include "PVariablesWidget.h"
 #include "VariablesWidget.h"
 #include "vapor/SliceParams.h"
 #include "vapor/SliceRenderer.h"
@@ -25,12 +29,26 @@ static RenderEventRouterRegistrar<SliceEventRouter> registrar(SliceEventRouter::
 
 SliceEventRouter::SliceEventRouter(QWidget *parent, ControlExec *ce)
     : QTabWidget(parent), RenderEventRouter(ce, SliceParams::GetClassType()) {
-    _variables = new SliceVariablesSubtab(this);
+    /*_variables = new SliceVariablesSubtab(this);
     QScrollArea *qsvar = new QScrollArea(this);
     qsvar->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     _variables->adjustSize();
     qsvar->setWidget(_variables);
     qsvar->setWidgetResizable(true);
+    addTab(qsvar, "Variables");*/
+
+    PSection *varSection = new PSection("Variable Selection");
+    varSection->Add(new PScalarVariableSelector3DHLI());
+    PFidelitySection *fidelitySection = new PFidelitySection();
+
+    _pVarGroup = new PGroup;
+    _pVarGroup->Add(varSection);
+    _pVarGroup->Add(fidelitySection);
+    QScrollArea *qsvar = new QScrollArea(this);
+    qsvar->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    qsvar->setWidget(_pVarGroup);
+    qsvar->setWidgetResizable(true);
+    qsvar->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
     addTab(qsvar, "Variables");
 
     _appearance = new SliceAppearanceSubtab(this);
@@ -97,7 +115,12 @@ void SliceEventRouter::_updateTab() {
 
     // The variable tab updates itself:
     //
-    _variables->Update(GetActiveDataMgr(), _controlExec->GetParamsMgr(), GetActiveParams());
+    /*_variables->Update(
+        GetActiveDataMgr(),
+        _controlExec->GetParamsMgr(),
+        GetActiveParams()
+    );*/
+    _pVarGroup->Update(GetActiveParams(), _controlExec->GetParamsMgr(), GetActiveDataMgr());
 
     _appearance->Update(GetActiveDataMgr(), _controlExec->GetParamsMgr(), GetActiveParams());
     _geometry->Update(_controlExec->GetParamsMgr(), GetActiveDataMgr(), GetActiveParams());

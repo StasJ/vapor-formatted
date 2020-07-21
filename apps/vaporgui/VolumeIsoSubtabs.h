@@ -5,6 +5,7 @@
 #include "ui_VolumeIsoGeometryGUI.h"
 #include "ui_VolumeIsoVariablesGUI.h"
 
+#include "PFidelitySection.h"
 #include "PGroup.h"
 #include "PVariablesWidget.h"
 #include "TFEditorIsoSurface.h"
@@ -32,7 +33,7 @@ class VolumeIsoVariablesSubtab : public QWidget, public Ui_VolumeIsoVariablesGUI
         vars->Add(new PScalarVariableSelectorHLI);
         vars->Add(new PColorMapVariableSelectorHLI);
         pg->Add(vars);
-        pg->Add(new PFidelityWidget);
+        pg->Add(new PFidelitySection);
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *params);

@@ -1,5 +1,7 @@
 #include "BarbSubtabs.h"
+#include "PFidelitySection.h"
 #include "PGroup.h"
+#include "PSection.h"
 #include "PVariablesWidget.h"
 #include "TFEditor.h"
 #include "vapor/BarbParams.h"
@@ -31,7 +33,7 @@ BarbVariablesSubtab::BarbVariablesSubtab(QWidget *parent) {
     vars->Add(new PColorMapVariableSelectorHLI);
     vars->Add(new PHeightVariableSelectorHLI);
     pg->Add(vars);
-    pg->Add(new PFidelityWidget);
+    pg->Add(new PFidelitySection);
 }
 
 void BarbVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,

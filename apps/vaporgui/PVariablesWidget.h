@@ -2,7 +2,6 @@
 
 #include "vapor/RenderParams.h"
 
-#include "PFidelityWidget.h"
 #include "PLineItem.h"
 #include "PVariableSelector.h"
 #include "PWidgetHLI.h"
@@ -65,6 +64,28 @@ class PScalarVariableSelectorHLI : public PScalarVariableSelector,
         : PScalarVariableSelector(), PWidgetHLIBase<VAPoR::RenderParams, std::string>(
                                          (PWidget *)this, &VAPoR::RenderParams::GetVariableName,
                                          &VAPoR::RenderParams::SetVariableName) {}
+};
+
+class PScalarVariableSelector2DHLI : public PVariableSelector2D,
+                                     public PWidgetHLIBase<VAPoR::RenderParams, std::string> {
+  public:
+    PScalarVariableSelector2DHLI()
+        : PVariableSelector2D("", "Variable Name"),
+          PWidgetHLIBase<VAPoR::RenderParams, std::string>((PWidget *)this,
+                                                           &VAPoR::RenderParams::GetVariableName,
+                                                           &VAPoR::RenderParams::SetVariableName) {}
+};
+
+class PScalarVariableSelector3DHLI :
+    // public PScalarVariableSelector,
+    public PVariableSelector3D,
+    public PWidgetHLIBase<VAPoR::RenderParams, std::string> {
+  public:
+    PScalarVariableSelector3DHLI()
+        : PVariableSelector3D("", "Variable Name"),
+          PWidgetHLIBase<VAPoR::RenderParams, std::string>((PWidget *)this,
+                                                           &VAPoR::RenderParams::GetVariableName,
+                                                           &VAPoR::RenderParams::SetVariableName) {}
 };
 
 class PColorMapVariableSelectorHLI : public PColorMapVariableSelector,

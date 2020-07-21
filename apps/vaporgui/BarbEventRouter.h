@@ -38,6 +38,9 @@ class BarbEventRouter : public QTabWidget, public RenderEventRouter {
 
     virtual void hookUpTab() {}
 
+    virtual bool Supports2DVariables() const { return true; }
+    virtual bool Supports3DVariables() const { return true; }
+
     void GetWebHelp(vector<pair<string, string>> &help) const;
 
     // Get static string identifier for this router class
@@ -45,8 +48,6 @@ class BarbEventRouter : public QTabWidget, public RenderEventRouter {
     static string GetClassType() { return (VAPoR::BarbRenderer::GetClassType()); }
 
     string GetType() const { return GetClassType(); }
-
-    virtual DimFlags GetDimFlags() const { return _variables->_variablesWidget->GetDimFlags(); }
 
   protected:
     virtual void _updateTab();

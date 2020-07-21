@@ -18,6 +18,7 @@
 #include "PCheckbox.h"
 #include "PDoubleInput.h"
 #include "PEnumDropdown.h"
+#include "PFidelitySection.h"
 #include "PGroup.h"
 #include "PSection.h"
 #include "PSliderEdit.h"
@@ -72,7 +73,7 @@ FlowVariablesSubtab::FlowVariablesSubtab(QWidget *parent) : QVaporSubtab(parent)
     vars->Add(new PColorMapVariableSelectorHLI);
 
     pg->Add(vars);
-    pg->Add(new PFidelityWidget);
+    pg->Add(new PFidelitySection);
 }
 
 void FlowVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,

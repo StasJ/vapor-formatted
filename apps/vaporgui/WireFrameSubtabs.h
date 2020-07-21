@@ -2,7 +2,9 @@
 #define WIREFRAMESUBTABS_H
 
 #include "Flags.h"
+#include "PFidelitySection.h"
 #include "PGroup.h"
+#include "PSection.h"
 #include "PVariablesWidget.h"
 #include "TFEditor.h"
 #include "ui_WireFrameAnnotationGUI.h"
@@ -35,7 +37,7 @@ class WireFrameVariablesSubtab : public QWidget, public Ui_WireFrameVariablesGUI
         vars->Add(new PDimensionSelector);
         vars->Add(new PScalarVariableSelectorHLI);
         pg->Add(vars);
-        pg->Add(new PFidelityWidget);
+        pg->Add(new PFidelitySection);
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,

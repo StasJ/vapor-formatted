@@ -2,6 +2,7 @@
 #define IMAGESUBTABS_H
 
 #include "Flags.h"
+#include "PFidelitySection.h"
 #include "PGroup.h"
 #include "PVariablesWidget.h"
 #include "RangeCombos.h"
@@ -34,7 +35,7 @@ class ImageVariablesSubtab : public QWidget, public Ui_ImageVariablesGUI {
         PSection *vars = new PSection("Variable Selection");
         vars->Add(new PHeightVariableSelectorHLI);
         pg->Add(vars);
-        pg->Add(new PFidelityWidget);
+        pg->Add(new PFidelitySection);
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,

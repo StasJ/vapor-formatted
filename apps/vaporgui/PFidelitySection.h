@@ -4,9 +4,9 @@
 #include "PSection.h"
 class VComboBox;
 
-class PFidelityWidget : public PSection {
+class PFidelitySection : public PSection {
   public:
-    PFidelityWidget();
+    PFidelitySection();
 };
 
 class PQuickFidelitySelector : public PLineItem {

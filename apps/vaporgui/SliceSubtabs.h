@@ -7,8 +7,6 @@
 #include "ui_SliceGeometryGUI.h"
 #include "ui_SliceVariablesGUI.h"
 
-//#include "PVariableSelectorHLI.h"
-
 #include <vapor/SliceParams.h>
 
 namespace VAPoR {
@@ -35,7 +33,7 @@ class SliceVariablesSubtab : public QWidget, public Ui_SliceVariablesGUI {
 
   private:
     VAPoR::SliceParams *_params;
-    PGroup *pg;
+    PGroup *_pg;
 };
 
 class SliceAppearanceSubtab : public QWidget, public Ui_SliceAppearanceGUI {

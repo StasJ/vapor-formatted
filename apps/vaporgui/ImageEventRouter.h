@@ -27,7 +27,8 @@ class ImageEventRouter : public QTabWidget, public RenderEventRouter {
     static std::string GetClassType() { return (VAPoR::ImageRenderer::GetClassType()); }
     std::string GetType() const { return GetClassType(); }
 
-    virtual DimFlags GetDimFlags() const { return (DimFlags)(DimFlags::TWOD | DimFlags::THREED); }
+    virtual bool Supports2DVariables() const { return true; }
+    virtual bool Supports3DVariables() const { return false; }
 
   protected:
     void _updateTab();

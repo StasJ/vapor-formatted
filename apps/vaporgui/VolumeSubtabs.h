@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Flags.h"
+#include "PFidelitySection.h"
 #include "PGroup.h"
 #include "PVariablesWidget.h"
 #include "ui_VolumeAnnotationGUI.h"
@@ -38,7 +39,7 @@ class VolumeVariablesSubtab : public QWidget, public Ui_VolumeVariablesGUI {
         vars->Add(new PScalarVariableSelectorHLI);
         vars->Add(new PColorMapVariableSelectorHLI);
         pg->Add(vars);
-        pg->Add(new PFidelityWidget);
+        pg->Add(new PFidelitySection);
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);

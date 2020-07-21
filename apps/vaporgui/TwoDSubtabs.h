@@ -2,6 +2,7 @@
 #define TWODSUBTABS_H
 
 #include "Flags.h"
+#include "PFidelitySection.h"
 #include "PGroup.h"
 #include "PVariablesWidget.h"
 #include "ui_TwoDAnnotationGUI.h"
@@ -32,7 +33,7 @@ class TwoDVariablesSubtab : public QWidget, public Ui_TwoDVariablesGUI {
         vars->Add(new PScalarVariableSelectorHLI);
         vars->Add(new PHeightVariableSelectorHLI);
         pg->Add(vars);
-        pg->Add(new PFidelityWidget);
+        pg->Add(new PFidelitySection);
     }
 
     void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
