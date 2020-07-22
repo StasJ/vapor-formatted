@@ -37,3 +37,8 @@ void Progress::SetHandlers(Start_t start, Update_t update, Finish_t finish) {
     _update = update;
     _finish = finish;
 }
+
+#ifndef NDEBUG
+#include <unistd.h>
+void Progress::Sleep(double s) { usleep(s * 1e6L); }
+#endif

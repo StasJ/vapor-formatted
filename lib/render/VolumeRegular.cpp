@@ -1,5 +1,6 @@
 #include <glm/glm.hpp>
 #include <vapor/GLManager.h>
+#include <vapor/Progress.h>
 #include <vapor/VolumeRegular.h>
 #include <vapor/glutil.h>
 #include <vector>
@@ -56,10 +57,17 @@ int VolumeRegular::_loadDataDirect(const Grid *grid, Texture3D *dataTexture,
         return -1;
     }
 
+    Progress::Start("Load volume data", nVerts, true);
     auto dataIt = grid->cbegin();
     for (size_t i = 0; i < nVerts; ++i, ++dataIt) {
+        Progress::Update(i);
+        if (Progress::Cancelled()) {
+            delete[] data;
+            return -1;
+        }
         data[i] = *dataIt;
     }
+    Progress::Finish();
 
     dataTexture->TexImage(GL_R32F, dims[0], dims[1], dims[2], GL_RED, GL_FLOAT, data);
 
