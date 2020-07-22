@@ -92,6 +92,7 @@ class VizWin : public QGLWidget {
     virtual void setFocus();
 
   private:
+    void _renderHelper(bool fast);
     void updateManip(bool initialize = false);
 
     // Event handling
@@ -122,6 +123,7 @@ class VizWin : public QGLWidget {
     VAPoR::ControlExec *_controlExec;
     VAPoR::GLManager *_glManager;
     double _strHandleMid[3];
+    bool _insideRender = false;
 
     bool _mouseClicked; // Indicates mouse has been clicked but not move
     int _buttonNum;     // currently pressed button (0=none, 1=left,2=mid, 3=right)

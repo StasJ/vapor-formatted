@@ -627,6 +627,14 @@ void VizWin::mouseMoveEvent(QMouseEvent *e) {
 void VizWin::setFocus() { QWidget::setFocus(); }
 
 void VizWin::Render(bool fast) {
+    if (_insideRender)
+        return;
+    _insideRender = true;
+    _renderHelper(fast);
+    _insideRender = false;
+}
+
+void VizWin::_renderHelper(bool fast) {
     // Need to call since we're not overriding QGLWidget::paintGL()
     //
     makeCurrent();
