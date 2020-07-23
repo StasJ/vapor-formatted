@@ -1,7 +1,6 @@
 #include "BarbSubtabs.h"
 #include "PFidelitySection.h"
 #include "PGroup.h"
-#include "PSection.h"
 #include "PVariablesWidget.h"
 #include "TFEditor.h"
 #include "vapor/BarbParams.h"
@@ -38,7 +37,6 @@ BarbVariablesSubtab::BarbVariablesSubtab(QWidget *parent) {
 
 void BarbVariablesSubtab::Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
                                  VAPoR::RenderParams *rParams) {
-    //    _variablesWidget->Update(dataMgr, paramsMgr, rParams);
     pg->Update(rParams, paramsMgr, dataMgr);
 }
 
