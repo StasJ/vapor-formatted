@@ -3,13 +3,13 @@
 
 #include "Flags.h"
 #include "PGroup.h"
-#include "PVariablesWidget.h"
 #include "RangeCombos.h"
 #include "ui_ContourAnnotationGUI.h"
 #include "ui_ContourAppearanceGUI.h"
 #include "ui_ContourGeometryGUI.h"
 #include "ui_ContourVariablesGUI.h"
 #include "vapor/ContourParams.h"
+//#include "PVariablesWidget.h"
 
 namespace VAPoR {
 class ControlExec;

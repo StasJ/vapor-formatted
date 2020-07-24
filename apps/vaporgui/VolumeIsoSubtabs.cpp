@@ -7,7 +7,7 @@
 #include "PSliderEdit.h"
 #include "PStringDropdownHLI.h"
 #include "PTFEditor.h"
-#include "PVariableSelector.h"
+#include "PVariableWidgets.h"
 #include "VolumeSubtabs.h"
 
 using namespace VAPoR;

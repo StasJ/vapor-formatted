@@ -3,7 +3,7 @@
 #include "vapor/RenderParams.h"
 
 #include "PLineItem.h"
-#include "PVariableSelector.h"
+#include "PVariableWidgets.h"
 #include "PWidgetHLI.h"
 
 class VComboBox;
