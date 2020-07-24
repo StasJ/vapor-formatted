@@ -6,7 +6,6 @@
 #include "PSliderEdit.h"
 #include "PStringDropdownHLI.h"
 #include "PTFEditor.h"
-#include "PVariableWidgets.h"
 #include "QSliderEdit.h"
 #include "TFEditorVolume.h"
 

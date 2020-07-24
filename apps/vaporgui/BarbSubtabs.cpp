@@ -1,7 +1,7 @@
 #include "BarbSubtabs.h"
 #include "PFidelitySection.h"
 #include "PGroup.h"
-#include "PVariablesWidget.h"
+#include "PVariableWidgets.h"
 #include "TFEditor.h"
 #include "vapor/BarbParams.h"
 #include <cmath>

@@ -1,14 +1,14 @@
 #include "VolumeIsoSubtabs.h"
 #include "PCheckbox.h"
-#include "PColorSelector.h"
 #include "PEnumDropdown.h"
 #include "PGroup.h"
 #include "PSection.h"
 #include "PSliderEdit.h"
 #include "PStringDropdownHLI.h"
 #include "PTFEditor.h"
-#include "PVariableWidgets.h"
 #include "VolumeSubtabs.h"
+//#include "PVariableWidgets.h"
+#include "PColorSelector.h"
 
 using namespace VAPoR;
 
@@ -21,7 +21,6 @@ void VolumeIsoVariablesSubtab::Update(DataMgr *dataMgr, ParamsMgr *paramsMgr,
     // long mode = _isoParams->GetCastingMode();
     // _castingModeComboBox->setCurrentIndex( mode - 1 );
 
-    //    _variablesWidget->Update(dataMgr, paramsMgr, params);
     pg->Update(params, paramsMgr, dataMgr);
 }
 

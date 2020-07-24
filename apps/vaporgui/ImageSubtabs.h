@@ -4,7 +4,7 @@
 #include "Flags.h"
 #include "PFidelitySection.h"
 #include "PGroup.h"
-#include "PVariablesWidget.h"
+#include "PVariableWidgets.h"
 #include "RangeCombos.h"
 #include "ui_ImageAppearanceGUI.h"
 #include "ui_ImageGeometryGUI.h"
