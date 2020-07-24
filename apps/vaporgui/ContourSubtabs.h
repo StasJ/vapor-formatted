@@ -9,7 +9,6 @@
 #include "ui_ContourGeometryGUI.h"
 #include "ui_ContourVariablesGUI.h"
 #include "vapor/ContourParams.h"
-//#include "PVariablesWidget.h"
 
 namespace VAPoR {
 class ControlExec;
