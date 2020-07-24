@@ -18,6 +18,7 @@ class ControlExec;
 
 class GLBarbImageWindow;
 class PGroup;
+class PVariablesGroup;
 
 //!
 //! \class BarbEventRouter
@@ -69,6 +70,7 @@ class BarbEventRouter : public QTabWidget, public RenderEventRouter {
     void wheelEvent(QWheelEvent *) {}
 
     PGroup *_pVarGroup;
+    PVariablesGroup *_vw;
 
     BarbGeometrySubtab *_geometry;
     BarbAppearanceSubtab *_appearance;
