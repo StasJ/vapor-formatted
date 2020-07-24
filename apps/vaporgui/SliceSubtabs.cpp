@@ -5,7 +5,6 @@
 #include <QButtonGroup>
 
 #include "PFidelitySection.h"
-#include "PVariablesWidget.h"
 #include "PWidget.h"
 
 #define MIN_SAMPLES 1

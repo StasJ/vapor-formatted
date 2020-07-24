@@ -5,6 +5,10 @@
 
 #include "BarbEventRouter.h"
 #include "EventRouter.h"
+#include "PFidelitySection.h"
+#include "PGroup.h"
+#include "PSection.h"
+#include "PVariableWidgets.h"
 #include "VariablesWidget.h"
 #include "vapor/BarbParams.h"
 #include <QFileDialog>
@@ -26,12 +30,22 @@ static RenderEventRouterRegistrar<BarbEventRouter> registrar(BarbEventRouter::Ge
 BarbEventRouter::BarbEventRouter(QWidget *parent, ControlExec *ce)
     : QTabWidget(parent), RenderEventRouter(ce, BarbParams::GetClassType()) {
 
-    _variables = new BarbVariablesSubtab(this);
+    PSection *varSection = new PSection("Variable Selection");
+    varSection->Add(new PDimensionSelector);
+    varSection->Add(new PXFieldVariableSelectorHLI);
+    varSection->Add(new PYFieldVariableSelectorHLI);
+    varSection->Add(new PZFieldVariableSelectorHLI);
+    varSection->Add(new PColorMapVariableSelectorHLI);
+    varSection->Add(new PHeightVariableSelectorHLI);
+    _pVarGroup = new PGroup;
+    _pVarGroup->Add(varSection);
+    _pVarGroup->Add(new PFidelitySection);
+    _pVarGroup->AddStretch();
     QScrollArea *qsvar = new QScrollArea(this);
-    qsvar->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    _variables->adjustSize();
-    qsvar->setWidget(_variables);
     qsvar->setWidgetResizable(true);
+    qsvar->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    qsvar->setWidget(_pVarGroup);
+    qsvar->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
     addTab(qsvar, "Variables");
 
     _appearance = new BarbAppearanceSubtab(this);
@@ -73,17 +87,10 @@ void BarbEventRouter::GetWebHelp(vector<pair<string, string>> &help) const {
                              "http://www.vapor.ucar.edu/docs/vapor-gui-help/BarbAppearance"));
 }
 
-void BarbEventRouter::_initializeTab() {
-    _updateTab();
-    BarbParams *rParams = (BarbParams *)GetActiveParams();
-    DataMgr *dataMgr = GetActiveDataMgr();
-
-    _variables->Initialize(rParams, dataMgr);
-}
+void BarbEventRouter::_initializeTab() { _updateTab(); }
 
 void BarbEventRouter::_updateTab() {
-    // The variable tab updates itself:
-    _variables->Update(GetActiveDataMgr(), _controlExec->GetParamsMgr(), GetActiveParams());
+    _pVarGroup->Update(GetActiveParams(), _controlExec->GetParamsMgr(), GetActiveDataMgr());
 
     _appearance->Update(GetActiveDataMgr(), _controlExec->GetParamsMgr(), GetActiveParams());
 

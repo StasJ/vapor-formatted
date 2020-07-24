@@ -7,7 +7,7 @@
 
 #include "PFidelitySection.h"
 #include "PGroup.h"
-#include "PVariablesWidget.h"
+#include "PVariableWidgets.h"
 #include "TFEditorIsoSurface.h"
 #include "vapor/VolumeIsoParams.h"
 

@@ -22,7 +22,7 @@
 #include "PGroup.h"
 #include "PSection.h"
 #include "PSliderEdit.h"
-#include "PVariablesWidget.h"
+#include "PVariableWidgets.h"
 
 #include <QScrollArea>
 
