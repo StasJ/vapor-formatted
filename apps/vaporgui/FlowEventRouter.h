@@ -59,7 +59,7 @@ class FlowEventRouter : public QTabWidget, public RenderEventRouter {
     void wheelEvent(QWheelEvent *) {}
 
     //! VariablesWidget is used as Variables tab
-    FlowVariablesSubtab *_variables;
+    PGroup *_pVarGroup;
     FlowGeometrySubtab *_geometry;
     FlowAppearanceSubtab *_appearance;
     FlowSeedingSubtab *_seeding;

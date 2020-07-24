@@ -24,6 +24,8 @@
 #include "EventRouter.h"
 #include "Flags.h"
 
+#include "PVariableWidgets.h"
+
 namespace VAPoR {
 class ControlExec;
 class RenderParams;
@@ -36,6 +38,7 @@ class ParamsMgr;
 #endif
 
 class ColorbarWidget;
+class PVariablesGroup;
 
 //!
 //! \class RenderEventRouter
@@ -113,9 +116,11 @@ class RenderEventRouter : public EventRouter {
     RenderEventRouter(VAPoR::ControlExec *ce, string paramsType) : EventRouter(ce, paramsType) {
 
         _instName = "";
+
+        _pvg = new PVariablesGroup();
     }
 
-    virtual ~RenderEventRouter() {}
+    virtual ~RenderEventRouter() { delete _pvg; }
 
     void SetActive(string instName) { _instName = instName; }
 
@@ -231,6 +236,8 @@ class RenderEventRouter : public EventRouter {
     virtual string _getSmallIconImagePath() const = 0;
 
     virtual string _getIconImagePath() const = 0;
+
+    PVariablesGroup *_pvg;
 
   private:
     string _instName;
