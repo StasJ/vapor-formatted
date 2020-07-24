@@ -2,6 +2,7 @@
 #include "vapor/GLManager.h"
 #include "vapor/LegacyGL.h"
 #include "vapor/glutil.h"
+#include <vapor/FontManager.h>
 
 using namespace VAPoR;
 using glm::vec2;

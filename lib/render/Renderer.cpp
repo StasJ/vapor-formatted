@@ -24,6 +24,7 @@
 #include <limits>
 #include <sstream>
 
+#include "vapor/FontManager.h"
 #include "vapor/GLManager.h"
 #include "vapor/LegacyGL.h"
 #include "vapor/TextLabel.h"
