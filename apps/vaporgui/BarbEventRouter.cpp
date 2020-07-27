@@ -31,13 +31,13 @@ BarbEventRouter::BarbEventRouter(QWidget *parent, ControlExec *ce)
     : QTabWidget(parent), RenderEventRouter(ce, BarbParams::GetClassType()) {
 
     // PVariablesGroup Methodoligy
-    _pvg->AddVar(new PDimensionSelector);
-    _pvg->AddVar(new PXFieldVariableSelectorHLI);
-    _pvg->AddVar(new PYFieldVariableSelectorHLI);
-    _pvg->AddVar(new PZFieldVariableSelectorHLI);
-    _pvg->AddVar(new PColorMapVariableSelectorHLI);
-    _pvg->AddVar(new PHeightVariableSelectorHLI);
-    addTab(_pvg->GetScrollArea(), "pvg");
+    _variablesGroup->AddVar(new PDimensionSelector);
+    _variablesGroup->AddVar(new PXFieldVariableSelectorHLI);
+    _variablesGroup->AddVar(new PYFieldVariableSelectorHLI);
+    _variablesGroup->AddVar(new PZFieldVariableSelectorHLI);
+    _variablesGroup->AddVar(new PColorMapVariableSelectorHLI);
+    _variablesGroup->AddVar(new PHeightVariableSelectorHLI);
+    addTab(_variablesGroup->GetScrollArea(), "pvg");
 
     // Current Methodology
     PSection *varSection = new PSection("Variable Selection");
@@ -99,7 +99,7 @@ void BarbEventRouter::GetWebHelp(vector<pair<string, string>> &help) const {
 void BarbEventRouter::_initializeTab() { _updateTab(); }
 
 void BarbEventRouter::_updateTab() {
-    _pvg->Update(GetActiveParams(), _controlExec->GetParamsMgr(), GetActiveDataMgr());
+    _variablesGroup->Update(GetActiveParams(), _controlExec->GetParamsMgr(), GetActiveDataMgr());
 
     _pVarGroup->Update(GetActiveParams(), _controlExec->GetParamsMgr(), GetActiveDataMgr());
 
