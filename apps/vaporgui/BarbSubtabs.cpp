@@ -1,5 +1,4 @@
 #include "BarbSubtabs.h"
-#include "PFidelitySection.h"
 #include "PGroup.h"
 #include "PVariableWidgets.h"
 #include "TFEditor.h"
