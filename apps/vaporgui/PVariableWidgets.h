@@ -23,7 +23,18 @@ class PDimensionSelector : public PLineItem {
     virtual void updateGUI() const override;
     bool requireDataMgr() const override { return true; }
 
-  private slots:
+  protected slots:
+    virtual void dropdownTextChanged(std::string text);
+};
+
+class PFlowDimensionSelector : public PDimensionSelector {
+    Q_OBJECT
+    VComboBox *_vComboBox;
+
+  public:
+    PFlowDimensionSelector();
+
+  protected slots:
     void dropdownTextChanged(std::string text);
 };
 
