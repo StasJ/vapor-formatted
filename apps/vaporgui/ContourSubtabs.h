@@ -7,7 +7,6 @@
 #include "ui_ContourAnnotationGUI.h"
 #include "ui_ContourAppearanceGUI.h"
 #include "ui_ContourGeometryGUI.h"
-#include "ui_ContourVariablesGUI.h"
 #include "vapor/ContourParams.h"
 
 namespace VAPoR {
@@ -19,17 +18,6 @@ class DataMgr;
 
 class SpacingCombo;
 class TFEditor;
-
-class ContourVariablesSubtab : public QWidget, public Ui_ContourVariablesGUI {
-
-    Q_OBJECT
-    PGroup *pg;
-
-  public:
-    ContourVariablesSubtab(QWidget *parent);
-
-    void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr, VAPoR::RenderParams *rParams);
-};
 
 class ContourAppearanceSubtab : public QWidget, public Ui_ContourAppearanceGUI {
 

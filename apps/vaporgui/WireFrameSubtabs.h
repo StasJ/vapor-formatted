@@ -10,7 +10,6 @@
 #include "ui_WireFrameAnnotationGUI.h"
 #include "ui_WireFrameAppearanceGUI.h"
 #include "ui_WireFrameGeometryGUI.h"
-#include "ui_WireFrameVariablesGUI.h"
 
 namespace VAPoR {
 class ControlExec;

@@ -5,7 +5,6 @@
 #include "ui_BarbAnnotationGUI.h"
 #include "ui_BarbAppearanceGUI.h"
 #include "ui_BarbGeometryGUI.h"
-#include "ui_BarbVariablesGUI.h"
 
 namespace VAPoR {
 class ControlExec;

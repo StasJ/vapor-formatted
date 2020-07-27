@@ -8,7 +8,6 @@
 #include "RangeCombos.h"
 #include "ui_ImageAppearanceGUI.h"
 #include "ui_ImageGeometryGUI.h"
-#include "ui_ImageVariablesGUI.h"
 #include "vapor/ImageParams.h"
 #include "vapor/ResourcePath.h"
 #include <QFileDialog>
@@ -17,32 +16,6 @@ namespace VAPoR {
 class ControlExec;
 class ParamsMgr;
 class DataMgr;
-
-//
-// ImageVariablesSubtab class
-//
-class ImageVariablesSubtab : public QWidget, public Ui_ImageVariablesGUI {
-
-    Q_OBJECT
-    PGroup *pg;
-
-  public:
-    ImageVariablesSubtab(QWidget *parent) {
-        setupUi(this);
-        _variablesWidget->Reinit((VariableFlags)(HEIGHT), (DimFlags)(TWOD));
-        _variablesWidget->hide();
-        ((QVBoxLayout *)layout())->insertWidget(1, pg = new PGroup);
-        PSection *vars = new PSection("Variable Selection");
-        vars->Add(new PHeightVariableSelectorHLI);
-        pg->Add(vars);
-        pg->Add(new PFidelitySection);
-    }
-
-    void Update(VAPoR::DataMgr *dataMgr, VAPoR::ParamsMgr *paramsMgr,
-                VAPoR::RenderParams *rParams) {
-        pg->Update(rParams, paramsMgr, dataMgr);
-    }
-};
 
 //
 // ImageAppearanceSubtab class

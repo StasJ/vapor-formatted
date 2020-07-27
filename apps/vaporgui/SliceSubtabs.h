@@ -5,7 +5,6 @@
 #include "ui_SliceAnnotationGUI.h"
 #include "ui_SliceAppearanceGUI.h"
 #include "ui_SliceGeometryGUI.h"
-#include "ui_SliceVariablesGUI.h"
 
 #include <vapor/SliceParams.h>
 

@@ -61,8 +61,6 @@ class TwoDDataEventRouter : public QTabWidget, public RenderEventRouter {
     //! if wheel events also scrolled the tab itself
     void wheelEvent(QWheelEvent *) {}
 
-    //! VariablesWidget is used as Variables tab
-    TwoDVariablesSubtab *_variables;
     TwoDGeometrySubtab *_geometry;
     GLTwoDDataImageWindow *_glTwoDDataImageWindow;
     TwoDAppearanceSubtab *_appearance;

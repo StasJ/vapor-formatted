@@ -61,8 +61,6 @@ class VolumeIsoEventRouter : public QTabWidget, public RenderEventRouter {
     //! if wheel events also scrolled the tab itself
     void wheelEvent(QWheelEvent *) {}
 
-    //! VariablesWidget is used as Variables tab
-    VolumeIsoVariablesSubtab *_variables;
     VolumeIsoGeometrySubtab *_geometry;
     GLVolumeImageWindow *_glVolumeImageWindow;
     VolumeIsoAppearanceSubtab *_appearance;
