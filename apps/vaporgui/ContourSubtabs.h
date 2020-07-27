@@ -2,7 +2,6 @@
 #define CONTOURSUBTABS_H
 
 #include "Flags.h"
-#include "PGroup.h"
 #include "RangeCombos.h"
 #include "ui_ContourAnnotationGUI.h"
 #include "ui_ContourAppearanceGUI.h"
