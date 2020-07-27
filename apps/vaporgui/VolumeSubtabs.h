@@ -1,9 +1,6 @@
 #pragma once
 
 #include "Flags.h"
-#include "PFidelitySection.h"
-#include "PGroup.h"
-#include "PVariableWidgets.h"
 #include "ui_VolumeAnnotationGUI.h"
 #include "ui_VolumeAppearanceGUI.h"
 #include "ui_VolumeGeometryGUI.h"

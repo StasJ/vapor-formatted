@@ -4,9 +4,6 @@
 #include "ui_VolumeIsoAppearanceGUI.h"
 #include "ui_VolumeIsoGeometryGUI.h"
 
-#include "PFidelitySection.h"
-#include "PGroup.h"
-#include "PVariableWidgets.h"
 #include "TFEditorIsoSurface.h"
 #include "vapor/VolumeIsoParams.h"
 

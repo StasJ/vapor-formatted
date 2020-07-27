@@ -2,9 +2,6 @@
 #define TWODSUBTABS_H
 
 #include "Flags.h"
-#include "PFidelitySection.h"
-#include "PGroup.h"
-#include "PVariableWidgets.h"
 #include "ui_TwoDAnnotationGUI.h"
 #include "ui_TwoDAppearanceGUI.h"
 #include "ui_TwoDGeometryGUI.h"

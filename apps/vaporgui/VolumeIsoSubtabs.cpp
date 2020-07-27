@@ -1,5 +1,6 @@
 #include "VolumeIsoSubtabs.h"
 #include "PCheckbox.h"
+#include "PColorSelector.h"
 #include "PEnumDropdown.h"
 #include "PGroup.h"
 #include "PSection.h"
@@ -7,8 +8,6 @@
 #include "PStringDropdownHLI.h"
 #include "PTFEditor.h"
 #include "VolumeSubtabs.h"
-//#include "PVariableWidgets.h"
-#include "PColorSelector.h"
 
 using namespace VAPoR;
 

@@ -1,11 +1,7 @@
 #include "SliceSubtabs.h"
-#include "PGroup.h"
 #include "TFEditor.h"
 #include "VLineItem.h"
 #include <QButtonGroup>
-
-#include "PFidelitySection.h"
-#include "PWidget.h"
 
 #define MIN_SAMPLES 1
 #define MAX_SAMPLES 2000
