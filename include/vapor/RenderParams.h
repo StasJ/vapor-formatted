@@ -192,7 +192,7 @@ class PARAMS_API RenderParams : public ParamsBase {
     //! Virtual method sets current Compression level.
     //! \param[in] val  compression level, 0 is most compressed
     //!
-    virtual void SetCompressionLevel(int val);
+    void SetCompressionLevel(int val);
 
     //! Specify a stretch factor used in displaying histograms in
     //! mapper functions.

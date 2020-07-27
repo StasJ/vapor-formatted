@@ -38,7 +38,6 @@ class ParamsMgr;
 #endif
 
 class ColorbarWidget;
-class PVariablesGroup;
 
 //!
 //! \class RenderEventRouter

@@ -5,9 +5,6 @@
 
 #include "SliceEventRouter.h"
 #include "EventRouter.h"
-#include "PFidelitySection.h"
-#include "PGroup.h"
-#include "PSection.h"
 #include "PVariableWidgets.h"
 #include "VariablesWidget.h"
 #include "vapor/SliceParams.h"

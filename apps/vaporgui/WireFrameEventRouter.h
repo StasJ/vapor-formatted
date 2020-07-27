@@ -16,7 +16,6 @@ namespace VAPoR {
 class ControlExec;
 }
 
-class PGroup;
 class GLWireFrameImageWindow;
 
 //!
@@ -44,8 +43,7 @@ class WireFrameEventRouter : public QTabWidget, public RenderEventRouter {
     static string GetClassType() { return (VAPoR::WireFrameRenderer::GetClassType()); }
     string GetType() const { return GetClassType(); }
 
-    virtual bool Supports2DVariables() const { return true; }
-    virtual bool Supports3DVariables() const { return true; }
+    virtual DimFlags GetDimFlags() const { return _variables->_variablesWidget->GetDimFlags(); }
 
   protected:
     void _updateTab();
@@ -57,8 +55,6 @@ class WireFrameEventRouter : public QTabWidget, public RenderEventRouter {
   private:
     WireFrameEventRouter() {}
 
-    PGroup *_pVarGroup;
-
     //! Override default wheel behavior on the tab.  This has the effect of
     //! ignoring wheel events over the tab.  This is because wheel events will always
     //! affect the combo boxes and other widgets in the tab, and it would be confusing
@@ -66,6 +62,7 @@ class WireFrameEventRouter : public QTabWidget, public RenderEventRouter {
     void wheelEvent(QWheelEvent *) {}
 
     //! VariablesWidget is used as Variables tab
+    WireFrameVariablesSubtab *_variables;
     WireFrameGeometrySubtab *_geometry;
     GLWireFrameImageWindow *_glWireFrameImageWindow;
     WireFrameAppearanceSubtab *_appearance;

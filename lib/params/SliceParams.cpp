@@ -38,22 +38,9 @@ SliceParams::SliceParams(DataMgr *dataMgr, ParamsBase::StateSave *ssave, XmlNode
 
 SliceParams::~SliceParams() { SetDiagMsg("SliceParams::~SliceParams() this=%p", this); }
 
-void SliceParams::SetCompressionLevel(int level) {
-    std::cout << "void SliceParams::SetCompressiontLevel( " << level << std::endl;
-    BeginGroup("SliceParams: Change compression level and sample rate");
-    RenderParams::SetCompressionLevel(level);
-    // SetValueLong( _CompressionLevelTag, "Set compression level", level);
-    //_setDefaultSampleRate();
-    SetSampleRate(GetDefaultSampleRate());
-    EndGroup();
-}
-
 void SliceParams::SetRefinementLevel(int level) {
-    std::cout << "void SliceParams::SetRefinementLevel( " << level << std::endl;
     BeginGroup("SliceParams: Change refinement level and sample rate");
     RenderParams::SetRefinementLevel(level);
-    // SetValueLong( _RefinementLevelTag, "Set compression level", level);
-    //_setDefaultSampleRate();
     SetSampleRate(GetDefaultSampleRate());
     EndGroup();
 }
@@ -103,7 +90,6 @@ int SliceParams::GetSampleRate() const {
 }
 
 void SliceParams::SetSampleRate(int rate) {
-    std::cout << "SetSampleRate() " << rate << std::endl;
     SetValueDouble(_sampleRateTag, "Set sample rate", (double)rate);
 }
 
