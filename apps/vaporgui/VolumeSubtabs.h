@@ -7,7 +7,6 @@
 #include "ui_VolumeAnnotationGUI.h"
 #include "ui_VolumeAppearanceGUI.h"
 #include "ui_VolumeGeometryGUI.h"
-#include "ui_VolumeVariablesGUI.h"
 #include <vapor/MapperFunction.h>
 #include <vapor/VolumeParams.h>
 
