@@ -90,6 +90,7 @@ class FlowAppearanceSubtab : public QVaporSubtab {
   private:
     VAPoR::FlowParams *_params;
     TFEditor *_TFEditor;
+    PGroup *_pw;
 };
 
 //

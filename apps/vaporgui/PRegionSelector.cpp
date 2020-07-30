@@ -2,6 +2,7 @@
 #include "QRangeSliderTextCombo.h"
 #include "VLineItem.h"
 #include <QVBoxLayout>
+#include <assert.h>
 #include <vapor/ParamsBase.h>
 
 PRegionSelector::PRegionSelector(const std::string &tag, const std::string &label)

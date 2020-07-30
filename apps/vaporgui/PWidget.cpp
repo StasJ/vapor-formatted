@@ -1,6 +1,7 @@
 #include "PWidget.h"
 #include "SettingsParams.h"
 #include <QHBoxLayout>
+#include <assert.h>
 #include <vapor/ParamsBase.h>
 #include <vapor/ParamsMgr.h>
 #include <vapor/VAssert.h>

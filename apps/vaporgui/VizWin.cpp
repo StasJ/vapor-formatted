@@ -30,6 +30,7 @@
 #include "images/vapor-icon-32.xpm"
 #include "qdatetime.h"
 #include "vapor/FileUtils.h"
+#include "vapor/FontManager.h"
 #include "vapor/GLManager.h"
 #include "vapor/LegacyGL.h"
 #include "vapor/VAssert.h"
@@ -423,8 +424,9 @@ void VizWin::mousePressEvent(QMouseEvent *e) {
         _buttonNum = 2;
 
     // ControlModifier means [command], not [control] apparently
-    if (e->button() == Qt::LeftButton && (e->modifiers() & Qt::ShiftModifier))
+    if (e->button() == Qt::LeftButton && (e->modifiers() & Qt::ShiftModifier)) {
         _buttonNum = 2;
+    }
 
     if (_buttonNum == 0) {
         _mouseClicked = true; // mouse button is held
