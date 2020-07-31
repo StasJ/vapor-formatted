@@ -1,14 +1,14 @@
 #include <cmath>
 #include <iostream>
 
-#include "VLineEdit.h"
+#include "VLineEdit_Deprecated.h"
 #include "VSlider.h"
 #include "VSliderEdit.h"
 #include "vapor/VAssert.h"
 
 VSliderEdit::VSliderEdit(double min, double max, double value)
     : VContainer(), _minValid(min), _maxValid(max), _value(value), _isIntType(false) {
-    _lineEdit = new VLineEdit();
+    _lineEdit = new VLineEdit_Deprecated();
     _slider = new VSlider();
 
     SetRange(min, max);
@@ -17,7 +17,8 @@ VSliderEdit::VSliderEdit(double min, double max, double value)
     layout()->addWidget(_slider);
     layout()->addWidget(_lineEdit);
 
-    connect(_lineEdit, &VLineEdit::ValueChanged, this, &VSliderEdit::_lineEditChanged);
+    connect(_lineEdit, SIGNAL(ValueChanged(const std::string &)), this,
+            SLOT(_lineEditChanged(const std::string &)));
 
     connect(_slider, &VSlider::ValueChanged, this, &VSliderEdit::_sliderChanged);
 

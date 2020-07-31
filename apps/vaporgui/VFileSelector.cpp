@@ -5,14 +5,14 @@
 #include "ErrorReporter.h"
 #include "FileOperationChecker.h"
 
-#include "VLineEdit.h"
+#include "VLineEdit_Deprecated.h"
 #include "VPushButton.h"
 
 VFileSelector::VFileSelector(const std::string &buttonText, const std::string &defaultPath,
                              const std::string &filter = "")
     : VContainer(), _filePath(defaultPath), _filter(filter) {
     _pushButton = new VPushButton(buttonText);
-    _lineEdit = new VLineEdit(defaultPath);
+    _lineEdit = new VLineEdit_Deprecated(defaultPath);
     layout()->addWidget(_pushButton);
     layout()->addWidget(_lineEdit);
 
@@ -20,7 +20,8 @@ VFileSelector::VFileSelector(const std::string &buttonText, const std::string &d
         _filePath = QDir::homePath().toStdString();
 
     connect(_pushButton, &VPushButton::ButtonClicked, this, &VFileSelector::OpenFileDialog);
-    connect(_lineEdit, &VLineEdit::ValueChanged, this, &VFileSelector::SetPathFromLineEdit);
+    connect(_lineEdit, SIGNAL(ValueChanged(std::string)), this,
+            SLOT(SetPathFromLineEdit(std::string)));
 }
 
 std::string VFileSelector::GetValue() const { return _filePath; }
