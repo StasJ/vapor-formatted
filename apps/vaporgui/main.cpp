@@ -217,8 +217,9 @@ int main(int argc, char **argv) {
                                     opt.resolution.nx, opt.resolution.ny);
     }
 
-    if (estatus == 0)
+    if (estatus == 0) {
         estatus = a.exec();
+    }
 
     if (diagfp)
         fclose(diagfp);
