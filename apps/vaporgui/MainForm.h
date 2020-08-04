@@ -301,6 +301,8 @@ class MainForm : public QMainWindow {
     template <class T> bool isDatasetValidFormat(const std::vector<std::string> &paths) const;
     bool determineDatasetFormat(const std::vector<std::string> &paths, std::string *fmt) const;
 
+    bool isOpenGLContextActive() const;
+
     // Enable/Disable all the widgets that require data to be present
     //
     void enableWidgets(bool onOff);

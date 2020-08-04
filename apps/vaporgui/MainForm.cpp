@@ -83,7 +83,6 @@
 #include "Statistics.h"
 #include "windowsUtils.h"
 
-#include <QOpenGLContext>
 #include <QProgressBar>
 #include <QProgressDialog>
 #include <QStyle>
@@ -733,7 +732,7 @@ void MainForm::_createProgressWidget() {
         _progressLastUpdateTime = now;
 
         // Qt will clear the currently bound framebuffer for some reason
-        bool insideOpenGL = (bool)QOpenGLContext::currentContext();
+        bool insideOpenGL = isOpenGLContextActive();
         if (insideOpenGL && _progressSavedFB < 0) {
             glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &_progressSavedFB);
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
