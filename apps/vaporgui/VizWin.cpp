@@ -627,6 +627,7 @@ void VizWin::mouseMoveEvent(QMouseEvent *e) {
 void VizWin::setFocus() { QWidget::setFocus(); }
 
 void VizWin::Render(bool fast) {
+    // Failsafe to prevent VizWin::Render from being called recursively.
     if (_insideRender)
         return;
     _insideRender = true;
