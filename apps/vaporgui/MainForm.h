@@ -71,6 +71,8 @@ class MainForm : public QMainWindow {
     MainForm(vector<QString> files, QApplication *app, QWidget *parent = 0);
     ~MainForm();
 
+    int RenderAndExit(int start, int end, const std::string &baseFile, int width, int height);
+
   protected:
     bool eventFilter(QObject *obj, QEvent *event);
 
@@ -188,6 +190,7 @@ class MainForm : public QMainWindow {
     bool _begForCitation;
     int _eventsSinceLastSave;
     bool _buttonPressed;
+    bool _paramsEventQueued = false;
 
     ErrorReporter *_errRep;
 
@@ -199,6 +202,7 @@ class MainForm : public QMainWindow {
 
     void _performSessionAutoSave();
     void _stateChangeCB();
+    void _intermediateStateChangedCB();
 
     QMdiArea *getMDIArea() { return _mdiArea; }
 
@@ -318,7 +322,8 @@ class MainForm : public QMainWindow {
     void captureJpegSequence();
     void captureTiffSequence();
     void capturePngSequence();
-    void startAnimCapture(string filter, string defaultSuffix);
+    void selectAnimCatureOutput(string filter, string defaultSuffix);
+    void startAnimCapture(string baseFile, string defaultSuffix = "tiff");
     void endAnimCapture();
     void captureSingleImage(string filter, string defaultSuffix);
     void captureSingleJpeg();

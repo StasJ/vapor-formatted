@@ -10,7 +10,7 @@
 #include "VFrame.h"
 #include "VGeometry2.h"
 #include "VIntSpinBox.h"
-#include "VLineEdit.h"
+#include "VLineEdit_Deprecated.h"
 #include "VLineItem.h"
 #include "VPushButton.h"
 #include "VSliderEdit.h"
@@ -374,10 +374,10 @@ void FlowSeedingSubtab::_createIntegrationSection() {
 
     // Universal options: Velocity multiplier and periodicity checkboxes
     //
-    _velocityMultiplierLineEdit = new VLineEdit();
+    _velocityMultiplierLineEdit = new VLineEdit_Deprecated();
     _velocityMultiplierLineEdit->SetIsDouble(true);
     _velocityMultiplierLineEdit->UseDoubleMenu();
-    connect(_velocityMultiplierLineEdit, &VLineEdit::ValueChanged, this,
+    connect(_velocityMultiplierLineEdit, &VLineEdit_Deprecated::ValueChanged, this,
             &FlowSeedingSubtab::_velocityMultiplierChanged);
     _integrationSection->layout()->addWidget(
         new VLineItem("Vector field  multiplier", _velocityMultiplierLineEdit));

@@ -18,7 +18,7 @@
 #include "VariablesWidget.h"
 
 class VLineItem;
-class VLineEdit;
+class VLineEdit_Deprecated;
 class VCheckBox;
 class VComboBox;
 class VSlider;
@@ -173,7 +173,7 @@ class FlowSeedingSubtab : public QVaporSubtab {
     VCheckBox *_periodicYCheckBox;
     VCheckBox *_periodicZCheckBox;
     VLineItem *_zPeriodicityLine;
-    VLineEdit *_velocityMultiplierLineEdit;
+    VLineEdit_Deprecated *_velocityMultiplierLineEdit;
 
     // Seed distribution options
     VSection *_seedDistributionSection;
